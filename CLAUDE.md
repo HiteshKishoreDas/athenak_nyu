@@ -183,6 +183,3 @@ gamma = 1.4
 <problem>
 # Problem-specific parameters
 ```
-
-### Current Development Focus
-Getting the turbulence driver to work with AMR and keeping div(B)==0 when using AMR
