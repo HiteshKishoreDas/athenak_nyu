@@ -7,7 +7,7 @@ export CEPHTWEAKS_LAZYIO=1
 # athenak=/mnt/home/hdas1/athenak_nyu
 
 athenak=/mnt/home/hdas1/athenak_nyu
-build=$athenak/bin
+build=$athenak/build
 
 mkdir -p "$build"
 

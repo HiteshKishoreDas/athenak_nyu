@@ -15,8 +15,8 @@ export LD_PRELOAD=/mnt/sw/fi/cephtweaks/lib/libcephtweaks.so
 export CEPHTWEAKS_LAZYIO=1
 
 export athenak=/mnt/home/hdas1/athenak_nyu
-export build=$athenak/bin
+export build=$athenak/build
 
 srun --cpus-per-task=$SLURM_CPUS_PER_TASK --cpu-bind=cores --gpu-bind=single:2 \
 bash -c "unset CUDA_VISIBLE_DEVICES"; \
-$build/src/athena -i $athenak/inputs/hydro/turb.athinput -d $athenak/turb_test
+$build/src/athena -i $athenak/turb_test/convection.athinput -d $athenak/turb_test
