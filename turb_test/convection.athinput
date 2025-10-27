@@ -46,15 +46,15 @@ rsolver     = hllc    # Riemann-solver to be used
 nscalars    = 5
 gamma       = 1.6666667  # gamma = C_p/C_v
 const_accel     = true   # add constant accleration source term
-const_accel_val = -10.0   # value of constant acceleration
+const_accel_val = -1.0   # value of constant acceleration
 const_accel_dir = 1      # direction of constant acceleration
 
 <problem>
 
-T_top     = 1.0      # Temperature at top boundary
-T_bot     = 10.0      # Temperature at bottom boundary
+T_top     = 9.5      # Temperature at top boundary
+T_bot     = 10.5      # Temperature at bottom boundary
 rho_bot     = 1.0      # Initial density at mid-plane
-density_perturbation_amp = 0.25  # Amplitude of initial density perturbations
+density_perturbation_amp = 0.01  # Amplitude of initial density perturbations
 density_perturbation_k   = 2.0   # Wavenumber of initial density perturbations
 
 <output1>
