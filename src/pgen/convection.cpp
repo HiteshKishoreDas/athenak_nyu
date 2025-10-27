@@ -19,8 +19,8 @@
 void UserSource(Mesh* pm, const Real bdt);
 void UserBoundary(Mesh* pm);
 
+// Input parameters that need to be accessible in the user functions
 static Real T_top, T_bot, rho_bot, Hbox;
-static Real g_accel=0.0;
 
 //----------------------------------------------------------------------------------------
 //  \brief Problem Generator for mass removal
@@ -33,13 +33,19 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   int nscalars = pmbp->phydro->nscalars;
   int nhydro = pmbp->phydro->nhydro;
 
-  // Get Rayleigh number from input file
-  if (!pin->DoesParameterExist("problem", "Ra_number")) {
+  // Enroll user functions 
+  user_srcs_func = UserSource;
+  user_bcs_func = UserBoundary;
+
+  if (restart) return;
+
+  // Get acceleration from input file
+  if (!pin->DoesParameterExist("hydro", "const_accel_val")) {
     std::stringstream msg;
-    msg << "problem/Ra_number is required in the input file.";
+    msg << "hydro/const_accel_val is required in the input file.";
     throw std::runtime_error(msg.str());
   }
-  Real Ra = pin->GetReal("problem", "Ra_number");
+  Real g_accel = pin->GetReal("hydro", "const_accel_val");
 
   // Get top and bottom temperatures from input file
   if (!pin->DoesParameterExist("problem", "T_top") || 
@@ -60,14 +66,20 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   rho_bot = pin->GetReal("problem", "rho_bot");
   Hbox = pin->GetReal("mesh", "x1max") - pin->GetReal("mesh", "x1min");
 
-  Real T_ref = 0.5 * (T_top + T_bot);
-  Real deltaT = T_top - T_bot;
-  Real gradT = deltaT/Hbox;
+  // Read density perturbation amplitude and wavenumber from input file
+  if (!pin->DoesParameterExist("problem", "density_perturbation_amp") ||
+      !pin->DoesParameterExist("problem", "density_perturbation_k")) {
+    std::stringstream msg;
+    msg << "problem/density_perturbation_amp and problem/density_perturbation_k are required in the input file.";
+    throw std::runtime_error(msg.str());
+  }
+  Real rho_perturb_amp = pin->GetReal("problem", "density_perturbation_amp");
+  Real rho_perturb_k = pin->GetReal("problem", "density_perturbation_k");
 
-  Real nu = 1.0;
-  Real kappa = 1.0;
+  Real inv_Hbox = 1.0/Hbox;
+  Real k_seed = 2.0*Kokkos::numbers::pi*inv_Hbox*rho_perturb_k;
 
-  g_accel = Ra*nu*kappa*T_ref/(deltaT*Hbox*Hbox*Hbox);
+  Real gradT = (T_top - T_bot)/Hbox;
 
   // Real den0 =  pow(T_bot/T_ref, 1. - g_accel/gradT);
 
@@ -82,11 +94,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   // printf("  Tbot/Tref = %e\n", T_bot/T_ref);
   // printf("  g_accel/gradT = %e\n", g_accel/gradT);
 
-  // Enroll user functions 
-  user_srcs_func = UserSource;
-  user_bcs_func = UserBoundary;
 
-  if (restart) return;
 
   // Capture variables for kernel
   int &is = indcs.is; int &ie = indcs.ie;
@@ -124,7 +132,12 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 
     // printf("x1=%f, temp=%f, den=%f\n", x1v, temp, den);
 
-    u0(m,IDN,k,j,i) = den;
+    u0(m,IDN,k,j,i) = den*(1.0 + 
+      rho_perturb_amp * 
+      std::cos(k_seed*x1v) * 
+      std::cos(k_seed*x2v) * 
+      std::cos(k_seed*x3v)
+    );
     u0(m,IM1,k,j,i) = 0.0;
     u0(m,IM2,k,j,i) = 0.0;
     u0(m,IM3,k,j,i) = 0.0;
@@ -143,6 +156,8 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     u0(m, nhydro+3, k, j, i) = dye_conc * den; // fourth scalar
     u0(m, nhydro+4, k, j, i) = 0.5 * den;      // fifth scalar - mean gradient forcing
   });
+  
+
 
   return;
 }
@@ -218,16 +233,6 @@ void UserSource(Mesh* pm, const Real bdt) {
     u0(m, nhydro+3, k, j, i) = Kokkos::clamp(u0(m, nhydro+3, k, j, i), 0.0, u0(m,IDN,k,j,i));
     u0(m, nhydro+4, k, j, i) = Kokkos::clamp(u0(m, nhydro+4, k, j, i), 0.0, u0(m,IDN,k,j,i));
 
-
-    // Add gravitational acceleration source term to momentum and energy equations
-    Real mom_squared = SQR(w0(m, IM1, k, j, i)) +
-                        SQR(w0(m, IM2, k, j, i)) +
-                        SQR(w0(m, IM3, k, j, i));
-    u0(m, IM1, k, j, i) += density * g_accel * bdt;
-    Real mom_squared_new = SQR(w0(m, IM1, k, j, i)) +
-                            SQR(w0(m, IM2, k, j, i)) +
-                            SQR(w0(m, IM3, k, j, i));
-    u0(m, IEN, k, j, i) += 0.5*(mom_squared_new - mom_squared)/u0(m,IDN,k,j,i);
 
   });
 

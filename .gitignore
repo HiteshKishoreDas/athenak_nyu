@@ -17,3 +17,5 @@ bin/
 # editor temp files
 *~
 *.swp
+
+turb_test/**/*.png 
