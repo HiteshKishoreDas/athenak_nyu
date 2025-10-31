@@ -79,7 +79,12 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   Real inv_Hbox = 1.0/Hbox;
   Real k_seed = 2.0*Kokkos::numbers::pi*inv_Hbox*rho_perturb_k;
 
+  const Real T_bot_device = T_bot;
+  const Real rho_bot_device = rho_bot;
+
   Real gradT = (T_top - T_bot)/Hbox;
+
+  printf("T_bot_device in pgen: %f\n", T_bot_device);
 
   // Real den0 =  pow(T_bot/T_ref, 1. - g_accel/gradT);
 
@@ -127,8 +132,8 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 
     Real R2 = x1v*x1v + x2v*x2v + x3v*x3v;
 
-    Real temp = T_bot + gradT*x1v;
-    Real den = rho_bot * pow(T_bot/temp, 1. - g_accel/gradT);
+    Real temp = T_bot_device + gradT*x1v;
+    Real den = rho_bot_device * pow(T_bot_device/temp, 1. - g_accel/gradT);
 
     // printf("x1=%f, temp=%f, den=%f\n", x1v, temp, den);
 
@@ -264,6 +269,11 @@ void UserBoundary(Mesh* pm) {
   int nvar = u0.extent_int(1);
   int nmb1 = pmbp->nmb_thispack - 1;
   auto &mb_bcs = pmbp->pmb->mb_bcs;
+  const Real T_bot_device = T_bot;
+  const Real T_top_device = T_top;
+
+  printf("T_bot_device in boundary: %f\n", T_bot_device);
+  printf("T_top_device in boundary: %f\n", T_top_device);
 
   // Handle X1 faces
   par_for("user_boundary_x1", DevExeSpace(), 0, nmb1, 0, (nvar-1), 0, (n3-1), 0, (n2-1),
@@ -275,9 +285,14 @@ void UserBoundary(Mesh* pm) {
         u0(m, n, k, j, ghost) = (n == IVX) ? -u0(m, n, k, j, mirr)
                                            :  u0(m, n, k, j, mirr);
 
-        u0(m, IEN, k, j, ghost) = u0(m,IDN,k,j,ghost) * T_bot/ gm1 
-                                  + 0.5*(SQR(u0(m,IM1,k,j,ghost)) + SQR(u0(m,IM2,k,j,ghost)) + SQR(u0(m,IM3,k,j,ghost)))
-                                  /u0(m,IDN,k,j,ghost);
+        if (n == IEN) {
+          Real den_mirr = u0(m, IDN, k, j, mirr);
+          Real mx_mirr = u0(m, IM1, k, j, mirr);
+          Real my_mirr = u0(m, IM2, k, j, mirr);
+          Real mz_mirr = u0(m, IM3, k, j, mirr);
+          Real kin = 0.5*(SQR(mx_mirr) + SQR(my_mirr) + SQR(mz_mirr))/den_mirr;
+          u0(m, IEN, k, j, ghost) = den_mirr * T_bot_device/ gm1 + kin;
+        }
       }
     }
     if (mb_bcs.d_view(m, BoundaryFace::outer_x1) == BoundaryFlag::user) {
@@ -287,9 +302,14 @@ void UserBoundary(Mesh* pm) {
         u0(m, n, k, j, ghost) = (n == IVX) ? -u0(m, n, k, j, mirr)
                                            :  u0(m, n, k, j, mirr);
 
-        u0(m, IEN, k, j, ghost) = u0(m,IDN,k,j,ghost) * T_top/ gm1 
-                                  + 0.5*(SQR(u0(m,IM1,k,j,ghost)) + SQR(u0(m,IM2,k,j,ghost)) + SQR(u0(m,IM3,k,j,ghost)))
-                                  /u0(m,IDN,k,j,ghost);
+        if (n == IEN) {
+          Real den_mirr = u0(m, IDN, k, j, mirr);
+          Real mx_mirr = u0(m, IM1, k, j, mirr);
+          Real my_mirr = u0(m, IM2, k, j, mirr);
+          Real mz_mirr = u0(m, IM3, k, j, mirr);
+          Real kin = 0.5*(SQR(mx_mirr) + SQR(my_mirr) + SQR(mz_mirr))/den_mirr;
+          u0(m, IEN, k, j, ghost) = den_mirr * T_top_device/ gm1 + kin;
+        }
       }
     }
   });
