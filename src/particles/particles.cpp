@@ -20,6 +20,35 @@
 #include "utils/sn_scheduler.hpp"
 
 namespace particles {
+
+namespace {
+
+struct StarInitializationFunctor {
+  DvceArray2D<int> pi;
+  DvceArray2D<Real> pr;
+  DvceArray2D<Real> pos;
+  int gids;
+  Real unit_time;
+
+  KOKKOS_INLINE_FUNCTION
+  void operator()(const int p) const {
+    int m = static_cast<int>(pos(8, p));
+    pi(PGID, p) = gids + m;
+    pi(2, p) = 0; // int to track # of SN
+    pr(IPX, p)  = pos(0, p);
+    pr(IPY, p)  = pos(1, p);
+    pr(IPZ, p)  = pos(2, p);
+    pr(IPVX, p) = pos(3, p);
+    pr(IPVY, p) = pos(4, p);
+    pr(IPVZ, p) = pos(5, p);
+    pr(6, p) = pos(6, p); // time of creation of star particle
+    pr(7, p) = pos(7, p); // mass of star particle
+    pr(8, p) = GetNthSNTime(pr(7, p), pr(6, p), unit_time, 0); // time of next SN
+  }
+};
+
+} // namespace
+
 //----------------------------------------------------------------------------------------
 // constructor, initializes data structures and parameters
 
@@ -186,29 +215,11 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
 
       auto &pi = prtcl_idata;
       auto &pr = prtcl_rdata;
-      int nrdata_ = nrdata;
       Real unit_time = pmy_pack->punit->time_cgs();
 
       // Initialize particles
-      par_for("star_par", DevExeSpace(), 0, nprtcl_thispack-1,
-      KOKKOS_LAMBDA(const int p) {   
-        int m = static_cast<int>(pos_data(8, p));  
-        pi(PGID,p) = gids + m;
-	pi(2, p) = 0; // int to track # of SN
-        pr(IPX,p)  = pos_data(0, p);
-        pr(IPY,p)  = pos_data(1, p);
-        pr(IPZ,p)  = pos_data(2, p);
-        pr(IPVX,p) = pos_data(3, p);
-        pr(IPVY,p) = pos_data(4, p);
-        pr(IPVZ,p) = pos_data(5, p);
-        pr(6, p) = pos_data(6, p); // time of creation of star particle
-        pr(7, p) = pos_data(7, p); // mass of star particle
-	pr(8, p) = GetNthSNTime(pr(7,p), pr(6,p), unit_time, 0); // time of next SN
-
-        // Print particle initialization
-        // Kokkos::printf("Initialized star particle %d in GID %d at position (%.2f, %.2f, %.2f)\n",
-        //          p, gids + m, pos_data(0, p), pos_data(1, p), pos_data(2, p));
-      });
+      StarInitializationFunctor star_init{pi, pr, pos_data, gids, unit_time};
+      par_for("star_par", DevExeSpace(), 0, nprtcl_thispack-1, star_init);
     
       dtnew = std::min(size.h_view(0).dx1, size.h_view(0).dx2);
       dtnew = std::min(dtnew, size.h_view(0).dx3);
