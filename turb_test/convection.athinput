@@ -8,13 +8,13 @@ basename  = Conv       # problem ID: basename of output filenames
 
 <mesh>
 nghost    = 2         # Number of ghost cells
-nx1       = 128        # Number of zones in X1-direction
+nx1       = 1280        # Number of zones in X1-direction
 x1min     = 0      # minimum value of X1
 x1max     = 1       # maximum value of X1
 ix1_bc    = user      # Inner-X1 boundary condition flag
 ox1_bc    = user      # Outer-X1 boundary condition flag
 
-nx2       = 640        # Number of zones in X2-direction
+nx2       = 6400       # Number of zones in X2-direction
 x2min     = 0      # minimum value of X2
 x2max     = 5       # maximum value of X2
 ix2_bc    = periodic  # Inner-X2 boundary condition flag
@@ -27,8 +27,8 @@ ix3_bc    = periodic  # Inner-X3 boundary condition flag
 ox3_bc    = periodic  # Outer-X3 boundary condition flag
 
 <meshblock>
-nx1       = 64        # Number of cells in each MeshBlock, X1-dir
-nx2       = 64        # Number of cells in each MeshBlock, X2-dir
+nx1       = 256        # Number of cells in each MeshBlock, X1-dir
+nx2       = 256        # Number of cells in each MeshBlock, X2-dir
 nx3       = 1        # Number of cells in each MeshBlock, X3-dir
 
 <time>
@@ -36,7 +36,7 @@ evolution  = dynamic  # dynamic/kinematic/static
 integrator = rk2      # time integration algorithm
 cfl_number = 0.3      # The Courant, Friedrichs, & Lewy (CFL) Number
 nlim       = -1       # cycle limit
-tlim       = 100.0     # time limit
+tlim       = 300.0     # time limit
 ndiag      = 1        # cycles between diagostic output
 
 <hydro>
@@ -64,4 +64,4 @@ dt        = 0.01
 <output2>
 file_type  = bin         # legacy VTK output
 variable   = hydro_w     # variables to be output
-dt         = 0.2         # time increment between outputs
+dt         = 2         # time increment between outputs

@@ -15,8 +15,10 @@ cmake -S "$athenak" -B "$build" \
   -D CMAKE_CXX_COMPILER="$athenak/kokkos/bin/nvcc_wrapper" \
   -D Kokkos_ENABLE_CUDA=On \
   -D Kokkos_ARCH_AMPERE80=On \
-  -D PROBLEM=turb \
-  -D Athena_ENABLE_MPI=On
+  -D PROBLEM=convection \
+  -D Athena_ENABLE_MPI=On \
+  -D Kokkos_ENABLE_DEBUG=On
+
 
 cd "$build"
 make -j 8

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "athenak-nyu"
+version = "0.1.0"
+description = "Python utilities and notebooks for the AthenaK NYU workflows."
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "matplotlib",
+  "scipy",
+  "h5py",
+  "tqdm",
+  "cmasher",
+  "ipykernel",
+  "jedi<0.19"
+]
+
+[tool.uv]
+package = false
