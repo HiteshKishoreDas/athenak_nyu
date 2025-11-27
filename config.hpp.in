@@ -25,6 +25,9 @@
 // use OpenMP parallelization? default=0 (false)
 #define OPENMP_PARALLEL_ENABLED @OPENMP_PARALLEL_ENABLED@
 
+// use SUNDIALS/CVODE integrators? default=0 (false)
+#define SUNDIALS_ENABLED @SUNDIALS_ENABLED@
+
 // Kokkos tight loop layout
 //#define @PAR_LOOP_LAYOUT@
 

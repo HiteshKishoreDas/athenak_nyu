@@ -34,6 +34,7 @@ endif()
 option(Athena_SINGLE_PRECISION "Compile for single precision" OFF)
 option(Athena_ENABLE_MPI "Compile with MPI parallelism enabled" OFF)
 option(Athena_ENABLE_OPENMP "Compile with OpenMP parallelism enabled" OFF)
+option(Athena_ENABLE_SUNDIALS "Compile with SUNDIALS/CVODE support" OFF)
 set(PROBLEM built_in_pgens CACHE STRING "Name of problem generator function")
 
 #------ set macros exported to config.hpp ------------------------------------------------
@@ -85,6 +86,16 @@ else()
   set(USER_PROBLEM_ENABLED 0)
 endif()
 
+# set SUNDIALS/CVODE macro (true/false)
+set(ENABLE_SUNDIALS OFF)
+if (Athena_ENABLE_SUNDIALS)
+  set(ENABLE_SUNDIALS ON)
+  set(SUNDIALS_ENABLED 1)
+  message(STATUS "SUNDIALS/CVODE support enabled")
+else()
+  set(SUNDIALS_ENABLED 0)
+endif()
+
 #------ set various Kokkos option --------------------------------------------------------
 
 # Tell Kokkos to vectorize aggressively
@@ -115,6 +126,56 @@ add_subdirectory(kokkos)
 include_directories(${Kokkos_INCLUDE_DIRS_RET})
 
 target_link_libraries(athena PUBLIC Kokkos::kokkos)
+
+# add SUNDIALS subdirectory and link if enabled
+if (ENABLE_SUNDIALS)
+  set(SUNDIALS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/sundials CACHE PATH "Path to SUNDIALS source")
+  
+  # SUNDIALS configuration
+  set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
+  set(BUILD_STATIC_LIBS ON CACHE BOOL "Build static libraries" FORCE)
+  
+  # Only build CVODE and necessary components
+  set(BUILD_ARKODE OFF CACHE BOOL "Build ARKODE library" FORCE)
+  set(BUILD_CVODE ON CACHE BOOL "Build CVODE library" FORCE)
+  set(BUILD_CVODES OFF CACHE BOOL "Build CVODES library" FORCE)
+  set(BUILD_IDA OFF CACHE BOOL "Build IDA library" FORCE)
+  set(BUILD_IDAS OFF CACHE BOOL "Build IDAS library" FORCE)
+  set(BUILD_KINSOL OFF CACHE BOOL "Build KINSOL library" FORCE)
+  set(BUILD_CPODES OFF CACHE BOOL "Build CPODES library" FORCE)
+  
+  # Build only serial NVECTOR (no MPI, CUDA, etc for now)
+  set(BUILD_NVECTOR_SERIAL ON CACHE BOOL "Build serial NVECTOR" FORCE)
+  set(BUILD_NVECTOR_CUDA OFF CACHE BOOL "Build CUDA NVECTOR" FORCE)
+  set(BUILD_NVECTOR_HIP OFF CACHE BOOL "Build HIP NVECTOR" FORCE)
+  set(BUILD_NVECTOR_PARALLEL OFF CACHE BOOL "Build Parallel NVECTOR" FORCE)
+  set(BUILD_NVECTOR_OPENMP OFF CACHE BOOL "Build OpenMP NVECTOR" FORCE)
+  
+  # Minimal matrix solvers
+  set(BUILD_SUNMATRIX_BAND ON CACHE BOOL "Build band matrix" FORCE)
+  set(BUILD_SUNMATRIX_DENSE ON CACHE BOOL "Build dense matrix" FORCE)
+  set(BUILD_SUNMATRIX_SPARSE ON CACHE BOOL "Build sparse matrix" FORCE)
+  
+  # Minimal linear solvers
+  set(BUILD_SUNLINSOL_BAND ON CACHE BOOL "Build band solver" FORCE)
+  set(BUILD_SUNLINSOL_DENSE ON CACHE BOOL "Build dense solver" FORCE)
+  
+  # Disable examples and tests
+  set(_BUILD_EXAMPLES OFF CACHE BOOL "Build examples" FORCE)
+  set(BUILD_TESTING OFF CACHE BOOL "Build testing" FORCE)
+  
+  # Add SUNDIALS subdirectory
+  add_subdirectory(sundials EXCLUDE_FROM_ALL)
+  
+  # Link SUNDIALS libraries (static build)
+  target_link_libraries(athena PUBLIC 
+    SUNDIALS::cvode_static
+    SUNDIALS::nvecserial_static
+    SUNDIALS::core_static
+  )
+  
+  message(STATUS "SUNDIALS/CVODE integration complete")
+endif()
 if (ENABLE_MPI)
   target_link_libraries(athena PUBLIC MPI::MPI_CXX)
 endif()
