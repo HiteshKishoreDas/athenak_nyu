@@ -18,6 +18,14 @@ bin/
 *~
 *.swp
 
+**/__pycache__/
+*.pyc
+
 *.out
 
 turb_test/**/*.png 
+turb_test/**/*.mp4
+turb_test/**/*.gif 
+
+# uv files
+uv.lock
