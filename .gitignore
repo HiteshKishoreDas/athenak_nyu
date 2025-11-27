@@ -21,3 +21,9 @@ bin/
 *.out
 
 turb_test/**/*.png 
+turb_test/**/*.mp4
+turb_test/**/*.gif
+**/__pycache__/
+
+# uv files
+uv.lock
