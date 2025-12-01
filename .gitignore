@@ -18,9 +18,14 @@ bin/
 *~
 *.swp
 
+# environment variables
+.direnv
+
 *.out
 
 turb_test/**/*.png 
+
+# Python files
 turb_test/**/*.mp4
 turb_test/**/*.gif
 **/__pycache__/
