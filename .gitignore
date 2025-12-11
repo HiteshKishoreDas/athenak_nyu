@@ -18,6 +18,9 @@ bin/
 *~
 *.swp
 
+# environment files
+.direnv
+
 **/__pycache__/
 *.pyc
 
@@ -26,6 +29,10 @@ bin/
 turb_test/**/*.png 
 turb_test/**/*.mp4
 turb_test/**/*.gif 
+
+src/chemistry/test_outputs/
+src/chemistry/kida.*/
+src/chemistry/custom/
 
 # uv files
 uv.lock

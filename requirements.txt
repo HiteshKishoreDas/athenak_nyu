@@ -1,0 +1,5 @@
+numpy
+scipy
+scikits.odes
+# Optional (for building scikits.odes native extension):
+# sundials (install via Homebrew on macOS): `brew install sundials open-mpi`

@@ -1,0 +1,1 @@
+"""Chemistry package (functional, minimal)."""
