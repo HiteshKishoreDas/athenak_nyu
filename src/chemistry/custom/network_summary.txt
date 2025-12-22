@@ -1,0 +1,48 @@
+CHEMICAL NETWORK SUMMARY
+======================================================================
+
+Species: 20
+Gas-phase Reactions: 67
+Surface Reactions: 0
+Surface Diffusion: 0
+Surface Desorption: 10
+Surface Barriers: 1
+Elements: H, He, C, N, O, Si, S, Fe, Na, Mg, Cl, P, F, D, Al, Li, Be, B, Ca, Br, Ar, Ne
+
+======================================================================
+
+SPECIES LIST:
+  H               | Charge: +0 | H:1
+  H+              | Charge: +1 | H:1
+  H-              | Charge: -1 | H:1
+  H2              | Charge: +0 | H:2
+  H2+             | Charge: +1 | H:2
+  H2+(J=1)        | Charge: +1 | H:2
+  H2+(J=10)       | Charge: +1 | H:2
+  H2+(J=2)        | Charge: +1 | H:2
+  H2+(J=3)        | Charge: +1 | H:2
+  H2+(J=4)        | Charge: +1 | H:2
+  H2+(J=5)        | Charge: +1 | H:2
+  H2+(J=6)        | Charge: +1 | H:2
+  H2+(J=7)        | Charge: +1 | H:2
+  H2+(J=8)        | Charge: +1 | H:2
+  H2+(J=9)        | Charge: +1 | H:2
+  He              | Charge: +0 | He:1
+  He(23S)         | Charge: +0 | He:1
+  He+             | Charge: +1 | He:1
+  HeH+            | Charge: +1 | H:1, He:1
+  e-              | Charge: -1 | 
+
+======================================================================
+
+FIRST 10 REACTIONS:
+    1. H + CR                         -> H+ + e-                        | α=4.60e-01, β=0.00e+00, γ=0.00e+00
+    2. He + CR                        -> He+ + e-                       | α=5.00e-01, β=0.00e+00, γ=0.00e+00
+    3. H2 + CR                        -> H + H                          | α=1.00e-01, β=0.00e+00, γ=0.00e+00
+    4. H2 + CR                        -> H + H+ + e-                    | α=2.20e-02, β=0.00e+00, γ=0.00e+00
+    5. H2 + CR                        -> H+ + H-                        | α=3.00e-04, β=0.00e+00, γ=0.00e+00
+    6. H2 + CR                        -> H2+ + e-                       | α=9.30e-01, β=0.00e+00, γ=0.00e+00
+    7. H- + CRP                       -> H + e-                         | α=1.28e+03, β=0.00e+00, γ=0.00e+00
+    8. H2+ + CRP                      -> H + H+                         | α=6.08e+02, β=0.00e+00, γ=0.00e+00
+    9. H2+ + Photon                   -> H + H+                         | α=5.70e-10, β=0.00e+00, γ=2.37e+00
+   10. H2+ + Photon                   -> H + H+                         | α=5.72e-10, β=0.00e+00, γ=2.78e+00

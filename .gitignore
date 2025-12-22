@@ -17,3 +17,14 @@ docs/build/
 # editor temp files
 *~
 *.swp
+
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+test_outputs
+
+turb_test/**/*.png
+turb_test/**/*.mp4
+
+.direnv
