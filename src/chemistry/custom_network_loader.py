@@ -3,9 +3,11 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Dict, List
 import math
+import subprocess
+import shutil
+from pathlib import Path
+from typing import Dict, List, Optional, Set
 
 
 def _default_elements() -> List[str]:
@@ -183,6 +185,82 @@ def load_network(directory: Path) -> Dict:
     }
 
 
+def visualize_network(
+    network: Dict,
+    out_path: Optional[Path | str] = None,
+    max_reactions: int = 50,
+    temperature: float = 100.0,
+) -> str:
+    """Build a GraphViz DOT string for the reaction network.
+
+    The graph is bipartite: species (ellipses) connect to reaction nodes
+    (rounded boxes) which then connect to product species. External drivers
+    like CR or Photon are omitted to keep the view compact. If `out_path`
+    is provided, the DOT text is written to that file.
+
+    Parameters:
+        network: loaded network dict from `load_network`
+        out_path: optional path to save DOT text
+        max_reactions: cap the number of reactions to include (to avoid giant graphs)
+        temperature: temperature used to annotate k values (Arrhenius coefficient)
+    Returns:
+        DOT-format string describing the graph
+    """
+    reactions = network.get("reactions") or []
+    species = network.get("species") or {}
+    if not reactions or not species:
+        raise ValueError("Network is empty; load a network before visualizing.")
+
+    def esc(name: str) -> str:
+        # basic quote escaping for DOT labels
+        return name.replace("\\", "\\\\").replace('"', '\\"')
+
+    lines: List[str] = [
+        "digraph ChemicalNetwork {",
+        "  rankdir=LR;",
+        '  node [shape=ellipse, style=filled, fillcolor="#eef4ff", color="#33415c"];',
+        '  edge [color="#5a6e8c"];',
+    ]
+
+    used_species: Set[str] = set()
+
+    for idx, rxn in enumerate(reactions[:max_reactions]):
+        reactants = [r for r in rxn.get("reactants", []) if r not in {"CR", "CRP", "Photon"}]
+        products = [p for p in rxn.get("products", []) if p not in {"CR", "CRP", "Photon"}]
+        rid = f"R{idx}"
+        rate = calculate_rate_coefficient(rxn, temperature=temperature)
+        left = " + ".join(reactants) if reactants else "(none)"
+        right = " + ".join(products) if products else "(none)"
+        eqn = f"{left} -> {right}"
+        label = f"{rid}: {eqn}\\n k={rate:.2e}"
+        lines.append(
+            f'  "{rid}" [shape=box, style="rounded,filled", fillcolor="#dde7ff", label="{esc(label)}"];'
+        )
+
+        for r in reactants:
+            if r in species:
+                used_species.add(r)
+                lines.append(f'  "{esc(r)}" -> "{rid}";')
+        for p in products:
+            if p in species:
+                used_species.add(p)
+                lines.append(f'  "{rid}" -> "{esc(p)}";')
+
+    for s in sorted(used_species):
+        charge = species[s].get("charge", 0)
+        label = f"{s} (q={charge})" if charge else s
+        lines.append(f'  "{esc(s)}" [label="{esc(label)}"];')
+
+    lines.append("}")
+    dot = "\n".join(lines)
+
+    if out_path:
+        out_path = Path(out_path)
+        out_path.write_text(dot)
+
+    return dot
+
+
 def calculate_rate_coefficient(
     rxn: Dict, temperature: float = 300.0, av: float = 10.0, cr_zeta: float = 1.3e-17
 ) -> float:
@@ -218,3 +296,27 @@ if __name__ == "__main__":
     print("\nSample reactions (up to 5):")
     for rxn in net["reactions"][:5]:
         pprint(rxn)
+
+    # Generate a DOT visualization and render to PNG under test_output/
+    try:
+        # Prefer existing pluralized directory; fall back to singular if missing
+        base_dir = Path(__file__).resolve().parent
+        candidate = base_dir / "test_outputs"
+        out_dir = candidate if candidate.exists() else base_dir / "test_output"
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        dot_path = out_dir / "network.dot"
+        png_path = out_dir / "network.png"
+
+        visualize_network(net, out_path=dot_path, max_reactions=25, temperature=100.0)
+        print(f"\nVisualization DOT written to {dot_path}")
+
+        dot_cmd = shutil.which("dot")
+        if dot_cmd:
+            subprocess.run([dot_cmd, "-Tpng", str(dot_path), "-o", str(png_path)], check=True)
+            print(f"PNG rendered to {png_path}")
+        else:
+            print("GraphViz `dot` not found; install graphviz to render the PNG.")
+            print(f"You can run: dot -Tpng {dot_path} -o {png_path}")
+    except Exception as exc:
+        print(f"\nFailed to generate visualization DOT: {exc}")
