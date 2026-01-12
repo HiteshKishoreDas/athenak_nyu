@@ -81,6 +81,8 @@
 #include <string>
 #include <cstring>
 #include <iomanip>
+#include <vector>
+#include <utility>
 
 #include "athena.hpp"
 #include "parameter_input.hpp"
@@ -186,11 +188,17 @@ struct pgen_trml {
   Real vel2_rms_threshold;      //!< Refine if velocity RMS exceeds this
   Real T_max_threshold;         //!< Refine if T_max in block exceeds this
   Real T_min_threshold;         //!< Refine if T_min in block is below this
+  std::vector<Real> refine_level_times; //!< Time-based max refinement schedule (t:num_levels)
+  std::vector<int> refine_level_counts; //!< Num levels allowed at each scheduled time
+  int max_num_levels_input;      //!< Max num_levels from input file
+  int max_level_floor;           //!< Lowest allowed logical max level (from existing mesh)
 
   // ====================================================================================
   // COOLING CONTROL FLAGS AND PARAMETERS
   // ====================================================================================
   int  ndiag;                  //!< Output diagnostics every ndiag timesteps (-1 = off)
+  bool heating_on;             //!< Enable background heating
+  bool cooling_below_T_cold;   //!< Enable cooling for T < T_cold
   bool cool_subc;              //!< Enable cooling subcycling (multiple cooling steps per hydro step)
   Real cool_subfac;            //!< Subcycling factor (dt_cool = cool_subfac * t_cool)
   bool use_temp_floor_cool;    //!< Enable temperature floor for cooling
@@ -228,6 +236,127 @@ struct pgen_trml {
 // Global pointer to the TRML parameters structure.
 // Allocated in ProblemGenerator::UserProblem() and persists for the simulation lifetime.
 pgen_trml* ptrml = new pgen_trml();
+
+std::string TrimCopy(const std::string &input) {
+  const auto first = input.find_first_not_of(" \t\r\n");
+  if (first == std::string::npos) {
+    return "";
+  }
+  const auto last = input.find_last_not_of(" \t\r\n");
+  std::string trimmed = input.substr(first, last - first + 1);
+  if (trimmed.size() >= 2) {
+    const char front = trimmed.front();
+    const char back = trimmed.back();
+    if ((front == '"' && back == '"') || (front == '\'' && back == '\'')) {
+      trimmed = trimmed.substr(1, trimmed.size() - 2);
+      const auto inner_first = trimmed.find_first_not_of(" \t\r\n");
+      if (inner_first == std::string::npos) {
+        return "";
+      }
+      const auto inner_last = trimmed.find_last_not_of(" \t\r\n");
+      trimmed = trimmed.substr(inner_first, inner_last - inner_first + 1);
+    }
+  }
+  return trimmed;
+}
+
+void ParseRefineLevelSchedule(const std::string &schedule,
+                              std::vector<Real> &times,
+                              std::vector<int> &levels) {
+  times.clear();
+  levels.clear();
+  const std::string trimmed = TrimCopy(schedule);
+  if (trimmed.empty()) {
+    return;
+  }
+
+  std::vector<std::pair<Real, int>> entries;
+  std::stringstream ss(trimmed);
+  std::string token;
+  while (std::getline(ss, token, ',')) {
+    token = TrimCopy(token);
+    if (token.empty()) {
+      continue;
+    }
+    const auto sep = token.find(':');
+    if (sep == std::string::npos) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "Invalid refine_level_times entry: " << token << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    const std::string t_str = TrimCopy(token.substr(0, sep));
+    const std::string l_str = TrimCopy(token.substr(sep + 1));
+    if (t_str.empty() || l_str.empty()) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "Invalid refine_level_times entry: " << token << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    Real time = 0.0;
+    int level = 0;
+    try {
+      time = static_cast<Real>(std::stod(t_str));
+      level = std::stoi(l_str);
+    } catch (const std::exception &err) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "Invalid refine_level_times entry: " << token
+                << std::endl << "Parse error: " << err.what() << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    entries.emplace_back(time, level);
+  }
+
+  if (entries.empty()) {
+    return;
+  }
+  std::sort(entries.begin(), entries.end(),
+            [](const auto &a, const auto &b) { return a.first < b.first; });
+
+  for (const auto &entry : entries) {
+    if (!times.empty() && entry.first == times.back()) {
+      levels.back() = entry.second;
+    } else {
+      times.push_back(entry.first);
+      levels.push_back(entry.second);
+    }
+  }
+}
+
+void ApplyRefineLevelSchedule(Mesh *pm) {
+  if (ptrml->refine_level_times.empty()) {
+    return;
+  }
+
+  int desired_num_levels = ptrml->refine_level_counts.front();
+  for (size_t i = 0; i < ptrml->refine_level_times.size(); ++i) {
+    if (pm->time >= ptrml->refine_level_times[i]) {
+      desired_num_levels = ptrml->refine_level_counts[i];
+    } else {
+      break;
+    }
+  }
+
+  if (desired_num_levels < 1) {
+    desired_num_levels = 1;
+  }
+  if (ptrml->max_num_levels_input > 0 &&
+      desired_num_levels > ptrml->max_num_levels_input) {
+    desired_num_levels = ptrml->max_num_levels_input;
+  }
+
+  int desired_max_level = pm->root_level + desired_num_levels - 1;
+  if (desired_max_level < ptrml->max_level_floor) {
+    desired_max_level = ptrml->max_level_floor;
+  }
+
+  if (desired_max_level != pm->max_level) {
+    pm->max_level = desired_max_level;
+    if (global_variable::my_rank == 0) {
+      std::cout << "AMR max_level set to " << pm->max_level
+                << " (num_levels=" << (pm->max_level - pm->root_level + 1)
+                << ") at t=" << pm->time << std::endl;
+    }
+  }
+}
 
 // ====================================================================================
 // FUNCTION DECLARATIONS
@@ -375,6 +504,14 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   ptrml->beta_hi           = beta_hi;
   ptrml->alpha_magdens     = pin->GetOrAddReal("problem", "alpha_magdens", 1.0/2.0);
   ptrml->xi                = pin->GetReal("problem", "xi");
+  ptrml->heating_on        = pin->GetOrAddBoolean("problem", "heating_on", true);
+  ptrml->cooling_below_T_cold =
+      pin->GetOrAddBoolean("problem", "cooling_below_T_cold", true);
+  if (!ptrml->cooling_below_T_cold && ptrml->heating_on &&
+      global_variable::my_rank == 0) {
+    std::cout << "WARNING: cooling_below_T_cold=false should only be used with "
+                 "heating_on=false." << std::endl;
+  }
   ptrml->balanced_heating  = pin->GetOrAddBoolean("problem", "balanced_heating", true);
   if (ptrml->balanced_heating) {
     ptrml->alpha_heat = (beta_lo-beta_hi) * (std::log(T_cold/T_peak) / std::log(contrast)) - beta_hi;
@@ -485,6 +622,10 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   // End print info
 
   auto adaptive = pmy_mesh_->adaptive;
+  ptrml->max_num_levels_input = 0;
+  ptrml->max_level_floor = pmy_mesh_->root_level;
+  ptrml->refine_level_times.clear();
+  ptrml->refine_level_counts.clear();
   ptrml->t_start_refine = 0.0;
   if (adaptive){
     ptrml->t_start_refine = pin->GetOrAddReal("problem", "t_start_refine", 0.0);
@@ -492,6 +633,23 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     ptrml->vel2_rms_threshold = pin->GetOrAddReal("problem", "vel2_rms_threshold", 0.0);
     ptrml->T_min_threshold = pin->GetOrAddReal("problem", "T_min_threshold", 0.0);
     ptrml->T_max_threshold = pin->GetOrAddReal("problem", "T_max_threshold", 0.0);
+    ptrml->max_num_levels_input = pmy_mesh_->max_level - pmy_mesh_->root_level + 1;
+    for (int i = 0; i < pmy_mesh_->nmb_total; ++i) {
+      ptrml->max_level_floor = std::max(ptrml->max_level_floor, pmy_mesh_->lloc_eachmb[i].level);
+    }
+    const std::string schedule = pin->GetOrAddString("problem", "refine_level_times", "");
+    ParseRefineLevelSchedule(schedule, ptrml->refine_level_times, ptrml->refine_level_counts);
+    if (!ptrml->refine_level_times.empty() && global_variable::my_rank == 0) {
+      std::cout << "Refine level schedule (t:num_levels): ";
+      for (size_t i = 0; i < ptrml->refine_level_times.size(); ++i) {
+        if (i > 0) {
+          std::cout << ", ";
+        }
+        std::cout << ptrml->refine_level_times[i] << ":" << ptrml->refine_level_counts[i];
+      }
+      std::cout << std::endl;
+    }
+    ApplyRefineLevelSchedule(pmy_mesh_);
   }
 
   if (restart) return;
@@ -1131,6 +1289,7 @@ void UserTimeStep(Mesh *pm){
 
   Real T_cutoff = ptrml->T_cutoff;
   Real T_hot = ptrml->T_hot;
+  Real T_cold = ptrml->T_cold;
   Real T_peak = ptrml->T_peak;
   Real epsilon_T = ptrml->epsilon_T;
   Real xi = ptrml->xi;
@@ -1140,6 +1299,8 @@ void UserTimeStep(Mesh *pm){
   Real beta_hi = ptrml->beta_hi;
   Real heat_coefficient = ptrml->heat_coefficient;
   Real alpha_heat = ptrml->alpha_heat;
+  bool heating_on = ptrml->heating_on;
+  bool cooling_below_T_cold = ptrml->cooling_below_T_cold;
   Real dt_cutoff = ptrml->dt_cutoff;
   Real cfl_cool = ptrml->cfl_cool;
 
@@ -1181,13 +1342,19 @@ void UserTimeStep(Mesh *pm){
       cooling_heating = FLT_MIN;
     } else {
       Real Edot_cool = 1.5 * xi * pgas_0/t_shear * SQR(pres/pgas_0);
-      Edot_cool *= (temp<T_peak) ? pow(temp/T_peak, -beta_lo):pow(temp/T_peak, -beta_hi);
+      Edot_cool *= (temp<T_peak) ? pow(temp/T_peak, -beta_lo) : pow(temp/T_peak, -beta_hi);
+      if (!cooling_below_T_cold && temp < T_cold) {
+        Edot_cool = 0.0;
+      }
 
-      Real Edot_heat = 1.5 * xi * pgas_0/t_shear * heat_coefficient * SQR(pres/pgas_0);
-      Edot_heat *= (temp<(1+epsilon_T)*T_hot) ?
-          pow((temp/T_peak),alpha_heat) :
-          pow(((1+epsilon_T)*T_hot/T_peak),alpha_heat) *
-          pow((temp/((1+epsilon_T)*T_hot)),(-beta_hi-0.5));
+      Real Edot_heat = 0.0;
+      if (heating_on) {
+        Edot_heat = 1.5 * xi * pgas_0/t_shear * heat_coefficient * SQR(pres/pgas_0);
+        Edot_heat *= (temp<(1+epsilon_T)*T_hot) ?
+            pow((temp/T_peak),alpha_heat) :
+            pow(((1+epsilon_T)*T_hot/T_peak),alpha_heat) *
+            pow((temp/((1+epsilon_T)*T_hot)),(-beta_hi-0.5));
+      }
 
       cooling_heating=FLT_MIN+Edot_cool-Edot_heat;
     }
@@ -1246,6 +1413,7 @@ void AddCoolingHeating(Mesh *pm, const Real bdt, DvceArray5D<Real> &u0,
 
   Real T_cutoff = ptrml->T_cutoff;
   Real T_hot = ptrml->T_hot;
+  Real T_cold = ptrml->T_cold;
   Real T_peak = ptrml->T_peak;
   Real epsilon_T = ptrml->epsilon_T;
   Real xi = ptrml->xi;
@@ -1255,6 +1423,8 @@ void AddCoolingHeating(Mesh *pm, const Real bdt, DvceArray5D<Real> &u0,
   Real beta_hi = ptrml->beta_hi;
   Real heat_coefficient = ptrml->heat_coefficient;
   Real alpha_heat = ptrml->alpha_heat;
+  bool heating_on = ptrml->heating_on;
+  bool cooling_below_T_cold = ptrml->cooling_below_T_cold;
 
   // For applying density ceiling
   bool use_dens_ceiling = ptrml->use_dens_ceiling;
@@ -1289,14 +1459,20 @@ void AddCoolingHeating(Mesh *pm, const Real bdt, DvceArray5D<Real> &u0,
       cooling_heating = FLT_MIN; // No cooling/heating if density exceeds ceiling
     } else {
       Real Edot_cool = 1.5 * xi * pgas_0/t_shear * SQR(pres/pgas_0);
-      Edot_cool *= (temp<T_peak) ? pow(temp/T_peak, -beta_lo):pow(temp/T_peak, -beta_hi);
+      Edot_cool *= (temp<T_peak) ? pow(temp/T_peak, -beta_lo) : pow(temp/T_peak, -beta_hi);
+      if (!cooling_below_T_cold && temp < T_cold) {
+        Edot_cool = 0.0;
+      }
       net_cooling += Edot_cool*dvol;
 
-      Real Edot_heat = 1.5 * xi * pgas_0/t_shear * heat_coefficient * SQR(pres/pgas_0);
-      Edot_heat *= (temp<(1+epsilon_T)*T_hot) ?
-          pow((temp/T_peak),alpha_heat) :
-          pow(((1+epsilon_T)*T_hot/T_peak),alpha_heat) *
-          pow((temp/((1+epsilon_T)*T_hot)),(-beta_hi-0.5));
+      Real Edot_heat = 0.0;
+      if (heating_on) {
+        Edot_heat = 1.5 * xi * pgas_0/t_shear * heat_coefficient * SQR(pres/pgas_0);
+        Edot_heat *= (temp<(1+epsilon_T)*T_hot) ?
+            pow((temp/T_peak),alpha_heat) :
+            pow(((1+epsilon_T)*T_hot/T_peak),alpha_heat) *
+            pow((temp/((1+epsilon_T)*T_hot)),(-beta_hi-0.5));
+      }
       net_heating += Edot_heat*dvol;
 
       cooling_heating=Edot_cool-Edot_heat;
@@ -1476,6 +1652,7 @@ void AdjustTempTFloor(Mesh *pm, const Real bdt, DvceArray5D<Real> &u0,
 void UserRefine(MeshBlockPack* pmbp) {
   // capture variables for kernels
   Mesh *pm = pmbp->pmesh;
+  ApplyRefineLevelSchedule(pm);
   if (pm->time < ptrml->t_start_refine) {
     return;
   }
