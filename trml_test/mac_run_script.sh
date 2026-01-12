@@ -3,4 +3,4 @@ export build=$athenak/build
 
 export OMP_NUM_THREADS=4
 
-$build/src/athena -i $athenak/turb_test/convection.athinput -d $athenak/turb_test
+$build/src/athena -i $athenak/trml_test/athinput.TRML_simple -d $athenak/trml_test
