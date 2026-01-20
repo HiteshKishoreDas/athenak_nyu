@@ -24,7 +24,9 @@ __pycache__/
 
 test_outputs
 
-turb_test/**/*.png
-turb_test/**/*.mp4
+turb_test/**
+turb_test/**
+trml_test/**
+trml_test/**
 
 .direnv

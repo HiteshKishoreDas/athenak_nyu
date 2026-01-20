@@ -16,8 +16,8 @@ import bin_convert_new as bc
 
 import own_package
 
-# theme = "bright"
-theme = "dark"
+theme = "bright"
+# theme = "dark"
 
 package_path = os.path.dirname(own_package.__file__)
 print(f"own_package path: {package_path}")
@@ -39,6 +39,8 @@ fig_face_color = mt.rcParams["figure.facecolor"]
 
 gamma_minus_1 = 5.0 / 3.0 - 1.0
 
+Z_solar = 0.0134
+
 
 def compute_temperature(out_dict):
     KE = (
@@ -53,33 +55,72 @@ def compute_temperature(out_dict):
     return T
 
 
-for i in range(100, 200):
+dust_tot_small = []
+dust_tot_large = []
+time = []
+
+for i in range(0, 101):
     print(f"Processing frame {i}")
 
-    fig, ax = plt.subplots(figsize=(16, 3))
-    out_dict = bc.read_binary_as_athdf(f"bin/Conv.hydro_w.{i:05d}.bin")
+    dir_dict = {"x": 2, "y": 1, "z": 0}
 
-    arr_shape = out_dict["dens"].shape[1:]
-    L_mul = int(arr_shape[0] / arr_shape[1])
+    slice_dir = "y"
 
-    x_arr = np.linspace(0, 1, arr_shape[1] + 1)
-    y_arr = np.linspace(0, L_mul, arr_shape[0] + 1)
+    out_dict = bc.read_binary_as_athdf(f"bin/TRML.slice_{slice_dir}.{i:05d}.bin")
+
+    i_s = dir_dict[slice_dir]
+    a = (i_s + 1) % 3
+    b = (i_s + 2) % 3
+
+    slice_list = [0] * 3
+    slice_list[a] = slice(None, None, None)
+    slice_list[b] = slice(None, None, None)
+
+    arr_shape = np.shape(out_dict["dens"])
+
+    if a < b:
+        L_mul = int(arr_shape[a] / arr_shape[b])
+
+        x_arr = np.linspace(0, L_mul, arr_shape[a] + 1)
+        y_arr = np.linspace(0, 1, arr_shape[b] + 1)
+    else:
+        L_mul = int(arr_shape[b] / arr_shape[a])
+
+        x_arr = np.linspace(0, L_mul, arr_shape[b] + 1)
+        y_arr = np.linspace(0, 1, arr_shape[a] + 1)
 
     X, Y = np.meshgrid(y_arr, x_arr)
+
+    fig, ax = plt.subplots(figsize=(12, 12))
+
+    # img_arr = out_dict["s_01"][*slice_list]
+    # img_arr = out_dict["s_02"][*slice_list]
+    # img_arr = out_dict["s_03"][*slice_list]
+    img_arr = out_dict["s_02"][*slice_list] / out_dict["s_03"][*slice_list]
+    # img_arr /= Z_solar
+
+    # img_arr = out_dict["s_02"][*slice_list] / img_arr
+
+    dust_tot_small.append(np.sum(out_dict["dens"] * out_dict["s_02"]))
+    dust_tot_large.append(np.sum(out_dict["dens"] * out_dict["s_03"]))
+    time.append(out_dict["Time"])
 
     pc = ax.pcolormesh(
         X,
         Y,
-        compute_temperature(out_dict)[0, :, :].T,
+        img_arr,
+        # compute_temperature(out_dict)[*slice_list],
+        # out_dict["s_01"][*slice_list],
         # (out_dict["s_00"] / out_dict["dens"])[0, :, :],
-        vmin=9.5,
-        vmax=10.5,
+        vmin=0.5,
+        vmax=1.5,
         cmap=cm.bubblegum,
         # cmap=cm.redshift,
         shading="auto",
     )
     ax.set_aspect("equal", adjustable="box")
-    fig.colorbar(pc, ax=ax, label="T")
+    # fig.colorbar(pc, ax=ax, label="T")
+    fig.colorbar(pc, ax=ax, label=f"$D_s/D_l$")
 
     # after plotting
     ax.xaxis.set_major_locator(MultipleLocator(0.5))
@@ -91,9 +132,36 @@ for i in range(100, 200):
     fig.tight_layout(pad=0.25)
 
     fig.savefig(
-        f"bin/save/temp/temp_{i:05d}.png", dpi=600, bbox_inches="tight", pad_inches=0.02
+        f"save/temp/temp_{i:05d}.png", dpi=600, bbox_inches="tight", pad_inches=0.02
     )
     plt.close(fig)
 
-    del out_dict, X, Y, fig
-    gc.collect()
+    # del out_dict, X, Y, fig
+    # gc.collect()
+
+# %%
+
+dust_tot_large = np.array(dust_tot_large)
+dust_tot_small = np.array(dust_tot_small)
+
+plt.figure()
+plt.plot(time, dust_tot_small / dust_tot_small[0], label="Small dust")
+plt.plot(time, dust_tot_large / dust_tot_large[0], label="Large dust")
+plt.legend()
+
+plt.ylabel(r"$D/D_0$")
+plt.xlabel(f"$t$ (code units)")
+
+plt.ylim(0, 1.1)
+plt.xlim(0, None)
+
+
+plt.figure()
+plt.plot(time, dust_tot_small / dust_tot_large)
+plt.legend()
+
+plt.ylabel(r"$D_s/D_l$")
+plt.xlabel(f"$t$ (code units)")
+
+plt.xlim(0, None)
+# %%

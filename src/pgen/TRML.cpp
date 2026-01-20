@@ -151,6 +151,15 @@ struct pgen_trml {
   Real cfl_cool;               //!< Cooling CFL number (limits dT/T per timestep)
 
   // ====================================================================================
+  // DUST MODEL PARAMETERS
+  // ====================================================================================
+
+  bool dust_model;             //! Flag to turn the dust model on/off 
+  Real Z_gas;                  //! Initial Gas metallicity in Z_solar
+  Real D_Z_init;               //! Initial dust-to-gas ratio
+  Real Z_solar;                //! Solar metallicity
+
+  // ====================================================================================
   // TEMPERATURE THRESHOLDS
   // ====================================================================================
   Real T_cold;                 //!< Cold phase temperature (= pgas_0/rho_0/contrast)
@@ -382,6 +391,10 @@ void UserTimeStep(Mesh *pm);
 //! \brief Output diagnostic information (min/max T, mass, cooling rates) every ndiag steps.
 void Diagnostic(Mesh *pm);
 
+//! \brief Apply dust model to each cell
+//! Includes thermal sputtering, accretion, shattering and coagulation
+void AddDustSource(Mesh *pm, const Real bdt);
+
 //! \brief Apply radiative cooling and background heating to the gas.
 //! Uses a power-law cooling function with parameters beta_lo, beta_hi, T_peak.
 void AddCoolingHeating(Mesh *pm, const Real bdt, DvceArray5D<Real> &u0,
@@ -467,6 +480,16 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   ptrml->rho_0             = rho_0;
   Real pgas_0              = pin->GetReal("problem", "pgas_0");
   ptrml->pgas_0            = pgas_0;
+
+  // For dust model
+  ptrml->dust_model        = pin->GetBoolean("problem", "dust_model");
+  ptrml->Z_gas             = pin->GetReal("problem", "Z_gas");  
+  ptrml-> D_Z_init         = pin->GetReal("problem", "D_Z_init");  
+  ptrml-> Z_solar          = 0.0134;  
+  Real Z_gas               = ptrml->Z_gas;
+  Real D_Z_init            = ptrml->D_Z_init;
+  Real Z_solar             = ptrml->Z_solar;
+
   // In MHD case with scaled B-field, temperature and density contrast are different.
   // In this notation, we use contrast to denote the temperature contrast
   // and calculate the density contrast from the temperature contrast
@@ -618,6 +641,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     std::cout << std::setprecision(16) << "T_hot_lo = " << ptrml->T_hot_lo << "\n";
     std::cout << std::setprecision(16) << "dfloor = " << ptrml->dfloor << "\n";
     std::cout << std::setprecision(16) << "pfloor = " << ptrml->pfloor << "\n";
+    std::cout << std::setprecision(16) << "Z_gas = " << ptrml->Z_gas << "\n";
   }
   // End print info
 
@@ -691,6 +715,12 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
       // add passive scalars
       if(nscalars>0){
         w0(m,nfluid,k,j,i) = 0.5 * (1.0+std::tanh((z_interface-x3v)/smoothing_thickness));
+
+        // Dust
+        w0(m,nfluid+1,k,j,i) = Z_gas * 0.5 * (1.0+std::tanh((z_interface-x3v)/smoothing_thickness));
+        w0(m,nfluid+2,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * 0.5 * (1.0+std::tanh((z_interface-x3v)/smoothing_thickness));
+        w0(m,nfluid+3,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * 0.5 * (1.0+std::tanh((z_interface-x3v)/smoothing_thickness));
+        // The D_tot comes out to be D_Z_init * Z_gas * Z_solar, i.e D_Z_init * Z_g
       }
     });
     // Convert primitives to conserved
@@ -1385,11 +1415,220 @@ void AddUserSrcs(Mesh *pm, const Real bdt) {
   if (pm->time > ptrml->t_cool_start) {
     AddCoolingHeating(pm,bdt,u0,w0,eos_data);
   }
+  if (ptrml->dust_model){
+    AddDustSource(pm, bdt);
+  }
   // if (ptrml->use_frame_tracking && pm->time > ptrml->t_frame_tracking_start && pm->ncycle % ptrml->n_frame_track == 0) FrameTracking(pm,bdt,u0,w0,eos_data);
   if (ptrml->use_temp_ceiling) ApplyTempCeiling(pm,bdt,u0,w0,eos_data);
   return;
 }
 
+void AddDustSource(Mesh *pm, const Real bdt){
+  MeshBlockPack *pmbp = pm->pmb_pack;
+  auto &indcs = pm->mb_indcs;
+  auto &size = pmbp->pmb->mb_size;
+  int is = indcs.is, ie = indcs.ie;
+  int js = indcs.js, je = indcs.je;
+  int ks = indcs.ks, ke = indcs.ke;
+  int nmb1 = pmbp->nmb_thispack - 1;
+  bool is_mhd = (pmbp->pmhd != nullptr) ? true : false;
+  auto &u0 = (is_mhd) ? pmbp->pmhd->u0 : pmbp->phydro->u0;
+  const auto &w0 = (is_mhd) ? pmbp->pmhd->w0 : pmbp->phydro->w0;
+  const EOS_Data &eos_data = (is_mhd) ?
+                  pmbp->pmhd->peos->eos_data : pmbp->phydro->peos->eos_data;
+  int &nfluid = (is_mhd) ? pmbp->pmhd->nmhd : pmbp->phydro->nhydro;
+
+  int nx1 = indcs.nx1;
+  int nx2 = indcs.nx2;
+  int nx3 = indcs.nx3;
+
+  const int nmkji = (pmbp->nmb_thispack)*nx3*nx2*nx1;
+  const int nkji = nx3*nx2*nx1;
+  const int nji  = nx2*nx1;
+
+  Real bta_time = bdt/pm->dt;
+  Real use_e = eos_data.use_e;
+  Real gamma = eos_data.gamma;
+  Real gm1 = gamma - 1.0;
+
+  Real T_cutoff = ptrml->T_cutoff;
+  Real T_hot = ptrml->T_hot;
+  Real T_cold = ptrml->T_cold;
+  Real T_peak = ptrml->T_peak;
+  Real epsilon_T = ptrml->epsilon_T;
+  Real xi = ptrml->xi;
+  Real pgas_0 = ptrml->pgas_0;
+  Real t_shear = ptrml->t_shear;
+  Real beta_lo = ptrml->beta_lo;
+  Real beta_hi = ptrml->beta_hi;
+
+  Real Z_gas               = ptrml->Z_gas;
+  Real D_Z_init            = ptrml->D_Z_init;
+  Real Z_solar             = ptrml->Z_solar;
+
+  Real size_d1 = 1.0; // in nm
+  Real size_d2 = 10.0; // in nm
+
+  Real sig_DL = 10; // in km/s
+  Real sig_DS = 0.1; // in km/s
+  Real F_coag = 0.5; // fudge factor for coagulation
+
+  Real s_i = 3.0; // Dust grain density
+
+
+  par_for("user_source", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    Real dens = w0(m, IDN, k, j, i); // in cm^-3
+    Real temp = 1.0;
+    if (use_e) {
+      temp = w0(m,IEN,k,j,i)/dens*gm1;
+    } else {
+      temp = w0(m,ITM,k,j,i);
+    }
+
+
+    Real Z_local = w0(m, nfluid+1 , k, j, i); // in solar metallicity
+    Real dust_1 = w0(m, nfluid+2 , k, j, i);
+    Real dust_2 = w0(m, nfluid+3, k, j, i);
+
+    Real Z_tol = 1e-20;
+    Z_local = Kokkos::max(Z_tol, Z_local);
+    dust_1 = Kokkos::max(Z_tol, dust_1);
+    dust_2 = Kokkos::max(Z_tol, dust_2);
+
+    Real dust_tot = dust_1 + dust_2;
+    Real clamp_dust_tot = 1.0; // tmp var used for clamping later
+
+    Real rho_d1 = dust_1 * dens;
+    Real rho_d2 = dust_2 * dens;
+    Real rate_d1 = 0.0;
+    Real rate_d2 = 0.0;
+    Real rate_Z = 0.0;
+    Real tmp_rate = 0.0;
+
+    // Real t_tol = 1e-20;
+    
+    //* Thermal sputtering
+    //! In literature, T_hot = 2e6
+    Real t_sp = 70.0; // in Myr
+    t_sp *= (1.e-3/dens);
+    t_sp *= 1. + pow((temp/T_hot), -2.5);
+
+    // To stop it from going to NaN
+    // t_sp = Kokkos::max(t_tol, t_sp);
+
+    tmp_rate = -rho_d1 / (t_sp * size_d1);
+    rate_d1 += tmp_rate;
+    rate_Z += -tmp_rate;
+
+    // printf("tmp_rate_1: %f \n", tmp_rate);
+
+    tmp_rate = -rho_d2 / (t_sp * size_d2);
+    rate_d2 += tmp_rate;
+    rate_Z += -tmp_rate;
+
+    // printf("tmp_rate_2: %f\n", tmp_rate);
+
+    //* Accretion
+    //! In literature, T_cold = 50
+    Real t_ac = 200.0; // in Myr
+    t_ac *= (20.0/dens);
+    t_ac *= pow((T_cold/temp), 0.5);
+    t_ac *= Z_local; // Assuming solar metallicity
+
+    t_ac /= 1-(dust_tot/Z_local/Z_solar);
+
+    // t_ac = Kokkos::max(t_tol, t_ac);
+
+    tmp_rate = rho_d1 / (t_ac * size_d1);
+    rate_d1 += tmp_rate;
+    rate_Z += -tmp_rate;
+
+    // printf("tmp_rate_3: %f\n", tmp_rate);
+
+    tmp_rate = rho_d2 / (t_ac * size_d2);
+    rate_d2 += tmp_rate;
+    rate_Z += -tmp_rate;
+
+    // printf("tmp_rate_4: %f\n", tmp_rate);
+
+    // Convert rate_Z to metal mass
+    rate_Z *= 1.0;  //! Assuming Z_dust ~ 1
+
+    // printf("rate_d1: %f\n", rate_d2);
+    // printf("rate_d2: %f\n\n", rate_d1);
+
+    // printf("dens: %f\n", dens);
+    // printf("dust1: %f\n", dust_1);
+    // printf("dust2: %f\n", dust_2);
+    // printf("Z_local: %f\n\n", Z_local);
+    // printf("rate_Z: %f\n\n", rate_Z);
+
+    // printf("==================\n");
+
+    //* Shattering
+    // From Dubois 2024
+    Real t_shatt = 54.0; // in Myr
+    t_shatt *= (1.0/dens); // in cm^-3
+    t_shatt *= (s_i/3.0);  // in cm^-3
+    t_shatt *= (0.01/dust_2); 
+    t_shatt *= (10/sig_DL);  // in km/s
+
+    tmp_rate = rho_d2 / (t_shatt * size_d2);
+
+    rate_d1 += tmp_rate;
+    rate_d2 += -tmp_rate;
+
+
+    //* Coagulation
+    // From Dubois 2024
+    Real t_coag = 0.27; // in Myr
+    t_coag *= (s_i/3.0);  // in cm^-3
+    t_coag *= (1.0e3/dens); // in cm^-3
+    t_coag *= (0.01/dust_2); 
+    t_coag *= (0.1/sig_DS);  // in km/s
+    t_coag *= F_coag;
+
+    tmp_rate = rho_d1 / (t_coag * size_d1 / 0.05);
+
+    rate_d1 += -tmp_rate;
+    rate_d2 += tmp_rate;
+
+
+    //! These are w0 * dens
+    u0(m, nfluid+1, k, j, i) += bdt * rate_Z / Z_solar;
+    u0(m, nfluid+2, k, j, i) += bdt * rate_d1;
+    u0(m, nfluid+3, k, j, i) += bdt * rate_d2;
+
+    // We should check that scalars are guaranteed to be in [0,1] after all source terms are added.
+    // Clamp metallicity 
+    u0(m, nfluid+1, k, j, i) = Kokkos::clamp(u0(m, nfluid+1, k, j, i), 0.0, dens/Z_solar);
+
+    // Clamp total dust-to-gas ratio to [0,1]
+    // Dust to metal ratio is not clamped, as all of gas metals can be locked in dust
+    // Also dust might have been created in a metal-rich area and moved...
+    dust_tot = u0(m, nfluid+2, k, j, i) + u0(m, nfluid+3, k, j, i);
+    clamp_dust_tot = Kokkos::clamp(dust_tot, 0.0, dens);
+
+    // Scaled to sum to clamp_dust_tot 
+    u0(m, nfluid+2, k, j, i) *= clamp_dust_tot/dust_tot;
+    u0(m, nfluid+3, k, j, i) *= clamp_dust_tot/dust_tot;
+
+    // printf("dnf1: %f \n", bdt * rate_Z / Z_solar);
+    // printf("dnf2: %f \n", bdt * rate_d1);
+    // printf("dnf3: %f \n\n", bdt * rate_d2);
+
+    // printf("nf1: %f \n", u0(m, nfluid+1, k, j, i));
+    // printf("nf2: %f \n", u0(m, nfluid+2, k, j, i));
+    // printf("nf3: %f \n\n", u0(m, nfluid+3, k, j, i));
+
+    // printf("==================\n");
+
+
+  });
+
+  return;
+}
 
 // ----------------------------------------------------------------------------------------
 // ! \fn void SourceTerms::AddCoolingHeating()
