@@ -17,6 +17,8 @@
 #include "mhd/mhd.hpp"
 #include "pgen.hpp"
 
+#include "units/units.hpp"
+
 //----------------------------------------------------------------------------------------
 //! \struct pgen_trml
 //! \brief Data structure holding all problem-specific parameters for the TRML simulation.
@@ -128,48 +130,10 @@ struct pgen_trml {
 
 };
 
-struct code_units {
-  const Real CONST_pc  = 3.086e18;
-  const Real CONST_yr  = 3.154e7;
-  const Real CONST_amu = 1.66053886e-24;
-  const Real CONST_kB  = 1.3806505e-16;
-
-  const Real unit_length = CONST_pc*1e3; // 1 kpc
-  const Real unit_time   = CONST_yr*1e6; // 1 Myr
-  const Real unit_density = CONST_amu;   // 1 mp/cm-3
-
-  const Real unit_velocity = unit_length/unit_time; // in kpc/Myr
-
-  const Real unit_q = (unit_density * pow(unit_velocity,3.0))/unit_length;
-
-  const Real KELVIN = unit_velocity*unit_velocity*CONST_amu/CONST_kB;
-
-  // in terms of solar abundances
-  Real Zsol = 1.0;
-  Real Xsol = 1.0;
-
-  Real X = Xsol * 0.7381;
-  Real Z = Zsol * 0.0134;
-  Real Y = 1 - X - Z;
-
-  Real mu  = 1.0/(2.*X+ 3.*(1.-X-Z)/4.+ Z/2.);
-  Real mue = 2.0/(1.0+X);
-  Real muH = 1.0/X;
-
-  Real g = 5./3.;
-
-};
-
-
 // Global pointer to the TRML parameters structure.
 // Allocated in ProblemGenerator::UserProblem() and persists for the simulation lifetime.
 // 
 pgen_trml* ptrml = new pgen_trml();
-
-// Global pointer to the code units structure.
-// Allocated in ProblemGenerator::UserProblem() and persists for the simulation lifetime.
-
-code_units* cdun = new code_units();
 
 
 //! \brief Add user-defined source terms (cooling/heating) to conserved variables.
@@ -198,6 +162,18 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   EOS_Data &eos = (is_mhd) ?
                 pmbp->pmhd->peos->eos_data : pmbp->phydro->peos->eos_data;
 
+  // Get code unit variables for temperature conversions
+  Real mu = 1.0;
+  Real KELVIN = 1.0;
+  if (pmbp->punit != nullptr) {
+    mu = pmbp->punit->mu();
+    KELVIN = pmbp->punit->temperature_cgs();
+  } else if (global_variable::my_rank == 0) {
+    std::cout << "WARNING: <units> block missing; assuming mu=1 and KELVIN=1 "
+              << "for temperature conversions." << std::endl;
+    std::exit(1);
+  }
+  
   // Read general parameters from input file
   ptrml->gamma_adi         = eos.gamma;
   ptrml->dfloor            = eos.dfloor;
@@ -247,6 +223,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   Real smoothing_thickness = abs(ptrml->ztop - ptrml->zbot)/20.0;
   int nmb1 = pmbp->nmb_thispack - 1;
 
+
   // Set initial conditions
   if (global_variable::my_rank == 0) {
     std::cout << "Now initializing hydro/MHD variables." << "\n";
@@ -263,7 +240,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     w0(m,IVY,k,j,i) = 0.0;
     w0(m,IVZ,k,j,i) = 0.0;
     if (eos.is_ideal) {
-      w0(m,IEN,k,j,i) = (ptrml->T_hot/(gm1*cdun->KELVIN*cdun->mu)) * rho_0;
+      w0(m,IEN,k,j,i) = (ptrml->T_hot/(KELVIN*mu)) * rho_0 / gm1;
     }
 
     // add passive scalars
@@ -333,6 +310,17 @@ void AddDustSource(Mesh *pm, const Real bdt){
   Real gamma = eos_data.gamma;
   Real gm1 = gamma - 1.0;
 
+  // Get code unit variables for temperature conversions
+  Real mu = 1.0;
+  Real KELVIN = 1.0;
+  if (pmbp->punit != nullptr) {
+    mu = pmbp->punit->mu();
+    KELVIN = pmbp->punit->temperature_cgs();
+  } else if (global_variable::my_rank == 0) {
+    std::cout << "ERROR: <units> block missing..." << std::endl;
+    std::exit(1);
+  }
+
   // Real T_cutoff = ptrml->T_cutoff;
   Real T_hot = ptrml->T_hot;
   Real T_cold = ptrml->T_cold;
@@ -354,12 +342,13 @@ void AddDustSource(Mesh *pm, const Real bdt){
   par_for("user_source", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
   KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
     Real dens = w0(m, IDN, k, j, i); // in cm^-3
-    Real temp = (w0(m,IEN,k,j,i) * gm1) / dens * cdun->KELVIN * cdun->mu ;
+    Real temp = (w0(m,IEN,k,j,i) * gm1) / dens * KELVIN * mu;
     
     Real Z_local = w0(m, nfluid+1 , k, j, i); // in solar metallicity
     Real dust_1 = w0(m, nfluid+2 , k, j, i);
     Real dust_2 = w0(m, nfluid+3, k, j, i);
 
+    // To prevent NaNs
     Real Z_tol = 1e-20;
     Z_local = Kokkos::max(Z_tol, Z_local);
     dust_1 = Kokkos::max(Z_tol, dust_1);
@@ -375,27 +364,22 @@ void AddDustSource(Mesh *pm, const Real bdt){
     Real rate_Z = 0.0;
     Real tmp_rate = 0.0;
 
-    // Real t_tol = 1e-20;
     
     //* Thermal sputtering
     Real t_sp = 70.0; // in Myr
     t_sp *= (1.e-3/dens);
     t_sp *= 1. + pow((temp/2.0e6), -2.5);
 
-    // To stop it from going to NaN
-    // t_sp = Kokkos::max(t_tol, t_sp);
 
     tmp_rate = -rho_d1 / (t_sp * size_d1);
     rate_d1 += tmp_rate;
     rate_Z += -tmp_rate;
 
-    // printf("tmp_rate_1: %f \n", tmp_rate);
 
     tmp_rate = -rho_d2 / (t_sp * size_d2);
     rate_d2 += tmp_rate;
     rate_Z += -tmp_rate;
 
-    // printf("tmp_rate_2: %f\n", tmp_rate);
 
     //* Accretion
     Real t_ac = 200.0; // in Myr
@@ -405,33 +389,19 @@ void AddDustSource(Mesh *pm, const Real bdt){
 
     t_ac /= 1-(dust_tot/Z_local/Z_solar);
 
-    // t_ac = Kokkos::max(t_tol, t_ac);
 
     tmp_rate = rho_d1 / (t_ac * size_d1);
     rate_d1 += tmp_rate;
     rate_Z += -tmp_rate;
 
-    // printf("tmp_rate_3: %f\n", tmp_rate);
 
     tmp_rate = rho_d2 / (t_ac * size_d2);
     rate_d2 += tmp_rate;
     rate_Z += -tmp_rate;
 
-    // printf("tmp_rate_4: %f\n", tmp_rate);
 
     // Convert rate_Z to metal mass
     rate_Z *= 1.0;  //! Assuming Z_dust ~ 1
-
-    // printf("rate_d1: %f\n", rate_d2);
-    // printf("rate_d2: %f\n\n", rate_d1);
-
-    // printf("dens: %f\n", dens);
-    // printf("dust1: %f\n", dust_1);
-    // printf("dust2: %f\n", dust_2);
-    // printf("Z_local: %f\n\n", Z_local);
-    // printf("rate_Z: %f\n\n", rate_Z);
-
-    // printf("==================\n");
 
     //* Shattering
     // From Dubois 2024
@@ -480,16 +450,6 @@ void AddDustSource(Mesh *pm, const Real bdt){
     // Scaled to sum to clamp_dust_tot 
     u0(m, nfluid+2, k, j, i) *= clamp_dust_tot/dust_tot;
     u0(m, nfluid+3, k, j, i) *= clamp_dust_tot/dust_tot;
-
-    // printf("dnf1: %f \n", bdt * rate_Z / Z_solar);
-    // printf("dnf2: %f \n", bdt * rate_d1);
-    // printf("dnf3: %f \n\n", bdt * rate_d2);
-
-    // printf("nf1: %f \n", u0(m, nfluid+1, k, j, i));
-    // printf("nf2: %f \n", u0(m, nfluid+2, k, j, i));
-    // printf("nf3: %f \n\n", u0(m, nfluid+3, k, j, i));
-
-    // printf("==================\n");
 
 
   });
