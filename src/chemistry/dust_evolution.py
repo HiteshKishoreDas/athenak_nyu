@@ -116,6 +116,20 @@ def coagulation(rho_d, rho_g, dust_size, T, Z):
     return t_cog
 
 
+def drag(rho_d, rho_g, dust_size, T, Z):
+    # From Draine
+
+    s_i = 3  # grain material density in g cm^-3
+
+    t_drag = 0.11  # Myr
+    t_drag *= s_i / 3  # g cm^-3
+    t_drag *= dust_size / 1e-5  # cm
+    t_drag *= 30 / rho_g  # cm^-3
+    t_drag *= (T / 100) ** -0.5  # K
+
+    return t_drag
+
+
 def sne_agb_inj(rho_d, rho_g, dust_size, T, Z):
     # Aoyama 2017
 
@@ -395,6 +409,7 @@ plt.plot(
     label=f"t_shatt",
 )
 
+
 for i in range(2):
     t_ac = accretion(
         dust[i],
@@ -405,6 +420,14 @@ for i in range(2):
     )
 
     t_sp = sputtering(
+        dust[i],
+        rho_g,
+        dust_size[i],
+        T,
+        Z_solar,
+    )
+
+    t_drag = drag(
         dust[i],
         rho_g,
         dust_size[i],
@@ -428,6 +451,14 @@ for i in range(2):
         color="C1",
         linestyle=line_s[i],
         label=f"t_sput, size={dust_size[i]*1e4:.2f}$\mu$m",
+    )
+
+    plt.plot(
+        T,
+        t_drag,
+        color="C4",
+        linestyle=line_s[i],
+        label=f"t_drag, size={dust_size[i]*1e4:.2f}$\mu$m",
     )
 
     plt.plot(

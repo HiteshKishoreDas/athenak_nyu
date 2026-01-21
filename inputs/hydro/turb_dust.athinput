@@ -44,6 +44,14 @@ eos         = ideal   # EOS type
 reconstruct = plm     # spatial reconstruction method
 rsolver     = hllc    # Riemann-solver to be used
 gamma       = 1.0001  # gamma = C_p/C_v ~ 1 ==> isothermal
+nscalars    = 4       # 2 dust scalars, 1 metallicity, and 1 tracer
+cgm_cooling = true    # turn CGM cooling on
+
+<units>
+length_cgs = 3.0856775809623245e+21  # 1 kpc
+mass_cgs   = 3.036951775493658e+40   # Gives n=1 cm^-3 for 1 kpc box
+time_cgs   = 3.15576e+13             # 1 Myr
+mu          = 0.6         # Mean molecular weight
 
 <problem>
 

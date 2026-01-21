@@ -240,7 +240,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     w0(m,IVY,k,j,i) = 0.0;
     w0(m,IVZ,k,j,i) = 0.0;
     if (eos.is_ideal) {
-      w0(m,IEN,k,j,i) = (ptrml->T_hot/(KELVIN*mu)) * rho_0 / gm1;
+      w0(m,IEN,k,j,i) = (T_hot/(KELVIN*mu)) * rho_0 / gm1;
     }
 
     // add passive scalars
