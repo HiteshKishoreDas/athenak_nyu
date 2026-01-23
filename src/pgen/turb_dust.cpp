@@ -166,8 +166,12 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   Real mu = 1.0;
   Real KELVIN = 1.0;
   if (pmbp->punit != nullptr) {
-    mu = pmbp->punit->mu();
     KELVIN = pmbp->punit->temperature_cgs();
+
+    printf("==========================================\n");
+    printf("Code unit conversion: mu = %e, KELVIN = %e\n", mu, KELVIN);
+    printf("==========================================\n");
+
   } else if (global_variable::my_rank == 0) {
     std::cout << "WARNING: <units> block missing; assuming mu=1 and KELVIN=1 "
               << "for temperature conversions." << std::endl;
@@ -184,8 +188,8 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   ptrml->T_floor           = pin->GetOrAddReal("problem", "T_floor", 100);
   ptrml->T_hot             = pin->GetOrAddReal("problem", "T_hot", 1e6);
   ptrml->T_cold            = pin->GetOrAddReal("problem", "T_cold", 1e4);
-  Real T_cold              = ptrml->T_cold;
   Real T_hot               = ptrml->T_hot;
+  Real T_cold              = ptrml->T_cold;
 
   ptrml->chi               = ptrml->T_hot/ptrml->T_cold;
 
@@ -219,8 +223,10 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   Real gm1 = eos.gamma - 1.0;
   auto &size = pmbp->pmb->mb_size;
 
-  Real zmid = 0.5 * (ptrml->ztop + ptrml->zbot);
-  Real smoothing_thickness = abs(ptrml->ztop - ptrml->zbot)/20.0;
+  Real box = abs(ptrml->ztop - ptrml->zbot);
+  Real sig = box/10.0;
+  Real chi = ptrml->chi;
+
   int nmb1 = pmbp->nmb_thispack - 1;
 
 
@@ -230,27 +236,41 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   }
   par_for("pgen_turb", DevExeSpace(),0,nmb1,ks,ke,js,je,is,ie,
   KOKKOS_LAMBDA(int m, int k, int j, int i) {
+    Real &x1min = size.d_view(m).x1min;
+    Real &x1max = size.d_view(m).x1max;
+
+    Real &x2min = size.d_view(m).x2min;
+    Real &x2max = size.d_view(m).x2max;
+
     Real &x3min = size.d_view(m).x3min;
     Real &x3max = size.d_view(m).x3max;
+
+    int nx1 = indcs.nx1;
+    int nx2 = indcs.nx2;
     int nx3 = indcs.nx3;
+
+    Real x1v = CellCenterX(i-is, nx1, x1min, x1max);
+    Real x2v = CellCenterX(j-js, nx2, x2min, x2max);
     Real x3v = CellCenterX(k-ks, nx3, x3min, x3max);
 
-    w0(m,IDN,k,j,i) = rho_0;
+    Real gauss = std::exp(-(x1v*x1v + x2v*x2v + x3v*x3v)/sig/sig);
+
+    w0(m,IDN,k,j,i) = rho_0*(1.0 + (chi-1.0)*gauss);
     w0(m,IVX,k,j,i) = 0.0;
     w0(m,IVY,k,j,i) = 0.0;
     w0(m,IVZ,k,j,i) = 0.0;
     if (eos.is_ideal) {
-      w0(m,IEN,k,j,i) = (T_hot/(KELVIN*mu)) * rho_0 / gm1;
+      w0(m,IEN,k,j,i) = T_hot * rho_0/ KELVIN  / gm1;
     }
 
     // add passive scalars
     if(nscalars>0){
-      w0(m,nfluid,k,j,i) = 0.5 * (1.0+std::tanh((zmid-x3v)/smoothing_thickness));
+      w0(m,nfluid,k,j,i) = 1.0 * gauss;
 
       // Dust
-      w0(m,nfluid+1,k,j,i) = Z_gas * 0.5 * (1.0+std::tanh((zmid-x3v)/smoothing_thickness));
-      w0(m,nfluid+2,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * 0.5 * (1.0+std::tanh((zmid-x3v)/smoothing_thickness));
-      w0(m,nfluid+3,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * 0.5 * (1.0+std::tanh((zmid-x3v)/smoothing_thickness));
+      w0(m,nfluid+1,k,j,i) = Z_gas * Z_solar * gauss;
+      w0(m,nfluid+2,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * gauss;
+      w0(m,nfluid+3,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * gauss;
       // The D_tot comes out to be D_Z_init * Z_gas * Z_solar, i.e D_Z_init * Z_g
     }
   });
@@ -311,10 +331,8 @@ void AddDustSource(Mesh *pm, const Real bdt){
   Real gm1 = gamma - 1.0;
 
   // Get code unit variables for temperature conversions
-  Real mu = 1.0;
   Real KELVIN = 1.0;
   if (pmbp->punit != nullptr) {
-    mu = pmbp->punit->mu();
     KELVIN = pmbp->punit->temperature_cgs();
   } else if (global_variable::my_rank == 0) {
     std::cout << "ERROR: <units> block missing..." << std::endl;
@@ -342,9 +360,9 @@ void AddDustSource(Mesh *pm, const Real bdt){
   par_for("user_source", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
   KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
     Real dens = w0(m, IDN, k, j, i); // in cm^-3
-    Real temp = (w0(m,IEN,k,j,i) * gm1) / dens * KELVIN * mu;
+    Real temp = (w0(m,IEN,k,j,i) * gm1) / dens * KELVIN;
     
-    Real Z_local = w0(m, nfluid+1 , k, j, i); // in solar metallicity
+    Real Z_local = w0(m, nfluid+1 , k, j, i)/Z_solar; // in solar metallicity
     Real dust_1 = w0(m, nfluid+2 , k, j, i);
     Real dust_2 = w0(m, nfluid+3, k, j, i);
 
@@ -385,7 +403,7 @@ void AddDustSource(Mesh *pm, const Real bdt){
     Real t_ac = 200.0; // in Myr
     t_ac *= (20.0/dens);
     t_ac *= pow((50.0/temp), 0.5);
-    t_ac *= Z_local; // Assuming solar metallicity
+    t_ac *= Z_local; // in Z_sol 
 
     t_ac /= 1-(dust_tot/Z_local/Z_solar);
 
@@ -433,13 +451,13 @@ void AddDustSource(Mesh *pm, const Real bdt){
 
 
     //! These are w0 * dens
-    u0(m, nfluid+1, k, j, i) += bdt * rate_Z / Z_solar;
+    u0(m, nfluid+1, k, j, i) += bdt * rate_Z;
     u0(m, nfluid+2, k, j, i) += bdt * rate_d1;
     u0(m, nfluid+3, k, j, i) += bdt * rate_d2;
 
     // We should check that scalars are guaranteed to be in [0,1] after all source terms are added.
     // Clamp metallicity 
-    u0(m, nfluid+1, k, j, i) = Kokkos::clamp(u0(m, nfluid+1, k, j, i), 0.0, dens/Z_solar);
+    u0(m, nfluid+1, k, j, i) = Kokkos::clamp(u0(m, nfluid+1, k, j, i), 0.0, dens);
 
     // Clamp total dust-to-gas ratio to [0,1]
     // Dust to metal ratio is not clamped, as all of gas metals can be locked in dust

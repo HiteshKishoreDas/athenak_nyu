@@ -8,19 +8,19 @@ basename  = Turb       # problem ID: basename of output filenames
 
 <mesh>
 nghost    = 2         # Number of ghost cells
-nx1       = 64        # Number of zones in X1-direction
+nx1       = 256        # Number of zones in X1-direction
 x1min     = -0.5      # minimum value of X1
 x1max     = 0.5       # maximum value of X1
 ix1_bc    = periodic  # Inner-X1 boundary condition flag
 ox1_bc    = periodic  # Outer-X1 boundary condition flag
 
-nx2       = 64        # Number of zones in X2-direction
+nx2       = 256        # Number of zones in X2-direction
 x2min     = -0.5      # minimum value of X2
 x2max     = 0.5       # maximum value of X2
 ix2_bc    = periodic  # Inner-X2 boundary condition flag
 ox2_bc    = periodic  # Outer-X2 boundary condition flag
 
-nx3       = 64        # Number of zones in X3-direction
+nx3       = 256        # Number of zones in X3-direction
 x3min     = -0.5      # minimum value of X3
 x3max     = 0.5       # maximum value of X3
 ix3_bc    = periodic  # Inner-X3 boundary condition flag
@@ -36,16 +36,18 @@ evolution  = dynamic  # dynamic/kinematic/static
 integrator = rk2      # time integration algorithm
 cfl_number = 0.3      # The Courant, Friedrichs, & Lewy (CFL) Number
 nlim       = -1       # cycle limit
-tlim       = 10.0     # time limit
+tlim       = 1000.0     # time limit
 ndiag      = 1        # cycles between diagostic output
+nscalars    = 4       # 2 dust scalars, 1 metallicity, and 1 tracer
+cgm_cooling = true    # turn CGM cooling on
 
 <hydro>
 eos         = ideal   # EOS type
 reconstruct = plm     # spatial reconstruction method
 rsolver     = hllc    # Riemann-solver to be used
-gamma       = 1.0001  # gamma = C_p/C_v ~ 1 ==> isothermal
-nscalars    = 4       # 2 dust scalars, 1 metallicity, and 1 tracer
-cgm_cooling = true    # turn CGM cooling on
+gamma       = 1.6666667  # gamma = C_p/C_v ~ 1 ==> isothermal
+nscalars    = 4
+
 
 <units>
 length_cgs = 3.0856775809623245e+21  # 1 kpc
@@ -61,14 +63,14 @@ pgas_0    = 1.0           # Hot phase pressure (code units)
 
 
 # --- Dust model ---
-dust_model = true          # true to turn 
+dust_model = true          # true to include dust model
 Z_gas = 1.0                # Gas metallicity in Z_solar
 D_Z_init = 0.5             # Initial dust-to-metal ratio 
 
 
 # --- Temperatures  ---
 T_hot = 1000000              # Hot phase temperature (in K)
-T_cold = 1000             # Cold phase temperature (in K)
+T_cold = 10000             # Cold phase temperature (in K)
 T_floor = 100            # Temperature floor (in K)
 
 
@@ -82,23 +84,23 @@ npeak = 2                  # wavenumber where energy injection peaks
 nlow  = 1                  # smallest wave number
 nhigh = 3                  # largest wave number
 sol_fraction = 1.0         # solenoidal fraction
-dt_turb_update = 0.01      # update driving pattern
+dt_turb_update = 0.1       # update driving pattern
 rseed = -914               # choose your favorite random seed
 constant_edot = false      # false means constant acceleration field
 
 <output1>
 file_type = hst
-dt        = 0.01
+dt        = 1.0
 
 <output2>
 file_type  = bin         # legacy VTK output
 variable   = hydro_w     # variables to be output
-dt         = 0.1         # time increment between outputs
+dt         = 10.0         # time increment between outputs
 id  = full_hydro_w       # identifier for the output
 
 <output3>
 file_type  = bin         # legacy VTK output
 variable   = hydro_w     # variables to be output
-dt         = 0.1         # time increment between outputs
+dt         = 10.0         # time increment between outputs
 slice_x3   = 0.0         # slice location in x3
 id  = slice_x0_0_hydro_w # identifier for the output
