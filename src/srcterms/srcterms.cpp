@@ -69,13 +69,15 @@ SourceTerms::SourceTerms(std::string block, MeshBlockPack *pp, ParameterInput *p
     // User input parameters for ISM heating
     hrate = pin->GetOrAddReal(block, "hrate", 0.0); // Heating rate in cgs units
     // Normalization factor in density code units 
-    hscale_norm = pin->GetOrAddReal(block, "hscale_norm", 0.0); 
+    hscale_flag = pin->GetOrAddBoolean(block, "hscale_flag", false); 
+    hscale_norm = pin->GetOrAddReal(block, "hscale_norm", 1.0); 
     hscale_height = pin->GetOrAddReal(block, "hscale_height", 0.0); // Scale height in code units
     hscale_radius = pin->GetOrAddReal(block, "hscale_radius", 0.0); // Scale radius in code units
     hscale_alpha = pin->GetOrAddReal(block, "hscale_alpha", 0.0); // Scale coeff in code units
 
     // Set temperature ceiling
     T_max = pin->GetOrAddReal(block, "T_max", 1e10); // Temperature Ceiling in cgs
+    T_cutoff = pin->GetOrAddReal(block, "T_cutoff", 1e10); // Temperature cutoff in cgs
 
     // Initialize Cooling Tables to the right dimensions from cooling_tables.hpp
     Kokkos::realloc(Tbins, Tbins_TOTAL_SIZE);
@@ -272,11 +274,13 @@ void SourceTerms::CGMCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
   Real Zsol = 0.02; // Solar metallicity
 
   Real h_rate = hrate;
+  Real h_flag = hscale_flag;
   Real h_norm = hscale_norm;
   Real h_height = hscale_height;
   Real h_radius = hscale_radius;
   Real h_alpha = hscale_alpha;
   Real T_max_ = T_max;
+  Real T_cutoff_ = T_cutoff;
 
   par_for("cgm_cooling", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
   KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
@@ -287,6 +291,8 @@ void SourceTerms::CGMCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
     const Real m_cap = (temp >= T_max_) ? 1.0 : 0.0;
     const Real m_lowT = (temp <  Tfloor) ? 1.0 : 0.0;
     const Real m_Tin  = (temp >= Tfloor && temp <= Tceil) ? 1.0 : 0.0;
+
+    const Real m_cut = (temp >= T_cutoff_) ? 0.0 : 1.0;
 
     const Real nH = X * nH_unit * rho; // density in cgs units
     const Real Z = w0(m,nhydro,k,j,i) / Zsol; // Assumes Z is the first passive scalar
@@ -348,23 +354,32 @@ void SourceTerms::CGMCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
     // if T in-table -> use lambda_CIE_tab, else if lowT -> use lambda_lowT, else 0
     const Real lambda_CIE = m_CIE * lambda_CIE_tab + (1.0 - m_CIE) * (m_lowT * lambda_lowT);
 
-    // --- Heating profile
-    const Real x1min = size.d_view(m).x1min, x1max = size.d_view(m).x1max;
-    const Real x2min = size.d_view(m).x2min, x2max = size.d_view(m).x2max;
-    const Real x3min = size.d_view(m).x3min, x3max = size.d_view(m).x3max;
+    Real gamma_heating = 0.0;
+    if (h_flag) {
+      // --- Heating profile
+      const Real x1min = size.d_view(m).x1min, x1max = size.d_view(m).x1max;
+      const Real x2min = size.d_view(m).x2min, x2max = size.d_view(m).x2max;
+      const Real x3min = size.d_view(m).x3min, x3max = size.d_view(m).x3max;
 
-    const Real x1v = CellCenterX(i - is, nx1, x1min, x1max);
-    const Real x2v = CellCenterX(j - js, nx2, x2min, x2max);
-    const Real x3v = CellCenterX(k - ks, nx3, x3min, x3max);
+      const Real x1v = CellCenterX(i - is, nx1, x1min, x1max);
+      const Real x2v = CellCenterX(j - js, nx2, x2min, x2max);
+      const Real x3v = CellCenterX(k - ks, nx3, x3min, x3max);
 
-    const Real R2 = fma(x1v, x1v, x2v*x2v);
-    const Real R  = sqrt(R2);
+      const Real R2 = fma(x1v, x1v, x2v*x2v);
+      const Real R  = sqrt(R2);
 
-    const Real horz_falloff = exp(-R / h_radius);
-    const Real vert_scale2  = fma(h_height, h_height , h_alpha*R2);
-    const Real vert_falloff = exp(-(x3v*x3v) / vert_scale2);
+      const Real horz_falloff = exp(-R / h_radius);
+      const Real vert_scale2  = fma(h_height, h_height , h_alpha*R2);
+      const Real vert_falloff = exp(-(x3v*x3v) / vert_scale2);
 
-    Real gamma_heating = h_rate * h_norm * X * nH_unit * horz_falloff * vert_falloff;
+      gamma_heating = h_rate * h_norm * X * nH_unit * horz_falloff * vert_falloff;
+
+    } else {
+
+      gamma_heating = h_rate * X * nH_unit;
+
+    }
+
 
     // power cutoff: (temp>1e4) ? *= (1e4/temp)^8 : *= 1
     const Real m_hot = (temp > 1.0e4) ? 1.0 : 0.0;

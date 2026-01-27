@@ -42,6 +42,7 @@ struct pgen_trml {
   Real gamma_adi;              //!< Adiabatic index (ratio of specific heats, gamma)
   Real dfloor;                 //!< Density floor (minimum allowed density)
   Real pfloor;                 //!< Pressure floor (minimum allowed pressure)
+  Real tfloor;                 //!< Pressure floor (minimum allowed pressure)
 
   // ====================================================================================
   // INITIAL STATE PARAMETERS
@@ -182,10 +183,12 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   ptrml->gamma_adi         = eos.gamma;
   ptrml->dfloor            = eos.dfloor;
   ptrml->pfloor            = eos.pfloor;
+  ptrml->tfloor            = eos.tfloor;
+
   Real rho_0               = pin->GetReal("problem", "rho_0");
   ptrml->rho_0             = rho_0;
 
-  ptrml->T_floor           = pin->GetOrAddReal("problem", "T_floor", 100);
+  ptrml->T_floor           = ptrml->tfloor * KELVIN;
   ptrml->T_hot             = pin->GetOrAddReal("problem", "T_hot", 1e6);
   ptrml->T_cold            = pin->GetOrAddReal("problem", "T_cold", 1e4);
   Real T_hot               = ptrml->T_hot;
@@ -224,7 +227,8 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   auto &size = pmbp->pmb->mb_size;
 
   Real box = abs(ptrml->ztop - ptrml->zbot);
-  Real sig = box/10.0;
+  Real radius = box/20.0;
+  Real smoothing_thickness = radius/10.0;
   Real chi = ptrml->chi;
 
   int nmb1 = pmbp->nmb_thispack - 1;
@@ -253,9 +257,10 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     Real x2v = CellCenterX(j-js, nx2, x2min, x2max);
     Real x3v = CellCenterX(k-ks, nx3, x3min, x3max);
 
-    Real gauss = std::exp(-(x1v*x1v + x2v*x2v + x3v*x3v)/sig/sig);
+    // Real gauss = std::exp(-(x1v*x1v + x2v*x2v + x3v*x3v)/sig/sig);
+    Real shape = 0.5 * (1.0+std::tanh((radius-std::sqrt(x1v*x1v + x2v*x2v + x3v*x3v))/smoothing_thickness));
 
-    w0(m,IDN,k,j,i) = rho_0*(1.0 + (chi-1.0)*gauss);
+    w0(m,IDN,k,j,i) = rho_0*(1.0 + (chi-1.0)*shape);
     w0(m,IVX,k,j,i) = 0.0;
     w0(m,IVY,k,j,i) = 0.0;
     w0(m,IVZ,k,j,i) = 0.0;
@@ -265,12 +270,12 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 
     // add passive scalars
     if(nscalars>0){
-      w0(m,nfluid,k,j,i) = 1.0 * gauss;
+      w0(m,nfluid,k,j,i) = 1.0 * shape;
 
       // Dust
-      w0(m,nfluid+1,k,j,i) = Z_gas * Z_solar * gauss;
-      w0(m,nfluid+2,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * gauss;
-      w0(m,nfluid+3,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * gauss;
+      w0(m,nfluid+1,k,j,i) = Z_gas * Z_solar * shape;
+      w0(m,nfluid+2,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * shape;
+      w0(m,nfluid+3,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * shape;
       // The D_tot comes out to be D_Z_init * Z_gas * Z_solar, i.e D_Z_init * Z_g
     }
   });

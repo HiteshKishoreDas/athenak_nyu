@@ -50,6 +50,7 @@ class SourceTerms {
 
   // heating rate used with ISM/CGM cooling
   Real hrate;
+  bool hscale_flag;
   Real hscale_norm;
   Real hscale_height; // Gaussian Scale Height
   Real hscale_radius; // Exponential Scale Radius
@@ -60,6 +61,7 @@ class SourceTerms {
   DualArray2D<Real> Metal_Cooling, H_He_Cooling;
   DualArray1D<Real> Metal_Cooling_CIE, H_He_Cooling_CIE;
   Real T_max;
+  Real T_cutoff;
 
   // cooling rate used with relativistic cooling
   Real crate_rel;

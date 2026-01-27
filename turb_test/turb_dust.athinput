@@ -7,7 +7,7 @@ problem   = turbulence
 basename  = Turb       # problem ID: basename of output filenames
 
 <mesh>
-nghost    = 2         # Number of ghost cells
+nghost    = 4         # Number of ghost cells
 nx1       = 256        # Number of zones in X1-direction
 x1min     = -0.5      # minimum value of X1
 x1max     = 0.5       # maximum value of X1
@@ -37,7 +37,7 @@ integrator = rk2      # time integration algorithm
 cfl_number = 0.3      # The Courant, Friedrichs, & Lewy (CFL) Number
 nlim       = -1       # cycle limit
 tlim       = 1000.0     # time limit
-ndiag      = 1        # cycles between diagostic output
+ndiag      = 10        # cycles between diagostic output
 
 <hydro>
 eos         = ideal   # EOS type
@@ -45,7 +45,23 @@ reconstruct = plm     # spatial reconstruction method
 rsolver     = hllc    # Riemann-solver to be used
 gamma       = 1.6666667  # gamma = C_p/C_v ~ 1 ==> isothermal
 nscalars    = 4
+
+# --- Cooling/Heating ---
 cgm_cooling = true
+pfloor      = 1e-10
+dfloor      = 1e-10
+sfloor      = 1e-10
+tfloor      = 0.001438934509667014 # 1000 K
+hrate         = 2e-26    # cooling in cgs
+
+hscale_flag = false
+# hscale_norm   = 1.0
+# hscale_radius = 1000.0
+# hscale_height = 1000.0
+
+T_max       = 5e8 # K
+T_cutoff    = 8e5 # K
+fofc        = true
 
 
 <units>
@@ -55,6 +71,7 @@ time_cgs   = 3.15576e+13             # 1 Myr
 mu          = 0.6         # Mean molecular weight
 
 <problem>
+user_srcs = true
 
 # --- Initial Conditions (Hot Phase) ---
 rho_0     = 1.0           # Hot phase density (code units)
@@ -68,10 +85,10 @@ D_Z_init = 0.5             # Initial dust-to-metal ratio
 
 
 # --- Temperatures  ---
-T_hot = 1000000              # Hot phase temperature (in K)
+T_hot = 1000000            # Hot phase temperature (in K)
 T_cold = 10000             # Cold phase temperature (in K)
-T_floor = 10000            # Temperature floor (in K)
 
+# tfloor and Tmax is defined in <hydro>
 
 
 <turb_driving>

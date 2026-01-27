@@ -24,9 +24,8 @@ __pycache__/
 
 test_outputs
 
-turb_test/**
-turb_test/**
-trml_test/**
-trml_test/**
+*_test*/bin/
+*_test*/save/
+*.out
 
 .direnv
