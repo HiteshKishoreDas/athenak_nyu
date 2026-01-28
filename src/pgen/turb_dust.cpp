@@ -52,6 +52,11 @@ struct pgen_trml {
   // Real velocity;               //!< Shear velocity amplitude (hot phase moves at +v, cold at -v)
   // Real t_shear;                //!< Shear timescale = 1/velocity (eddy turnover time)
 
+  // ====================================================================================
+  // INITIAL CLOUD PARAMETERS
+  // ====================================================================================
+  Real LboxR;                  //!< L_box/R_cloud ratio
+
   // // ====================================================================================
   // // COOLING FUNCTION PARAMETERS
   // // ====================================================================================
@@ -209,6 +214,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   Real D_Z_init            = ptrml->D_Z_init;
   Real Z_solar             = ptrml->Z_solar;
 
+  ptrml->LboxR              = pin->GetReal("problem", "LboxR");
 
   if (restart) return;
 
@@ -227,7 +233,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   auto &size = pmbp->pmb->mb_size;
 
   Real box = abs(ptrml->ztop - ptrml->zbot);
-  Real radius = box/20.0;
+  Real radius = box/ptrml->LboxR;
   Real smoothing_thickness = radius/10.0;
   Real chi = ptrml->chi;
 
@@ -258,7 +264,8 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     Real x3v = CellCenterX(k-ks, nx3, x3min, x3max);
 
     // Real gauss = std::exp(-(x1v*x1v + x2v*x2v + x3v*x3v)/sig/sig);
-    Real shape = 0.5 * (1.0+std::tanh((radius-std::sqrt(x1v*x1v + x2v*x2v + x3v*x3v))/smoothing_thickness));
+    // Real shape = 0.5 * (1.0+std::tanh((radius-std::sqrt(x1v*x1v + x2v*x2v + x3v*x3v))/smoothing_thickness));
+    Real shape = 0.0;
 
     w0(m,IDN,k,j,i) = rho_0*(1.0 + (chi-1.0)*shape);
     w0(m,IVX,k,j,i) = 0.0;

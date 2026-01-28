@@ -63,7 +63,12 @@ dust_tot_small = []
 dust_tot_large = []
 time = []
 
-for i in range(0, 40):
+hot_gas_temp = []
+
+plot_flag = False
+# plot_flag = True
+
+for i in range(0, 100):
     print(f"Processing frame {i}")
 
     dir_dict = {"x": 2, "y": 1, "z": 0}
@@ -72,7 +77,10 @@ for i in range(0, 40):
 
     quantity = "l"  # "s" or "l" or "z" or "ratio"
 
-    out_dict = bc.read_binary_as_athdf(f"bin/Turb.full_hydro_w.{i:05d}.bin")
+    try:
+        out_dict = bc.read_binary_as_athdf(f"bin_Tcut5e5/Turb.full_hydro_w.{i:05d}.bin")
+    except:
+        break
 
     box_shape = np.shape(out_dict["dens"])
 
@@ -99,85 +107,113 @@ for i in range(0, 40):
 
     X, Y = np.meshgrid(y_arr, x_arr)
 
-    fig, ax = plt.subplots(figsize=(12, 12))
+    if plot_flag:
+        fig, ax = plt.subplots(figsize=(12, 12))
 
-    # key = "dens"
-    key = "T"
-    # key = "eint"
+        key = "dens"
+        # key = "dens_T"
+        # key = "T"
+        # key = "eint"
 
-    slice_flag = True
-    # slice_flag = False
+        # slice_flag = True
+        slice_flag = False
 
-    if not slice_flag:
-        slice_list = [slice(None, None, None)] * 3
+        if not slice_flag:
+            slice_list = [slice(None, None, None)] * 3
 
-    if key != "T":
-        img_arr = out_dict[key][*slice_list]
-    else:
-        img_arr = compute_temperature(out_dict)[*slice_list]
+        img_arr = 0
+        vmin, vmax = None, None
 
-    if not slice_flag:
-        img_arr = np.sum(img_arr, axis=i_s)
+        T_cut = 2e4
 
-    img_arr = np.log10(img_arr)
+        if key not in ["T", "D"]:
 
-    # img_arr = out_dict["s_01"][*slice_list]
-    # img_arr = out_dict["s_02"][*slice_list]
-    # img_arr = out_dict["s_03"][*slice_list]
-    # img_arr = out_dict["s_02"][*slice_list] / out_dict["s_03"][*slice_list]
-    # img_arr /= Z_solar
+            if key == "dens_T":
+                key = "dens"
+                img_arr = out_dict[key][*slice_list]
+                img_arr *= compute_temperature(out_dict)[*slice_list] < T_cut
+            else:
+                img_arr = out_dict[key][*slice_list]
+            if key == "dens":
+                vmin, vmax = 0, 2
+        elif key == "T":
+            img_arr = compute_temperature(out_dict)[*slice_list]
+            vmin, vmax = 4, 6
+        elif key == "D":
+            img_arr = compute_temperature(out_dict)[*slice_list]
 
-    # img_arr = out_dict["s_02"][*slice_list] / img_arr
+        if not slice_flag:
+            img_arr = np.sum(img_arr, axis=i_s)
+
+            if np.sum(img_arr) == 0.0:
+                exit()
+
+            if key == "dens":
+                vmin, vmax = 2.5, 3.5
+
+            if key == "T":
+                img_arr /= np.shape(out_dict["dens"])[i_s]
+                vmin, vmax = 4, 6
+
+        img_arr = np.log10(img_arr)
+
+        # img_arr = out_dict["s_01"][*slice_list]
+        # img_arr = out_dict["s_02"][*slice_list]
+        # img_arr = out_dict["s_03"][*slice_list]
+        # img_arr = out_dict["s_02"][*slice_list] / out_dict["s_03"][*slice_list]
+        # img_arr /= Z_solar
+
+        # img_arr = out_dict["s_02"][*slice_list] / img_arr
+
+        pc = ax.pcolormesh(
+            X,
+            Y,
+            img_arr,
+            # compute_temperature(out_dict)[*slice_list],
+            # out_dict["s_01"][*slice_list],
+            # (out_dict["s_00"] / out_dict["dens"])[0, :, :],
+            vmin=vmin,
+            vmax=vmax,
+            cmap=cm.bubblegum,
+            # cmap=cm.redshift,
+            shading="auto",
+        )
+
+        ax.set_aspect("equal", adjustable="box")
+        fig.colorbar(pc, ax=ax, label="T")
+        # fig.colorbar(pc, ax=ax, label=f"$D_l/Z_\odot$")
+        # fig.colorbar(pc, ax=ax, label=f"$T$ (K)")
+        # fig.colorbar(pc, ax=ax, label=f"rho (amu/cc)")
+        # fig.colorbar(pc, ax=ax, label=f"eint")
+
+        # after plotting
+        ax.xaxis.set_major_locator(MultipleLocator(0.5))
+        ax.yaxis.set_major_locator(MultipleLocator(0.25))
+
+        ax.set_ylabel("y")
+        ax.set_xlabel("x")
+
+        fig.tight_layout(pad=0.25)
+
+        fig.savefig(
+            # f"save/dust/D_r_{i:05d}.png",
+            # f"save/dens/dens_{i:05d}.png",
+            # f"save/eint/eint_{i:05d}.png",
+            f"save/{key}/{key}_{i:05d}.png",
+            dpi=600,
+            bbox_inches="tight",
+            pad_inches=0.02,
+        )
+        plt.close(fig)
+        del fig
 
     dust_tot_small.append(np.sum(out_dict["dens"] * out_dict["s_02"]))
     dust_tot_large.append(np.sum(out_dict["dens"] * out_dict["s_03"]))
     time.append(out_dict["Time"])
+    hot_gas_temp.append(np.percentile(compute_temperature(out_dict), 90))
 
-    pc = ax.pcolormesh(
-        X,
-        Y,
-        img_arr,
-        # compute_temperature(out_dict)[*slice_list],
-        # out_dict["s_01"][*slice_list],
-        # (out_dict["s_00"] / out_dict["dens"])[0, :, :],
-        # vmin=2.5,
-        # vmax=3.5,
-        vmin=4.0,
-        vmax=6.0,
-        cmap=cm.bubblegum,
-        # cmap=cm.redshift,
-        shading="auto",
-    )
-
-    ax.set_aspect("equal", adjustable="box")
-    fig.colorbar(pc, ax=ax, label="T")
-    # fig.colorbar(pc, ax=ax, label=f"$D_l/Z_\odot$")
-    # fig.colorbar(pc, ax=ax, label=f"$T$ (K)")
-    # fig.colorbar(pc, ax=ax, label=f"rho (amu/cc)")
-    # fig.colorbar(pc, ax=ax, label=f"eint")
-
-    # after plotting
-    ax.xaxis.set_major_locator(MultipleLocator(0.5))
-    ax.yaxis.set_major_locator(MultipleLocator(0.25))
-
-    ax.set_ylabel("y")
-    ax.set_xlabel("x")
-
-    fig.tight_layout(pad=0.25)
-
-    fig.savefig(
-        # f"save/dust/D_r_{i:05d}.png",
-        # f"save/dens/dens_{i:05d}.png",
-        # f"save/eint/eint_{i:05d}.png",
-        f"save/{key}/{key}_{i:05d}.png",
-        dpi=600,
-        bbox_inches="tight",
-        pad_inches=0.02,
-    )
-    plt.close(fig)
-
-    # del out_dict, X, Y, fig
-    # gc.collect()
+    del out_dict, X, Y
+    gc.collect()
 
 # %%
 
@@ -201,6 +237,14 @@ plt.plot(time, dust_tot_small / dust_tot_large)
 plt.legend()
 
 plt.ylabel(r"$D_s/D_l$")
+plt.xlabel(f"$t$ (code units)")
+
+plt.figure()
+plt.plot(time, hot_gas_temp)
+plt.yscale("log")
+plt.legend()
+
+plt.ylabel(r"$T_{90}$ (K)")
 plt.xlabel(f"$t$ (code units)")
 
 plt.xlim(0, None)

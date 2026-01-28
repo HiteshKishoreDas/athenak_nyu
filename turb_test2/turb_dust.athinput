@@ -51,8 +51,8 @@ cgm_cooling = true
 pfloor      = 1e-10
 dfloor      = 1e-10
 sfloor      = 1e-10
-tfloor      = 0.0001438934509667014 # 10000 K
-hrate         = 2e-22    # cooling in cgs
+tfloor      = 0.00001438934509667014 # 1000 K
+hrate         = 2e-26    # cooling in cgs
 
 hscale_flag = false
 # hscale_norm   = 1.0
@@ -60,7 +60,7 @@ hscale_flag = false
 # hscale_height = 1000.0
 
 T_max       = 5e8 # K
-T_cutoff    = 8e8 # K
+T_cutoff    = 5e5 # K
 fofc        = true
 
 
@@ -73,9 +73,13 @@ mu          = 0.6         # Mean molecular weight
 <problem>
 user_srcs = true
 
+
 # --- Initial Conditions (Hot Phase) ---
 rho_0     = 1.0           # Hot phase density (code units)
 pgas_0    = 1.0           # Hot phase pressure (code units)
+
+# --- Cloud parameters ---
+LboxR     = -10.0          # L_box/R_cloud 
 
 
 # --- Dust model ---

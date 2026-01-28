@@ -409,7 +409,7 @@ void SourceTerms::CGMCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
     
     const Real dE_total = (1.0 - m_cap) * dE_source + m_cap * dE_cap;
 
-    u0(m,IEN,k,j,i) += dE_total;
+    u0(m,IEN,k,j,i) += dE_total*m_cut;
   });
 
   return;

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=athenak2
+#SBATCH --job-name=athenak_turb_test
 #SBATCH --partition gpu
 #SBATCH --constraint a100-80gb
 #SBATCH --nodes 2

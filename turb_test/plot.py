@@ -102,24 +102,49 @@ for i in range(0, 40):
     fig, ax = plt.subplots(figsize=(12, 12))
 
     # key = "dens"
-    # key = "T"
-    key = "eint"
+    # key = "dens_T"
+    key = "T"
+    # key = "eint"
 
-    slice_flag = True
-    # slice_flag = False
+    # slice_flag = True
+    slice_flag = False
 
     if not slice_flag:
         slice_list = [slice(None, None, None)] * 3
 
+    img_arr = 0
+    vmin, vmax = None, None
+
+    T_cut = 2e4
+
     if key not in ["T", "D"]:
-        img_arr = out_dict[key][*slice_list]
-    else if key == "T":
+
+        if key == "dens_T":
+            key = "dens"
+            img_arr = out_dict[key][*slice_list]
+            img_arr *= compute_temperature(out_dict)[*slice_list] < T_cut
+        else:
+            img_arr = out_dict[key][*slice_list]
+        if key == "dens":
+            vmin, vmax = 0, 2
+    elif key == "T":
         img_arr = compute_temperature(out_dict)[*slice_list]
-    else if key == "D":
+        vmin, vmax = 4, 6
+    elif key == "D":
         img_arr = compute_temperature(out_dict)[*slice_list]
 
     if not slice_flag:
         img_arr = np.sum(img_arr, axis=i_s)
+
+        if np.sum(img_arr) == 0.0:
+            exit()
+
+        if key == "dens":
+            vmin, vmax = 2.5, 3.5
+
+        if key == "T":
+            img_arr /= np.shape(out_dict["dens"])[i_s]
+            vmin, vmax = 4, 6
 
     img_arr = np.log10(img_arr)
 
@@ -142,10 +167,8 @@ for i in range(0, 40):
         # compute_temperature(out_dict)[*slice_list],
         # out_dict["s_01"][*slice_list],
         # (out_dict["s_00"] / out_dict["dens"])[0, :, :],
-        vmin=2.5,
-        vmax=3.5,
-        # vmin=4.0,
-        # vmax=6.0,
+        vmin=vmin,
+        vmax=vmax,
         cmap=cm.bubblegum,
         # cmap=cm.redshift,
         shading="auto",

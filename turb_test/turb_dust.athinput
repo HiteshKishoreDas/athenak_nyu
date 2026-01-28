@@ -51,7 +51,7 @@ cgm_cooling = true
 pfloor      = 1e-10
 dfloor      = 1e-10
 sfloor      = 1e-10
-tfloor      = 0.001438934509667014 # 1000 K
+tfloor      = 0.00001438934509667014 # 1000 K
 hrate         = 2e-26    # cooling in cgs
 
 hscale_flag = false
@@ -77,6 +77,8 @@ user_srcs = true
 rho_0     = 1.0           # Hot phase density (code units)
 pgas_0    = 1.0           # Hot phase pressure (code units)
 
+# --- Cloud parameters ---
+LboxR     = 20.0          # L_box/R_cloud 
 
 # --- Dust model ---
 dust_model = true          # true to include dust model
