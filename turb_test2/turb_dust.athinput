@@ -71,15 +71,15 @@ time_cgs   = 3.15576e+13             # 1 Myr
 mu          = 0.6         # Mean molecular weight
 
 <problem>
-user_srcs = true
-
+user_srcs = true          # enroll custom source outputs
+user_hist = true          # Enable custom history output
 
 # --- Initial Conditions (Hot Phase) ---
 rho_0     = 1.0           # Hot phase density (code units)
-pgas_0    = 1.0           # Hot phase pressure (code units)
 
 # --- Cloud parameters ---
-LboxR     = -10.0          # L_box/R_cloud 
+LboxR        = 40.0          # L_box/R_cloud 
+transition_R = 40.0          # Radius / Transition layer
 
 
 # --- Dust model ---
