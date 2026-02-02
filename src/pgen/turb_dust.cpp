@@ -56,6 +56,7 @@ struct pgen_trml {
   // INITIAL CLOUD PARAMETERS
   // ====================================================================================
   Real LboxR;                  //!< L_box/R_cloud ratio
+  Real transition_R;           //!< R_cloud/transition layer thickness 
 
   // // ====================================================================================
   // // COOLING FUNCTION PARAMETERS
@@ -99,9 +100,11 @@ struct pgen_trml {
   // Real alpha_magdens;          //!< Power-law index for B-field scaling with density
   //                              //!< (used when B_dens_ratio = true)
 
-  // // ====================================================================================
-  // // ADAPTIVE MESH REFINEMENT THRESHOLDS
-  // // ====================================================================================
+  // ====================================================================================
+  // ADAPTIVE MESH REFINEMENT THRESHOLDS
+  // ====================================================================================
+  Real ddens_threshold; 
+
   // Real t_start_refine;          //!< Start applying refinement only after this time
   // Real density_ratio_threshold; //!< Refine if density gradient exceeds this
   // Real vel2_rms_threshold;      //!< Refine if velocity RMS exceeds this
@@ -152,6 +155,8 @@ void AddDustSource(Mesh *pm, const Real bdt);
 
 void TurbulentHistory(HistoryData *pdata, Mesh *pm);
 
+void RefinementCondition(MeshBlockPack* pmbp);
+
 //----------------------------------------------------------------------------------------
 //  \brief Problem Generator for mass removal
 
@@ -162,6 +167,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   // Enroll user functions 
   user_srcs_func = AddUserSrcs;
   user_hist_func = TurbulentHistory;
+  user_ref_func = RefinementCondition;
 
   bool is_hydro = (pmbp->phydro != nullptr) ? true : false;
   bool is_mhd = (pmbp->pmhd != nullptr) ? true : false;
@@ -197,7 +203,6 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   ptrml->T_hot             = pin->GetOrAddReal("problem", "T_hot", 1e6);
   ptrml->T_cold            = pin->GetOrAddReal("problem", "T_cold", 1e4);
   Real T_hot               = ptrml->T_hot;
-  Real T_cold              = ptrml->T_cold;
 
   ptrml->chi               = ptrml->T_hot/ptrml->T_cold;
 
@@ -215,8 +220,14 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   Real Z_solar             = ptrml->Z_solar;
 
   ptrml->LboxR              = pin->GetReal("problem", "LboxR");
+  ptrml->transition_R       = pin->GetReal("problem", "transition_R");
+
+
+  // Read the density gradient threshold for refinement
+  ptrml->ddens_threshold = pin->GetReal("problem", "ddens_max");
 
   if (restart) return;
+
 
   // Capture variables for kernel
   int &is = indcs.is; int &ie = indcs.ie;
@@ -234,7 +245,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 
   Real box = abs(ptrml->ztop - ptrml->zbot);
   Real radius = box/ptrml->LboxR;
-  Real smoothing_thickness = radius/10.0;
+  Real smoothing_thickness = radius/ptrml->transition_R;
   Real chi = ptrml->chi;
 
   int nmb1 = pmbp->nmb_thispack - 1;
@@ -244,6 +255,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   if (global_variable::my_rank == 0) {
     std::cout << "Now initializing hydro/MHD variables." << "\n";
   }
+
   par_for("pgen_turb", DevExeSpace(),0,nmb1,ks,ke,js,je,is,ie,
   KOKKOS_LAMBDA(int m, int k, int j, int i) {
     Real &x1min = size.d_view(m).x1min;
@@ -263,9 +275,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     Real x2v = CellCenterX(j-js, nx2, x2min, x2max);
     Real x3v = CellCenterX(k-ks, nx3, x3min, x3max);
 
-    // Real gauss = std::exp(-(x1v*x1v + x2v*x2v + x3v*x3v)/sig/sig);
-    // Real shape = 0.5 * (1.0+std::tanh((radius-std::sqrt(x1v*x1v + x2v*x2v + x3v*x3v))/smoothing_thickness));
-    Real shape = 0.0;
+    Real shape = 0.5 * (1.0+std::tanh((radius-std::sqrt(x1v*x1v + x2v*x2v + x3v*x3v))/smoothing_thickness));
 
     w0(m,IDN,k,j,i) = rho_0*(1.0 + (chi-1.0)*shape);
     w0(m,IVX,k,j,i) = 0.0;
@@ -280,7 +290,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
       w0(m,nfluid,k,j,i) = 1.0 * shape;
 
       // Dust
-      w0(m,nfluid+1,k,j,i) = Z_gas * Z_solar * shape;
+      w0(m,nfluid+1,k,j,i) = Z_gas * Z_solar * (0.1 + 0.9 * shape);
       w0(m,nfluid+2,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * shape;
       w0(m,nfluid+3,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * shape;
       // The D_tot comes out to be D_Z_init * Z_gas * Z_solar, i.e D_Z_init * Z_g
@@ -291,6 +301,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     pmbp->phydro->peos->PrimToCons(w0, u0, is, ie, js, je, ks, ke);
   }
 
+
   return;
 }
 
@@ -298,12 +309,12 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 //! \brief Add User Source Terms
 // NOTE source terms must all be computed using primitive (w0) and NOT conserved (u0) vars
 void AddUserSrcs(Mesh *pm, const Real bdt) {
-  MeshBlockPack *pmbp = pm->pmb_pack;
-  bool is_mhd = (pmbp->pmhd != nullptr) ? true : false;
-  DvceArray5D<Real> &u0 = (is_mhd) ? pmbp->pmhd->u0 : pmbp->phydro->u0;
-  const DvceArray5D<Real> &w0 = (is_mhd) ? pmbp->pmhd->w0 : pmbp->phydro->w0;
-  const EOS_Data &eos_data = (is_mhd) ?
-                  pmbp->pmhd->peos->eos_data : pmbp->phydro->peos->eos_data;
+  // MeshBlockPack *pmbp = pm->pmb_pack;
+  // bool is_mhd = (pmbp->pmhd != nullptr) ? true : false;
+  // DvceArray5D<Real> &u0 = (is_mhd) ? pmbp->pmhd->u0 : pmbp->phydro->u0;
+  // const DvceArray5D<Real> &w0 = (is_mhd) ? pmbp->pmhd->w0 : pmbp->phydro->w0;
+  // const EOS_Data &eos_data = (is_mhd) ?
+  //                 pmbp->pmhd->peos->eos_data : pmbp->phydro->peos->eos_data;
   // if (ptrml->adjust_temp_floor) AdjustTempTFloor(pm,bdt,u0,w0,eos_data);
   if (ptrml->dust_model){
     AddDustSource(pm, bdt);
@@ -317,7 +328,7 @@ void AddUserSrcs(Mesh *pm, const Real bdt) {
 void AddDustSource(Mesh *pm, const Real bdt){
   MeshBlockPack *pmbp = pm->pmb_pack;
   auto &indcs = pm->mb_indcs;
-  auto &size = pmbp->pmb->mb_size;
+  // auto &size = pmbp->pmb->mb_size;
   int is = indcs.is, ie = indcs.ie;
   int js = indcs.js, je = indcs.je;
   int ks = indcs.ks, ke = indcs.ke;
@@ -329,13 +340,13 @@ void AddDustSource(Mesh *pm, const Real bdt){
                   pmbp->pmhd->peos->eos_data : pmbp->phydro->peos->eos_data;
   int &nfluid = (is_mhd) ? pmbp->pmhd->nmhd : pmbp->phydro->nhydro;
 
-  int nx1 = indcs.nx1;
-  int nx2 = indcs.nx2;
-  int nx3 = indcs.nx3;
+  // int nx1 = indcs.nx1;
+  // int nx2 = indcs.nx2;
+  // int nx3 = indcs.nx3;
 
-  const int nmkji = (pmbp->nmb_thispack)*nx3*nx2*nx1;
-  const int nkji = nx3*nx2*nx1;
-  const int nji  = nx2*nx1;
+  // const int nmkji = (pmbp->nmb_thispack)*nx3*nx2*nx1;
+  // const int nkji = nx3*nx2*nx1;
+  // const int nji  = nx2*nx1;
 
   Real bta_time = bdt/pm->dt;
   Real use_e = eos_data.use_e;
@@ -351,12 +362,6 @@ void AddDustSource(Mesh *pm, const Real bdt){
     std::exit(1);
   }
 
-  // Real T_cutoff = ptrml->T_cutoff;
-  Real T_hot = ptrml->T_hot;
-  Real T_cold = ptrml->T_cold;
-
-  Real Z_gas               = ptrml->Z_gas;
-  Real D_Z_init            = ptrml->D_Z_init;
   Real Z_solar             = ptrml->Z_solar;
 
   Real size_d1 = 1.0; // in nm
@@ -488,12 +493,31 @@ void AddDustSource(Mesh *pm, const Real bdt){
 }
 
 void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
-  pdata->nhist = 1;
-  pdata->label[0] = "U^2";
+
+  int count = 0;
+  pdata->label[count] = "U^2"; count++;
+  pdata->label[count] = "Mcold"; count++;
+  pdata->label[count] = "T_sum"; count++;
+
+  bool dust_model = ptrml->dust_model;
+
+  int DUST_HIST = count;
+  if (dust_model){
+    pdata->label[count] = "Zgas"; count++;
+    pdata->label[count] = "Dstot"; count++;
+    pdata->label[count] = "Dltot"; count++;
+  }
+
+  pdata->nhist = count;
 
   auto &w0_ = pm->pmb_pack->phydro->w0;
   auto &size = pm->pmb_pack->pmb->mb_size;
   int &nhist_ = pdata->nhist;
+
+  bool is_mhd = (pm->pmb_pack->pmhd != nullptr) ? true : false;
+  const EOS_Data &eos_data = (is_mhd) ?
+                  pm->pmb_pack->pmhd->peos->eos_data : pm->pmb_pack->phydro->peos->eos_data;
+  int &nfluid_ = (is_mhd) ? pm->pmb_pack->pmhd->nmhd : pm->pmb_pack->phydro->nhydro;
 
   // loop over all MeshBlocks in this pack
   auto &indcs = pm->pmb_pack->pmesh->mb_indcs;
@@ -503,6 +527,18 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
   const int nmkji = (pm->pmb_pack->nmb_thispack)*nx3*nx2*nx1;
   const int nkji = nx3*nx2*nx1;
   const int nji  = nx2*nx1;
+
+  Real gamma = eos_data.gamma;
+  Real gm1 = gamma - 1.0;
+  Real KELVIN = 1.0;
+  if (pm->pmb_pack->punit != nullptr) {
+    KELVIN = pm->pmb_pack->punit->temperature_cgs();
+  } else if (global_variable::my_rank == 0) {
+    std::cout << "ERROR: <units> block missing..." << std::endl;
+    std::exit(1);
+  }
+  Real T_cold = ptrml->T_cold;
+
   array_sum::GlobalSum sum_this_mb;
   Kokkos::parallel_reduce("HistSums",Kokkos::RangePolicy<>(DevExeSpace(), 0, nmkji),
   KOKKOS_LAMBDA(const int &idx, array_sum::GlobalSum &mb_sum) {
@@ -514,14 +550,27 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
     k += ks;
     j += js;
 
+    Real dens = w0_(m, IDN, k, j, i); 
+    Real temp = (w0_(m,IEN,k,j,i) * gm1) / dens * KELVIN;
+
     Real vol = size.d_view(m).dx1*size.d_view(m).dx2*size.d_view(m).dx3;
     Real dx_squared = size.d_view(m).dx1 * size.d_view(m).dx1;
+    dens *= vol; // This is mass from now
 
     array_sum::GlobalSum hvars;
     hvars.the_array[0] += ((w0_(m,IVX,k,j,i)*w0_(m,IVX,k,j,i))
                         + (w0_(m,IVY,k,j,i)*w0_(m,IVY,k,j,i))
                         + (w0_(m,IVZ,k,j,i)*w0_(m,IVZ,k,j,i)))*vol;
 
+    hvars.the_array[1] += (temp < 2.0*T_cold ? dens : 0);
+    hvars.the_array[2] += temp;
+    // Note that here dens is actually dens*vol
+
+    if (dust_model){
+      hvars.the_array[DUST_HIST] += dens * w0_(m, nfluid_+1, k, j, i);
+      hvars.the_array[DUST_HIST+1] += dens * w0_(m, nfluid_+2, k, j, i);
+      hvars.the_array[DUST_HIST+2] += dens * w0_(m, nfluid_+3, k, j, i);
+    }
     // fill rest of the_array with zeros, if nhist < NHISTORY_VARIABLES
     for (int n=nhist_; n<NHISTORY_VARIABLES; ++n) {
       hvars.the_array[n] = 0.0;
@@ -538,3 +587,62 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
   }
   return;
 }
+
+//===========================================================================//
+//                              Refinement                                   //
+//===========================================================================//
+
+// Refine region based on density gradient threshold
+void RefinementCondition(MeshBlockPack* pmbp) {
+  Mesh *pmesh       = pmbp->pmesh;
+  int nmb           = pmbp->nmb_thispack;
+  int mbs           = pmesh->gids_eachrank[global_variable::my_rank];
+  auto &refine_flag = pmesh->pmr->refine_flag;
+  auto &multi_d     = pmesh->multi_d;
+  auto &three_d     = pmesh->three_d;
+  auto &indcs       = pmesh->mb_indcs;
+  int &is = indcs.is, nx1 = indcs.nx1;
+  int &js = indcs.js, nx2 = indcs.nx2;
+  int &ks = indcs.ks, nx3 = indcs.nx3;
+  const int nkji = nx3 * nx2 * nx1;
+  const int nji  = nx2 * nx1;
+  auto &u0       = pmbp->phydro->u0;
+  auto &w0       = pmbp->phydro->w0;
+
+  auto &ddens_thresh = ptrml->ddens_threshold;
+
+  par_for_outer("UserRefineCond",DevExeSpace(), 0, 0, 0, (nmb-1),
+  KOKKOS_LAMBDA(TeamMember_t tmember, const int m) {
+
+    Real team_ddmax;
+    Kokkos::parallel_reduce(Kokkos::TeamThreadRange(tmember, nkji),
+    [=](const int idx, Real& ddmax) {
+      int k = (idx)/nji;
+      int j = (idx - k*nji)/nx1;
+      int i = (idx - k*nji - j*nx1) + is;
+      j += js;
+      k += ks;
+
+      // Calculate density gradient
+      Real d2 = (SQR(u0(m,IDN,k,j,i+1) - u0(m,IDN,k,j,i-1))
+               + SQR(u0(m,IDN,k,j+1,i) - u0(m,IDN,k,j-1,i))
+               + SQR(u0(m,IDN,k+1,j,i) - u0(m,IDN,k-1,j,i)));
+      ddmax = fmax((sqrt(d2)/u0(m,IDN,k,j,i)), ddmax);
+
+      // Calculate pressure gradient
+      Real p2 = (SQR(w0(m,IEN,k,j,i+1) - w0(m,IEN,k,j,i-1))
+               + SQR(w0(m,IEN,k,j+1,i) - w0(m,IEN,k,j-1,i))
+	       + SQR(w0(m,IEN,k+1,j,i) - w0(m,IEN,k-1,j,i)));
+      ddmax = fmax((sqrt(p2)/w0(m,IEN,k,j,i)), ddmax);
+    },Kokkos::Max<Real>(team_ddmax));
+
+    if (team_ddmax > ddens_thresh) {refine_flag.d_view(m+mbs) = 1;}
+    if (team_ddmax < 0.1*ddens_thresh) {refine_flag.d_view(m+mbs) = -1;}
+
+  });
+
+  // sync host and device
+  refine_flag.template modify<DevExeSpace>();
+  refine_flag.template sync<HostMemSpace>();
+}
+

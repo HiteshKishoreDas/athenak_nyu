@@ -27,14 +27,14 @@ ix3_bc    = periodic  # Inner-X3 boundary condition flag
 ox3_bc    = periodic  # Outer-X3 boundary condition flag
 
 <meshblock>
-nx1       = 32        # Number of cells in each MeshBlock, X1-dir
-nx2       = 32        # Number of cells in each MeshBlock, X2-dir
-nx3       = 32        # Number of cells in each MeshBlock, X3-dir
+nx1       = 16        # Number of cells in each MeshBlock, X1-dir
+nx2       = 16        # Number of cells in each MeshBlock, X2-dir
+nx3       = 16        # Number of cells in each MeshBlock, X3-dir
 
 <mesh_refinement>
 refinement        = adaptive   # Enable adaptive mesh refinement
-num_levels        = 2          # 2 additional levels (4x resolution gain)
-max_nmb_per_rank  = 1000       # Maximum MeshBlocks per MPI rank
+num_levels        = 4          # 0 additional levels beyond base +1; keeps memory within GPU limits
+max_nmb_per_rank  = 4096       # Maximum MeshBlocks per MPI rank (raise to avoid limit hit)
 ncycle_check      = 5          # Check refinement every 5 cycles
 refinement_interval = 10       # Min cycles between refine/derefine events
 prolong_primitives = true      # Use primitive variable prolongation (more accurate)
@@ -81,6 +81,9 @@ mu          = 0.6         # Mean molecular weight
 <problem>
 user_srcs = true          # enroll custom source outputs
 user_hist = true          # Enable custom history output
+
+# --- Adaptive Mesh Refinement ---
+ddens_max = 1.0           # Density graddient threshold
 
 # --- Initial Conditions (Hot Phase) ---
 rho_0     = 1.0           # Hot phase density (code units)
