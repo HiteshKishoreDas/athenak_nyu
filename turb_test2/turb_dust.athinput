@@ -51,11 +51,11 @@ cgm_cooling = true
 pfloor      = 1e-10
 dfloor      = 1e-10
 sfloor      = 1e-10
-tfloor      = 0.00001438934509667014 # 1000 K
-hrate         = 2e-26    # cooling in cgs
+tfloor      = 0.0000143893451 # 1000 K
+hrate         = 2e-24    # cooling in cgs
 
 hscale_flag = false
-# hscale_norm   = 1.0
+hscale_norm   = 1.0      # Should gas density at 1e4K
 # hscale_radius = 1000.0
 # hscale_height = 1000.0
 
@@ -78,7 +78,7 @@ user_hist = true          # Enable custom history output
 ddens_max = 1.0           # Density graddient threshold
 
 # --- Initial Conditions (Hot Phase) ---
-rho_0     = 1.0           # Hot phase density (code units)
+rho_0     = 0.01           # Hot phase density (code units)
 
 # --- Cloud parameters ---
 LboxR        = 40.0          # L_box/R_cloud 
@@ -127,3 +127,11 @@ variable   = hydro_w     # variables to be output
 dt         = 1.0         # time increment between outputs
 slice_x3   = 0.0         # slice location in x3
 id  = slice_x0_0_hydro_w # identifier for the output
+
+<output4>
+file_type  = rst         # legacy VTK output
+dt         = 1.0         # time increment between outputs
+
+<output5>
+file_type  = log         # legacy VTK output
+dt         = 1.0         # time increment between outputs

@@ -8,36 +8,45 @@ basename  = Turb       # problem ID: basename of output filenames
 
 <mesh>
 nghost    = 4         # Number of ghost cells
-nx1       = 256        # Number of zones in X1-direction
+nx1       = 128        # Number of zones in X1-direction
 x1min     = -0.5      # minimum value of X1
 x1max     = 0.5       # maximum value of X1
 ix1_bc    = periodic  # Inner-X1 boundary condition flag
 ox1_bc    = periodic  # Outer-X1 boundary condition flag
 
-nx2       = 256        # Number of zones in X2-direction
+nx2       = 128        # Number of zones in X2-direction
 x2min     = -0.5      # minimum value of X2
 x2max     = 0.5       # maximum value of X2
 ix2_bc    = periodic  # Inner-X2 boundary condition flag
 ox2_bc    = periodic  # Outer-X2 boundary condition flag
 
-nx3       = 256        # Number of zones in X3-direction
+nx3       = 128        # Number of zones in X3-direction
 x3min     = -0.5      # minimum value of X3
 x3max     = 0.5       # maximum value of X3
 ix3_bc    = periodic  # Inner-X3 boundary condition flag
 ox3_bc    = periodic  # Outer-X3 boundary condition flag
 
 <meshblock>
-nx1       = 16        # Number of cells in each MeshBlock, X1-dir
-nx2       = 16        # Number of cells in each MeshBlock, X2-dir
-nx3       = 16        # Number of cells in each MeshBlock, X3-dir
+nx1       = 32        # Number of cells in each MeshBlock, X1-dir (larger block -> fewer blocks)
+nx2       = 32        # Number of cells in each MeshBlock, X2-dir
+nx3       = 32        # Number of cells in each MeshBlock, X3-dir
 
 <mesh_refinement>
 refinement        = adaptive   # Enable adaptive mesh refinement
 num_levels        = 4          # 0 additional levels beyond base +1; keeps memory within GPU limits
-max_nmb_per_rank  = 4096       # Maximum MeshBlocks per MPI rank (raise to avoid limit hit)
+max_nmb_per_rank  = 10000       # Maximum MeshBlocks per MPI rank (raise to avoid limit hit)
 ncycle_check      = 5          # Check refinement every 5 cycles
 refinement_interval = 10       # Min cycles between refine/derefine events
 prolong_primitives = true      # Use primitive variable prolongation (more accurate)
+
+<refinement1>
+level = 3
+x1min = -0.055
+x1max =  0.055
+x2min = -0.055
+x2max =  0.055
+x3min = -0.055
+x3max =  0.055
 
 <time>
 evolution  = dynamic  # dynamic/kinematic/static
@@ -59,11 +68,11 @@ cgm_cooling = true
 pfloor      = 1e-10
 dfloor      = 1e-10
 sfloor      = 1e-10
-tfloor      = 0.00001438934509667014 # 1000 K
-hrate         = 2e-26    # cooling in cgs
+tfloor      = 0.0000143893451 # 1000 K
+hrate         = 2e-24    # cooling in cgs
 
 hscale_flag = false
-# hscale_norm   = 1.0
+hscale_norm   = 1.0      # Should gas density at 1e4K
 # hscale_radius = 1000.0
 # hscale_height = 1000.0
 
@@ -86,7 +95,7 @@ user_hist = true          # Enable custom history output
 ddens_max = 1.0           # Density graddient threshold
 
 # --- Initial Conditions (Hot Phase) ---
-rho_0     = 1.0           # Hot phase density (code units)
+rho_0     = 0.01           # Hot phase density (code units)
 
 # --- Cloud parameters ---
 LboxR        = 40.0          # L_box/R_cloud 
@@ -135,3 +144,11 @@ variable   = hydro_w     # variables to be output
 dt         = 1.0         # time increment between outputs
 slice_x3   = 0.0         # slice location in x3
 id  = slice_x0_0_hydro_w # identifier for the output
+
+<output4>
+file_type  = rst         # legacy VTK output
+dt         = 1.0         # time increment between outputs
+
+<output5>
+file_type  = log         # legacy VTK output
+dt         = 1.0         # time increment between outputs
