@@ -26,6 +26,13 @@ X_H = 0.75
 Z_SOL = 0.02
 T_HOT = 1e6
 
+# Temperature grid and environment used for the standalone plot
+TMIN = 1e1  # K
+TMAX = 1e8  # K
+NSAMPLES = 400
+N_H = 0.01  # cm^-3
+Z_REL = 0.2  # Z/Z_sun
+
 # --- User-adjustable parameters (no athinput needed) ---
 # Tune these to match a specific run or explore parameter sensitivity.
 USER_CFG: Dict[str, float] = {
@@ -41,20 +48,13 @@ USER_CFG: Dict[str, float] = {
     # Heating options
     "hrate": 2e-26,  # erg s^-1 per H atom
     "hscale_flag": 0.0,
-    "hscale_norm": 1.0,
+    "hscale_norm": N_H * T_HOT / 1e4,
     "hscale_height": 0.0,
     "hscale_radius": 0.0,
     "hscale_alpha": 0.0,
     # Cooling ceiling
     "T_max": 5e8,
 }
-
-# Temperature grid and environment used for the standalone plot
-TMIN = 1e2  # K
-TMAX = 1e8  # K
-NSAMPLES = 400
-N_H = 0.1  # cm^-3
-Z_REL = 1.0  # Z/Z_sun
 
 
 def load_tables(path: pathlib.Path) -> Dict[str, np.ndarray]:
@@ -169,7 +169,7 @@ def cooling_heating(
 
     h_rate = cfg.get("hrate", 0.0)
     h_flag = bool(cfg.get("hscale_flag", 0.0))
-    # h_norm = cfg.get("hscale_norm", 1.0)
+    h_norm = cfg.get("hscale_norm", 1.0)
     # h_height = cfg.get("hscale_height", 0.0)
     # h_radius = cfg.get("hscale_radius", 0.0)
     # h_alpha = cfg.get("hscale_alpha", 0.0)
@@ -220,7 +220,7 @@ def cooling_heating(
         )
         gamma_heating = h_rate * h_norm * X_H * nH_unit * horz_falloff * vert_falloff
     else:
-        gamma_heating = h_rate * X_H * nH_unit
+        gamma_heating = h_rate * h_norm * X_H * nH_unit
 
     m_hot = (T > 1.0e4).astype(float)
     inv_ratio = 1.0e4 / T
@@ -236,12 +236,12 @@ def cooling_heating(
     tau = neutral_frac * nH * 1.0e-17 * dx_cgs
     frac = np.exp(-tau)
 
-    # lambda_cooling = (1.0 - frac) * lambda_CIE + frac * lambda_PIE
-    lambda_cooling = lambda_PIE
+    lambda_cooling = (1.0 - frac) * lambda_CIE + frac * lambda_PIE
+    # lambda_cooling = lambda_CIE
     gamma_heating *= 1.0 - frac
 
-    volumetric_cooling = (nH**2) * lambda_cooling
-    volumetric_heating = gamma_heating
+    volumetric_cooling = ((nH * X_H) ** 2) * lambda_cooling / cooling_unit
+    volumetric_heating = gamma_heating * nH * X_H / heating_unit
 
     return frac, lambda_cooling, volumetric_cooling, volumetric_heating
 
@@ -252,7 +252,7 @@ def main() -> None:
     units = compute_units(cfg)
 
     T = np.logspace(math.log10(TMIN), math.log10(TMAX), NSAMPLES)
-    RHO = N_H  # * T_HOT / T
+    RHO = N_H * T_HOT / T
 
     frac, lambda_cool, cool_vol, heat_vol = cooling_heating(
         T, RHO, Z_REL, tables, cfg, units
@@ -260,13 +260,15 @@ def main() -> None:
 
     fig, ax = plt.subplots(1, 3, figsize=(12, 5))
 
-    ax[0].plot(T, lambda_cool, label=r"$\Lambda_\mathrm{PIE}$", color="C0")
+    ax[0].plot(T, lambda_cool, label=r"$\Lambda_\mathrm{tot}$", color="C0")
     ax[0].plot(T, -lambda_cool, ls="--", color="C0")
 
     ax[0].set_yscale("log")
     ax[0].set_xscale("log")
 
     ax[0].set_ylim(1e-32, 1e-20)
+
+    ax[0].axhline(USER_CFG["hrate"], ls="--")
 
     ax[0].set_xlabel("Temperature [K]")
     ax[0].set_ylabel(r"Cooling coefficient $\Lambda$ [erg cm$^3$ s$^{-1}$]")
@@ -276,7 +278,7 @@ def main() -> None:
     ax[1].plot(T, cool_vol, label="Cooling (nH^2 Λ)")
     ax[1].plot(T, heat_vol, label="Heating")
 
-    ax[1].set_ylim(1e-32, 1e-20)
+    ax[1].set_ylim(1e-15, None)
 
     ax[1].set_yscale("log")
     ax[1].set_xscale("log")
