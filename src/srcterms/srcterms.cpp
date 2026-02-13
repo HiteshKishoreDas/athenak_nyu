@@ -376,7 +376,7 @@ void SourceTerms::CGMCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
 
     } else {
 
-      gamma_heating = h_rate * X * nH_unit;
+      gamma_heating = h_rate * h_norm * X * nH_unit;
 
     }
 

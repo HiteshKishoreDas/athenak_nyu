@@ -6,6 +6,7 @@
 //! \file mass_removal_test.cpp
 //  \brief Problem generator for testing mass removal
 #include <iostream> // cout
+#include <stdexcept>
 
 #include "athena.hpp"
 #include "parameter_input.hpp"
@@ -79,6 +80,12 @@ struct pgen_trml {
   bool dust_model;             //! Flag to turn the dust model on/off 
   Real Z_gas;                  //! Initial Gas metallicity in Z_solar
   Real D_Z_init;               //! Initial dust-to-gas ratio
+  Real dust_a;                 //! Min dust size
+  Real dust_b;                 //! Max dust size
+  Real dust_exp;               //! Dust size distribution exponent
+  int Ndust_bins;              //! Number of dust size bins
+  DvceArray1D<Real> dust_bins; //! Dust size bin centers (device view)
+
   Real Z_solar;                //! Solar metallicity
 
   // ====================================================================================
@@ -214,6 +221,11 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   ptrml->dust_model        = pin->GetBoolean("problem", "dust_model");
   ptrml->Z_gas             = pin->GetReal("problem", "Z_gas");  
   ptrml-> D_Z_init         = pin->GetReal("problem", "D_Z_init");  
+  ptrml->dust_a            = pin->GetReal("problem", "dust_a"); // Min dust size
+  ptrml->dust_b            = pin->GetReal("problem", "dust_b"); // Max dust size
+  ptrml->dust_exp          = pin->GetReal("problem", "dust_exp"); // Dust size distribution exponent
+
+
   ptrml-> Z_solar          = 0.0134;  
   Real Z_gas               = ptrml->Z_gas;
   Real D_Z_init            = ptrml->D_Z_init;
@@ -248,8 +260,41 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   Real smoothing_thickness = radius/ptrml->transition_R;
   Real chi = ptrml->chi;
 
+  Real dust_a = ptrml->dust_a; // Min dust size
+  Real dust_b = ptrml->dust_b; // Max dust size
+  // Real dust_exp = ptrml->dust_exp; // Dust size distribution exponent (unused)
+
   int nmb1 = pmbp->nmb_thispack - 1;
 
+  const int nmetal = nfluid;                 // index for metal
+  const int ntracer = nfluid+1;              // index for tracer for cloud
+  const int ndusti = nfluid+2;               // first dust bin scalar
+
+  // Number of dust bins: total scalars minus metal and cloud tracer entries
+  const int Ndust_bins = nscalars - 2;
+
+  printf("======================\n");
+  printf("nmetal = %d, ntracer = %d, ndusti = %d\n", nmetal, ntracer, ndusti);
+  printf("Ndust_bins = %d\n", Ndust_bins);
+  printf("======================\n");
+
+  if (Ndust_bins <= 0) {
+    throw std::runtime_error("Ndust_bins <= 0. Check <hydro>/nscalars in the input (need metal + tracer + >=1 dust bin)");
+  }
+  ptrml->Ndust_bins = Ndust_bins;
+
+  // Create an array of dust bin midpoints for diagnostics and source terms
+  DvceArray1D<Real> dust_bins("dust_bins", Ndust_bins);
+  auto dust_bins_h = Kokkos::create_mirror_view(dust_bins);
+  const Real r = std::pow(dust_b / dust_a, 1.0 / Ndust_bins);  // common ratio between adjacent bins
+  Real a_i = dust_a * std::sqrt(r);                            // first midpoint (id = 0)
+
+  for (int id = 0; id < Ndust_bins; ++id) {
+    dust_bins_h(id) = a_i;
+    a_i *= r;  // next midpoint
+  }
+  Kokkos::deep_copy(dust_bins, dust_bins_h);
+  ptrml->dust_bins = dust_bins;
 
   // Set initial conditions
   if (global_variable::my_rank == 0) {
@@ -286,14 +331,21 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     }
 
     // add passive scalars
+    Real tmp_dust_shape = 0.0;
     if(nscalars>0){
-      w0(m,nfluid,k,j,i) = 1.0 * shape;
 
-      // Dust
-      w0(m,nfluid+1,k,j,i) = Z_gas * Z_solar * (0.1 + 0.9 * shape);
-      w0(m,nfluid+2,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * shape;
-      w0(m,nfluid+3,k,j,i) = 0.5 * D_Z_init * Z_gas * Z_solar * shape;
-      // The D_tot comes out to be D_Z_init * Z_gas * Z_solar, i.e D_Z_init * Z_g
+      // First scalar has to be metallicity
+      w0(m,nmetal,k,j,i) = Z_gas * Z_solar * (0.1 + 0.9 * shape);
+
+      // Cloud material tracer
+      w0(m,ntracer,k,j,i) = 1.0 * shape;
+      
+      tmp_dust_shape = D_Z_init * Z_gas * Z_solar * shape / float(Ndust_bins);
+      for (int id=0; id<Ndust_bins; id++){
+        // Dust
+        w0(m,ndusti+id,k,j,i) = tmp_dust_shape;
+        // The D_tot comes out to be D_Z_init * Z_gas * Z_solar, i.e D_Z_init * Z_g
+      }
     }
   });
   // Convert primitives to conserved
@@ -362,7 +414,21 @@ void AddDustSource(Mesh *pm, const Real bdt){
     std::exit(1);
   }
 
-  Real Z_solar             = ptrml->Z_solar;
+  int nmetal = nfluid; // index for metal
+  // int ntracer = nfluid+1; // index for tracer for cloud
+  int ndusti = nfluid+2; // first dust bin scalar
+  const int Ndust_bins = ptrml->Ndust_bins; // Number of dust bins
+  constexpr int kMaxDustBins = 32; // upper bound supported in device stack arrays
+  if (Ndust_bins > kMaxDustBins) {
+    if (global_variable::my_rank == 0) {
+      std::cout << "ERROR: Ndust_bins=" << Ndust_bins
+                << " exceeds kMaxDustBins=" << kMaxDustBins << std::endl;
+    }
+    std::exit(1);
+  }
+
+  Real Z_solar = ptrml->Z_solar;
+  auto dust_bins = ptrml->dust_bins;
 
   Real size_d1 = 1.0; // in nm
   Real size_d2 = 10.0; // in nm
@@ -378,121 +444,154 @@ void AddDustSource(Mesh *pm, const Real bdt){
   KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
     Real dens = w0(m, IDN, k, j, i); // in cm^-3
     Real temp = (w0(m,IEN,k,j,i) * gm1) / dens * KELVIN;
+
+    Real rho_di = 0.0;
+    Real dust_rate[kMaxDustBins];
+    for (int id = 0; id < kMaxDustBins; ++id) dust_rate[id] = 0.0;
+    // Real rho_d2 = dust_2 * dens;
+    // Real rate_d2 = 0.0;
     
-    Real Z_local = w0(m, nfluid+1 , k, j, i)/Z_solar; // in solar metallicity
-    Real dust_1 = w0(m, nfluid+2 , k, j, i);
-    Real dust_2 = w0(m, nfluid+3, k, j, i);
-
     // To prevent NaNs
-    Real Z_tol = 1e-20;
-    Z_local = Kokkos::max(Z_tol, Z_local);
-    dust_1 = Kokkos::max(Z_tol, dust_1);
-    dust_2 = Kokkos::max(Z_tol, dust_2);
-
-    Real dust_tot = dust_1 + dust_2;
+    Real Z_tol = 1e-20; 
     Real clamp_dust_tot = 1.0; // tmp var used for clamping later
 
-    Real rho_d1 = dust_1 * dens;
-    Real rho_d2 = dust_2 * dens;
-    Real rate_d1 = 0.0;
-    Real rate_d2 = 0.0;
-    Real rate_Z = 0.0;
-    Real tmp_rate = 0.0;
+    Real Z_local = w0(m,nmetal,k,j,i);
+    Z_local = Kokkos::max(Z_tol, Z_local);
 
-    
-    //* Thermal sputtering
-    Real t_sp = 70.0; // in Myr
-    t_sp *= (1.e-3/dens);
-    t_sp *= 1. + pow((temp/2.0e6), -2.5);
+    // Total dust ratio across size bins
+    Real dust_tot = 0.0;
+    for (int id=0; id<Ndust_bins; id++){
+      dust_tot += u0(m, ndusti+id, k, j, i);
+    }
 
+    Real rate_Z = 0.0, tmp_rate=0.0;
+    Real dust_i=0, dust_in=0, dust_ip=0;
+    // Loop through the dust bins to calculate the rates
+    for (int id=0; id<Ndust_bins; id++){
 
-    tmp_rate = -rho_d1 / (t_sp * size_d1);
-    rate_d1 += tmp_rate;
-    rate_Z += -tmp_rate;
+      // current dust amount in the bin
+      dust_i = w0(m,ndusti+id,k,j,i);
+      dust_i = Kokkos::max(Z_tol, dust_i);
 
+      // Is there a next bin
+      if (id<(Ndust_bins-1)) {
+        dust_in = 1.0;
+      }
+      else dust_in = 0.0;
 
-    tmp_rate = -rho_d2 / (t_sp * size_d2);
-    rate_d2 += tmp_rate;
-    rate_Z += -tmp_rate;
+      // Is there a previous bin
+      if (id>0) {
+        dust_ip = 1.0;
+      }
+      else dust_ip = 0.0;
 
-
-    //* Accretion
-    Real t_ac = 200.0; // in Myr
-    t_ac *= (20.0/dens);
-    t_ac *= pow((50.0/temp), 0.5);
-    t_ac *= Z_local; // in Z_sol 
-
-    t_ac /= 1-(dust_tot/Z_local/Z_solar);
-
-
-    tmp_rate = rho_d1 / (t_ac * size_d1);
-    rate_d1 += tmp_rate;
-    rate_Z += -tmp_rate;
+      // dust mass per unit vol.
+      rho_di = dust_i * dens;
 
 
-    tmp_rate = rho_d2 / (t_ac * size_d2);
-    rate_d2 += tmp_rate;
-    rate_Z += -tmp_rate;
+      tmp_rate = 0.0;
+      
+      //* Thermal sputtering
+      Real t_sp = 70.0; // in Myr
+      t_sp *= (1.e-3/dens);
+      t_sp *= 1. + pow((temp/2.0e6), -2.5);
+
+      tmp_rate = -rho_di / (t_sp * dust_bins(id));
+      dust_rate[id] += tmp_rate;
+      rate_Z += -tmp_rate;
+
+      //* Accretion
+      Real t_ac = 200.0; // in Myr
+      t_ac *= (20.0/dens);
+      t_ac *= pow((50.0/temp), 0.5);
+      t_ac *= Z_local/Z_solar; // in Z_sol 
+
+      t_ac /= 1-(dust_tot/Z_local);
+
+      tmp_rate = rho_di / (t_ac * dust_bins(id));
+      dust_rate[id] += tmp_rate;
+      rate_Z += -tmp_rate;
+
+      // Convert rate_Z to metal mass
+      rate_Z *= 1.0;  //! Assuming Z_dust ~ 1
+
+      //* Shattering out of this bin, into previous one
+      // From Dubois 2024
+      Real t_shatt = 54.0; // in Myr
+      t_shatt *= (1.0/dens); // in cm^-3
+      t_shatt *= (s_i/3.0);  // in cm^-3
+      t_shatt *= (0.01/dust_i); 
+      t_shatt *= (10/sig_DL);  // in km/s
+
+      tmp_rate = rho_di / (t_shatt * dust_bins(id));
+      tmp_rate *= id>0;
+
+      dust_rate[id] += -tmp_rate;
+      dust_rate[id-1] += tmp_rate;
 
 
-    // Convert rate_Z to metal mass
-    rate_Z *= 1.0;  //! Assuming Z_dust ~ 1
+      //* Coagulation out of this bin, into next one
+      // From Dubois 2024
+      Real t_coag = 0.27; // in Myr
+      t_coag *= (s_i/3.0);  // in cm^-3
+      t_coag *= (1.0e3/dens); // in cm^-3
+      t_coag *= (0.01/dust_i); 
+      t_coag *= (0.1/sig_DS);  // in km/s
+      t_coag *= F_coag;
 
-    //* Shattering
-    // From Dubois 2024
-    Real t_shatt = 54.0; // in Myr
-    t_shatt *= (1.0/dens); // in cm^-3
-    t_shatt *= (s_i/3.0);  // in cm^-3
-    t_shatt *= (0.01/dust_2); 
-    t_shatt *= (10/sig_DL);  // in km/s
+      tmp_rate = rho_di / (t_coag * dust_bins(id) / 0.05);
+      tmp_rate *= id<(Ndust_bins-1);
 
-    tmp_rate = rho_d2 / (t_shatt * size_d2);
+      if (tmp_rate!=0.0){
+        dust_rate[id] += -tmp_rate;
+        dust_rate[id+1] += tmp_rate;
+      }
 
-    rate_d1 += tmp_rate;
-    rate_d2 += -tmp_rate;
-
-
-    //* Coagulation
-    // From Dubois 2024
-    Real t_coag = 0.27; // in Myr
-    t_coag *= (s_i/3.0);  // in cm^-3
-    t_coag *= (1.0e3/dens); // in cm^-3
-    t_coag *= (0.01/dust_2); 
-    t_coag *= (0.1/sig_DS);  // in km/s
-    t_coag *= F_coag;
-
-    tmp_rate = rho_d1 / (t_coag * size_d1 / 0.05);
-
-    rate_d1 += -tmp_rate;
-    rate_d2 += tmp_rate;
-
+    }
 
     //! These are w0 * dens
-    u0(m, nfluid+1, k, j, i) += bdt * rate_Z;
-    u0(m, nfluid+2, k, j, i) += bdt * rate_d1;
-    u0(m, nfluid+3, k, j, i) += bdt * rate_d2;
+    u0(m, nmetal, k, j, i) += bdt * rate_Z;
+
+    dust_tot = 0.0;
+    for (int id=0; id<Ndust_bins; id++){
+      u0(m, ndusti+id, k, j, i) += bdt * dust_rate[id];
+      dust_tot += u0(m, ndusti+id, k, j, i); // for later
+    }
 
     // We should check that scalars are guaranteed to be in [0,1] after all source terms are added.
     // Clamp metallicity 
-    u0(m, nfluid+1, k, j, i) = Kokkos::clamp(u0(m, nfluid+1, k, j, i), 0.0, dens);
-
+    u0(m, nmetal, k, j, i) = Kokkos::clamp(u0(m, nmetal, k, j, i), 0.0, dens);
     // Clamp total dust-to-gas ratio to [0,1]
     // Dust to metal ratio is not clamped, as all of gas metals can be locked in dust
     // Also dust might have been created in a metal-rich area and moved...
-    dust_tot = u0(m, nfluid+2, k, j, i) + u0(m, nfluid+3, k, j, i);
     clamp_dust_tot = Kokkos::clamp(dust_tot, 0.0, dens);
 
     // Scaled to sum to clamp_dust_tot 
-    u0(m, nfluid+2, k, j, i) *= clamp_dust_tot/dust_tot;
-    u0(m, nfluid+3, k, j, i) *= clamp_dust_tot/dust_tot;
-
+    for (int id=0; id<Ndust_bins; id++){
+      u0(m, ndusti+id, k, j, i) *= clamp_dust_tot/dust_tot;
+    }
 
   });
 
   return;
 }
 
+// TODO: Update the history to work with N-bins of dust
 void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
+  auto &w0_ = pm->pmb_pack->phydro->w0;
+  auto &size = pm->pmb_pack->pmb->mb_size;
+  int &nhist_ = pdata->nhist;
+
+  bool is_mhd = (pm->pmb_pack->pmhd != nullptr) ? true : false;
+  const EOS_Data &eos_data = (is_mhd) ?
+                  pm->pmb_pack->pmhd->peos->eos_data : pm->pmb_pack->phydro->peos->eos_data;
+  int &nfluid_ = (is_mhd) ? pm->pmb_pack->pmhd->nmhd : pm->pmb_pack->phydro->nhydro;
+
+  int nmetal_ = nfluid_; // index for metal
+  // int ntracer_ = nfluid_+1; // index for tracer for cloud
+  int ndusti_ = nfluid_+2; // first dust bin scalar
+  const int Ndust_bins = ptrml->Ndust_bins; // Number of dust bins
+
 
   int count = 0;
   pdata->label[count] = "U^2"; count++;
@@ -504,20 +603,13 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
   int DUST_HIST = count;
   if (dust_model){
     pdata->label[count] = "Zgas"; count++;
-    pdata->label[count] = "Dstot"; count++;
-    pdata->label[count] = "Dltot"; count++;
+    for (int id = 0; id < ptrml->Ndust_bins; ++id) {
+      pdata->label[count] = "D" + std::to_string(id);
+      count++;
+    }
   }
 
   pdata->nhist = count;
-
-  auto &w0_ = pm->pmb_pack->phydro->w0;
-  auto &size = pm->pmb_pack->pmb->mb_size;
-  int &nhist_ = pdata->nhist;
-
-  bool is_mhd = (pm->pmb_pack->pmhd != nullptr) ? true : false;
-  const EOS_Data &eos_data = (is_mhd) ?
-                  pm->pmb_pack->pmhd->peos->eos_data : pm->pmb_pack->phydro->peos->eos_data;
-  int &nfluid_ = (is_mhd) ? pm->pmb_pack->pmhd->nmhd : pm->pmb_pack->phydro->nhydro;
 
   // loop over all MeshBlocks in this pack
   auto &indcs = pm->pmb_pack->pmesh->mb_indcs;
@@ -540,6 +632,11 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
   Real T_cold = ptrml->T_cold;
 
   array_sum::GlobalSum sum_this_mb;
+  // store data into hdata array
+  for (int n=0; n<NREDUCTION_VARIABLES; ++n) {
+    sum_this_mb.the_array[n] = 0.0;
+  }
+
   Kokkos::parallel_reduce("HistSums",Kokkos::RangePolicy<>(DevExeSpace(), 0, nmkji),
   KOKKOS_LAMBDA(const int &idx, array_sum::GlobalSum &mb_sum) {
     // compute n,k,j,i indices of thread
@@ -567,9 +664,13 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
     // Note that here dens is actually dens*vol
 
     if (dust_model){
-      hvars.the_array[DUST_HIST] += dens * w0_(m, nfluid_+1, k, j, i);
-      hvars.the_array[DUST_HIST+1] += dens * w0_(m, nfluid_+2, k, j, i);
-      hvars.the_array[DUST_HIST+2] += dens * w0_(m, nfluid_+3, k, j, i);
+      int dust_hist = DUST_HIST; // local, modifiable copy of starting dust history index
+      hvars.the_array[dust_hist] += dens * w0_(m, nmetal_, k, j, i);
+      ++dust_hist;
+
+      for (int id=0; id < Ndust_bins; id++){
+        hvars.the_array[dust_hist + id] += dens * w0_(m, ndusti_+id, k, j, i);
+      }
     }
     // fill rest of the_array with zeros, if nhist < NHISTORY_VARIABLES
     for (int n=nhist_; n<NHISTORY_VARIABLES; ++n) {
@@ -598,8 +699,8 @@ void RefinementCondition(MeshBlockPack* pmbp) {
   int nmb           = pmbp->nmb_thispack;
   int mbs           = pmesh->gids_eachrank[global_variable::my_rank];
   auto &refine_flag = pmesh->pmr->refine_flag;
-  auto &multi_d     = pmesh->multi_d;
-  auto &three_d     = pmesh->three_d;
+  // auto &multi_d     = pmesh->multi_d;
+  // auto &three_d     = pmesh->three_d;
   auto &indcs       = pmesh->mb_indcs;
   int &is = indcs.is, nx1 = indcs.nx1;
   int &js = indcs.js, nx2 = indcs.nx2;
@@ -645,4 +746,3 @@ void RefinementCondition(MeshBlockPack* pmbp) {
   refine_flag.template modify<DevExeSpace>();
   refine_flag.template sync<HostMemSpace>();
 }
-
