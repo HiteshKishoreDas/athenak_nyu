@@ -44,7 +44,7 @@ eos         = ideal   # EOS type
 reconstruct = plm     # spatial reconstruction method
 rsolver     = hllc    # Riemann-solver to be used
 gamma       = 1.6666667  # gamma = C_p/C_v ~ 1 ==> isothermal
-nscalars    = 4
+nscalars    = 10       # 1 metallicity scalar, 1 tracer scalar, nscalars-2 dust
 
 # --- Cooling/Heating ---
 cgm_cooling = true
@@ -71,6 +71,7 @@ time_cgs   = 3.15576e+13             # 1 Myr
 mu          = 0.6         # Mean molecular weight
 
 <problem>
+pgen_name = turb_dust
 user_srcs = true          # enroll custom source outputs
 user_hist = true          # Enable custom history output
 
@@ -87,8 +88,11 @@ transition_R = 40.0          # Radius / Transition layer
 
 # --- Dust model ---
 dust_model = true          # true to include dust model
-Z_gas = 1.0                # Gas metallicity in Z_solar
+Z_gas = 0.2                # Gas metallicity in Z_solar
 D_Z_init = 0.5             # Initial dust-to-metal ratio 
+dust_a = 0.001 # Min dust size
+dust_b = 10 # Max dust size
+dust_exp = 1 # Dust size distribution exponent
 
 
 # --- Temperatures  ---
@@ -130,7 +134,7 @@ id  = slice_x0_0_hydro_w # identifier for the output
 
 <output4>
 file_type  = rst         # legacy VTK output
-dt         = 1.0         # time increment between outputs
+dt         = 20.0         # time increment between outputs
 
 <output5>
 file_type  = log         # legacy VTK output

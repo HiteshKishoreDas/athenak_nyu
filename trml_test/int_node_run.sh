@@ -1,13 +1,4 @@
 #!/bin/bash
-#SBATCH --job-name=athenak_turb_test
-#SBATCH --partition gpu
-#SBATCH --constraint a100-80gb
-#SBATCH --nodes 2
-#SBATCH --ntasks 2
-#SBATCH --ntasks-per-node 1
-#SBATCH --cpus-per-task 16
-#SBATCH --gpus-per-task 2
-#SBATCH --time 24:00:00
 
 module purge
 module load modules/2.4-20250724 slurm cuda/12.5.1 openmpi/cuda-4.1.8
@@ -23,8 +14,8 @@ SECONDS=0
 srun --cpus-per-task="$SLURM_CPUS_PER_TASK" --cpu-bind=cores --gpu-bind=single:2 \
   bash -c "unset CUDA_VISIBLE_DEVICES; \
   exec \"$build/src/athena\" \
-  -i \"$athenak/trml_test/athinput.TRML_simple\" \
-  -d \"$athenak/trml_test\""
+  -i \"$athenak/trml_test/convection.athinput\" \
+  -d \"$athenak/turb_test\""
 
 
 

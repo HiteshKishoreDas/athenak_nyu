@@ -13,6 +13,7 @@ mkdir -p "$build"
 
 cmake -S "$athenak" -B "$build" \
   -D CMAKE_CXX_COMPILER="$athenak/kokkos/bin/nvcc_wrapper" \
+  -D CMAKE_BUILD_TYPE=Debug \
   -D Kokkos_ENABLE_CUDA=On \
   -D Kokkos_ARCH_AMPERE80=On \
   -D PROBLEM=turb_dust \
@@ -21,4 +22,4 @@ cmake -S "$athenak" -B "$build" \
 
 
 cd "$build"
-make -j 8
+make -j 20
