@@ -1,5 +1,6 @@
 # build directories
 build/
+build_*/
 docs/build/
 
 # Athena output files
@@ -29,3 +30,6 @@ test_outputs
 *.out
 
 .direnv
+.venv
+
+build_frontier*.log

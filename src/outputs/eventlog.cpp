@@ -69,10 +69,10 @@ void EventLogOutput::LoadOutputData(Mesh *pm) {
 //! \brief writes event counter data to log file
 
 void EventLogOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
-  if (header_written && no_output) return;
+  const bool skip_write = (header_written && no_output);
 
   // only the master rank writes the file
-  if (global_variable::my_rank == 0) {
+  if (!skip_write && global_variable::my_rank == 0) {
     // create filename: "file_basename" + ".log"
     // There is no file number or id in event log output filenames.
     std::string fname;
