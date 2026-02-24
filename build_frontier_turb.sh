@@ -34,7 +34,7 @@ module -t list
 export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
 # Define paths
-athenak_dir='/ccs/home/dfielding/athenak-df'
+athenak_dir='/lustre/orion/proj-shared/ast207/hitesh/athenak_nyu'
 build_dir="${athenak_dir}/build_turb"
 
 # Clean and create build directory
@@ -58,7 +58,7 @@ cmake -B"${build_dir}" \
       -DCMAKE_CXX_COMPILER=CC \
       -DCMAKE_CXX_FLAGS="-I${ROCM_PATH}/include -munsafe-fp-atomics" \
       -DCMAKE_EXE_LINKER_FLAGS="-L${ROCM_PATH}/lib -lamdhip64" \
-      -DPROBLEM=turb_timed_amr
+      -DPROBLEM=turb_dust
 
 # Build
 echo "=== Building AthenaK ==="

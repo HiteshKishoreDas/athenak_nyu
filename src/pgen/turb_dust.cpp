@@ -180,6 +180,9 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   bool is_mhd = (pmbp->pmhd != nullptr) ? true : false;
   EOS_Data &eos = (is_mhd) ?
                 pmbp->pmhd->peos->eos_data : pmbp->phydro->peos->eos_data;
+  int &nscalars = (is_mhd) ?
+                pmbp->pmhd->nscalars : pmbp->phydro->nscalars;
+  int &nfluid = (is_mhd) ? pmbp->pmhd->nmhd : pmbp->phydro->nhydro;
 
   // Get code unit variables for temperature conversions
   Real mu = 1.0;
@@ -234,6 +237,30 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   ptrml->LboxR              = pin->GetReal("problem", "LboxR");
   ptrml->transition_R       = pin->GetReal("problem", "transition_R");
 
+  // Number of dust bins: total scalars minus metal and cloud tracer entries.
+  // Must be initialized even on restarts because source terms/history use it.
+  const int Ndust_bins = nscalars - 2;
+  if (Ndust_bins <= 0) {
+    throw std::runtime_error("Ndust_bins <= 0. Check <hydro>/nscalars in the input (need metal + tracer + >=1 dust bin)");
+  }
+  ptrml->Ndust_bins = Ndust_bins;
+
+  // Create dust-bin midpoint array used by source terms.
+  {
+    const Real dust_a = ptrml->dust_a;
+    const Real dust_b = ptrml->dust_b;
+    DvceArray1D<Real> dust_bins("dust_bins", Ndust_bins);
+    auto dust_bins_h = Kokkos::create_mirror_view(dust_bins);
+    const Real r = std::pow(dust_b / dust_a, 1.0 / Ndust_bins);
+    Real a_i = dust_a * std::sqrt(r);
+    for (int id = 0; id < Ndust_bins; ++id) {
+      dust_bins_h(id) = a_i;
+      a_i *= r;
+    }
+    Kokkos::deep_copy(dust_bins, dust_bins_h);
+    ptrml->dust_bins = dust_bins;
+  }
+
 
   // Read the density gradient threshold for refinement
   ptrml->ddens_threshold = pin->GetReal("problem", "ddens_max");
@@ -249,9 +276,6 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   // Initialize Hydro/MHD variables -------------------------------
   auto &w0 = (is_mhd) ? pmbp->pmhd->w0 : pmbp->phydro->w0;
   auto &u0 = (is_mhd) ? pmbp->pmhd->u0 : pmbp->phydro->u0;
-  int &nscalars = (is_mhd) ?
-                pmbp->pmhd->nscalars : pmbp->phydro->nscalars;
-  int &nfluid = (is_mhd) ? pmbp->pmhd->nmhd : pmbp->phydro->nhydro;
   Real gm1 = eos.gamma - 1.0;
   auto &size = pmbp->pmb->mb_size;
 
@@ -260,41 +284,16 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   Real smoothing_thickness = radius/ptrml->transition_R;
   Real chi = ptrml->chi;
 
-  Real dust_a = ptrml->dust_a; // Min dust size
-  Real dust_b = ptrml->dust_b; // Max dust size
-  // Real dust_exp = ptrml->dust_exp; // Dust size distribution exponent (unused)
-
   int nmb1 = pmbp->nmb_thispack - 1;
 
   const int nmetal = nfluid;                 // index for metal
   const int ntracer = nfluid+1;              // index for tracer for cloud
   const int ndusti = nfluid+2;               // first dust bin scalar
 
-  // Number of dust bins: total scalars minus metal and cloud tracer entries
-  const int Ndust_bins = nscalars - 2;
-
   printf("======================\n");
   printf("nmetal = %d, ntracer = %d, ndusti = %d\n", nmetal, ntracer, ndusti);
   printf("Ndust_bins = %d\n", Ndust_bins);
   printf("======================\n");
-
-  if (Ndust_bins <= 0) {
-    throw std::runtime_error("Ndust_bins <= 0. Check <hydro>/nscalars in the input (need metal + tracer + >=1 dust bin)");
-  }
-  ptrml->Ndust_bins = Ndust_bins;
-
-  // Create an array of dust bin midpoints for diagnostics and source terms
-  DvceArray1D<Real> dust_bins("dust_bins", Ndust_bins);
-  auto dust_bins_h = Kokkos::create_mirror_view(dust_bins);
-  const Real r = std::pow(dust_b / dust_a, 1.0 / Ndust_bins);  // common ratio between adjacent bins
-  Real a_i = dust_a * std::sqrt(r);                            // first midpoint (id = 0)
-
-  for (int id = 0; id < Ndust_bins; ++id) {
-    dust_bins_h(id) = a_i;
-    a_i *= r;  // next midpoint
-  }
-  Kokkos::deep_copy(dust_bins, dust_bins_h);
-  ptrml->dust_bins = dust_bins;
 
   // Set initial conditions
   if (global_variable::my_rank == 0) {
