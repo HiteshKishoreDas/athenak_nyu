@@ -13,6 +13,7 @@ from rebin import rebin
 from sputt_accrn import sputtering, accretion
 from coagulation import coagulation
 from shattering import shattering
+import utils as ut
 
 #* ================ The Run ==========================
 
@@ -30,13 +31,15 @@ shifted1 = net_da_dt * sub_dt  # um
 print(f"Shift in grain size after {sub_dt:.4f} Myr: {shifted1:.5f} micrometers \n\n")
 
 shatt = dust_dist_init.copy()  # grains/um/cm^3
+shatt_slopes = slope_bin.copy()
 
 overflow, underflow = 0.0, 0.0  # grains/cm^3
 
-for i in range(50):
-    shatt , under_add, over_add = rebin(
+for i in range(5):
+    shatt, shatt_slopes, under_add, over_add = rebin(
         dist=shatt,
-        bin=dust_bin,
+        slopes=shatt_slopes,
+        centers=dust_bin,
         edges=dust_bin_edges,
         shift=shifted1,
     )
@@ -52,18 +55,43 @@ for i in range(50):
     underflow += under_add
 
 dust_dist2 = dust_dist_init.copy()  # grains/um/cm^3
+dust_slopes2 = slope_bin.copy()
 overflow2, underflow2 = 0.0, 0.0  # grains/cm^3
 
-for i in range(50):
-    dust_dist2, under_add, over_add = rebin(
+for i in range(5):
+    dust_dist2, shatt_slopes, under_add, over_add = rebin(
         dist=dust_dist2,
-        bin=dust_bin,
+        slopes=dust_slopes2,
+        centers=dust_bin,
         edges=dust_bin_edges,
         shift=shifted1,
     )
     overflow2 += over_add
     underflow2 += under_add
 
+fig, axs = plt.subplots(1, 1, figsize=(12, 5), sharex=True, sharey=True)
+ut.plot_piecewise_powerlaw_distribution(
+    dust_bin_edges=dust_bin_edges,
+    dust_bin=dust_bin,
+    dust_dist=dust_dist_init,
+    slope_bin=slope_bin,
+    info_str="Original distribution",
+    ax=axs,
+    show=False,
+)
+ut.plot_piecewise_powerlaw_distribution(
+    dust_bin_edges=dust_bin_edges,
+    dust_bin=dust_bin,
+    dust_dist=shatt,
+    slope_bin=shatt_slopes,
+    info_str="Rebinned distribution",
+    ax=axs,
+    show=False,
+)
+fig.suptitle(f"Piecewise power law distribution")
+fig.tight_layout()
+plt.show()
+plt.close()
 
 plt.figure()
 plt.plot(dust_bin, dust_dist_init, label="Initial")
@@ -113,3 +141,27 @@ plt.yscale("log")
 # plt.ylim(1e-13, None)
 plt.grid()
 plt.show()
+
+fig, axs = plt.subplots(1, 1, figsize=(12, 5), sharex=True, sharey=True)
+ut.plot_piecewise_powerlaw_distribution(
+    dust_bin_edges=dust_bin_edges,
+    dust_bin=dust_bin,
+    dust_dist=dust_dist_init,
+    slope_bin=slope_bin,
+    info_str="Original distribution",
+    ax=axs,
+    show=False,
+)
+ut.plot_piecewise_powerlaw_distribution(
+    dust_bin_edges=dust_bin_edges,
+    dust_bin=dust_bin,
+    dust_dist=dust_dist2,
+    slope_bin=dust_slopes2,
+    info_str="Rebinned distribution",
+    ax=axs,
+    show=False,
+)
+fig.suptitle(f"Piecewise power law distribution")
+fig.tight_layout()
+plt.show()
+plt.close()

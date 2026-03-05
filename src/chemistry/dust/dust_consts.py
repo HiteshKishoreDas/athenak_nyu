@@ -1,3 +1,4 @@
+import numpy as np
 import units as un
 
 um_cgs = 1e-4 * un.cm_cgs  # cm/um
@@ -7,13 +8,6 @@ kpc3_per_cm3 = (un.kpc_cgs / un.cm_cgs) ** 3  # kpc^3/cm^3
 
 grain_surface_porosity = 1.0  # dimensionless
 
-a = 1e-3  # um
-b = 1e-1 # um
-N_bins = 50  # dimensionless
-
-T = 1e4  # K
-n_H = 100.0  # cm^-3
-Z = 1.0  # Z_sun
 
 # Dust grain material density
 rho_gr_Si = 3.3
@@ -64,12 +58,8 @@ R = 1 # dimensionless
 # Const in reln for excavation flow
 z_const = 3.4  # dimensionless
 
-V_cell = 1e-5 # kpc^3 (kept for diagnostics; evolution below uses number density)
-D = 0.5 # Dust to metal ratio, dimensionless
-Z_solar = 0.0134 # Solar metallicity, dimensionless
-Zgas = Z_solar  # Gas metallicity, dimensionless
-rho_d = D * Zgas * n_H  # amu/cm^3 Gas mass density
-rho_d *= un.atomic_mass_unit_cgs  # g/cm^3
-
 # Shattered frag distribution
 shatt_frag_expo = -3.3  # dimensionless
+
+# Unit mass in g/um^3
+K_dust = 4.0 * np.pi / 3.0 * rho_gr_um

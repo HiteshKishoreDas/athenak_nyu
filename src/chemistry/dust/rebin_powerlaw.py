@@ -1,3 +1,5 @@
+# Routine to rebin piecewise powerlaw distribution
+
 import numpy as np
 from scipy.optimize import brentq
 
@@ -13,7 +15,6 @@ def rebin(
         edges, 
         shift, 
         flat_in_bin=False,
-        type="linear",
     ):
 
     under, over = 0.0, 0.0  # grains/cm^3
@@ -56,15 +57,9 @@ def rebin(
             slopes_pad,
             shifted_edges_pad,
             shifted_bin_pad,
-            amin=shifted_edges_pad[0],
-            amax=shifted_edges_pad[-1],
-            type=type,
+            amax=shifted_edges_pad[0],
+            amin=shifted_edges_pad[-1],
         )
-
-    if type=="linear":
-        integrate_type = ut.integrate_linear
-    elif type=="powerlaw":
-        integrate_type = ut.integrate_power
 
     new_dist = np.zeros_like(dist_pad)  # 1/um
     new_slopes = np.zeros_like(slopes_pad)  # 1/um
@@ -74,63 +69,35 @@ def rebin(
         right_edge = edges_pad[i + 1]
 
         def integral_in_bin(p):
-            return bin_pad[i] * integrate_type(
+            return bin_pad[i] * ut.integrate_power(
                 p,
                 left_edge / bin_pad[i],
                 right_edge / bin_pad[i],
-                a_c=bin_pad[i],
-                num_c=dist_pad[i],
             )
 
         num_in_bin = exact_integral(left_edge, right_edge)
         mass_in_bin = exact_integral(left_edge, right_edge, mass=True)
-        mass_term = mass_in_bin / K_dust
 
         if not flat_in_bin:
-            p = 0
-            if num_in_bin != 0:
 
-                if type == "powerlaw":
+            if num_in_bin==0.0:
+                p = 0
+            else:
+                def solve_lhs(p):
+                    ac3_bin = mass_in_bin / num_in_bin / K_dust
+                    ac3_bin /= bin_pad[i]**3
+                    return (integral_in_bin(p + 3) / integral_in_bin(p)) - ac3_bin
 
-                    def solve_lhs(p):
-                        ac3_bin = mass_in_bin / num_in_bin / K_dust
-                        ac3_bin /= bin_pad[i]**3
-                        return (integral_in_bin(p + 3) / integral_in_bin(p)) - ac3_bin
+                print(f"{solve_lhs(-30) = }")
+                print(f"{solve_lhs(30) = }")
 
-                    p = brentq(solve_lhs, -30, 30)
-
-                elif type == "linear":
-                    a0 = edges_pad[i]
-                    a1 = edges_pad[i + 1]
-
-                    # Solve for n_c and slope from:
-                    #   num  = n_c I0n + p I1n
-                    #   mass/K = n_c I0m + p I1m
-                    I0n = a1 - a0
-                    I1n = 0.5 * (a1**2 - a0**2) - bin_pad[i] * (a1 - a0)
-
-                    I0m = 0.25 * (a1**4 - a0**4)
-                    I1m = 0.2 * (a1**5 - a0**5) - 0.25 * bin_pad[i] * (a1**4 - a0**4)
-
-                    det = I0n * I1m - I1n * I0m
-                    if abs(det) < 1e-30:
-                        p = 0.0
-                    else:
-                        p = (mass_term * I0n - num_in_bin * I0m) / det
+                p = brentq(solve_lhs, -30, 30)
 
             new_slopes[i] = p
 
-        if type == "linear":
-            a0 = edges_pad[i]
-            a1 = edges_pad[i + 1]
-            I0n = a1 - a0
-            I1n = 0.5 * (a1**2 - a0**2) - bin_pad[i] * (a1 - a0)
-            if I0n == 0.0:
-                new_dist[i] = 0.0
-            else:
-                new_dist[i] = (num_in_bin - new_slopes[i] * I1n) / I0n
-        else:
-            new_dist[i] = num_in_bin / integral_in_bin(new_slopes[i])
+            # print(f"Solved p: {p}")
+
+        new_dist[i] = num_in_bin / integral_in_bin(new_slopes[i])
 
     under = exact_integral(shifted_edges_pad[0], edges_pad[1], mass=True)
     over = exact_integral(edges_pad[-2], shifted_edges_pad[-1], mass=True)
@@ -141,12 +108,9 @@ def rebin(
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    dist_type = "linear"
-    # dist_type = "powerlaw"
-
     Nbins = 10
 
-    test_dist_ind = -0.5
+    test_dist_ind = -2
 
     # Demo test: apply a small positive shift and visualize the rebinned result.
     edges = np.logspace(-3, -1, num=Nbins + 1)
@@ -179,8 +143,8 @@ if __name__ == "__main__":
             slopes,
             edges+shift,
             bin+shift,
-            amin=a_test+shift,
-            amax=b_test+shift,
+            amax=a_test+shift,
+            amin=b_test+shift,
         )
 
 
@@ -189,13 +153,9 @@ if __name__ == "__main__":
     tot_mass_before = bin_sum(dist, slopes, mass=True, shift=shift)
     tot_mass_after = bin_sum(rebinned, slopes_rebin, mass=True)
 
-    if dist_type=="linear":
-        plot_fn = ut.plot_piecewise_linear_distribution
-    elif dist_type=="powerlaw":
-        plot_fn = ut.plot_piecewise_powerlaw_distribution
 
     fig, axs = plt.subplots(1, 2, figsize=(12, 5), sharex=True, sharey=True)
-    plot_fn(
+    ut.plot_piecewise_powerlaw_distribution(
         dust_bin_edges=edges,
         dust_bin=bin,
         dust_dist=dist,
@@ -204,7 +164,7 @@ if __name__ == "__main__":
         ax=axs[0],
         show=False,
     )
-    plot_fn(
+    ut.plot_piecewise_powerlaw_distribution(
         dust_bin_edges=edges,
         dust_bin=bin,
         dust_dist=rebinned,

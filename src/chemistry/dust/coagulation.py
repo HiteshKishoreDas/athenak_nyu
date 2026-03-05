@@ -13,29 +13,66 @@ def cross_sec() -> np.ndarray:
     """
 
     A, B = np.meshgrid(dust_bin, dust_bin)
+
     A_kpc = A * um_to_kpc
     B_kpc = B * um_to_kpc
 
     return np.pi * (A_kpc + B_kpc) ** 2
 
-def v_coag_fn():
+def cross_sec_fn(a1, a2) -> np.ndarray:
+    """
+    Calculate the cross-sectional area for collisions between two grains.
+
+    Returns:
+    np.ndarray: Pairwise cross-sectional area matrix in um^2.
+    """
+
+    # A, B = np.meshgrid(dust_bin, dust_bin)
+    
+    # A_kpc = A * um_to_kpc
+    # B_kpc = B * um_to_kpc
+
+    return np.pi * (a1 + a2) ** 2
+
+def v_coag_fn_fn(a1, a2):
 
     F_stick = 10  # dimensionless
 
-    A, B = np.meshgrid(dust_bin, dust_bin)
-    A_cgs = A * um_cgs
-    B_cgs = B * um_cgs
+    a1_arr, a2_arr = np.meshgrid(dust_bin, dust_bin)
+    a1_cgs = a1_arr * um_cgs
+    a2_cgs = a2_arr * um_cgs
 
     vc = 2.14  # cgs prefactor
     vc *= F_stick
-    vc *= np.sqrt((A_cgs**3 + B_cgs**3) / (A_cgs + B_cgs) ** 3)
+    vc *= np.sqrt((a1_cgs**3 + a2_cgs**3) / (a1_cgs + a2_cgs) ** 3)
     vc *= gamma ** (5 / 6)
     vc /= E ** (1 / 3)
-    vc /= (A_cgs * B_cgs / (A_cgs + B_cgs)) ** (5 / 6)
+    vc /= (a1_cgs * a2_cgs / (a1_cgs + a2_cgs)) ** (5 / 6)
     vc /= rho_gr**0.5
 
     return vc / un.km_s_cgs  # km/s
 
+
+def v_coag_fn(a1, a2):
+
+    F_stick = 10  # dimensionless
+
+    a1_arr, a2_arr = np.meshgrid(dust_bin, dust_bin)
+    a1_cgs = a1_arr * um_cgs
+    a2_cgs = a2_arr * um_cgs
+
+    vc = 2.14  # cgs prefactor
+    vc *= F_stick
+    vc *= np.sqrt((a1_cgs**3 + a2_cgs**3) / (a1_cgs + a2_cgs) ** 3)
+    vc *= gamma ** (5 / 6)
+    vc /= E ** (1 / 3)
+    vc /= (a1_cgs * a2_cgs / (a1_cgs + a2_cgs)) ** (5 / 6)
+    vc /= rho_gr**0.5
+
+    return vc / un.km_s_cgs  # km/s
+
+#!! FIX the integration limits!!! 
+#* Apparently it's fine... double check if that makes sense..
 def maxwell_head_mean(v: float):
     
     v0 = v_turb * np.sqrt(2 / 3)  # km/s
@@ -48,7 +85,7 @@ def maxwell_head_mean(v: float):
 
     return vmean
 
-def coagulation(dist, dt):
+def coagulation(dist, slopes, dt):
 
     underflow, overflow = 0.0, 0.0  # grains/cm^3
 

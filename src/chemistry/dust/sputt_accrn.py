@@ -1,4 +1,5 @@
 from dust_consts import *
+import ic
 
 def sputtering() -> float:
     """
@@ -15,9 +16,9 @@ def sputtering() -> float:
     float: Grain-size rate in micrometers per Myr.
     """
     da_dt = -1.0  # um/Myr
-    da_dt *= n_H / 1.0  # cm^-3
-    da_dt /= 1 + (2e6 / T) ** 2.5  # K
-    da_dt *= Z / 1.0  # Solar metallicity
+    da_dt *= ic.n_H / 1.0  # cm^-3
+    da_dt /= 1 + (2e6 / ic.T) ** 2.5  # K
+    da_dt *= ic.Z / 1.0  # Solar metallicity
     da_dt *= grain_surface_porosity ** (-2 / 3)
 
     return da_dt  # micrometers per Myr
@@ -40,9 +41,9 @@ def accretion() -> float:
     float: Grain-size rate in micrometers per Myr.
     """
     da_dt = 0.1 / 537  # micrometers per Myr
-    da_dt *= n_H / 1e3  # cm^-3
-    da_dt /= (T / 10) ** 0.5  # K
-    da_dt *= Z / 1.0  # Solar metallicity
+    da_dt *= ic.n_H / 1e3  # cm^-3
+    da_dt /= (ic.T / 10) ** 0.5  # K
+    da_dt *= ic.Z / 1.0  # Solar metallicity
     da_dt *= grain_surface_porosity ** (-2 / 3)
 
     return da_dt  # micrometers per Myr
