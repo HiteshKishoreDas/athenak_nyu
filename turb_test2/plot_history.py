@@ -92,7 +92,7 @@ for i in range(nscalars):
     Ddata.append(hst_read.dict["D" + str(i)])
 
 Ddata = np.array(Ddata)
-Dplot = Ddata / Ddata[:, 0][:, np.newaxis]
+Dplot = Ddata #/ Ddata[:, 0][:, np.newaxis]
 Dplot = np.log10(Dplot)
 
 # Sample a set of line colors from the same CMasher colormap used for images
@@ -106,13 +106,27 @@ plt.imshow(
     Dplot,
     aspect="auto",
     origin="lower",
-    vmin=-2.0,
-    vmax=2.0,
+    # vmin=-2.0,
+    # vmax=2.0,
     cmap=cm.redshift_r,
 )
 plt.ylabel("Dust Scalar Index")
 # plt.xlabel("$t$ (Myr)")
 plt.colorbar(label="$\log_{10}(D_i/D_{i,0})$")
+
+# * species dist 
+fig_lines, ax_lines = plt.subplots()
+ax_lines.plot(
+    Ddata[:, 0],
+)
+ax_lines.plot(
+    Ddata[:, 1],
+)
+
+ax_lines.set_yscale("log")
+ax_lines.set_ylabel(f"$D_\mathrm{{tot}}/Z_\odot$")
+ax_lines.set_xlabel(f"$t$ (Myr)")
+
 
 # * Individual species line plot
 fig_lines, ax_lines = plt.subplots()
@@ -124,6 +138,8 @@ for k in range(nscalars):
         color=line_colors[k],
     )
 ax_lines.axvline(t_stop, ls=":")
+
+ax_lines.set_ylim(1e-30, None)
 
 ax_lines.set_yscale("log")
 ax_lines.set_ylabel(f"$D_\mathrm{{tot}}/Z_\odot$")

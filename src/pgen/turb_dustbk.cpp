@@ -222,9 +222,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
       dedges_ph(id+1) = a_i;
       a_i *= r;
     }
-    dedges_ph(0) = dedges_ph(1) / r / 10.0;
-    dedges_ph(Ndust_bins+2) = dedges_ph(Ndust_bins+1) * r * 10.0;
-    for (int id = 0; id < Ndust_bins; ++id) {
+    for (int id = 0; id < Ndust_bins+1; ++id) {
       dbins_h(id) = 0.5*(dedges_h(id)+dedges_h(id+1));
     }
     
@@ -315,7 +313,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
       // Cloud material tracer
       w0(m,ntracer,k,j,i) = 1.0 * shape;
       
-      tmp_dust_shape = D_Z_init * Z_gas * Z_solar; //* shape / float(Ndust_bins);
+      tmp_dust_shape = D_Z_init * Z_gas * Z_solar * shape / float(Ndust_bins);
       for (int id=0; id<Ndust_bins; id++){
         // Dust
         w0(m,ndusti+id,k,j,i) = tmp_dust_shape;
@@ -443,7 +441,7 @@ KOKKOS_INLINE_FUNCTION
 void rebin(Real* d_arr, const Real* edges, const int n, Real shift, Real rho_gr) {
   // We take in the arrays already padded with ghosts
   Real K_dust = (4.0/3.0)*M_PI*rho_gr;
-  constexpr int kMaxRebinEntries = 35;  // Ndust_bins <= 32, plus three edge entries
+  constexpr int kMaxRebinEntries = 34;  // Ndust_bins <= 32, plus two ghost entries
   if (n > kMaxRebinEntries) return;
 
   Real mass_in_bin[kMaxRebinEntries];
@@ -467,123 +465,6 @@ void rebin(Real* d_arr, const Real* edges, const int n, Real shift, Real rho_gr)
   return;
 }
 
-KOKKOS_INLINE_FUNCTION
-Real maxwell_tail_mean(Real v, Real vturb){
-  Real v0 = vturb * sqrt(2./3.);
-
-  Real vmean = sqrt(8/M_PI) * v0;
-  vmean *= 1 + 0.5*pow(v/v0, 2.);
-  vmean *= exp(-0.5*pow(v/v0,2.));
-
-  return vmean;
-}
-
-//TODO: Implement local turbulent velocity estimation using nbd std dev
-KOKKOS_INLINE_FUNCTION
-Real vturb(Real a, Real M, Real n_H, Real T, Real rho_gr){
-  // a in um, M local Mach number, n_H in cm^-3
-  // T in K, rho_gr in g/cc
-  return 10.0 / ; // in km/s
-  // return 0.32*(M/3.)*sqrt(a)*pow(T/100, 0.25)*pow(n_H/1.0e3, -0.25)*sqrt(rho_gr/3.5);
-  // in km/s
-}
-
-KOKKOS_INLINE_FUNCTION
-Real maxwell_head_mean(Real v, Real vturb){
-  Real v0 = vturb * sqrt(2./3.);
-
-  Real vmean = sqrt(8/M_PI) * v0;
-  vmean *= 1 + 0.5*pow(v/v0, 2.);
-  vmean *= exp(-0.5*pow(v/v0,2.));
-
-  return (sqrt(8/M_PI)*v0 - vmean);
-}
-
-KOKKOS_INLINE_FUNCTION
-void calc_interaction(Real intr_arr[][], Real dist[], Real dbins[], Real edges[], int nbin, 
-  Real rho_gr, Real vturb, bool shatter){
-
-  Real F_stick = 10;
-
-  Real gamma_Si = 2.7;
-  Real gamma_C = 1.2;
-  Real gamma_d = 0.5*(gamma_C + gamma_Si);
-
-  // Young's modulus
-  Real E_Si = 5.4e11;
-  Real E_C = 3.4e10; 
-  Real E_d = 0.5*(E_C + E_Si);
-
-  // Shattering threshold velocity
-  Real v_shatt_Si = 2.7;  // km/s
-  Real v_shatt_C = 1.2;  // km/s
-  Real v_shatt = 0.5 * (v_shatt_C + v_shatt_Si);  // km/s
-
-  Real um_cgs = 1.0e-4;
-
-  Real vc = 2.14;
-  vc *= F_stick * pow(gamma_d, 5./6.) / pow(E, 1./3.)/ sqrt(rho_gr);
-
-  for (int i=0; i<nbin; i++){
-
-    Real dela1i = edges[i+1] - edges[i];
-    Real dela2i = pow(edges[i+1], 2) - pow(edges[i], 2);
-    Real dela3i = pow(edges[i+1], 3) - pow(edges[i], 3);
-
-    for (int j=0; j<nbin; j++){
-
-      //* Can be cached if not memory-limited
-      Real dela1j = edges[j+1] - edges[j];
-      Real dela2j = pow(edges[j+1], 2) - pow(edges[j], 2);
-      Real dela3j = pow(edges[j+1], 3) - pow(edges[j], 3);
-
-      Real vproc = 0.0; 
-
-      if (shatter){
-        vproc = maxwell_tail_mean(v_shatt, vturb(dbin[i], M, n_H, T)); // km/s
-      }     
-      else {
-        vproc = (pow(dbin[i], 3) + pow(dbin[j], 3))/pow(dbin[i]+ dbin[j], 3);
-        vproc = sqrt(vproc);
-        vproc *= pow((dbin[i]+dbin[j])/dbin[i]/dbin[j], 5/6);
-        vproc = maxwell_head_mean(vproc, vturb(dbin[i], M, n_H, T)); // km/s
-      }
-
-      intr_arr[i][j] = dela3i*dela1j/3. + delai2*dela2j/2. + dela1i*dela3j/3.; // um^4
-
-      intr_arr[i][j] *= -M_PI * vproc; // in km/s 
-      intr_arr[i][j] *= dist[i] * dist[j]; // (#/um)^2
-    }
-  }
-
-  return;
-}
-
-KOKKOS_INLINE_FUNCTION
-void add_coag(Real intr_arr[][], Real mass_in_bin[], Real dbins[], Real edges[], int nbin, 
-  Real rho_gr, Real vturb, bool shatter){
-  //! Assuming that intr_arr is already in the correct units
-  //TODO: Check the units
-  
-  for (int i=0; i<nbin; i++){
-    for (int j=0; j<nbin; j++){
-
-          Real a_coag = pow(pow(dbins[i], 3) + pow(dbins[j], 3), 1. / 3.);
-
-          int k = searchsorted(edges, nbin, a_coag)-1;
-          if (k < nbin){
-              mass_in_bin[k] += intr_arr[i, j]
-          }
-          else:
-              if use_overflow:
-                  overflow += dist_mat_coag[i, j]
-              else:
-                  num_in_bin[-1] += dist_mat_coag[i, j]
-
-    }
-  }
-
-}
 
 //! \fn void AddDustSource()
 //! \brief Apply dust model to each cell
@@ -602,7 +483,6 @@ void AddDustSource(Mesh *pm, const Real bdt){
   const EOS_Data &eos_data = (is_mhd) ?
                   pmbp->pmhd->peos->eos_data : pmbp->phydro->peos->eos_data;
   int &nfluid = (is_mhd) ? pmbp->pmhd->nmhd : pmbp->phydro->nhydro;
-
 
   // int nx1 = indcs.nx1;
   // int nx2 = indcs.nx2;
@@ -624,11 +504,8 @@ void AddDustSource(Mesh *pm, const Real bdt){
 
   // Get code unit variables for temperature conversions
   Real KELVIN = 1.0;
-  Real MYR = 1.0;
   if (pmbp->punit != nullptr) {
     KELVIN = pmbp->punit->temperature_cgs();
-    MYR = pmbp->punit->myr();
-    KMS = pmbp->punit->km_s();
   } else if (global_variable::my_rank == 0) {
     std::cout << "ERROR: <units> block missing..." << std::endl;
     std::exit(1);
@@ -660,29 +537,19 @@ void AddDustSource(Mesh *pm, const Real bdt){
 
   Real grain_porosity = ptrml->grain_porosity;
   Real rho_gr = ptrml->rho_gr;
-  Real dust_a = ptrml->dust_a;
-  Real dust_b = ptrml->dust_b;
-  const int n_edges = Ndust_bins + 3;
 
-  Real K_dust = (4.0/3.0)*M_PI*rho_gr;
-
-  auto dedges_pad_h = Kokkos::create_mirror_view_and_copy(HostMemSpace(),
-                                                           ptrml->dedges_pad);
-  auto dbins_h = Kokkos::create_mirror_view_and_copy(HostMemSpace(),
-                                                           ptrml->dbins);
   Real edges_pad[kMaxDustBins+3];
-  Real edges[kMaxDustBins+1];
-  Real dbins[kMaxDustBins];
-  for (int i=0; i<n_edges; i++) edges_pad[i] = dedges_pad_h(i);
-  for (int i=1; i<(Ndust_bins+1); i++) edges[i-1] = dedges_pad_h(i);
-  for (int i=0; i<Ndust_bins; i++) dbins[i] = dbins_h(i);
+  for (int i=0; i<Ndust_bins+3; i++) edges_pad[i] = ptrml->dedges_pad(i);
 
-  //! There seems to an issue with zero dust
   par_for("user_source", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
   KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
     Real dens = w0(m, IDN, k, j, i); // in cm^-3
     Real temp = (w0(m,IEN,k,j,i) * gm1) / dens * KELVIN;
 
+    Real rho_di = 0.0;
+    Real dust_rate[kMaxDustBins];
+    for (int id = 0; id < kMaxDustBins; ++id) dust_rate[id] = 0.0;
+    
     // To prevent NaNs
     Real Z_tol = 1e-20; 
     Real clamp_dust_tot = 1.0; // tmp var used for clamping later
@@ -697,66 +564,120 @@ void AddDustSource(Mesh *pm, const Real bdt){
 
     Real dust_arr[kMaxDustBins+2];
 
-    // Interaction array
-    Real intr_arr[kMaxDustBins][kMaxDustBins];
-
-
     // Total dust ratio across size bins
     dust_arr[0] = 0.0;
     dust_arr[Ndust_bins+1] = 0.0;
     for (int id=0; id<Ndust_bins; id++){
-
-      // Calculate bin value from rho_d in scalar
-      dust_arr[id+1] = 4*u0(m, ndusti+id, k, j, i)/K_dust;
-      dust_arr[id+1] /= (pow(edges_pad[id+2], 4)-pow(edges_pad[id+1], 4));
+      dust_arr[id+1] = u0(m, ndusti+id, k, j, i);
     }
 
-    // Calculate shift from sputtering and accretion
+    Real rate_Z = 0.0, tmp_rate=0.0;
+    Real dust_i=0, dust_in=0, dust_ip=0;
+
     Real tot_shift = sputtering(dens, temp, Z_local/Z_solar, grain_porosity);
-    tot_shift += accretion(dens, temp, Z_local/Z_solar, grain_porosity); // in um/Myr
-    tot_shift *= bdt/MYR;
+    tot_shift += accretion(dens, temp, Z_local/Z_solar, grain_porosity);
+    tot_shift *= bdt;
 
-    // Coagulation
-    calc_interaction(intr_arr, dust_arr, dbins, edges, Ndust_bins, rho_gr, vturb, false);
-    // TODO: Add the left over terms: Vcell
-
-
-    // Shattering
-    calc_interaction(intr_arr, dust_arr, dbins, edges, Ndust_bins, rho_gr, vturb, true);
-
-    // Initial dust mass
     Real delta_dmass = -dist_num_integral(
-      dust_arr, edges_pad, n_edges, dust_a, dust_b, rho_gr, true);
+      dust_arr, edges_pad, n, ptrml->dust_a, ptrml->dust_b, rho_gr, true);
   
-    // Rebin after shifting
-    rebin(dust_arr, edges_pad, n_edges, tot_shift, rho_gr);
+    rebin(dust_arr, edges_pad, Ndust_bins+2, tot_shift, rho_gr);
 
-    // Mass after rebinning
-    Real dust_tot = dist_num_integral(
-      dust_arr, edges_pad, n_edges, dust_a, dust_b, rho_gr, true);
-    delta_dmass += dust_tot;
+    delta_dmass += dist_num_integral(
+      dust_arr, edges_pad, n, ptrml->dust_a, ptrml->dust_b, rho_gr, true);
 
-    // Kokkos::printf("delta_dmass: %.50lf um \n", delta_dmass);
-
-    // Calculate metal mass change
-    Real rate_Z = -delta_dmass;
-    rate_Z *= 1.0;  //! Assuming Z_dust ~ 1
-
-    // Kokkos::printf("rate_Z: %.50lf um \n", rate_Z);
-
-    // Loop through the dust bins
+    // Loop through the dust bins to calculate the rates
     for (int id=0; id<Ndust_bins; id++){
-      u0(m, ndusti+id, k, j, i) = 0.25 * K_dust * dust_arr[id+1];
-      u0(m, ndusti+id, k, j, i) *= pow(edges_pad[id+2], 4)-pow(edges_pad[id+1], 4);
 
-      // Kokkos::printf("dust%d: %.50f\n", id, dust_arr[id+1]);
+      // current dust amount in the bin
+      dust_i = w0(m,ndusti+id,k,j,i);
+      dust_i = Kokkos::max(Z_tol, dust_i);
+
+      // Is there a next bin
+      if (id<(Ndust_bins-1)) {
+        dust_in = 1.0;
+      }
+      else dust_in = 0.0;
+
+      // Is there a previous bin
+      if (id>0) {
+        dust_ip = 1.0;
+      }
+      else dust_ip = 0.0;
+
+      // dust mass per unit vol.
+      rho_di = dust_i * dens;
+
+
+      // tmp_rate = 0.0;
+      
+      // //* Thermal sputtering
+      // Real t_sp = 70.0; // in Myr
+      // t_sp *= (1.e-3/dens);
+      // t_sp *= 1. + pow((temp/2.0e6), -2.5);
+
+      // tmp_rate = -rho_di / (t_sp * dust_bins(id));
+      // dust_rate[id] += tmp_rate;
+      // rate_Z += -tmp_rate;
+
+      // //* Accretion
+      // Real t_ac = 200.0; // in Myr
+      // t_ac *= (20.0/dens);
+      // t_ac *= pow((50.0/temp), 0.5);
+      // t_ac *= Z_local/Z_solar; // in Z_sol 
+
+      // t_ac /= 1-(dust_tot/Z_local);
+
+      // tmp_rate = rho_di / (t_ac * dust_bins(id));
+      // dust_rate[id] += tmp_rate;
+
+      rate_Z += -tmp_rate;
+
+      // Convert rate_Z to metal mass
+      rate_Z *= 1.0;  //! Assuming Z_dust ~ 1
+
+      // //* Shattering out of this bin, into previous one
+      // // From Dubois 2024
+      // Real t_shatt = 54.0; // in Myr
+      // t_shatt *= (1.0/dens); // in cm^-3
+      // t_shatt *= (s_i/3.0);  // in cm^-3
+      // t_shatt *= (0.01/dust_i); 
+      // t_shatt *= (10/sig_DL);  // in km/s
+
+      // tmp_rate = rho_di / (t_shatt * dust_bins(id));
+      // tmp_rate *= id>0;
+
+      // dust_rate[id] += -tmp_rate;
+      // dust_rate[id-1] += tmp_rate;
+
+
+      // //* Coagulation out of this bin, into next one
+      // // From Dubois 2024
+      // Real t_coag = 0.27; // in Myr
+      // t_coag *= (s_i/3.0);  // in cm^-3
+      // t_coag *= (1.0e3/dens); // in cm^-3
+      // t_coag *= (0.01/dust_i); 
+      // t_coag *= (0.1/sig_DS);  // in km/s
+      // t_coag *= F_coag;
+
+      // tmp_rate = rho_di / (t_coag * dust_bins(id) / 0.05);
+      // tmp_rate *= id<(Ndust_bins-1);
+
+      // if (tmp_rate!=0.0){
+      //   dust_rate[id] += -tmp_rate;
+      //   dust_rate[id+1] += tmp_rate;
+      // }
+
     }
-
 
     //! These are w0 * dens
-    u0(m, nmetal, k, j, i) += rate_Z;
+    u0(m, nmetal, k, j, i) += bdt * rate_Z;
 
-    // Kokkos::printf("u0(m, nmetal, k, j, i): %.50lf um \n", u0(m, nmetal, k, j, i));
+    Real dust_tot = 0.0;
+    for (int id=0; id<Ndust_bins; id++){
+      u0(m, ndusti+id, k, j, i) += bdt * dust_rate[id];
+      dust_tot += u0(m, ndusti+id, k, j, i); // for later
+    }
 
     // We should check that scalars are guaranteed to be in [0,1] after all source terms are added.
     // Clamp metallicity 
