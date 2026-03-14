@@ -70,13 +70,15 @@ struct pgen_trml {
   Real dust_b;                 //! Max dust size
   Real dust_exp;               //! Dust size distribution exponent
   int Ndust_bins;              //! Number of dust size bins
-  DvceArray1D<Real> dbins; //! Dust size bin centers (device view)
-  DvceArray1D<Real> dedges; //! Dust size bin edges (device view)
-  DvceArray1D<Real> dedges_pad; //! Dust size bin edges with ghosts (device view)
+  DvceArray1D<Real> dbins;     //! Dust size bin centers (device view)
+  DvceArray1D<Real> dedges;    //! Dust size bin edges (device view)
+  DvceArray1D<Real> dedges_pad;//! Dust size bin edges with ghosts (device view)
 
-  Real rho_gr;                  //! Dust grain density in g/cc
+  Real rho_gr;                 //! Dust grain density in g/cc
 
   Real Z_solar;                //! Solar metallicity
+
+  int vturb_est_ncell;         //! Number of cells over which vturb is estimated
 
   // ====================================================================================
   // TEMPERATURE THRESHOLDS
@@ -97,6 +99,13 @@ struct pgen_trml {
 // 
 pgen_trml* ptrml = new pgen_trml();
 
+constexpr int kMaxDustBins = 32;  // Upper bound supported in device stack arrays
+
+// For returning fragment size limits
+struct Alims{
+  Real amin;
+  Real amax;
+};
 
 //! \brief Add user-defined source terms (cooling/heating) to conserved variables.
 //! Called every RK substep via user_srcs_func.
@@ -104,19 +113,7 @@ void AddUserSrcs(Mesh *pm, const Real bdt);
 
 //! \brief Apply dust model to each cell
 //! Includes thermal sputtering, accretion, shattering and coagulation
-
-template <typename T>
-KOKKOS_INLINE_FUNCTION
-int searchsorted(const Real* a, int n, const T& x);
-
 void AddDustSource(Mesh *pm, const Real bdt);
-KOKKOS_INLINE_FUNCTION
-Real sputtering(Real n_H, Real T, Real Z, Real grain_porosity);
-KOKKOS_INLINE_FUNCTION
-Real accretion(Real n_H, Real T, Real Z, Real grain_porosity);
-KOKKOS_INLINE_FUNCTION
-void rebin(Real* d_arr, const Real* edges, const int n, Real shift, Real rho_gr);
-
 
 void TurbulentHistory(HistoryData *pdata, Mesh *pm);
 
@@ -184,6 +181,8 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   ptrml->dust_b            = pin->GetReal("problem", "dust_b"); // Max dust size
   ptrml->dust_exp          = pin->GetReal("problem", "dust_exp"); // Dust size distribution exponent
   ptrml->rho_gr          = pin->GetReal("problem", "rho_gr"); // Dust grain density
+
+  ptrml->vturb_est_ncell = pin->GetInteger("problem", "vturb_est_ncell"); // vturb estimation num of cells
 
 
   ptrml-> Z_solar          = 0.0134;  
@@ -349,6 +348,88 @@ void AddUserSrcs(Mesh *pm, const Real bdt) {
   return;
 }
 
+template <typename T>
+KOKKOS_INLINE_FUNCTION
+int searchsorted(const Real* a, const int n, const T& x) {
+  if (n <= 0) return 0;
+  int lo = 0;
+  int hi = n; // insertion range [0, n]
+
+  if (x <= a[lo]) return 0;
+  if (x > a[n-1]) return hi;
+
+  while (lo < hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (a[mid] < x) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real mass_to_num(Real mass_in_bin, Real edges1, Real edges2, const Real rho_gr){
+  // Convert mass change in bins to change in num distribution
+
+    Real rho_gr_um = rho_gr * 1.0e-12;
+    Real K_dust_um = (4.0/3.0)*M_PI*rho_gr_um;
+
+    Real dist_change = 4.*mass_in_bin/K_dust_um;
+    dist_change /= pow(edges2, 4.) - pow(edges1, 4.);
+
+  return dist_change;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real dist_num_integral(const Real* d_arr, const Real* edges, const int n,
+                       Real a1, Real a2, Real rho_gr, bool mass=false){
+  // Integrate the distribution d_arr on edges between a1 and a2
+  // These arrays are padded arrays
+
+  int i1 = searchsorted(edges, n, a1)-1;
+  int i2 = searchsorted(edges, n, a2)-1;
+
+  Real rho_gr_um = rho_gr * 1.0e-12;
+  Real K_dust_um = (4.0/3.0)*M_PI*rho_gr_um;
+
+  Real integral = 0.0;   
+  // Both are in the same bin
+  if (i1==i2){
+
+    if (mass) integral += 0.25 * d_arr[i1] * K_dust_um * (pow(a2, 4) - pow(a1, 4));
+    else integral +=d_arr[i1]*(a2-a1);
+
+    return integral;
+
+  }
+
+  // Add the left edge
+  if (mass) integral += 0.25 * d_arr[i1] * K_dust_um * (pow(edges[i1+1], 4) - pow(a1, 4));
+  else integral += d_arr[i1] * (edges[i1+1] - a1);
+  
+
+  // Add the right edge
+  if (mass) integral += 0.25 * d_arr[i2] * K_dust_um * (pow(a2, 4) - pow(edges[i2], 4));
+  else integral += d_arr[i2] * (a2 - edges[i2]);
+
+  // Add the rest
+  if (i2 > i1+1){
+
+    if (mass) {
+      for (int i=i1+1; i<i2; i++){
+        integral += 0.25 * d_arr[i] * K_dust_um * (pow(edges[i+1], 4) - pow(edges[i], 4));
+      }
+    }
+    else {
+      for (int i=i1+1; i<i2; i++){
+        integral += d_arr[i] * (edges[i+1] - edges[i]);
+      }
+    }
+
+  }
+
+  return integral;
+}
+
 KOKKOS_INLINE_FUNCTION
 Real sputtering(Real n_H, Real T, Real Z, Real grain_porosity){
 
@@ -373,76 +454,9 @@ Real accretion(Real n_H, Real T, Real Z, Real grain_porosity){
   return da_dt;
 }
 
-template <typename T>
-KOKKOS_INLINE_FUNCTION
-int searchsorted(const Real* a, const int n, const T& x) {
-  if (n <= 0) return 0;
-  int lo = 0;
-  int hi = n; // insertion range [0, n]
-
-  if (x <= a[lo]) return 0;
-  if (x > a[n-1]) return hi;
-
-  while (lo < hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (a[mid] < x) lo = mid + 1;
-    else hi = mid;
-  }
-  return lo;
-}
-
-KOKKOS_INLINE_FUNCTION
-Real dist_num_integral(const Real* d_arr, const Real* edges, const int n,
-                       Real a1, Real a2, Real rho_gr, bool mass=false){
-  // Integrate the distribution d_arr on edges between a1 and a2
-  // These arrays are padded arrays
-
-  int i1 = searchsorted(edges, n, a1)-1;
-  int i2 = searchsorted(edges, n, a2)-1;
-
-  Real K_dust = (4.0/3.0)*M_PI*rho_gr;
-
-  Real integral = 0.0;   
-  // Both are in the same bin
-  if (i1==i2){
-
-    if (mass) integral += 0.25 * d_arr[i1] * K_dust * (pow(a2, 4) - pow(a1, 4));
-    else integral +=d_arr[i1]*(a2-a1);
-
-  }
-
-  // Add the left edge
-  if (mass) integral += 0.25 * d_arr[i1] * K_dust * (pow(edges[i1+1], 4) - pow(a1, 4));
-  else integral += d_arr[i1] * (edges[i1+1] - a1);
-  
-
-  // Add the right edge
-  if (mass) integral += 0.25 * d_arr[i2] * K_dust * (pow(a2, 4) - pow(edges[i2], 4));
-  else integral += d_arr[i2] * (a2 - edges[i2]);
-
-  // Add the rest
-  if (i2 > i1+1){
-
-    if (mass) {
-      for (int i=0; i<a2; i++){
-        integral += 0.25 * d_arr[i] * K_dust * (pow(edges[i+1], 4) - pow(edges[i], 4));
-      }
-    }
-    else {
-      for (int i=0; i<a2; i++){
-        integral += d_arr[i] * (edges[i+1] - edges[i]);
-      }
-    }
-
-  }
-
-  return integral;
-}
-
 KOKKOS_INLINE_FUNCTION
 void rebin(Real* d_arr, const Real* edges, const int n, Real shift, Real rho_gr) {
   // We take in the arrays already padded with ghosts
-  Real K_dust = (4.0/3.0)*M_PI*rho_gr;
   constexpr int kMaxRebinEntries = 35;  // Ndust_bins <= 32, plus three edge entries
   if (n > kMaxRebinEntries) return;
 
@@ -453,13 +467,15 @@ void rebin(Real* d_arr, const Real* edges, const int n, Real shift, Real rho_gr)
     shifted_edges[i] = edges[i]+shift;
   }
 
+  // Calculate mass in the unshifted bins
   for (int i=0; i<n-1; i++){
     mass_in_bin[i] = dist_num_integral(
       d_arr, shifted_edges, n, edges[i], edges[i+1], rho_gr, true);
   }
 
+  // Calculate the new number dist
   for (int i=1; i<n-1; i++){
-    d_arr[i] = mass_in_bin[i]/K_dust/(pow(edges[i+1], 4)-pow(edges[i], 4));
+    d_arr[i] = mass_to_num(mass_in_bin[i],edges[i],edges[i+1], rho_gr);
   }
   d_arr[0] = mass_in_bin[0];
   d_arr[n-1] = mass_in_bin[n-1];
@@ -468,24 +484,22 @@ void rebin(Real* d_arr, const Real* edges, const int n, Real shift, Real rho_gr)
 }
 
 KOKKOS_INLINE_FUNCTION
+Real vturb(Real a, Real M_g, Real n_H, Real T, Real rho_gr){
+  // a in um, M local Mach number, n_H in cm^-3
+  // T in K, rho_gr in g/cc
+  return 0.32*(M_g/3.)*sqrt(a)*pow(T/100, 0.25)*pow(n_H/1.0e3, -0.25)*sqrt(rho_gr/3.5);
+  // in km/s
+}
+
+KOKKOS_INLINE_FUNCTION
 Real maxwell_tail_mean(Real v, Real vturb){
   Real v0 = vturb * sqrt(2./3.);
 
-  Real vmean = sqrt(8/M_PI) * v0;
-  vmean *= 1 + 0.5*pow(v/v0, 2.);
+  Real vmean = sqrt(8./M_PI) * v0;
+  vmean *= 1. + 0.5*pow(v/v0, 2.);
   vmean *= exp(-0.5*pow(v/v0,2.));
 
   return vmean;
-}
-
-//TODO: Implement local turbulent velocity estimation using nbd std dev
-KOKKOS_INLINE_FUNCTION
-Real vturb(Real a, Real M, Real n_H, Real T, Real rho_gr){
-  // a in um, M local Mach number, n_H in cm^-3
-  // T in K, rho_gr in g/cc
-  return 10.0 / ; // in km/s
-  // return 0.32*(M/3.)*sqrt(a)*pow(T/100, 0.25)*pow(n_H/1.0e3, -0.25)*sqrt(rho_gr/3.5);
-  // in km/s
 }
 
 KOKKOS_INLINE_FUNCTION
@@ -493,17 +507,18 @@ Real maxwell_head_mean(Real v, Real vturb){
   Real v0 = vturb * sqrt(2./3.);
 
   Real vmean = sqrt(8/M_PI) * v0;
-  vmean *= 1 + 0.5*pow(v/v0, 2.);
+  vmean *= 1. + 0.5*pow(v/v0, 2.);
   vmean *= exp(-0.5*pow(v/v0,2.));
 
   return (sqrt(8/M_PI)*v0 - vmean);
 }
 
 KOKKOS_INLINE_FUNCTION
-void calc_interaction(Real intr_arr[][], Real dist[], Real dbins[], Real edges[], int nbin, 
-  Real rho_gr, Real vturb, bool shatter){
+void calc_interaction(Real intr_arr[][kMaxDustBins], const Real dist[],
+                      const Real dbins[], const Real edges[], int nbin,
+                      Real M_g, Real rho_gr, Real n_H, Real T, Real vol_cc, bool shatter) {
 
-  Real F_stick = 10;
+  Real F_stick = 10.;
 
   Real gamma_Si = 2.7;
   Real gamma_C = 1.2;
@@ -522,37 +537,46 @@ void calc_interaction(Real intr_arr[][], Real dist[], Real dbins[], Real edges[]
   Real um_cgs = 1.0e-4;
 
   Real vc = 2.14;
-  vc *= F_stick * pow(gamma_d, 5./6.) / pow(E, 1./3.)/ sqrt(rho_gr);
+  vc *= F_stick * pow(gamma_d, 5./6.) / pow(E_d, 1./3.) / sqrt(rho_gr);
 
   for (int i=0; i<nbin; i++){
 
     Real dela1i = edges[i+1] - edges[i];
-    Real dela2i = pow(edges[i+1], 2) - pow(edges[i], 2);
-    Real dela3i = pow(edges[i+1], 3) - pow(edges[i], 3);
+    Real dela2i = pow(edges[i+1], 2.) - pow(edges[i], 2.);
+    Real dela3i = pow(edges[i+1], 3.) - pow(edges[i], 3.);
 
     for (int j=0; j<nbin; j++){
 
       //* Can be cached if not memory-limited
       Real dela1j = edges[j+1] - edges[j];
-      Real dela2j = pow(edges[j+1], 2) - pow(edges[j], 2);
-      Real dela3j = pow(edges[j+1], 3) - pow(edges[j], 3);
+      Real dela2j = pow(edges[j+1], 2.) - pow(edges[j], 2.);
+      Real dela3j = pow(edges[j+1], 3.) - pow(edges[j], 3.);
 
       Real vproc = 0.0; 
 
       if (shatter){
-        vproc = maxwell_tail_mean(v_shatt, vturb(dbin[i], M, n_H, T)); // km/s
+        vproc = maxwell_tail_mean(v_shatt,
+                                  vturb(dbins[i], M_g, n_H, T, rho_gr)); // km/s
       }     
       else {
-        vproc = (pow(dbin[i], 3) + pow(dbin[j], 3))/pow(dbin[i]+ dbin[j], 3);
+        vproc = (pow(dbins[i], 3.) + pow(dbins[j], 3.)) /
+                pow(dbins[i] + dbins[j], 3.);
         vproc = sqrt(vproc);
-        vproc *= pow((dbin[i]+dbin[j])/dbin[i]/dbin[j], 5/6);
-        vproc = maxwell_head_mean(vproc, vturb(dbin[i], M, n_H, T)); // km/s
+        vproc *= pow((dbins[i] + dbins[j]) / dbins[i] / dbins[j], 5./6.);
+        vproc = maxwell_head_mean(vproc,
+                                  vturb(dbins[i], M_g, n_H, T, rho_gr)); // km/s
       }
 
-      intr_arr[i][j] = dela3i*dela1j/3. + delai2*dela2j/2. + dela1i*dela3j/3.; // um^4
+      intr_arr[i][j] = dela3i*dela1j/3. + dela2i*dela2j/2. +
+                       dela1i*dela3j/3.; // um^4
 
-      intr_arr[i][j] *= -M_PI * vproc; // in km/s 
+      intr_arr[i][j] *= -M_PI * vproc / vol_cc; // in km/s / cc
       intr_arr[i][j] *= dist[i] * dist[j]; // (#/um)^2
+
+      // Result has a unit of um^2 km/s / cc
+      intr_arr[i][j] *= 1.0e-3; // now s^-1 
+
+
     }
   }
 
@@ -560,29 +584,270 @@ void calc_interaction(Real intr_arr[][], Real dist[], Real dbins[], Real edges[]
 }
 
 KOKKOS_INLINE_FUNCTION
-void add_coag(Real intr_arr[][], Real mass_in_bin[], Real dbins[], Real edges[], int nbin, 
-  Real rho_gr, Real vturb, bool shatter){
+void add_coagulate(Real intr_arr[][kMaxDustBins], Real mass_in_bin[],
+                   const Real dbins[], const Real edges[], int nbin,
+                   Real rho_gr) {
   //! Assuming that intr_arr is already in the correct units
   //TODO: Check the units
+
+  // Maybe pass this to avoid recalculating this?
+  // Dust density in g/um^3
+  const Real rho_gr_um = rho_gr * 1.0e-12;
+  Real K_dust_um = (4.0/3.0)*M_PI*rho_gr_um;
   
   for (int i=0; i<nbin; i++){
     for (int j=0; j<nbin; j++){
 
-          Real a_coag = pow(pow(dbins[i], 3) + pow(dbins[j], 3), 1. / 3.);
+          Real ai3 = pow(dbins[i], 3.);
+          Real aj3 = pow(dbins[j], 3.);
+          Real a_coag = pow(ai3+aj3, 1. / 3.);
 
-          int k = searchsorted(edges, nbin, a_coag)-1;
-          if (k < nbin){
-              mass_in_bin[k] += intr_arr[i, j]
+          int k = searchsorted(edges, nbin + 1, a_coag)-1;
+
+          if ((k < nbin) && (k>0)){ 
+            // Remove coagulated grains
+            mass_in_bin[i] -= intr_arr[i][j] * K_dust_um * ai3;
+            mass_in_bin[j] -= intr_arr[i][j] * K_dust_um * aj3;
+            // Add back coagulated product grain
+            mass_in_bin[k] += intr_arr[i][j] * K_dust_um * (ai3 + aj3);
           }
-          else:
-              if use_overflow:
-                  overflow += dist_mat_coag[i, j]
-              else:
-                  num_in_bin[-1] += dist_mat_coag[i, j]
+
+    }
+  }
+  return;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real sigma_fn(Real M, const Real s){
+
+  Real M_inv = 1./M;
+  return 0.3 * pow(s + M_inv - 0.11, 0.13)/(s + M_inv - 1.);
+}
+
+// TODO: Come up with a way to abstract away the dust constants
+KOKKOS_INLINE_FUNCTION
+Real M_shocked(Real Mrel, Real Mproj, const Real rho_gr, const Real sigma_1,
+               const Real s, const Real R, const Real M_1) {
+
+  Real sigma_r = sigma_fn(Mrel/(1.+R), s);
+
+  Real Msh = (1.+2.*R) / pow(1.+R, 9./16.) / pow(sigma_r, 1./9.);
+  Msh *= pow(Mrel/sigma_1/M_1, 8./9.);
+
+  return (Msh * Mproj); 
+}
+
+KOKKOS_INLINE_FUNCTION
+Alims a_lim_frac(Real Mfrac, const Real P1, const Real rho_gr, const Real Pv, const Real z_const){
+  // size limits for the fragments of the target
+
+  // Dust density in g/um^3
+  const Real rho_gr_um = rho_gr * 1.0e-12;
+
+  Alims afrac_lim{0.0, 0.0};
+
+  afrac_lim.amax = 3./4./M_PI/rho_gr_um * (1. + z_const);
+  afrac_lim.amax /= 4. * pow(z_const, 3.) * (z_const - 2.);
+  afrac_lim.amax *= Mfrac;
+
+  afrac_lim.amin = afrac_lim.amax * pow(P1/Pv, 1.47);
+   
+  return afrac_lim;
+}
+
+KOKKOS_INLINE_FUNCTION
+Alims a_lim_proj(Real Mproj, Real Mtarg, Real vrel, const Real rho_gr, 
+  const Real sigma_1, const Real s, const Real R, const Real c0, const Real M_1){
+  // size limits for the fragments of the projectile
+
+  // Dust density in g/um^3
+  const Real rho_gr_um = rho_gr * 1.0e-12;
+  const Real Mrel = vrel / c0;
+
+  Real sigma_r = sigma_fn(Mrel/(1.+R), s);
+
+  // Eqn 16 of Hirashita & Yan 2009, with some rearrangement
+  Real v_cat = c0 * sqrt(sigma_1) * pow(sigma_r,1. / 16.) * (1. + R) * M_1;
+  v_cat *= pow(Mtarg / (1. + 2. * R) / Mproj, 9. / 16.);
+
+  Alims aproj_lim{0.0, 0.0};
+  aproj_lim.amax = 0.22 * pow(3. * Mproj / (4. * M_PI * rho_gr_um), 1. / 3.);
+  aproj_lim.amax *= v_cat / vrel;
+
+  aproj_lim.amin = 0.03 * aproj_lim.amax;
+   
+  return aproj_lim;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real frag_norm(Real Mfrag, Alims alim, Real expo, const Real rho_gr) {
+  // Normalization constant for the shattered fragment distribution
+
+  const Real rho_gr_um = rho_gr * 1.0e-12;
+  Real K_dust_um = (4.0/3.0)*M_PI*rho_gr_um;
+  Real mex = expo + 4.;
+
+  return Mfrag * mex / K_dust_um / (pow(alim.amax, mex) - pow(alim.amin, mex));
+}
+
+KOKKOS_INLINE_FUNCTION
+Real integrate_frag(Real Anorm, Real a1, Real a2, Real expo, const Real rho_gr){
+  // Integrate and return the fragment mass in a bin
+  // amin and amax are sim dust range
+
+  const Real rho_gr_um = rho_gr * 1.0e-12;
+  Real K_dust_um = (4.0/3.0)*M_PI*rho_gr_um;
+  Real mex = expo + 4.;
+
+  return Anorm * K_dust_um * (pow(a2, mex) - pow(a1, mex)) / mex;
+}
+
+KOKKOS_INLINE_FUNCTION
+void deposit_frag(Real mass_in_bin[], const Real edges[], int nbin, Alims alim,
+                  Real Anorm, Real expo, const Real rho_gr) {
+  // Deposit fragment mass in grain distribution
+
+  int k = searchsorted(edges, nbin + 1, alim.amin)-1;
+  int l = searchsorted(edges, nbin + 1, alim.amax)-1;
+
+  if (k>=nbin){
+    Kokkos::printf("### FATAL ERROR in %s at line %d\n", __FILE__, __LINE__);
+    Kokkos::printf("Shattered fragments bigger than amax! "
+                   "amin=%e amax=%e last_edge=%e nbin=%d\n",
+                   static_cast<double>(alim.amin), static_cast<double>(alim.amax),
+                   static_cast<double>(edges[nbin]), nbin);
+    Kokkos::abort("deposit_frag overflowed dust-bin bounds");
+  }
+
+  if (l<0){ // Whole fragment distribution out of bounds
+    mass_in_bin[0] += integrate_frag(Anorm, alim.amin, alim.amax, expo, rho_gr);
+    return;
+  }
+
+  Real aleft = alim.amin;
+  if (k<0){ // Just frag_amin out of bounds
+    mass_in_bin[0] += integrate_frag(Anorm, alim.amin, edges[0], expo, rho_gr);
+    k = 0;
+    aleft = edges[0];
+  }
+
+  // if in the same bin
+  if (k == l) {
+    mass_in_bin[k] += integrate_frag(Anorm, aleft, alim.amax, expo, rho_gr);
+    return;
+  }
+
+  // left edge
+  mass_in_bin[k] += integrate_frag(Anorm, aleft, edges[k+1], expo, rho_gr);
+
+  for (int i = k + 1; i < l; ++i) {
+    mass_in_bin[i] += integrate_frag(Anorm, edges[i], edges[i+1], expo, rho_gr);
+  }
+
+  // right edge
+  mass_in_bin[l] += integrate_frag(Anorm, edges[l], alim.amax, expo, rho_gr);
+
+  return;
+}
+
+KOKKOS_INLINE_FUNCTION
+void add_shatters(Real intr_arr[][kMaxDustBins], Real mass_in_bin[],
+                  const Real dbins[], const Real edges[], int nbin, Real M_g,
+                  const Real rho_gr, Real n_H, Real T) {
+  //! Assuming that intr_arr is already in the correct units
+  //TODO: Check the units
+
+  
+  // Dust property consts
+  const Real R = 1.0;
+
+  // Critical Pressure
+  const Real P1_Si = 3e11;  // dyn/cm^2
+  const Real P1_C = 4e10;  // dyn/cm^2
+  const Real P1 = (P1_Si + P1_C) / 2.;  // dyn/cm^2
+
+  // Critical Pressure of vapourisation
+  const Real Pv_Si = 5.4e12; // dyn/cm^2
+  const Real Pv_C = 5.8e12; // dyn/cm^2
+  const Real Pv = (Pv_Si + Pv_C) / 2.;  // dyn/cm^2
+
+  const Real v_shatt_Si = 2.7;  // km/s
+  const Real v_shatt_C = 1.2;  // km/s
+  const Real v_shatt = 0.5 * (v_shatt_C + v_shatt_Si);  // km/s
+
+  // Dust property const
+  const Real s_Si = 1.2;
+  const Real s_C = 1.9;
+  const Real s = (s_Si + s_C) / 2.;  // dimensionless
+
+  // Const in reln for excavation flow
+  const Real z_const = 3.4;  // dimensionless
+
+  // Grain sound speed
+  // Tielens+ 1994, Table 1
+  // https://ui.adsabs.harvard.edu/abs/1994ApJ...431..321T/abstract
+  const Real c0_Si = 5.0;  // km/s
+  const Real c0_C = 1.8;  // km/s
+  const Real c0 = (c0_Si + c0_C) / 2.;  // km/s
+  const Real c0_cgs = c0 * 1.0e5; // cm/s
+
+  const Real shatter_expo = -3.3;
+
+  const Real phi_1 = P1 / rho_gr/ c0_cgs/ c0_cgs;
+  const Real M_1 = 2. * phi_1 / (1. + sqrt(1. + 4.*s*phi_1));
+  const Real sigma_1 = sigma_fn(M_1, s);
+
+  // Maybe pass this to avoid recalculating this?
+  const Real rho_gr_um = rho_gr * 1.0e-12;
+  const Real K_dust_um = (4.0/3.0)*M_PI*rho_gr_um;
+
+  for (int i=0; i<nbin; i++){
+    for (int j=0; j<nbin; j++){
+
+      Real ai3 = pow(dbins[i], 3.);
+      Real aj3 = pow(dbins[j], 3.);
+      Real Mi = K_dust_um * ai3;
+      Real Mj = K_dust_um * aj3;
+
+      Real Mproj = Kokkos::min(Mi, Mj);
+      Real Mtarg = Kokkos::max(Mi, Mj);
+
+      Real vturb_i = vturb(dbins[i], M_g, n_H, T, rho_gr);
+      Real vrel = maxwell_tail_mean(v_shatt, vturb_i);
+      Real Msh = M_shocked(vrel/c0, Mproj, rho_gr, sigma_1, s, R, M_1);
+
+      Real Mfrac = (Msh > 0.5*Mtarg) ? Mtarg : 0.4 * Msh;
+      Real Mleft = Mtarg - Mfrac;
+      Real a_left = pow(Mleft/K_dust_um, 1./3.);
+      
+      // Take care of parent grains, and left over target (left)
+      int k = searchsorted(edges, nbin + 1, a_left)-1;
+      if ((k < nbin) && (k>0)){ 
+        // Remove shattered grains
+        mass_in_bin[i] -= intr_arr[i][j] * Mi;
+        mass_in_bin[j] -= intr_arr[i][j] * Mj;
+        // Add back left product grain
+        mass_in_bin[k] += intr_arr[i][j] * Mleft;
+      }
+
+      //* Take care of fragments from the parent
+      Alims frac_alim = a_lim_frac(Mfrac, P1, rho_gr, Pv, z_const);
+      Real frac_norm = frag_norm(Mfrac, frac_alim, shatter_expo, rho_gr);
+
+      deposit_frag(mass_in_bin, edges, nbin, frac_alim, frac_norm, shatter_expo, rho_gr);
+
+      //* Take care of fragments of the projectile
+      Alims proj_alim = a_lim_proj(Mproj, Mtarg, vrel, rho_gr, sigma_1, s, R,
+                                   c0, M_1);
+      Real proj_norm = frag_norm(Mproj, proj_alim, shatter_expo, rho_gr);
+
+      deposit_frag(mass_in_bin, edges, nbin, proj_alim, proj_norm, shatter_expo, rho_gr);
 
     }
   }
 
+
+  return;
 }
 
 //! \fn void AddDustSource()
@@ -591,7 +856,7 @@ void add_coag(Real intr_arr[][], Real mass_in_bin[], Real dbins[], Real edges[],
 void AddDustSource(Mesh *pm, const Real bdt){
   MeshBlockPack *pmbp = pm->pmb_pack;
   auto &indcs = pm->mb_indcs;
-  // auto &size = pmbp->pmb->mb_size;
+  auto &size = pmbp->pmb->mb_size;
   int is = indcs.is, ie = indcs.ie;
   int js = indcs.js, je = indcs.je;
   int ks = indcs.ks, ke = indcs.ke;
@@ -603,14 +868,6 @@ void AddDustSource(Mesh *pm, const Real bdt){
                   pmbp->pmhd->peos->eos_data : pmbp->phydro->peos->eos_data;
   int &nfluid = (is_mhd) ? pmbp->pmhd->nmhd : pmbp->phydro->nhydro;
 
-
-  // int nx1 = indcs.nx1;
-  // int nx2 = indcs.nx2;
-  // int nx3 = indcs.nx3;
-
-  // const int nmkji = (pmbp->nmb_thispack)*nx3*nx2*nx1;
-  // const int nkji = nx3*nx2*nx1;
-  // const int nji  = nx2*nx1;
   int nx1 = indcs.nx1;
   int nx2 = indcs.nx2;
   int nx3 = indcs.nx3;
@@ -624,11 +881,13 @@ void AddDustSource(Mesh *pm, const Real bdt){
 
   // Get code unit variables for temperature conversions
   Real KELVIN = 1.0;
-  Real MYR = 1.0;
+  Real MYR = 1.0; // how many code times in 1 Myr
+  Real KM_S = 1.0; // how many code vel in 1 km/s
+  Real CM3 = 1.0; // how many code volumes in 1 cc
   if (pmbp->punit != nullptr) {
     KELVIN = pmbp->punit->temperature_cgs();
     MYR = pmbp->punit->myr();
-    KMS = pmbp->punit->km_s();
+    CM3 = pow(pmbp->punit->cm(), 3.);
   } else if (global_variable::my_rank == 0) {
     std::cout << "ERROR: <units> block missing..." << std::endl;
     std::exit(1);
@@ -638,7 +897,6 @@ void AddDustSource(Mesh *pm, const Real bdt){
   // int ntracer = nfluid+1; // index for tracer for cloud
   int ndusti = nfluid+2; // first dust bin scalar
   const int Ndust_bins = ptrml->Ndust_bins; // Number of dust bins
-  constexpr int kMaxDustBins = 32; // upper bound supported in device stack arrays
   if (Ndust_bins > kMaxDustBins) {
     if (global_variable::my_rank == 0) {
       std::cout << "ERROR: Ndust_bins=" << Ndust_bins
@@ -647,24 +905,17 @@ void AddDustSource(Mesh *pm, const Real bdt){
     std::exit(1);
   }
 
-
   Real Z_solar = ptrml->Z_solar;
   auto dust_bins = ptrml->dbins;
 
-  Real size_d1 = 1.0; // in nm
-  Real size_d2 = 10.0; // in nm
+  const Real gamma_adi = ptrml->gamma_adi;
+  const int vturb_est_ncell = ptrml->vturb_est_ncell;
 
-  Real sig_DL = 10; // in km/s
-  Real sig_DS = 0.1; // in km/s
-  Real F_coag = 0.5; // fudge factor for coagulation
-
-  Real grain_porosity = ptrml->grain_porosity;
-  Real rho_gr = ptrml->rho_gr;
-  Real dust_a = ptrml->dust_a;
-  Real dust_b = ptrml->dust_b;
+  const Real grain_porosity = ptrml->grain_porosity;
+  const Real rho_gr = ptrml->rho_gr;
+  const Real dust_a = ptrml->dust_a;
+  const Real dust_b = ptrml->dust_b;
   const int n_edges = Ndust_bins + 3;
-
-  Real K_dust = (4.0/3.0)*M_PI*rho_gr;
 
   auto dedges_pad_h = Kokkos::create_mirror_view_and_copy(HostMemSpace(),
                                                            ptrml->dedges_pad);
@@ -674,14 +925,19 @@ void AddDustSource(Mesh *pm, const Real bdt){
   Real edges[kMaxDustBins+1];
   Real dbins[kMaxDustBins];
   for (int i=0; i<n_edges; i++) edges_pad[i] = dedges_pad_h(i);
-  for (int i=1; i<(Ndust_bins+1); i++) edges[i-1] = dedges_pad_h(i);
+  for (int i=0; i<=Ndust_bins; i++) edges[i] = dedges_pad_h(i+1);
   for (int i=0; i<Ndust_bins; i++) dbins[i] = dbins_h(i);
 
   //! There seems to an issue with zero dust
   par_for("user_source", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
   KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+
     Real dens = w0(m, IDN, k, j, i); // in cm^-3
     Real temp = (w0(m,IEN,k,j,i) * gm1) / dens * KELVIN;
+    const Real M = 0.0;  // Placeholder until a local Mach estimate is implemented.
+
+    // cell volume in cm^3
+    Real vol_cc = size.d_view(m).dx1*size.d_view(m).dx2*size.d_view(m).dx3 / CM3;
 
     // To prevent NaNs
     Real Z_tol = 1e-20; 
@@ -697,32 +953,69 @@ void AddDustSource(Mesh *pm, const Real bdt){
 
     Real dust_arr[kMaxDustBins+2];
 
-    // Interaction array
-    Real intr_arr[kMaxDustBins][kMaxDustBins];
-
+    //! Should I use w0 scalar instead?
+    // u0 is equiv to rho_d
 
     // Total dust ratio across size bins
     dust_arr[0] = 0.0;
     dust_arr[Ndust_bins+1] = 0.0;
-    for (int id=0; id<Ndust_bins; id++){
-
-      // Calculate bin value from rho_d in scalar
-      dust_arr[id+1] = 4*u0(m, ndusti+id, k, j, i)/K_dust;
-      dust_arr[id+1] /= (pow(edges_pad[id+2], 4)-pow(edges_pad[id+1], 4));
+    for (int id=1; id<(Ndust_bins+1); id++){
+      dust_arr[id] = mass_to_num(u0(m, ndusti+id-1, k, j, i), 
+                        edges_pad[id], edges_pad[id+1], rho_gr);
     }
 
     // Calculate shift from sputtering and accretion
     Real tot_shift = sputtering(dens, temp, Z_local/Z_solar, grain_porosity);
     tot_shift += accretion(dens, temp, Z_local/Z_solar, grain_porosity); // in um/Myr
-    tot_shift *= bdt/MYR;
+    tot_shift *= bdt/MYR; // bdt converted to Myr
 
-    // Coagulation
-    calc_interaction(intr_arr, dust_arr, dbins, edges, Ndust_bins, rho_gr, vturb, false);
-    // TODO: Add the left over terms: Vcell
+    //*====================================//
+    // Use Welford's online method to calculate the std dev of velocity
 
+    Real vx_mean = 0.0, vy_mean = 0.0, vz_mean = 0.0;
+    Real M2x = 0.0, M2y = 0.0, M2z = 0.0;
+    int n_count = 0;
 
-    // Shattering
-    calc_interaction(intr_arr, dust_arr, dbins, edges, Ndust_bins, rho_gr, vturb, true);
+    for (int ia=-vturb_est_ncell; ia<=vturb_est_ncell; ia++){
+      for (int ja=-vturb_est_ncell; ja<=vturb_est_ncell; ja++){
+        for (int ka=-vturb_est_ncell; ka<=vturb_est_ncell; ka++){
+
+          Real vx = w0(m, IVX, k+ka, j+ja, i+ia); 
+          Real vy = w0(m, IVY, k+ka, j+ja, i+ia); 
+          Real vz = w0(m, IVZ, k+ka, j+ja, i+ia); 
+
+          n_count++;
+
+          Real deltax = vx - vx_mean;
+          Real deltay = vy - vy_mean;
+          Real deltaz = vz - vz_mean;
+
+          vx_mean += deltax / n_count;
+          vy_mean += deltay / n_count;
+          vz_mean += deltaz / n_count;
+
+          Real delta2x = vx - vx_mean;
+          Real delta2y = vy - vy_mean;
+          Real delta2z = vz - vz_mean;
+
+          M2x += deltax * delta2x;
+          M2y += deltay * delta2y;
+          M2z += deltaz * delta2z;
+
+        }
+      }
+    }
+
+    Real vturb_g = sqrt((M2x+M2y+M2z)/Real(n_count+1)); // at nbd, in code units
+    
+    // Assuming Kolmogorov, scale from nbd to cell lengthscale
+    vturb_g *= pow(1/Real(n_count), 1./9.) / KM_S ; // in code units
+
+    //*====================================//
+
+    // Gas mach number
+    Real cs_g = sqrt(gamma_adi*temp/KELVIN) * 1.0e-5; // in km/s 
+    Real M_g = vturb_g / cs_g;
 
     // Initial dust mass
     Real delta_dmass = -dist_num_integral(
@@ -730,6 +1023,37 @@ void AddDustSource(Mesh *pm, const Real bdt){
   
     // Rebin after shifting
     rebin(dust_arr, edges_pad, n_edges, tot_shift, rho_gr);
+
+    Real intr_arr[kMaxDustBins][kMaxDustBins];  // Interaction array
+
+    //* Coagulation
+    // Calculate the interaction frequency
+    calc_interaction(intr_arr, dust_arr + 1, dbins, edges, Ndust_bins, M_g,
+                     rho_gr, dens, temp, vol_cc, false);
+    //TODO: Calculate M to go above
+
+    // Calculate mass redistribution as mass_in_bin
+    Real mass_in_bin[kMaxDustBins];   // Mass change
+    for (int id=0; id<Ndust_bins; ++id) mass_in_bin[id] = 0.0;
+
+    add_coagulate(intr_arr, mass_in_bin, dbins, edges, Ndust_bins, rho_gr);
+
+    //* Shattering
+    // Calculate the interaction frequency
+    calc_interaction(intr_arr, dust_arr + 1, dbins, edges, Ndust_bins, M_g,
+                     rho_gr, dens, temp, vol_cc, true);
+    // TODO: Add the left over terms: Vcell and correct the units
+
+    // Calculate mass redistribution as mass_in_bin
+    add_shatters(intr_arr, mass_in_bin, dbins, edges, Ndust_bins, M_g,
+                 rho_gr, dens, temp);
+
+    // Add the changes to dust_arr from coagulation and shattering
+    for (int id=1; id<(Ndust_bins+1); ++id){ 
+      dust_arr[id] += mass_to_num(mass_in_bin[id-1], edges[id-1], edges[id], rho_gr);
+    }
+
+    //*====================================//
 
     // Mass after rebinning
     Real dust_tot = dist_num_integral(
@@ -744,19 +1068,17 @@ void AddDustSource(Mesh *pm, const Real bdt){
 
     // Kokkos::printf("rate_Z: %.50lf um \n", rate_Z);
 
+    const Real rho_gr_um = rho_gr * 1.0e-12;
+    const Real K_dust_um = (4.0/3.0)*M_PI*rho_gr_um;
+
     // Loop through the dust bins
     for (int id=0; id<Ndust_bins; id++){
-      u0(m, ndusti+id, k, j, i) = 0.25 * K_dust * dust_arr[id+1];
-      u0(m, ndusti+id, k, j, i) *= pow(edges_pad[id+2], 4)-pow(edges_pad[id+1], 4);
-
-      // Kokkos::printf("dust%d: %.50f\n", id, dust_arr[id+1]);
+      u0(m, ndusti+id, k, j, i) = 0.25 * K_dust_um * dust_arr[id+1];
+      u0(m, ndusti+id, k, j, i) *= pow(edges_pad[id+2], 4.)-pow(edges_pad[id+1], 4.);
     }
-
 
     //! These are w0 * dens
     u0(m, nmetal, k, j, i) += rate_Z;
-
-    // Kokkos::printf("u0(m, nmetal, k, j, i): %.50lf um \n", u0(m, nmetal, k, j, i));
 
     // We should check that scalars are guaranteed to be in [0,1] after all source terms are added.
     // Clamp metallicity 
@@ -945,3 +1267,4 @@ void RefinementCondition(MeshBlockPack* pmbp) {
   refine_flag.template modify<DevExeSpace>();
   refine_flag.template sync<HostMemSpace>();
 }
+

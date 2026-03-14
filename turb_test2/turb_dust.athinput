@@ -95,6 +95,8 @@ dust_b = 0.1 # Max dust size
 dust_exp = 1 # Dust size distribution exponent
 rho_gr = 3  # Dust grain density in g/cc
 
+vturb_est_ncell = 2 # Nbd cells to estimate vturb
+
 
 # --- Temperatures  ---
 T_hot = 1000000            # Hot phase temperature (in K)
