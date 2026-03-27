@@ -1,5 +1,7 @@
 # build directories
 build/
+build_*/
+docs/build/
 
 # Athena output files
 *.tab
@@ -8,6 +10,7 @@ build/
 *.athdf*
 *.hst
 *.rst
+*.log
 
 # Mac OS metadata
 .DS_Store
@@ -16,3 +19,18 @@ build/
 # editor temp files
 *~
 *.swp
+
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+test_outputs
+
+**/bin/
+**/save/
+*.out
+
+.direnv
+.venv
+
+build_frontier*.log
