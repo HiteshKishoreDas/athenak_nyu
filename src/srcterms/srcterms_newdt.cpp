@@ -115,19 +115,21 @@ void SourceTerms::NewTimeStep(const DvceArray5D<Real> &w0, const EOS_Data &eos_d
     auto Metal_Cooling_CIE_ = Metal_Cooling_CIE.d_view;
     auto H_He_Cooling_CIE_ = H_He_Cooling_CIE.d_view;
 
-    auto Tfloor  = Tbins_ARR[0];
-    auto Tceil   = Tbins_ARR[Tbins_DIM_0 - 1];
-    auto nHfloor = nHbins_ARR[0];
-    auto nHceil  = nHbins_ARR[nHbins_DIM_0 - 1];
+    const Real log_Tfloor  = Tbins_ARR[0];
+    const Real log_Tceil   = Tbins_ARR[Tbins_DIM_0 - 1];
+    const Real log_nHfloor = nHbins_ARR[0];
+    const Real log_nHceil  = nHbins_ARR[nHbins_DIM_0 - 1];
 
     Real X = 0.75; // Hydrogen mass fraction
     Real Zsol = 0.02; // Solar metallicity
 
     Real h_rate = hrate;
     Real h_norm = hscale_norm;
+    bool h_flag = hscale_flag;
     Real h_height = hscale_height;
     Real h_radius = hscale_radius;
     Real h_alpha = hscale_alpha;
+    Real T_cutoff_ = T_cutoff;
 
     // find smallest (e/cooling_rate) in each cell
     Kokkos::parallel_reduce("srcterms_cooling_newdt",
@@ -174,100 +176,79 @@ void SourceTerms::NewTimeStep(const DvceArray5D<Real> &w0, const EOS_Data &eos_d
         eint = w0(m,ITM,k,j,i)*w0(m,IDN,k,j,i)/gm1;
       }
       Real nH = X*nH_unit*w0(m,IDN,k,j,i); // density in cgs units
+      const Real log_temp = log10(temp);
+      const Real log_nH = log10(nH);
+
+      const Real m_lowT = (log_temp <  log_Tfloor) ? 1.0 : 0.0;
+      const Real m_Tin  = (log_temp >= log_Tfloor && log_temp <= log_Tceil) ? 1.0 : 0.0;
+      const Real m_Nin  = (log_nH >= log_nHfloor && log_nH <= log_nHceil) ? 1.0 : 0.0;
+      const Real m_PIE  = m_Tin * m_Nin;
+      const Real m_CIE  = m_Tin;
+
+      int iT = 0, jN = 0;
+      while (iT < Tbins_DIM_0 - 2 && Tbins_(iT + 1) < log_temp) ++iT;
+      while (jN < nHbins_DIM_0 - 2 && nHbins_(jN + 1) < log_nH) ++jN;
+
+      const Real log_T0 = Tbins_(iT);
+      const Real log_T1 = Tbins_(iT + 1);
+      const Real inv_dT = 1.0 / (log_T1 - log_T0);
+      const Real t = (log_temp - log_T0) * inv_dT;
+      const Real omt = 1.0 - t;
+
+      const Real log_n0 = nHbins_(jN);
+      const Real log_n1 = nHbins_(jN + 1);
+      const Real inv_dn = 1.0 / (log_n1 - log_n0);
+      const Real u = (log_nH - log_n0) * inv_dn;
+      const Real omu = 1.0 - u;
 
       // Caculate PIE cooling
       // WiersmaCooling at redshift z = 0 taken from Wiersma et al (2009)
-      Real lambda_cooling_PIE = 0.0;     
-      // Ensure we are in range of cooling table
-      if (temp > Tfloor && temp < Tceil && nH > nHfloor && nH < nHceil) {
-        // Convert input values to log space
-        Real log_temp = log10(temp);
-        Real log_density = log10(nH);
+      const Real prim_PIE =
+          omt*omu*H_He_Cooling_(iT,   jN  ) +
+          t  *omu*H_He_Cooling_(iT+1, jN  ) +
+          omt*u  *H_He_Cooling_(iT,   jN+1) +
+          t  *u  *H_He_Cooling_(iT+1, jN+1);
 
-        // Locate indices in Tbins and nHbins
-        int i = 0, j = 0;
-        while (i < Tbins_DIM_0 - 2 && log10(Tbins_(i + 1)) < log_temp) ++i; 
-        while (j < nHbins_DIM_0 - 2 && log10(nHbins_(j + 1)) < log_density) ++j;
+      const Real metal_PIE =
+          omt*omu*Metal_Cooling_(iT,   jN  ) +
+          t  *omu*Metal_Cooling_(iT+1, jN  ) +
+          omt*u  *Metal_Cooling_(iT,   jN+1) +
+          t  *u  *Metal_Cooling_(iT+1, jN+1);
 
-        // Logarithms of the Tbins and nHbins bounding the point
-        Real log_T0 = log10(Tbins_(i));
-        Real log_T1 = log10(Tbins_(i + 1));
-        Real log_nH0 = log10(nHbins_(j));
-        Real log_nH1 = log10(nHbins_(j + 1));
-
-        // Compute weights for bilinear interpolation
-        Real t = (log_temp - log_T0) / (log_T1 - log_T0);
-        Real u = (log_density - log_nH0) / (log_nH1 - log_nH0);
-    
-        // Corner values in log space from the H_He cooling grid
-        Real C00 = H_He_Cooling_(i, j);
-        Real C10 = H_He_Cooling_(i + 1, j);
-        Real C01 = H_He_Cooling_(i, j + 1);
-        Real C11 = H_He_Cooling_(i + 1, j + 1);
-  
-        // Corner values in log space from the Metal cooling grid
-        Real M00 = Metal_Cooling_(i, j);
-        Real M10 = Metal_Cooling_(i + 1, j);
-        Real M01 = Metal_Cooling_(i, j + 1);
-        Real M11 = Metal_Cooling_(i + 1, j + 1);
-
-        // Bilinear interpolation in log space
-        Real prim_cooling =
-            (1 - t) * (1 - u) * C00 +
-            t * (1 - u) * C10 +
-            (1 - t) * u * C01 +
-            t * u * C11;
-        Real metal_cooling =
-            (1 - t) * (1 - u) * M00 +
-            t * (1 - u) * M10 +
-            (1 - t) * u * M01 +
-            t * u * M11;
-  
-        lambda_cooling_PIE = prim_cooling + Z * metal_cooling;
-      } 
+      const Real lambda_cooling_PIE = m_PIE * (prim_PIE + Z * metal_PIE);
       
       // Caculate CIE cooling
-      Real lambda_cooling_CIE = 0.0;  
-      if (temp > Tfloor && temp < Tceil) {
-        // Convert input values to log space
-        Real log_temp = log10(temp);
+      const Real C0 = H_He_Cooling_CIE_(iT);
+      const Real M0 = Metal_Cooling_CIE_(iT);
+      const Real prim_CIE = C0 + t * (H_He_Cooling_CIE_(iT + 1) - C0);
+      const Real metal_CIE = M0 + t * (Metal_Cooling_CIE_(iT + 1) - M0);
+      const Real lambda_cooling_CIE_tab = prim_CIE + Z * metal_CIE;
 
-        // Locate index in Tbins
-        int i = 0;
-        while (i < Tbins_DIM_0 - 2 && log10(Tbins_(i + 1)) < log_temp) ++i;
+      // for temperatures less than 100 K, use Koyama & Inutsuka (2002)
+      const Real lambda_lowT = Z * (2.0e-19 * exp(-1.184e5 / (temp + 1.0e3))
+                                    + 2.8e-28 * sqrt(temp) * exp(-92.0 / temp));
 
-        // Logarithms of the Tbins bounding the point
-        Real log_T0 = log10(Tbins_(i));
-        Real log_T1 = log10(Tbins_(i + 1));
-
-        // Compute weight for linear interpolation
-        Real t = (log_temp - log_T0) / (log_T1 - log_T0);
-
-        // Bin values in log space from the H_He cooling grid
-        Real C0 = H_He_Cooling_CIE_(i);
-        Real C1 = H_He_Cooling_CIE_(i + 1);
-
-        // Bin values in log space from the Metal cooling grid
-        Real M0 = Metal_Cooling_CIE_(i);
-        Real M1 = Metal_Cooling_CIE_(i + 1);
-
-        // Linear Interpolation
-        Real prim_cooling = C0 + t * (C1 - C0);
-        Real metal_cooling = M0 + t * (M1 - M0);
-        
-        lambda_cooling_CIE = prim_cooling + Z * metal_cooling;
-      }
-      else if (temp < Tfloor) {
-        // for temperatures less than 100 K, use Koyama & Inutsuka (2002)
-        lambda_cooling_CIE = Z * (2.0e-19 * exp(-1.184e5 / (temp + 1.0e3))
-                                  + 2.8e-28 * sqrt(temp) * exp(-92.0 / temp));
-      }
+      const Real lambda_cooling_CIE =
+          m_CIE * lambda_cooling_CIE_tab + (1.0 - m_CIE) * (m_lowT * lambda_lowT);
 
       // Calculate heating
-      Real horz_falloff = exp(-R / h_radius);
-      Real vert_falloff = exp(-(x3v*x3v) / sqrt(h_height*h_height + h_alpha*R*R));
-      Real gamma_heating = h_rate * h_norm * X * nH_unit * horz_falloff * vert_falloff;
-      if (temp > 1e4) gamma_heating *= pow(temp / 1e4, -8.0);
+      Real gamma_heating = 0.0;
+      if (h_flag) {
+        Real horz_falloff = exp(-R / h_radius);
+        Real vert_scale2  = fma(h_height, h_height, h_alpha*R*R);
+        Real vert_falloff = exp(-(x3v*x3v) / vert_scale2);
+        gamma_heating = h_rate * h_norm * X * nH_unit * horz_falloff * vert_falloff;
+      } else {
+        gamma_heating = h_rate * h_norm * X * nH_unit;
+      }
+
+      const Real m_hot = (temp > 1.0e4) ? 1.0 : 0.0;
+      const Real inv_ratio = 1.0e4 / temp;
+      const Real damp_factor =
+          m_hot * inv_ratio*inv_ratio*inv_ratio*inv_ratio *
+                  inv_ratio*inv_ratio*inv_ratio*inv_ratio
+        + (1.0 - m_hot);
+      gamma_heating *= damp_factor;
 
       // Combine CIE and PIE cooling
       Real dx = size.d_view(m).dx1 * length_unit;
@@ -277,11 +258,13 @@ void SourceTerms::NewTimeStep(const DvceArray5D<Real> &w0, const EOS_Data &eos_d
       Real lambda_cooling = (1 - frac) * lambda_cooling_CIE + frac * lambda_cooling_PIE;
       gamma_heating *= (1 - frac);
 
-      Real cooling_heating = FLT_MIN + fabs(X * w0(m,IDN,k,j,i) *
-                             (X * w0(m,IDN,k,j,i) * lambda_cooling / cooling_unit
-                                                 - gamma_heating / heating_unit));
+      if (temp < T_cutoff_) {
+        Real cooling_heating = FLT_MIN + fabs(X * w0(m,IDN,k,j,i) *
+                               (X * w0(m,IDN,k,j,i) * lambda_cooling / cooling_unit
+                                                   - gamma_heating / heating_unit));
 
-      min_dt = fmin((eint/cooling_heating), min_dt);
+        min_dt = fmin((eint/cooling_heating), min_dt);
+      }
     }, Kokkos::Min<Real>(dtnew));
     
   }

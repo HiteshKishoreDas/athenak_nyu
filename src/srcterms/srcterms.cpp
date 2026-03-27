@@ -303,6 +303,8 @@ void SourceTerms::CGMCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
     const Real m_PIE  = m_Tin * m_Nin;   // 1 only if both in-range
     const Real m_CIE  = m_Tin;           // 1 if T in-range
 
+    // printf("Z %d (%d, %d, %d): %lf\n", nhydro, i, j, k, Z);
+
     // Indices
     int iT = 0, jN = 0;
     while (iT < Tbins_DIM_0 - 2 && Tbins_(iT + 1) < log_temp) ++iT;
@@ -401,7 +403,7 @@ void SourceTerms::CGMCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
     // --- Energy update
     // First, normal source term:
     const Real dE_source =
-        - bdt * X * rho * ( X * rho * (lambda_cooling / cooling_unit)
+        - bdt * X * rho * m_cut *( X * rho * (lambda_cooling / cooling_unit)
                                      - (gamma_heating / heating_unit) );
 
     // Temperature ceiling (applied only when m_cap=1)
@@ -409,7 +411,7 @@ void SourceTerms::CGMCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
     
     const Real dE_total = (1.0 - m_cap) * dE_source + m_cap * dE_cap;
 
-    u0(m,IEN,k,j,i) += dE_total*m_cut;
+    u0(m,IEN,k,j,i) += dE_total;
   });
 
   return;
