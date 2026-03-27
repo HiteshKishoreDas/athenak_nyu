@@ -10,6 +10,7 @@ docs/build/
 *.athdf*
 *.hst
 *.rst
+*.log
 
 # Mac OS metadata
 .DS_Store
@@ -25,8 +26,8 @@ __pycache__/
 
 test_outputs
 
-*_test*/bin/
-*_test*/save/
+**/bin/
+**/save/
 *.out
 
 .direnv
