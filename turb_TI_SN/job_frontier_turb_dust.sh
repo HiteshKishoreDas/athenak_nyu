@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -A AST207
-#SBATCH -J dust_debug
+#SBATCH -J dust_TI
 #SBATCH -o logs/%x.%j.out
-#SBATCH -t 0:30:00
+#SBATCH -t 02:00:00
 #SBATCH -p batch
 #SBATCH --qos=debug
 #SBATCH -N 1
@@ -25,8 +25,8 @@ export MPICH_SMP_SINGLE_COPY_MODE=NONE
 # Paths
 run_dir=/lustre/orion/proj-shared/ast207/hitesh/athenak_nyu/build_turb/src/
 executable=athena
-input_dir=/lustre/orion/proj-shared/ast207/hitesh/athenak_nyu/turb_test2/
-output_dir=/lustre/orion/proj-shared/ast207/hitesh/athenak_nyu/turb_test2/
+input_dir=/lustre/orion/proj-shared/ast207/hitesh/athenak_nyu/turb_TI_SN/
+output_dir=/lustre/orion/proj-shared/ast207/hitesh/athenak_nyu/turb_TI_SN/
 input_file=turb_dust.athinput
 
 cd $run_dir
@@ -52,7 +52,7 @@ srun -N 1 -n 8 --ntasks-per-node=8 \
      --gpus-per-task=1 --gpu-bind=closest \
      ./${executable} \
      $restart_line \
-     -t 0:20:00 \
+     -t 02:20:00 \
      -d ${output_dir} \
      $arguments
 

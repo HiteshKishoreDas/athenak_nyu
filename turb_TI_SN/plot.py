@@ -59,23 +59,26 @@ def compute_temperature(out_dict):
     return T
 
 
+nscalars = 8
+
 dust_tot_small = []
 dust_tot_large = []
 time = []
 
 hot_gas_temp = []
+initial_dust_scalars = None
 
 # plot_flag = False
 plot_flag = True
 
-slice_flag = True
-# slice_flag = False
+# slice_flag = True
+slice_flag = False
 
 # log_flag = True
 log_flag = False
 
 
-for i in range(0, 1):
+for i in range(0, 100):
     print(f"Processing frame {i}")
 
     dir_dict = {"x": 2, "y": 1, "z": 0}
@@ -88,6 +91,12 @@ for i in range(0, 1):
     #     break
 
     box_shape = np.shape(out_dict["dens"])
+
+    if initial_dust_scalars is None:
+        initial_dust_scalars = [
+            np.array(out_dict[f"s_{str(isc + 2).zfill(2)}"], copy=True)
+            for isc in range(nscalars)
+        ]
 
     print(f"{box_shape = }")
 
@@ -115,7 +124,6 @@ for i in range(0, 1):
     X, Y = np.meshgrid(y_arr, x_arr)
 
     if plot_flag:
-
         ncols = 1
 
         # key = "dens"
@@ -135,7 +143,6 @@ for i in range(0, 1):
         label = []
 
         if key not in ["T", "D"]:
-
             if key == "dens_T":
                 key = "dens"
                 img_arr = out_dict[key][*slice_list]
@@ -147,28 +154,33 @@ for i in range(0, 1):
 
             if key == "dens":
                 # vmin, vmax = 0, 2
-                label += [f"$\\rho$ (amu/cc)"]
+                label += ["$\\rho$ (amu/cc)"]
 
         elif key == "T":
             img_arr = compute_temperature(out_dict)[*slice_list]
             vmin, vmax = 3, 6
-            label += [f"$T$ (K)"]
+            label += ["$T$ (K)"]
 
         elif key == "D":
-            nscalars = 8
-
             img_arr = []
             vmin, vmax = [], []
 
             # Build one panel per dust scalar
             for isc in range(nscalars):
-                img_arr_i = out_dict[f"s_{str(isc+2).zfill(2)}"][*slice_list] / Z_solar
+                current_dust = out_dict[f"s_{str(isc + 2).zfill(2)}"][*slice_list]
+                initial_dust = initial_dust_scalars[isc][*slice_list]
+                img_arr_i = np.divide(
+                    current_dust,
+                    initial_dust,
+                    out=np.full_like(current_dust, np.nan, dtype=float),
+                    where=initial_dust != 0,
+                )
 
                 img_arr.append(img_arr_i)
                 vmin.append(None)
                 vmax.append(None)
 
-                label.append(f"$D_{isc}/Z_\odot$")
+                label.append(f"log$(D_{isc}/D_{{{isc},0}})$")
 
             # Match number of subplots to number of dust scalars
             ncols = len(img_arr)
@@ -207,7 +219,6 @@ for i in range(0, 1):
         # img_arr = out_dict["s_02"][*slice_list] / img_arr
 
         for j in range(ncols):
-
             axi = ax[j]
             pc = axi.pcolormesh(
                 X,
@@ -265,7 +276,7 @@ plt.plot(time, dust_tot_large / dust_tot_large[0], label="Large dust")
 plt.legend()
 
 plt.ylabel(r"$D/D_0$")
-plt.xlabel(f"$t$ (code units)")
+plt.xlabel("$t$ (code units)")
 
 plt.ylim(0, 1.1)
 plt.xlim(0, None)
@@ -276,7 +287,7 @@ plt.plot(time, dust_tot_small / dust_tot_large)
 plt.legend()
 
 plt.ylabel(r"$D_s/D_l$")
-plt.xlabel(f"$t$ (code units)")
+plt.xlabel("$t$ (code units)")
 
 # plt.figure()
 # plt.plot(time, hot_gas_temp)
