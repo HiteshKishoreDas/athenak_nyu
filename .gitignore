@@ -33,4 +33,5 @@ test_outputs
 .direnv
 .venv
 
+build*
 build_frontier*.log
