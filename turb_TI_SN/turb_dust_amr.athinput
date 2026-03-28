@@ -1,0 +1,154 @@
+# AthenaXXX input file for hydro turbulence
+
+<comment>
+problem   = turbulence
+
+<job>
+basename  = Turb       # problem ID: basename of output filenames
+
+<mesh>
+nghost    = 4         # Number of ghost cells
+nx1       = 128        # Number of zones in X1-direction
+x1min     = -0.5      # minimum value of X1
+x1max     = 0.5       # maximum value of X1
+ix1_bc    = periodic  # Inner-X1 boundary condition flag
+ox1_bc    = periodic  # Outer-X1 boundary condition flag
+
+nx2       = 128        # Number of zones in X2-direction
+x2min     = -0.5      # minimum value of X2
+x2max     = 0.5       # maximum value of X2
+ix2_bc    = periodic  # Inner-X2 boundary condition flag
+ox2_bc    = periodic  # Outer-X2 boundary condition flag
+
+nx3       = 128        # Number of zones in X3-direction
+x3min     = -0.5      # minimum value of X3
+x3max     = 0.5       # maximum value of X3
+ix3_bc    = periodic  # Inner-X3 boundary condition flag
+ox3_bc    = periodic  # Outer-X3 boundary condition flag
+
+<meshblock>
+nx1       = 32        # Number of cells in each MeshBlock, X1-dir (larger block -> fewer blocks)
+nx2       = 32        # Number of cells in each MeshBlock, X2-dir
+nx3       = 32        # Number of cells in each MeshBlock, X3-dir
+
+<mesh_refinement>
+refinement        = adaptive   # Enable adaptive mesh refinement
+num_levels        = 4          # 0 additional levels beyond base +1; keeps memory within GPU limits
+max_nmb_per_rank  = 10000       # Maximum MeshBlocks per MPI rank (raise to avoid limit hit)
+ncycle_check      = 5          # Check refinement every 5 cycles
+refinement_interval = 10       # Min cycles between refine/derefine events
+prolong_primitives = true      # Use primitive variable prolongation (more accurate)
+
+<refinement1>
+level = 3
+x1min = -0.055
+x1max =  0.055
+x2min = -0.055
+x2max =  0.055
+x3min = -0.055
+x3max =  0.055
+
+<time>
+evolution  = dynamic  # dynamic/kinematic/static
+integrator = rk2      # time integration algorithm
+cfl_number = 0.3      # The Courant, Friedrichs, & Lewy (CFL) Number
+nlim       = -1       # cycle limit
+tlim       = 100.0     # time limit
+ndiag      = 10        # cycles between diagostic output
+
+<hydro>
+eos         = ideal   # EOS type
+reconstruct = plm     # spatial reconstruction method
+rsolver     = hllc    # Riemann-solver to be used
+gamma       = 1.6666667  # gamma = C_p/C_v ~ 1 ==> isothermal
+nscalars    = 4
+
+# --- Cooling/Heating ---
+cgm_cooling = true
+pfloor      = 1e-10
+dfloor      = 1e-10
+sfloor      = 1e-10
+tfloor      = 0.0000143893451 # 1000 K
+hrate         = 2e-24    # cooling in cgs
+
+hscale_flag = false
+hscale_norm   = 1.0      # Should gas density at 1e4K
+# hscale_radius = 1000.0
+# hscale_height = 1000.0
+
+T_max       = 5e8 # K
+T_cutoff    = 5e5 # K
+fofc        = true
+
+
+<units>
+length_cgs = 3.0856775809623245e+21  # 1 kpc
+mass_cgs   = 3.036951775493658e+40   # Gives n=1 cm^-3 for 1 kpc box
+time_cgs   = 3.15576e+13             # 1 Myr
+mu          = 0.6         # Mean molecular weight
+
+<problem>
+user_srcs = true          # enroll custom source outputs
+user_hist = true          # Enable custom history output
+
+# --- Adaptive Mesh Refinement ---
+ddens_max = 1.0           # Density graddient threshold
+
+# --- Initial Conditions (Hot Phase) ---
+rho_0     = 0.01           # Hot phase density (code units)
+
+# --- Cloud parameters ---
+LboxR        = 40.0          # L_box/R_cloud 
+transition_R = 40.0          # Radius / Transition layer
+
+
+# --- Dust model ---
+dust_model = true          # true to include dust model
+Z_gas = 1.0                # Gas metallicity in Z_solar
+D_Z_init = 0.5             # Initial dust-to-metal ratio 
+
+
+# --- Temperatures  ---
+T_hot = 1000000            # Hot phase temperature (in K)
+T_cold = 10000             # Cold phase temperature (in K)
+
+# tfloor and Tmax is defined in <hydro>
+
+
+<turb_driving>
+turb_flag = 2              # continuous driving
+tcorr = 1.0                # ~ L / 2 pi urms
+dedt  = 0.25               # ~ urms^3 / 2 L
+spect_form = 1             # parabolic
+npeak = 2                  # wavenumber where energy injection peaks
+nlow  = 1                  # smallest wave number
+nhigh = 3                  # largest wave number
+sol_fraction = 1.0         # solenoidal fraction
+dt_turb_update = 0.1       # update driving pattern
+rseed = -914               # choose your favorite random seed
+constant_edot = false      # false means constant acceleration field
+
+<output1>
+file_type = hst
+dt        = 0.1
+
+<output2>
+file_type  = bin         # legacy VTK output
+variable   = hydro_w     # variables to be output
+dt         = 1.0         # time increment between outputs
+id  = full_hydro_w       # identifier for the output
+
+<output3>
+file_type  = bin         # legacy VTK output
+variable   = hydro_w     # variables to be output
+dt         = 1.0         # time increment between outputs
+slice_x3   = 0.0         # slice location in x3
+id  = slice_x0_0_hydro_w # identifier for the output
+
+<output4>
+file_type  = rst         # legacy VTK output
+dt         = 1.0         # time increment between outputs
+
+<output5>
+file_type  = log         # legacy VTK output
+dt         = 1.0         # time increment between outputs
