@@ -6,6 +6,7 @@
 //! \file mass_removal_test.cpp
 //  \brief Problem generator for testing mass removal
 #include <iostream> // cout
+#include <random>
 #include <stdexcept>
 
 #include "athena.hpp"
@@ -19,8 +20,6 @@
 #include "pgen.hpp"
 
 #include "units/units.hpp"
-
-#include <Kokkos_Random.hpp>
 
 //----------------------------------------------------------------------------------------
 //! \struct pgen_trml
@@ -120,6 +119,12 @@ struct pgen_trml {
   // ADAPTIVE MESH REFINEMENT THRESHOLDS
   // ====================================================================================
   Real ddens_threshold; 
+
+  // ====================================================================================
+  // HISTORY OUTPUT METADATA
+  // ====================================================================================
+  bool history_labels_initialized = false;
+  int history_nhist = 0;
 
 };
 
@@ -1310,8 +1315,8 @@ void InjectSN(Mesh *pm){
   const Real sn_ejecta_Z = input->sn_ejecta_Z;
   const Real sn_ejecta_dust_ratio = input->sn_ejecta_dust_ratio;
 
-  static Kokkos::Random_XorShift64_Pool<Kokkos::DefaultHostExecutionSpace>
-      sn_rand_pool(1234567);
+  static std::mt19937_64 sn_rng(1234567);
+  static std::uniform_real_distribution<Real> sn_pos_dist(0.0, 1.0);
 
   Real sn_x = 0.5*(pm->mesh_size.x1min + pm->mesh_size.x1max);
   Real sn_y = 0.5*(pm->mesh_size.x2min + pm->mesh_size.x2max);
@@ -1320,8 +1325,6 @@ void InjectSN(Mesh *pm){
   if (input->sn_posn_type == 1){
     // Generate a random SN injection position
     if (global_variable::my_rank == 0) {
-      auto rand_gen = sn_rand_pool.get_state();
-
       Real x1min = pm->mesh_size.x1min + sn_inj_radius;
       Real x1max = pm->mesh_size.x1max - sn_inj_radius;
       Real x2min = pm->mesh_size.x2min + sn_inj_radius;
@@ -1345,14 +1348,12 @@ void InjectSN(Mesh *pm){
         x3max = zmid;
       }
 
-      Real rand = rand_gen.frand();
+      Real rand = sn_pos_dist(sn_rng);
       sn_x = (1.0 - rand)*x1min + rand*x1max;
-      rand = rand_gen.frand();
+      rand = sn_pos_dist(sn_rng);
       sn_y = (1.0 - rand)*x2min + rand*x2max;
-      rand = rand_gen.frand();
+      rand = sn_pos_dist(sn_rng);
       sn_z = (1.0 - rand)*x3min + rand*x3max;
-
-      sn_rand_pool.free_state(rand_gen);
     }
   }
 
@@ -1415,7 +1416,6 @@ void InjectSN(Mesh *pm){
 void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
   auto &w0_ = pm->pmb_pack->phydro->w0;
   auto &size = pm->pmb_pack->pmb->mb_size;
-  int &nhist_ = pdata->nhist;
 
   bool is_mhd = (pm->pmb_pack->pmhd != nullptr) ? true : false;
   const EOS_Data &eos_data = (is_mhd) ?
@@ -1427,23 +1427,26 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
   int ndusti_ = nfluid_+2; // first dust bin scalar
   const int Ndust_bins = input->Ndust_bins; // Number of dust bins
 
-  int count = 0;
-  pdata->label[count] = "U^2"; count++;
-  pdata->label[count] = "Mcold"; count++;
-  pdata->label[count] = "T_sum"; count++;
+  if (!(input->history_labels_initialized)) {
+    int count = 0;
+    pdata->label[count] = "U^2"; count++;
+    pdata->label[count] = "Mcold"; count++;
+    pdata->label[count] = "T_sum"; count++;
 
-  bool dust_model = input->dust_model;
-
-  int DUST_HIST = count;
-  if (dust_model){
-    pdata->label[count] = "Zgas"; count++;
-    for (int id = 0; id < input->Ndust_bins; ++id) {
-      pdata->label[count] = "D" + std::to_string(id);
-      count++;
+    if (input->dust_model) {
+      pdata->label[count] = "Zgas"; count++;
+      for (int id = 0; id < Ndust_bins; ++id) {
+        pdata->label[count] = "D" + std::to_string(id);
+        count++;
+      }
     }
+    input->history_nhist = count;
+    input->history_labels_initialized = true;
   }
-
-  pdata->nhist = count;
+  pdata->nhist = input->history_nhist;
+  const int nhist_ = pdata->nhist;
+  const bool dust_model = input->dust_model;
+  const int DUST_HIST = 3;
 
   // loop over all MeshBlocks in this pack
   auto &indcs = pm->pmb_pack->pmesh->mb_indcs;
