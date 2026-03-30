@@ -26,6 +26,7 @@
 #include "shearing_box/shearing_box.hpp"
 #include "mhd/mhd.hpp"
 #include "dyn_grmhd/dyn_grmhd.hpp"
+#include "pgen/pgen.hpp"
 
 namespace mhd {
 //----------------------------------------------------------------------------------------
@@ -80,6 +81,9 @@ void MHD::AssembleMHDTasks(std::map<std::string, std::shared_ptr<TaskList>> tl) 
   // task list anyways to catch potential bugs in MPI communication logic
   id.crecv = tl["after_stagen"]->AddTask(&MHD::ClearRecv, this, id.csend);
 
+  // assemble "after_timeintegrator" task list
+  id.workinloop = tl["after_timeintegrator"]->AddTask(&MHD::WorkInLoop, this, none);
+
   return;
 }
 
@@ -92,6 +96,17 @@ TaskStatus MHD::SaveMHDState(Driver *pdrive, int stage) {
   if (wbcc_saved) {
     Kokkos::deep_copy(DevExeSpace(), wsaved, w0);
     Kokkos::deep_copy(DevExeSpace(), bccsaved, bcc0);
+  }
+  return TaskStatus::complete;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn TaskStatus MHD::WorkInLoop
+//! \brief Execute any user-enrolled post-timestep work once per full time step.
+
+TaskStatus MHD::WorkInLoop(Driver *pdrive, int stage) {
+  if (pmy_pack->pmesh->pgen->user_work_in_loop) {
+    (pmy_pack->pmesh->pgen->user_work_in_loop_func)(pmy_pack->pmesh);
   }
   return TaskStatus::complete;
 }

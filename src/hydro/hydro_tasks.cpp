@@ -24,6 +24,7 @@
 #include "bvals/bvals.hpp"
 #include "shearing_box/shearing_box.hpp"
 #include "hydro/hydro.hpp"
+#include "pgen/pgen.hpp"
 
 namespace hydro {
 //----------------------------------------------------------------------------------------
@@ -74,6 +75,9 @@ void Hydro::AssembleHydroTasks(std::map<std::string, std::shared_ptr<TaskList>> 
   // although RecvFlux/U functions check that all recvs complete, add ClearRecv to
   // task list anyways to catch potential bugs in MPI communication logic
   id.crecv = tl["after_stagen"]->AddTask(&Hydro::ClearRecv, this, id.csend);
+
+  // assemble "after_timeintegrator" task list
+  id.workinloop = tl["after_timeintegrator"]->AddTask(&Hydro::WorkInLoop, this, none);
 
   return;
 }
@@ -250,6 +254,17 @@ TaskStatus Hydro::HydroSrcTerms(Driver *pdrive, int stage) {
     (pmy_pack->pmesh->pgen->user_srcs_func)(pmy_pack->pmesh, beta_dt);
   }
 
+  return TaskStatus::complete;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn TaskStatus Hydro::WorkInLoop
+//! \brief Execute any user-enrolled post-timestep work once per full time step.
+
+TaskStatus Hydro::WorkInLoop(Driver *pdrive, int stage) {
+  if (pmy_pack->pmesh->pgen->user_work_in_loop) {
+    (pmy_pack->pmesh->pgen->user_work_in_loop_func)(pmy_pack->pmesh);
+  }
   return TaskStatus::complete;
 }
 

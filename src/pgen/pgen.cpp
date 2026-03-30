@@ -373,6 +373,7 @@ void LoadSingleFileRestartData(Mesh *pm,
 ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm) :
     user_bcs(false),
     user_srcs(false),
+    user_work_in_loop(false),
     user_hist(false),
     pmy_mesh_(pm) {
   // check for user-defined boundary conditions
@@ -383,6 +384,7 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm) :
   }
 
   user_srcs = pin->GetOrAddBoolean("problem","user_srcs",false);
+  user_work_in_loop = pin->GetOrAddBoolean("problem","user_work_in_loop",false);
   user_hist = pin->GetOrAddBoolean("problem","user_hist",false);
 
 #if USER_PROBLEM_ENABLED
@@ -451,6 +453,14 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm) :
       exit(EXIT_FAILURE);
     }
   }
+  if (user_work_in_loop) {
+    if (user_work_in_loop_func == nullptr) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "User work-in-loop specified in <problem> block, but not "
+                << "enrolled by UserProblem()." << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
   // Check that user defined history outputs were enrolled if needed
   if (user_hist) {
     if (user_hist_func == nullptr) {
@@ -474,6 +484,7 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
                                    bool single_file_per_rank) :
     user_bcs(false),
     user_srcs(false),
+    user_work_in_loop(false),
     user_hist(false),
     pmy_mesh_(pm) {
   // check for user-defined boundary conditions
@@ -483,6 +494,7 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
     }
   }
   user_srcs = pin->GetOrAddBoolean("problem","user_srcs",false);
+  user_work_in_loop = pin->GetOrAddBoolean("problem","user_work_in_loop",false);
   user_hist = pin->GetOrAddBoolean("problem","user_hist",false);
 
   // get spatial dimensions of arrays, including ghost zones
@@ -1065,6 +1077,14 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
                 << std::endl << "User SRCs specified in <problem> block, but not "
                 << "enrolled by UserProblem()." << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+  if (user_work_in_loop) {
+    if (user_work_in_loop_func == nullptr) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "User work-in-loop specified in <problem> block, but "
+                << "not enrolled by UserProblem()." << std::endl;
       exit(EXIT_FAILURE);
     }
   }
