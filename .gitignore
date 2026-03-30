@@ -30,6 +30,8 @@ test_outputs
 **/save/
 *.out
 
+test_*
+
 .direnv
 .venv
 
