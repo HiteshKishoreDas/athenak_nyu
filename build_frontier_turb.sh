@@ -35,7 +35,7 @@ export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
 # Define paths
 athenak_dir='/lustre/orion/proj-shared/ast207/hitesh/athenak_nyu'
-build_dir="${athenak_dir}/build_turb"
+build_dir="${athenak_dir}/build_turb_old"
 
 # Clean and create build directory
 echo "=== Setting up build directory ==="

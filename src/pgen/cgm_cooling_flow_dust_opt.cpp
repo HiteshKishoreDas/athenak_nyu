@@ -17,6 +17,8 @@
 #include "particles/particles.hpp"
 
 constexpr int kMaxDustBins = 32;
+constexpr int kMaxDustBinSlots = kMaxDustBins + 2;
+constexpr int kMaxDustEdgeSlots = kMaxDustBins + 3;
 
 struct Alims {
   Real amin;
@@ -53,11 +55,12 @@ Real GravPot(Real x1, Real x2, Real x3,
 void UserSource(Mesh* pm, const Real bdt);
 void GravitySource(Mesh* pm, const Real bdt);
 void SNSource(Mesh* pm, const Real bdt);
-void AddDustSource(Mesh* pm, const Real bdt);
 void DensityCeilingSource(Mesh* pm, const Real bdt);
 void UserBoundary(Mesh* pm);
 void FreeProfile(ParameterInput *pin, Mesh *pm);
 void RefinementCondition(MeshBlockPack* pmbp);
+void AddDustSource(Mesh *pm, const Real bdt);
+void UpdateTurbulenceCache(Mesh *pm);
 void CGMHistory(HistoryData *pdata, Mesh *pm);
 
 KOKKOS_INLINE_FUNCTION
@@ -84,17 +87,33 @@ void SetScalarState(const DvceArray5D<Real> &u0, int m, int k, int j, int i,
 
 template <typename T>
 KOKKOS_INLINE_FUNCTION
-int searchsorted(const Real *a, const int n, const T &x) {
+Real array_get(const T &a, int i) {
+  return a(i);
+}
+
+KOKKOS_INLINE_FUNCTION
+Real array_get(const Real *a, int i) {
+  return a[i];
+}
+
+KOKKOS_INLINE_FUNCTION
+Real array_get(Real *a, int i) {
+  return a[i];
+}
+
+template <typename ArrayType, typename T>
+KOKKOS_INLINE_FUNCTION
+int searchsorted(const ArrayType &a, const int n, const T &x) {
   if (n <= 0) return 0;
   int lo = 0;
   int hi = n;
 
-  if (x <= a[lo]) return 0;
-  if (x > a[n - 1]) return hi;
+  if (x <= array_get(a, lo)) return 0;
+  if (x > array_get(a, n - 1)) return hi;
 
   while (lo < hi) {
     int mid = lo + (hi - lo) / 2;
-    if (a[mid] < x) {
+    if (array_get(a, mid) < x) {
       lo = mid + 1;
     } else {
       hi = mid;
@@ -103,59 +122,122 @@ int searchsorted(const Real *a, const int n, const T &x) {
   return lo;
 }
 
+template <typename EdgeArray>
 KOKKOS_INLINE_FUNCTION
-Real mass_to_num(Real mass_in_bin, Real edges1, Real edges2, const Real rho_gr) {
-  const Real rho_gr_um = rho_gr * 1.0e-12;
-  const Real k_dust_um = (4.0 / 3.0) * M_PI * rho_gr_um;
+int searchsorted_log_edges(const EdgeArray &edges, const int n, const Real x,
+                           const Real inv_log_step) {
+  if (n <= 0) return 0;
+  const Real first = array_get(edges, 0);
+  const Real last = array_get(edges, n - 1);
+  if (x <= first) return 0;
+  if (x > last) return n;
 
+  int idx = static_cast<int>(ceil(log(x / first) * inv_log_step));
+  if (idx < 0) idx = 0;
+  if (idx > (n - 1)) idx = n - 1;
+  return idx;
+}
+
+template <typename EdgeArray>
+KOKKOS_INLINE_FUNCTION
+int searchsorted_padded(const EdgeArray &edges, const int n, const Real x,
+                        const Real inv_log_step) {
+  if (n <= 0) return 0;
+  const Real left_ghost = array_get(edges, 0);
+  const Real first_physical = array_get(edges, 1);
+  const Real last_physical = array_get(edges, n - 2);
+  const Real right_ghost = array_get(edges, n - 1);
+
+  if (x <= left_ghost) return 0;
+  if (x > right_ghost) return n;
+  if (x <= first_physical) return 1;
+  if (x > last_physical) return n - 1;
+
+  int idx = 1 + static_cast<int>(ceil(log(x / first_physical) * inv_log_step));
+  if (idx < 1) idx = 1;
+  if (idx > (n - 2)) idx = n - 2;
+  return idx;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real square(const Real x) {
+  return x * x;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real cube(const Real x) {
+  return x * x * x;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real quartic(const Real x) {
+  const Real x2 = x * x;
+  return x2 * x2;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real dust_k_um(const Real rho_grain) {
+  return (4.0 / 3.0) * M_PI * (rho_grain * 1.0e-12);
+}
+
+KOKKOS_INLINE_FUNCTION
+Real mass_to_num(Real mass_in_bin, Real edges1, Real edges2, const Real rho_grain) {
+  const Real k_dust_um = dust_k_um(rho_grain);
   Real dist_change = 4.0 * mass_in_bin / k_dust_um;
-  dist_change /= std::pow(edges2, 4.0) - std::pow(edges1, 4.0);
+  dist_change /= quartic(edges2) - quartic(edges1);
   return dist_change;
 }
 
 KOKKOS_INLINE_FUNCTION
-Real dist_num_integral(const Real *d_arr, const Real *edges, const int n,
-                       Real a1, Real a2, Real rho_gr, bool mass = false) {
-  int i1 = searchsorted(edges, n, a1) - 1;
-  int i2 = searchsorted(edges, n, a2) - 1;
+Real mass_to_num(Real mass_in_bin, Real edge4_delta, const Real inv_k_dust_um) {
+  return mass_in_bin * inv_k_dust_um / edge4_delta;
+}
 
-  const Real rho_gr_um = rho_gr * 1.0e-12;
-  const Real k_dust_um = (4.0 / 3.0) * M_PI * rho_gr_um;
+template <typename DistArray, typename EdgeArray>
+KOKKOS_INLINE_FUNCTION
+Real dist_num_integral(const DistArray &d_arr, const EdgeArray &edges, const int n,
+                       Real a1, Real a2, Real rho_grain, Real dust_inv_log_step,
+                       bool mass = false) {
+  int i1 = searchsorted_padded(edges, n, a1, dust_inv_log_step) - 1;
+  int i2 = searchsorted_padded(edges, n, a2, dust_inv_log_step) - 1;
+
+  const Real k_dust_um = dust_k_um(rho_grain);
 
   Real integral = 0.0;
   if (i1 == i2) {
     if (mass) {
-      integral += 0.25 * d_arr[i1] * k_dust_um *
-                  (std::pow(a2, 4.0) - std::pow(a1, 4.0));
+      integral += 0.25 * array_get(d_arr, i1) * k_dust_um *
+                  (quartic(a2) - quartic(a1));
     } else {
-      integral += d_arr[i1] * (a2 - a1);
+      integral += array_get(d_arr, i1) * (a2 - a1);
     }
     return integral;
   }
 
   if (mass) {
-    integral += 0.25 * d_arr[i1] * k_dust_um *
-                (std::pow(edges[i1 + 1], 4.0) - std::pow(a1, 4.0));
+    integral += 0.25 * array_get(d_arr, i1) * k_dust_um *
+                (quartic(array_get(edges, i1 + 1)) - quartic(a1));
   } else {
-    integral += d_arr[i1] * (edges[i1 + 1] - a1);
+    integral += array_get(d_arr, i1) * (array_get(edges, i1 + 1) - a1);
   }
 
   if (mass) {
-    integral += 0.25 * d_arr[i2] * k_dust_um *
-                (std::pow(a2, 4.0) - std::pow(edges[i2], 4.0));
+    integral += 0.25 * array_get(d_arr, i2) * k_dust_um *
+                (quartic(a2) - quartic(array_get(edges, i2)));
   } else {
-    integral += d_arr[i2] * (a2 - edges[i2]);
+    integral += array_get(d_arr, i2) * (a2 - array_get(edges, i2));
   }
 
   if (i2 > i1 + 1) {
     if (mass) {
       for (int i = i1 + 1; i < i2; ++i) {
-        integral += 0.25 * d_arr[i] * k_dust_um *
-                    (std::pow(edges[i + 1], 4.0) - std::pow(edges[i], 4.0));
+        integral += 0.25 * array_get(d_arr, i) * k_dust_um *
+                    (quartic(array_get(edges, i + 1)) - quartic(array_get(edges, i)));
       }
     } else {
       for (int i = i1 + 1; i < i2; ++i) {
-        integral += d_arr[i] * (edges[i + 1] - edges[i]);
+        integral += array_get(d_arr, i) *
+                    (array_get(edges, i + 1) - array_get(edges, i));
       }
     }
   }
@@ -164,54 +246,133 @@ Real dist_num_integral(const Real *d_arr, const Real *edges, const int n,
 }
 
 KOKKOS_INLINE_FUNCTION
-Real sputtering(Real n_H, Real T, Real Z, Real grain_porosity) {
+Real sputtering(Real n_H, Real T, Real Z, Real grain_porosity_factor) {
   Real da_dt = -1.0;
   da_dt *= n_H / 1.0;
-  da_dt /= 1.0 + std::pow(2.0e6 / T, 2.5);
+  const Real tratio = 2.0e6 / T;
+  da_dt /= 1.0 + tratio * tratio * sqrt(tratio);
   da_dt *= Z;
-  da_dt *= std::pow(grain_porosity, -2.0 / 3.0);
+  da_dt *= grain_porosity_factor;
   return da_dt;
 }
 
 KOKKOS_INLINE_FUNCTION
-Real accretion(Real n_H, Real T, Real Z, Real grain_porosity) {
+Real accretion(Real n_H, Real T, Real Z, Real grain_porosity_factor) {
   Real da_dt = 1.8622e-4;
   da_dt *= n_H / 1.0e3;
-  da_dt /= std::sqrt(T / 10.0);
+  da_dt /= sqrt(T / 10.0);
   da_dt *= Z;
-  da_dt *= std::pow(grain_porosity, -2.0 / 3.0);
+  da_dt *= grain_porosity_factor;
   return da_dt;
 }
 
+template <typename EdgeArray>
 KOKKOS_INLINE_FUNCTION
-void rebin(Real *d_arr, const Real *edges, const int n, Real shift, Real rho_gr) {
-  constexpr int kMaxRebinEntries = kMaxDustBins + 3;
-  if (n > kMaxRebinEntries) return;
+void rebin(Real *d_arr, const EdgeArray &edges, const int n, Real shift, Real rho_grain) {
+  if (n > kMaxDustEdgeSlots) return;
 
-  Real mass_in_bin[kMaxRebinEntries];
-  Real shifted_edges[kMaxRebinEntries];
-  for (int i = 0; i < n; ++i) {
-    mass_in_bin[i] = 0.0;
-    shifted_edges[i] = edges[i] + shift;
+  const int nbin = n - 1;
+  Real mass_in_bin[kMaxDustBinSlots];
+  const Real k_dust_um = dust_k_um(rho_grain);
+  const Real inv_k_dust_um = 4.0 / k_dust_um;
+  for (int i = 0; i < nbin; ++i) mass_in_bin[i] = 0.0;
+
+  int src = 0;
+  int dst = 0;
+  while (src < nbin && dst < nbin) {
+    const Real src_left = array_get(edges, src) + shift;
+    const Real src_right = array_get(edges, src + 1) + shift;
+    const Real dst_left = array_get(edges, dst);
+    const Real dst_right = array_get(edges, dst + 1);
+    const Real left = Kokkos::max(src_left, dst_left);
+    const Real right = Kokkos::min(src_right, dst_right);
+    if (right > left) {
+      mass_in_bin[dst] += 0.25 * d_arr[src] * k_dust_um *
+                          (quartic(right) - quartic(left));
+    }
+    if (src_right <= dst_right) {
+      ++src;
+    } else {
+      ++dst;
+    }
   }
 
-  for (int i = 0; i < n - 1; ++i) {
-    mass_in_bin[i] = dist_num_integral(
-        d_arr, shifted_edges, n, edges[i], edges[i + 1], rho_gr, true);
-  }
-
-  for (int i = 1; i < n - 1; ++i) {
-    d_arr[i] = mass_to_num(mass_in_bin[i], edges[i], edges[i + 1], rho_gr);
+  for (int i = 1; i < (nbin - 1); ++i) {
+    d_arr[i] = mass_to_num(mass_in_bin[i],
+                           quartic(array_get(edges, i + 1)) - quartic(array_get(edges, i)),
+                           inv_k_dust_um);
   }
   d_arr[0] = mass_in_bin[0];
-  d_arr[n - 1] = mass_in_bin[n - 1];
+  d_arr[nbin - 1] = mass_in_bin[nbin - 1];
+}
+
+template <typename StateArray, typename FactorArray, typename EdgeArray>
+KOKKOS_INLINE_FUNCTION
+Real apply_sputter_accrete_rebin(Real *dust_arr, const StateArray &u0,
+                                 int m, int k, int j, int i, int ndusti,
+                                 int ndust, const FactorArray &mass_to_num_fac,
+                                 const EdgeArray &edges_pad, int n_edges,
+                                 Real dens, Real temp, Real Z_local, Real Z_solar,
+                                 Real grain_porosity_factor, Real rho_grain,
+                                 Real dust_a_local, Real dust_b_local,
+                                 Real dust_inv_log_step, Real bdt, Real MYR) {
+  constexpr Real D_tol = 1.0e-20;
+
+  dust_arr[0] = 0.0;
+  dust_arr[ndust + 1] = 0.0;
+
+  Real D_check = 0.0;
+  for (int id = 0; id < ndust; ++id) {
+    const Real dust_mass = u0(m, ndusti + id, k, j, i);
+    dust_arr[id + 1] = dust_mass * mass_to_num_fac(id);
+    D_check += dust_mass;
+  }
+  if (D_check <= D_tol) return 0.0;
+
+  const Real dust_tot_before = dist_num_integral(
+      dust_arr, edges_pad, n_edges, dust_a_local, dust_b_local, rho_grain,
+      dust_inv_log_step, true);
+
+  Real tot_shift = sputtering(dens, temp, Z_local / Z_solar, grain_porosity_factor);
+  tot_shift += accretion(dens, temp, Z_local / Z_solar, grain_porosity_factor);
+  tot_shift *= bdt / MYR;
+
+  rebin(dust_arr, edges_pad, n_edges, tot_shift, rho_grain);
+  return dust_tot_before;
+}
+
+template <typename StateArray, typename FactorArray>
+KOKKOS_INLINE_FUNCTION
+void finalize_dust_source(const StateArray &u0, Real *dust_arr,
+                          int m, int k, int j, int i, int nmetal, int ndusti,
+                          int ndust, Real dens, Real dust_tot, Real rate_Z,
+                          const FactorArray &num_to_mass_fac) {
+  constexpr Real D_tol = 1.0e-20;
+
+  for (int id = 0; id < ndust; ++id) {
+    u0(m, ndusti + id, k, j, i) = dust_arr[id + 1] * num_to_mass_fac(id);
+  }
+
+  u0(m, nmetal, k, j, i) += rate_Z;
+  u0(m, nmetal, k, j, i) = Kokkos::clamp(u0(m, nmetal, k, j, i), 0.0, dens);
+
+  const Real clamp_dust_tot = Kokkos::clamp(dust_tot, 0.0, dens);
+  for (int id = 0; id < ndust; ++id) {
+    if (dust_tot <= D_tol) {
+      u0(m, ndusti + id, k, j, i) = 0.0;
+    } else {
+      u0(m, ndusti + id, k, j, i) *= clamp_dust_tot / dust_tot;
+    }
+  }
 }
 
 KOKKOS_INLINE_FUNCTION
-Real v_grain(Real a, Real M_g, Real n_H, Real T, Real rho_gr) {
-  return 1.1 * std::pow(M_g, 1.5) * std::sqrt(a / 0.1) *
-         std::pow(T / 1.0e4, 0.25) * std::pow(n_H, -0.25) *
-         std::sqrt(rho_gr / 3.5);
+Real v_grain(Real a, Real M_g, Real n_H, Real T, Real rho_grain) {
+  const Real mach_32 = M_g * sqrt(M_g);
+  const Real temp_quarter = sqrt(sqrt(T / 1.0e4));
+  const Real nH_minus_quarter = 1.0 / sqrt(sqrt(n_H));
+  return 1.1 * mach_32 * sqrt(a / 0.1) * temp_quarter * nH_minus_quarter *
+         sqrt(rho_grain / 3.5);
 }
 
 KOKKOS_INLINE_FUNCTION
@@ -219,10 +380,11 @@ Real maxwell_tail_mean(Real v, Real vgr) {
   constexpr Real vgr_tol = 1.0e-20;
   if (vgr <= vgr_tol) return 0.0;
 
-  const Real v0 = vgr * std::sqrt(2.0 / 3.0);
-  Real vmean = std::sqrt(8.0 / M_PI) * v0;
-  vmean *= 1.0 + 0.5 * std::pow(v / v0, 2.0);
-  vmean *= std::exp(-0.5 * std::pow(v / v0, 2.0));
+  Real v0 = vgr * sqrt(2.0 / 3.0);
+  Real vmean = sqrt(8.0 / M_PI) * v0;
+  const Real vv0 = v / v0;
+  vmean *= 1.0 + 0.5 * square(vv0);
+  vmean *= exp(-0.5 * square(vv0));
   return vmean;
 }
 
@@ -231,11 +393,38 @@ Real maxwell_head_mean(Real v, Real vgr) {
   constexpr Real vgr_tol = 1.0e-20;
   if (vgr <= vgr_tol) return 0.0;
 
-  const Real v0 = vgr * std::sqrt(2.0 / 3.0);
-  Real vmean = std::sqrt(8.0 / M_PI) * v0;
-  vmean *= 1.0 + 0.5 * std::pow(v / v0, 2.0);
-  vmean *= std::exp(-0.5 * std::pow(v / v0, 2.0));
-  return std::sqrt(8.0 / M_PI) * v0 - vmean;
+  Real v0 = vgr * sqrt(2.0 / 3.0);
+  Real vmean = sqrt(8.0 / M_PI) * v0;
+  const Real vv0 = v / v0;
+  vmean *= 1.0 + 0.5 * square(vv0);
+  vmean *= exp(-0.5 * square(vv0));
+  return sqrt(8.0 / M_PI) * v0 - vmean;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real interaction_rate_pair(Real bdt, Real dist_i, Real dist_j, Real dbin_i, Real dbin_j,
+                           Real dbin_i3, Real dbin_j3, Real delta1i, Real delta2i,
+                           Real delta3i, Real delta1j, Real delta2j, Real delta3j,
+                           Real vgrain_i, Real vol_cc, bool shatter) {
+  constexpr Real v_shatt = 0.5 * (1.2 + 2.7);
+
+  Real vproc = 0.0;
+  if (shatter) {
+    vproc = maxwell_tail_mean(v_shatt, vgrain_i);
+  } else {
+    const Real pair_size = dbin_i + dbin_j;
+    const Real pair_geom = (dbin_i3 + dbin_j3) / cube(pair_size);
+    vproc = sqrt(pair_geom) *
+            pow(pair_size / (dbin_i * dbin_j), 5.0 / 6.0);
+    vproc = maxwell_head_mean(vproc, vgrain_i);
+  }
+
+  Real rate = delta3i * delta1j / 3.0 + delta2i * delta2j / 2.0 +
+              delta1i * delta3j / 3.0;
+  rate *= M_PI * vproc / vol_cc;
+  rate *= dist_i * dist_j;
+  rate *= 1.0e-3 * bdt;
+  return rate;
 }
 
 KOKKOS_INLINE_FUNCTION
@@ -353,11 +542,13 @@ Real integrate_frag(Real Anorm, Real a1, Real a2, Real expo, const Real rho_gr) 
   return Anorm * k_dust_um * (std::pow(a2, mex) - std::pow(a1, mex)) / mex;
 }
 
+template <typename EdgeArray>
 KOKKOS_INLINE_FUNCTION
-void deposit_frag(Real mass_in_bin[], const Real edges[], int nbin, Alims alim,
-                  Real Anorm, Real expo, const Real rho_gr) {
-  int k = searchsorted(edges, nbin + 1, alim.amin) - 1;
-  int l = searchsorted(edges, nbin + 1, alim.amax) - 1;
+void deposit_frag(Real mass_in_bin[], const EdgeArray &edges, int nbin, Alims alim,
+                  Real Anorm, Real expo, const Real rho_gr,
+                  const Real dust_inv_log_step) {
+  int k = searchsorted_log_edges(edges, nbin + 1, alim.amin, dust_inv_log_step) - 1;
+  int l = searchsorted_log_edges(edges, nbin + 1, alim.amax, dust_inv_log_step) - 1;
 
   if (l >= nbin) {
     Kokkos::abort("deposit_frag overflowed dust-bin bounds");
@@ -370,9 +561,9 @@ void deposit_frag(Real mass_in_bin[], const Real edges[], int nbin, Alims alim,
 
   Real aleft = alim.amin;
   if (k < 0) {
-    mass_in_bin[0] += integrate_frag(Anorm, alim.amin, edges[0], expo, rho_gr);
+    mass_in_bin[0] += integrate_frag(Anorm, alim.amin, array_get(edges, 0), expo, rho_gr);
     k = 0;
-    aleft = edges[0];
+    aleft = array_get(edges, 0);
   }
 
   if (k == l) {
@@ -380,11 +571,12 @@ void deposit_frag(Real mass_in_bin[], const Real edges[], int nbin, Alims alim,
     return;
   }
 
-  mass_in_bin[k] += integrate_frag(Anorm, aleft, edges[k + 1], expo, rho_gr);
+  mass_in_bin[k] += integrate_frag(Anorm, aleft, array_get(edges, k + 1), expo, rho_gr);
   for (int i = k + 1; i < l; ++i) {
-    mass_in_bin[i] += integrate_frag(Anorm, edges[i], edges[i + 1], expo, rho_gr);
+    mass_in_bin[i] += integrate_frag(Anorm, array_get(edges, i),
+                                     array_get(edges, i + 1), expo, rho_gr);
   }
-  mass_in_bin[l] += integrate_frag(Anorm, edges[l], alim.amax, expo, rho_gr);
+  mass_in_bin[l] += integrate_frag(Anorm, array_get(edges, l), alim.amax, expo, rho_gr);
 }
 
 KOKKOS_INLINE_FUNCTION
@@ -417,6 +609,7 @@ void add_shatters(Real intr_arr[][kMaxDustBins], Real mass_in_bin[],
   const Real sigma_1 = sigma_fn(M_1, s);
   const Real rho_gr_um = rho_gr * 1.0e-12;
   const Real k_dust_um = (4.0 / 3.0) * M_PI * rho_gr_um;
+  const Real dust_inv_log_step = 1.0 / std::log(edges[1] / edges[0]);
   constexpr Real Mfrag_tol = 1.0e-20;
 
   for (int i = 0; i < nbin; ++i) {
@@ -435,7 +628,8 @@ void add_shatters(Real intr_arr[][kMaxDustBins], Real mass_in_bin[],
 
       if ((Mfrag / Mi) >= Mfrag_tol) {
         const Real a_left = std::pow(Mleft / k_dust_um, 1.0 / 3.0);
-        const int k = searchsorted(edges, nbin + 1, a_left) - 1;
+        const int k = searchsorted_log_edges(edges, nbin + 1, a_left,
+                                             dust_inv_log_step) - 1;
         if ((k < nbin) && (k > 0)) {
           mass_in_bin[i] -= intr_arr[i][j] * Mi;
           mass_in_bin[j] -= intr_arr[i][j] * Mj;
@@ -447,7 +641,121 @@ void add_shatters(Real intr_arr[][kMaxDustBins], Real mass_in_bin[],
                                (std::pow(frag_alim.amax, mex) -
                                 std::pow(frag_alim.amin, mex));
         deposit_frag(mass_in_bin, edges, nbin, frag_alim, frag_norm,
-                     shatter_expo, rho_gr);
+                     shatter_expo, rho_gr, dust_inv_log_step);
+      }
+    }
+  }
+}
+
+template <typename DistArray, typename BinArray, typename Bin3Array,
+          typename EdgeArray, typename DeltaArray>
+KOKKOS_INLINE_FUNCTION
+void add_coagulate_streamed(Real bdt, Real mass_in_bin[], const DistArray &dist,
+                            const BinArray &dbins, const Bin3Array &dbins3,
+                            const EdgeArray &edges, const DeltaArray &delta1,
+                            const DeltaArray &delta2, const DeltaArray &delta3,
+                            int nbin, Real M_g, Real rho_grain, Real n_H, Real T,
+                            Real vol_cc, Real dust_inv_log_step) {
+  const Real k_dust_um = dust_k_um(rho_grain);
+
+  for (int i = 0; i < nbin; ++i) {
+    const Real dbin_i = array_get(dbins, i);
+    const Real ai3 = array_get(dbins3, i);
+    const Real Mi = k_dust_um * ai3;
+    const Real vgrain_i = v_grain(dbin_i, M_g, n_H, T, rho_grain);
+    for (int j = 0; j < nbin; ++j) {
+      const Real dbin_j = array_get(dbins, j);
+      const Real aj3 = array_get(dbins3, j);
+      const Real rate = interaction_rate_pair(
+          bdt, array_get(dist, i), array_get(dist, j), dbin_i, dbin_j, ai3, aj3,
+          array_get(delta1, i), array_get(delta2, i), array_get(delta3, i),
+          array_get(delta1, j), array_get(delta2, j), array_get(delta3, j),
+          vgrain_i, vol_cc, false);
+      const Real a_coag = pow(ai3 + aj3, 1.0 / 3.0);
+      const int k = searchsorted_log_edges(edges, nbin + 1, a_coag,
+                                           dust_inv_log_step) - 1;
+      if ((k < nbin) && (k > 0)) {
+        mass_in_bin[i] -= rate * Mi;
+        mass_in_bin[j] -= rate * k_dust_um * aj3;
+        mass_in_bin[k] += rate * k_dust_um * (ai3 + aj3);
+      }
+    }
+  }
+}
+
+template <typename DistArray, typename BinArray, typename Bin3Array,
+          typename EdgeArray, typename DeltaArray>
+KOKKOS_INLINE_FUNCTION
+void add_shatters_streamed(Real bdt, Real mass_in_bin[], const DistArray &dist,
+                           const BinArray &dbins, const Bin3Array &dbins3,
+                           const EdgeArray &edges, const DeltaArray &delta1,
+                           const DeltaArray &delta2, const DeltaArray &delta3,
+                           int nbin, Real M_g, const Real rho_grain,
+                           Real n_H, Real T, Real vol_cc,
+                           Real dust_inv_log_step) {
+  constexpr Real R = 1.0;
+  constexpr Real P1_Si = 3.0e11;
+  constexpr Real P1_C = 4.0e10;
+  constexpr Real P1 = 0.5 * (P1_Si + P1_C);
+  constexpr Real Pv_Si = 5.4e12;
+  constexpr Real Pv_C = 5.8e12;
+  constexpr Real Pv = 0.5 * (Pv_Si + Pv_C);
+  constexpr Real v_shatt_Si = 2.7;
+  constexpr Real v_shatt_C = 1.2;
+  constexpr Real v_shatt = 0.5 * (v_shatt_C + v_shatt_Si);
+  constexpr Real s_Si = 1.2;
+  constexpr Real s_C = 1.9;
+  constexpr Real s = 0.5 * (s_Si + s_C);
+  constexpr Real z_const = 3.4;
+  constexpr Real c0_Si = 5.0;
+  constexpr Real c0_C = 1.8;
+  constexpr Real c0 = 0.5 * (c0_Si + c0_C);
+  constexpr Real c0_cgs = c0 * 1.0e5;
+  constexpr Real shatter_expo = -3.3;
+  constexpr Real mex = shatter_expo + 4.0;
+
+  const Real phi_1 = P1 / rho_grain / c0_cgs / c0_cgs;
+  const Real M_1 = 2.0 * phi_1 / (1.0 + sqrt(1.0 + 4.0 * s * phi_1));
+  const Real sigma_1 = sigma_fn(M_1, s);
+  const Real k_dust_um = dust_k_um(rho_grain);
+  constexpr Real Mfrag_tol = 1.0e-20;
+
+  for (int i = 0; i < nbin; ++i) {
+    const Real dbin_i = array_get(dbins, i);
+    const Real ai3 = array_get(dbins3, i);
+    const Real Mi = k_dust_um * ai3;
+    const Real v_grain_i = v_grain(dbin_i, M_g, n_H, T, rho_grain);
+    for (int j = 0; j < nbin; ++j) {
+      const Real dbin_j = array_get(dbins, j);
+      const Real aj3 = array_get(dbins3, j);
+      const Real Mj = k_dust_um * aj3;
+
+      const Real rate = interaction_rate_pair(
+          bdt, array_get(dist, i), array_get(dist, j), dbin_i, dbin_j, ai3, aj3,
+          array_get(delta1, i), array_get(delta2, i), array_get(delta3, i),
+          array_get(delta1, j), array_get(delta2, j), array_get(delta3, j),
+          v_grain_i, vol_cc, true);
+      Real vrel = maxwell_tail_mean(v_shatt, v_grain_i);
+      Real Msh = M_shocked(vrel / c0, Mj, rho_grain, sigma_1, s, R, M_1);
+
+      Real Mfrag = (Msh > 0.5 * Mi) ? Mi : 0.4 * Msh;
+      Real Mleft = Mi - Mfrag;
+
+      if ((Mfrag / Mi) >= Mfrag_tol) {
+        Real a_left = pow(Mleft / k_dust_um, 1.0 / 3.0);
+        int k = searchsorted_log_edges(edges, nbin + 1, a_left,
+                                       dust_inv_log_step) - 1;
+        if ((k < nbin) && (k > 0)) {
+          mass_in_bin[i] -= rate * Mi;
+          mass_in_bin[j] -= rate * Mj;
+          mass_in_bin[k] += 2.0 * rate * Mleft;
+        }
+
+        Alims frag_alim = a_lim_frag(2.0 * Mfrag, P1, rho_grain, Pv, z_const);
+        Real frag_norm = Mfrag * mex / k_dust_um /
+                         (pow(frag_alim.amax, mex) - pow(frag_alim.amin, mex));
+        deposit_frag(mass_in_bin, edges, nbin, frag_alim, frag_norm,
+                     shatter_expo, rho_grain, dust_inv_log_step);
       }
     }
   }
@@ -483,16 +791,39 @@ namespace {
   Real dust_a = 0.0;
   Real dust_b = 0.0;
   Real dust_exp = -3.5;
+  Real dust_inv_log_step = 0.0;
   Real rho_gr = 3.5;
   Real grain_porosity = 1.0;
   Real Z_solar = 0.02;
   int Ndust_bins = 0;
   int vturb_est_ncell = 1;
   bool coag_shatt_flag = false;
+  Real grain_porosity_factor = 1.0;
+  Real vturb_scale = 0.0;
   DvceArray1D<Real> dust_bin_centers;
   DvceArray1D<Real> dust_bin_edges;
   DvceArray1D<Real> dust_bin_edges_padded;
+  DvceArray1D<Real> dust_bin_centers_cubed;
+  DvceArray1D<Real> dust_delta1;
+  DvceArray1D<Real> dust_delta2;
+  DvceArray1D<Real> dust_delta3;
+  DvceArray1D<Real> dust_delta4;
+  DvceArray1D<Real> dust_mass_to_num;
+  DvceArray1D<Real> dust_num_to_mass;
   DvceArray1D<Real> dust_bin_mass_fractions;
+  HostArray1D<Real> dust_bin_centers_h;
+  HostArray1D<Real> dust_bin_edges_h;
+  HostArray1D<Real> dust_bin_edges_padded_h;
+  HostArray1D<Real> dust_bin_centers_cubed_h;
+  HostArray1D<Real> dust_edge4_h;
+  HostArray1D<Real> dust_delta1_h;
+  HostArray1D<Real> dust_delta2_h;
+  HostArray1D<Real> dust_delta3_h;
+  HostArray1D<Real> dust_delta4_h;
+  HostArray1D<Real> dust_mass_to_num_h;
+  HostArray1D<Real> dust_num_to_mass_h;
+  DvceArray4D<Real> mach_cache;
+  int mach_cache_cycle = -1;
 
   // Profiles
   ProfileReader profile_reader;
@@ -517,14 +848,30 @@ void InitializeDustBins() {
   DvceArray1D<Real> centers("dust_bin_centers", Ndust_bins);
   DvceArray1D<Real> edges("dust_bin_edges", Ndust_bins + 1);
   DvceArray1D<Real> edges_padded("dust_bin_edges_padded", Ndust_bins + 3);
+  DvceArray1D<Real> centers_cubed("dust_bin_centers_cubed", Ndust_bins);
+  DvceArray1D<Real> delta1("dust_delta1", Ndust_bins);
+  DvceArray1D<Real> delta2("dust_delta2", Ndust_bins);
+  DvceArray1D<Real> delta3("dust_delta3", Ndust_bins);
+  DvceArray1D<Real> delta4("dust_delta4", Ndust_bins);
+  DvceArray1D<Real> mass_to_num_fac("dust_mass_to_num", Ndust_bins);
+  DvceArray1D<Real> num_to_mass_fac("dust_num_to_mass", Ndust_bins);
   DvceArray1D<Real> mass_fractions("dust_bin_mass_fractions", Ndust_bins);
 
   auto centers_h = Kokkos::create_mirror_view(centers);
   auto edges_h = Kokkos::create_mirror_view(edges);
   auto edges_padded_h = Kokkos::create_mirror_view(edges_padded);
+  HostArray1D<Real> centers_cubed_h("dust_bin_centers_cubed_h", Ndust_bins);
+  HostArray1D<Real> edge4_h("dust_edge4_h", Ndust_bins + 3);
+  HostArray1D<Real> delta1_h("dust_delta1_h", Ndust_bins);
+  HostArray1D<Real> delta2_h("dust_delta2_h", Ndust_bins);
+  HostArray1D<Real> delta3_h("dust_delta3_h", Ndust_bins);
+  HostArray1D<Real> delta4_h("dust_delta4_h", Ndust_bins);
+  HostArray1D<Real> mass_to_num_h("dust_mass_to_num_h", Ndust_bins);
+  HostArray1D<Real> num_to_mass_h("dust_num_to_mass_h", Ndust_bins);
   auto mass_fractions_h = Kokkos::create_mirror_view(mass_fractions);
 
   const Real ratio = std::pow(dust_b / dust_a, 1.0 / Ndust_bins);
+  dust_inv_log_step = 1.0 / std::log(ratio);
   Real a_i = dust_a;
   for (int i = 0; i < Ndust_bins + 1; ++i) {
     edges_h(i) = a_i;
@@ -533,9 +880,29 @@ void InitializeDustBins() {
   }
   edges_padded_h(0) = edges_padded_h(1) / ratio / 10.0;
   edges_padded_h(Ndust_bins + 2) = edges_padded_h(Ndust_bins + 1) * ratio * 10.0;
+  const Real k_dust_um = dust_k_um(rho_gr);
 
   for (int i = 0; i < Ndust_bins; ++i) {
     centers_h(i) = 0.5 * (edges_h(i) + edges_h(i + 1));
+    centers_cubed_h(i) = cube(centers_h(i));
+    const Real e0 = edges_h(i);
+    const Real e1 = edges_h(i + 1);
+    const Real e0_2 = square(e0);
+    const Real e1_2 = square(e1);
+    const Real e0_3 = e0_2 * e0;
+    const Real e1_3 = e1_2 * e1;
+    const Real e0_4 = square(e0_2);
+    const Real e1_4 = square(e1_2);
+    delta1_h(i) = e1 - e0;
+    delta2_h(i) = e1_2 - e0_2;
+    delta3_h(i) = e1_3 - e0_3;
+    delta4_h(i) = e1_4 - e0_4;
+    mass_to_num_h(i) = 4.0 / (k_dust_um * delta4_h(i));
+    num_to_mass_h(i) = 0.25 * k_dust_um * delta4_h(i);
+  }
+  for (int i = 0; i < Ndust_bins + 3; ++i) {
+    const Real edge_sq = square(edges_padded_h(i));
+    edge4_h(i) = square(edge_sq);
   }
 
   const Real mex = dust_exp + 4.0;
@@ -558,12 +925,37 @@ void InitializeDustBins() {
   Kokkos::deep_copy(centers, centers_h);
   Kokkos::deep_copy(edges, edges_h);
   Kokkos::deep_copy(edges_padded, edges_padded_h);
+  Kokkos::deep_copy(centers_cubed, centers_cubed_h);
+  Kokkos::deep_copy(delta1, delta1_h);
+  Kokkos::deep_copy(delta2, delta2_h);
+  Kokkos::deep_copy(delta3, delta3_h);
+  Kokkos::deep_copy(delta4, delta4_h);
+  Kokkos::deep_copy(mass_to_num_fac, mass_to_num_h);
+  Kokkos::deep_copy(num_to_mass_fac, num_to_mass_h);
   Kokkos::deep_copy(mass_fractions, mass_fractions_h);
 
   dust_bin_centers = centers;
   dust_bin_edges = edges;
   dust_bin_edges_padded = edges_padded;
+  dust_bin_centers_cubed = centers_cubed;
+  dust_delta1 = delta1;
+  dust_delta2 = delta2;
+  dust_delta3 = delta3;
+  dust_delta4 = delta4;
+  dust_mass_to_num = mass_to_num_fac;
+  dust_num_to_mass = num_to_mass_fac;
   dust_bin_mass_fractions = mass_fractions;
+  dust_bin_centers_h = centers_h;
+  dust_bin_edges_h = edges_h;
+  dust_bin_edges_padded_h = edges_padded_h;
+  dust_bin_centers_cubed_h = centers_cubed_h;
+  dust_edge4_h = edge4_h;
+  dust_delta1_h = delta1_h;
+  dust_delta2_h = delta2_h;
+  dust_delta3_h = delta3_h;
+  dust_delta4_h = delta4_h;
+  dust_mass_to_num_h = mass_to_num_h;
+  dust_num_to_mass_h = num_to_mass_h;
 }
 
 void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
@@ -652,13 +1044,50 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     coag_shatt_flag = pin->GetOrAddBoolean("problem", "coag_shatt_flag", false);
 
     InitializeDustBins();
+    grain_porosity_factor = pow(grain_porosity, -2.0 / 3.0);
+    if (vturb_est_ncell > 0) {
+      const Real stencil_width = static_cast<Real>(2 * vturb_est_ncell + 1);
+      const Real n_count = stencil_width * stencil_width * stencil_width;
+      vturb_scale = pow(1.0 / n_count, 1.0 / 9.0);
+    } else {
+      vturb_scale = 0.0;
+    }
+    if (coag_shatt_flag && vturb_est_ncell > 0) {
+      Kokkos::realloc(mach_cache, pmbp->nmb_thispack, indcs.nx3, indcs.nx2, indcs.nx1);
+      mach_cache_cycle = -1;
+    } else {
+      mach_cache = DvceArray4D<Real>();
+      mach_cache_cycle = -1;
+    }
   } else {
     Ndust_bins = 0;
     D_Z_init = 0.0;
+    grain_porosity_factor = 1.0;
+    vturb_scale = 0.0;
     dust_bin_centers = DvceArray1D<Real>();
     dust_bin_edges = DvceArray1D<Real>();
     dust_bin_edges_padded = DvceArray1D<Real>();
+    dust_bin_centers_cubed = DvceArray1D<Real>();
+    dust_delta1 = DvceArray1D<Real>();
+    dust_delta2 = DvceArray1D<Real>();
+    dust_delta3 = DvceArray1D<Real>();
+    dust_delta4 = DvceArray1D<Real>();
+    dust_mass_to_num = DvceArray1D<Real>();
+    dust_num_to_mass = DvceArray1D<Real>();
     dust_bin_mass_fractions = DvceArray1D<Real>();
+    dust_bin_centers_h = HostArray1D<Real>();
+    dust_bin_edges_h = HostArray1D<Real>();
+    dust_bin_edges_padded_h = HostArray1D<Real>();
+    dust_bin_centers_cubed_h = HostArray1D<Real>();
+    dust_edge4_h = HostArray1D<Real>();
+    dust_delta1_h = HostArray1D<Real>();
+    dust_delta2_h = HostArray1D<Real>();
+    dust_delta3_h = HostArray1D<Real>();
+    dust_delta4_h = HostArray1D<Real>();
+    dust_mass_to_num_h = HostArray1D<Real>();
+    dust_num_to_mass_h = HostArray1D<Real>();
+    mach_cache = DvceArray4D<Real>();
+    mach_cache_cycle = -1;
   }
 
   // Read the density gradient threshold for refinement
@@ -1229,38 +1658,116 @@ Real GravPot(Real x1, Real x2, Real x3,
   return phi_NFW + phi_MN + phi_Outer;
 }
 
+void UpdateTurbulenceCache(Mesh *pm) {
+  if (!dust_model || !coag_shatt_flag || vturb_est_ncell <= 0 ||
+      mach_cache_cycle == pm->ncycle) {
+    return;
+  }
+
+  MeshBlockPack *pmbp = pm->pmb_pack;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is;
+  const int ie = indcs.ie;
+  const int js = indcs.js;
+  const int je = indcs.je;
+  const int ks = indcs.ks;
+  const int ke = indcs.ke;
+  const int nmb1 = pmbp->nmb_thispack - 1;
+  const auto &w0 = pmbp->phydro->w0;
+
+  Real KELVIN = 1.0;
+  Real KM_S = 1.0;
+  if (pmbp->punit != nullptr) {
+    KELVIN = pmbp->punit->temperature_cgs();
+    KM_S = pmbp->punit->km_s();
+  } else if (global_variable::my_rank == 0) {
+    std::cout << "ERROR: <units> block missing..." << std::endl;
+    std::exit(1);
+  }
+
+  const Real gamma = pmbp->phydro->peos->eos_data.gamma;
+  const Real gm1 = gamma - 1.0;
+  auto mach_cache_local = mach_cache;
+  const int vturb_est_ncell_local = vturb_est_ncell;
+  const Real vturb_scale_local = vturb_scale;
+
+  par_for("update_turbulence_cache", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    const int kk = k - ks;
+    const int jj = j - js;
+    const int ii = i - is;
+
+    const Real dens = w0(m, IDN, k, j, i);
+    const Real temp = (w0(m, IEN, k, j, i) * gm1) / dens * KELVIN;
+
+    Real vx_mean = 0.0;
+    Real vy_mean = 0.0;
+    Real vz_mean = 0.0;
+    Real M2x = 0.0;
+    Real M2y = 0.0;
+    Real M2z = 0.0;
+    int n_count = 0;
+
+    for (int ia = -vturb_est_ncell_local; ia <= vturb_est_ncell_local; ++ia) {
+      for (int ja = -vturb_est_ncell_local; ja <= vturb_est_ncell_local; ++ja) {
+        for (int ka = -vturb_est_ncell_local; ka <= vturb_est_ncell_local; ++ka) {
+          const Real vx = w0(m, IVX, k + ka, j + ja, i + ia);
+          const Real vy = w0(m, IVY, k + ka, j + ja, i + ia);
+          const Real vz = w0(m, IVZ, k + ka, j + ja, i + ia);
+
+          ++n_count;
+          const Real deltax = vx - vx_mean;
+          const Real deltay = vy - vy_mean;
+          const Real deltaz = vz - vz_mean;
+          vx_mean += deltax / n_count;
+          vy_mean += deltay / n_count;
+          vz_mean += deltaz / n_count;
+          M2x += deltax * (vx - vx_mean);
+          M2y += deltay * (vy - vy_mean);
+          M2z += deltaz * (vz - vz_mean);
+        }
+      }
+    }
+
+    Real vturb_g = sqrt((M2x + M2y + M2z) / Real(n_count + 1));
+    vturb_g *= vturb_scale_local / KM_S;
+    const Real cs_g = sqrt(gamma * temp / KELVIN) * 1.0e-5;
+    mach_cache_local(m, kk, jj, ii) = (cs_g > 0.0) ? (vturb_g / cs_g) : 0.0;
+  });
+
+  mach_cache_cycle = pm->ncycle;
+}
+
 void AddDustSource(Mesh *pm, const Real bdt) {
   if (!dust_model || Ndust_bins <= 0) return;
 
   MeshBlockPack *pmbp = pm->pmb_pack;
   auto &indcs = pm->mb_indcs;
   auto &size = pmbp->pmb->mb_size;
-  int is = indcs.is, ie = indcs.ie;
-  int js = indcs.js, je = indcs.je;
-  int ks = indcs.ks, ke = indcs.ke;
-  int nmb1 = pmbp->nmb_thispack - 1;
+  const int is = indcs.is;
+  const int ie = indcs.ie;
+  const int js = indcs.js;
+  const int je = indcs.je;
+  const int ks = indcs.ks;
+  const int ke = indcs.ke;
+  const int ni = ie - is + 1;
+  const int nj = je - js + 1;
+  const int nk = ke - ks + 1;
+  const int nmb1 = pmbp->nmb_thispack - 1;
   auto &u0 = pmbp->phydro->u0;
   const auto &w0 = pmbp->phydro->w0;
-  const EOS_Data &eos_data = pmbp->phydro->peos->eos_data;
+  const Real gm1 = pmbp->phydro->peos->eos_data.gamma - 1.0;
   const int nhydro = pmbp->phydro->nhydro;
-
-  int nx1 = indcs.nx1;
-  int nx2 = indcs.nx2;
-  int nx3 = indcs.nx3;
-  const Real gamma = eos_data.gamma;
-  const Real gm1 = gamma - 1.0;
 
   Real KELVIN = 1.0;
   Real MYR = 1.0;
   Real SEC = 1.0;
-  Real KM_S = 1.0;
   Real CM3 = 1.0;
   if (pmbp->punit != nullptr) {
     KELVIN = pmbp->punit->temperature_cgs();
     MYR = pmbp->punit->myr();
     SEC = pmbp->punit->s();
-    KM_S = pmbp->punit->km_s();
-    CM3 = std::pow(pmbp->punit->cm(), 3.0);
+    CM3 = cube(pmbp->punit->cm());
   } else if (global_variable::my_rank == 0) {
     std::cout << "ERROR: <units> block missing..." << std::endl;
     std::exit(1);
@@ -1273,134 +1780,121 @@ void AddDustSource(Mesh *pm, const Real bdt) {
   const Real dust_a_local = dust_a;
   const Real dust_b_local = dust_b;
   const Real rho_gr_local = rho_gr;
-  const Real grain_porosity_local = grain_porosity;
+  const Real grain_porosity_factor_local = grain_porosity_factor;
   const Real Z_solar_local = Z_solar;
-  const int vturb_cells = vturb_est_ncell;
   const bool coag_shatt = coag_shatt_flag;
+  const bool use_mach_cache = coag_shatt && (vturb_est_ncell > 0);
+  const Real bdt_sec = bdt / SEC;
+  const auto edges_pad = dust_bin_edges_padded;
+  const auto edges = dust_bin_edges;
+  const auto dbins = dust_bin_centers;
+  const auto dbins3 = dust_bin_centers_cubed;
+  const auto delta1 = dust_delta1;
+  const auto delta2 = dust_delta2;
+  const auto delta3 = dust_delta3;
+  const auto mass_to_num_fac = dust_mass_to_num;
+  const auto num_to_mass_fac = dust_num_to_mass;
+  const Real dust_inv_log_step_local = dust_inv_log_step;
 
-  auto edges_pad_h = Kokkos::create_mirror_view_and_copy(
-      HostMemSpace(), dust_bin_edges_padded);
-  auto dbins_h = Kokkos::create_mirror_view_and_copy(
-      HostMemSpace(), dust_bin_centers);
+  if (use_mach_cache) UpdateTurbulenceCache(pm);
+  auto mach_cache_local = mach_cache;
 
-  Real edges_pad[kMaxDustBins + 3];
-  Real edges[kMaxDustBins + 1];
-  Real dbins[kMaxDustBins];
-  for (int i = 0; i < n_edges; ++i) edges_pad[i] = edges_pad_h(i);
-  for (int i = 0; i <= ndust; ++i) edges[i] = edges_pad_h(i + 1);
-  for (int i = 0; i < ndust; ++i) dbins[i] = dbins_h(i);
+  constexpr Real Z_tol = 1.0e-20;
+  constexpr Real D_tol = 1.0e-20;
+  constexpr Real M_g_tol = 1.0e-6;
 
-  par_for("dust_source", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+  DvceArray4D<Real> dust_tot_before("dust_tot_before", nmb1 + 1, nk, nj, ni);
+
+  par_for("dust_source_shift", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
   KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
-    Real dens = w0(m, IDN, k, j, i);
-    Real temp = (w0(m, IEN, k, j, i) * gm1) / dens * KELVIN;
-    Real vol_cc = size.d_view(m).dx1 * size.d_view(m).dx2 * size.d_view(m).dx3 / CM3;
+    const Real dens = w0(m, IDN, k, j, i);
+    const Real temp = (w0(m, IEN, k, j, i) * gm1) / dens * KELVIN;
+    const Real Z_local = Kokkos::max(Z_tol, w0(m, nmetal, k, j, i));
+    const int kk = k - ks;
+    const int jj = j - js;
+    const int ii = i - is;
 
-    constexpr Real Z_tol = 1.0e-20;
-    constexpr Real D_tol = 1.0e-20;
+    Real dust_arr[kMaxDustBinSlots];
+    dust_tot_before(m, kk, jj, ii) = apply_sputter_accrete_rebin(
+        dust_arr, u0, m, k, j, i, ndusti, ndust, mass_to_num_fac, edges_pad, n_edges,
+        dens, temp, Z_local, Z_solar_local, grain_porosity_factor_local, rho_gr_local,
+        dust_a_local, dust_b_local, dust_inv_log_step_local, bdt, MYR);
+    if (dust_tot_before(m, kk, jj, ii) <= D_tol) return;
 
-    Real Z_local = Kokkos::max(Z_tol, w0(m, nmetal, k, j, i));
-
-    Real dust_arr[kMaxDustBins + 2];
-    dust_arr[0] = 0.0;
-    dust_arr[ndust + 1] = 0.0;
-
-    Real D_check = 0.0;
-    for (int id = 1; id < ndust + 1; ++id) {
-      dust_arr[id] = mass_to_num(u0(m, ndusti + id - 1, k, j, i),
-                                 edges_pad[id], edges_pad[id + 1], rho_gr_local);
-      D_check += u0(m, ndusti + id - 1, k, j, i);
+    for (int id = 0; id < ndust; ++id) {
+      u0(m, ndusti + id, k, j, i) = dust_arr[id + 1] * num_to_mass_fac(id);
     }
+  });
 
-    if (D_check <= D_tol) return;
+  if (coag_shatt) {
+    par_for("dust_source_coagshatt", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      const Real dens = w0(m, IDN, k, j, i);
+      const Real temp = (w0(m, IEN, k, j, i) * gm1) / dens * KELVIN;
+      const Real vol_cc =
+          size.d_view(m).dx1 * size.d_view(m).dx2 * size.d_view(m).dx3 / CM3;
 
-    Real dust_tot = dist_num_integral(
-        dust_arr, edges_pad, n_edges, dust_a_local, dust_b_local, rho_gr_local, true);
-    Real delta_dmass = -dust_tot;
+      const int kk = k - ks;
+      const int jj = j - js;
+      const int ii = i - is;
 
-    Real tot_shift = sputtering(dens, temp, Z_local / Z_solar_local, grain_porosity_local);
-    tot_shift += accretion(dens, temp, Z_local / Z_solar_local, grain_porosity_local);
-    tot_shift *= bdt / MYR;
-    rebin(dust_arr, edges_pad, n_edges, tot_shift, rho_gr_local);
+      const Real dust_mass_before = dust_tot_before(m, kk, jj, ii);
+      if (dust_mass_before <= D_tol) return;
 
-    Real vx_mean = 0.0, vy_mean = 0.0, vz_mean = 0.0;
-    Real M2x = 0.0, M2y = 0.0, M2z = 0.0;
-    int n_count = 0;
-    for (int ia = -vturb_cells; ia <= vturb_cells; ++ia) {
-      for (int ja = -vturb_cells; ja <= vturb_cells; ++ja) {
-        for (int ka = -vturb_cells; ka <= vturb_cells; ++ka) {
-          Real vx = w0(m, IVX, k + ka, j + ja, i + ia);
-          Real vy = w0(m, IVY, k + ka, j + ja, i + ia);
-          Real vz = w0(m, IVZ, k + ka, j + ja, i + ia);
-          ++n_count;
+      Real dust_arr[kMaxDustBinSlots];
+      dust_arr[0] = 0.0;
+      dust_arr[ndust + 1] = 0.0;
 
-          Real deltax = vx - vx_mean;
-          Real deltay = vy - vy_mean;
-          Real deltaz = vz - vz_mean;
-          vx_mean += deltax / n_count;
-          vy_mean += deltay / n_count;
-          vz_mean += deltaz / n_count;
-
-          Real delta2x = vx - vx_mean;
-          Real delta2y = vy - vy_mean;
-          Real delta2z = vz - vz_mean;
-          M2x += deltax * delta2x;
-          M2y += deltay * delta2y;
-          M2z += deltaz * delta2z;
-        }
+      for (int id = 0; id < ndust; ++id) {
+        dust_arr[id + 1] = u0(m, ndusti + id, k, j, i) * mass_to_num_fac(id);
       }
-    }
 
-    Real vturb_g = std::sqrt((M2x + M2y + M2z) / Real(n_count + 1));
-    vturb_g *= std::pow(1.0 / Real(n_count), 1.0 / 9.0) / KM_S;
-    Real cs_g = std::sqrt(gamma * temp / KELVIN) * 1.0e-5;
-    Real M_g = vturb_g / cs_g;
+      const Real M_g = use_mach_cache ? mach_cache_local(m, kk, jj, ii) : 0.0;
+      if (M_g < M_g_tol) return;
 
-    constexpr Real M_g_tol = 1.0e-6;
-    if ((M_g >= M_g_tol) && coag_shatt) {
-      Real intr_arr[kMaxDustBins][kMaxDustBins];
       Real mass_in_bin[kMaxDustBins];
       for (int id = 0; id < ndust; ++id) mass_in_bin[id] = 0.0;
 
-      calc_interaction(bdt / SEC, intr_arr, dust_arr + 1, dbins, edges, ndust,
-                       M_g, rho_gr_local, dens, temp, vol_cc, false);
-      add_coagulate(intr_arr, mass_in_bin, dbins, edges, ndust, rho_gr_local);
+      add_coagulate_streamed(bdt_sec, mass_in_bin, dust_arr + 1, dbins, dbins3, edges,
+                             delta1, delta2, delta3, ndust, M_g, rho_gr_local,
+                             dens, temp, vol_cc, dust_inv_log_step_local);
+      add_shatters_streamed(bdt_sec, mass_in_bin, dust_arr + 1, dbins, dbins3, edges,
+                            delta1, delta2, delta3, ndust, M_g, rho_gr_local,
+                            dens, temp, vol_cc, dust_inv_log_step_local);
 
-      calc_interaction(bdt / SEC, intr_arr, dust_arr + 1, dbins, edges, ndust,
-                       M_g, rho_gr_local, dens, temp, vol_cc, true);
-      add_shatters(intr_arr, mass_in_bin, dbins, edges, ndust,
-                   M_g, rho_gr_local, dens, temp);
-
-      for (int id = 1; id < ndust + 1; ++id) {
-        dust_arr[id] += mass_to_num(mass_in_bin[id - 1], edges[id - 1],
-                                    edges[id], rho_gr_local);
+      for (int id = 0; id < ndust; ++id) {
+        u0(m, ndusti + id, k, j, i) =
+            (dust_arr[id + 1] + mass_in_bin[id] * mass_to_num_fac(id)) *
+            num_to_mass_fac(id);
       }
-    }
+    });
+  }
 
-    dust_tot = dist_num_integral(
-        dust_arr, edges_pad, n_edges, dust_a_local, dust_b_local, rho_gr_local, true);
-    delta_dmass += dust_tot;
-    Real rate_Z = -delta_dmass;
+  par_for("dust_source_finalize", DevExeSpace(), 0, nmb1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    const Real dens = w0(m, IDN, k, j, i);
 
-    const Real rho_gr_um = rho_gr_local * 1.0e-12;
-    const Real k_dust_um = (4.0 / 3.0) * M_PI * rho_gr_um;
+    const int kk = k - ks;
+    const int jj = j - js;
+    const int ii = i - is;
+
+    const Real dust_mass_before = dust_tot_before(m, kk, jj, ii);
+    if (dust_mass_before <= D_tol) return;
+
+    Real dust_arr[kMaxDustBinSlots];
+    dust_arr[0] = 0.0;
+    dust_arr[ndust + 1] = 0.0;
     for (int id = 0; id < ndust; ++id) {
-      u0(m, ndusti + id, k, j, i) =
-          0.25 * k_dust_um * dust_arr[id + 1] *
-          (std::pow(edges_pad[id + 2], 4.0) - std::pow(edges_pad[id + 1], 4.0));
+      dust_arr[id + 1] = u0(m, ndusti + id, k, j, i) * mass_to_num_fac(id);
     }
 
-    u0(m, nmetal, k, j, i) += rate_Z;
-    u0(m, nmetal, k, j, i) = Kokkos::clamp(u0(m, nmetal, k, j, i), 0.0, dens);
+    const Real dust_tot = dist_num_integral(
+        dust_arr, edges_pad, n_edges, dust_a_local, dust_b_local, rho_gr_local,
+        dust_inv_log_step_local, true);
+    const Real rate_Z = dust_mass_before - dust_tot;
 
-    Real clamp_dust_tot = Kokkos::clamp(dust_tot, 0.0, dens);
-    for (int id = 0; id < ndust; ++id) {
-      if (dust_tot <= D_tol) {
-        u0(m, ndusti + id, k, j, i) = 0.0;
-      } else {
-        u0(m, ndusti + id, k, j, i) *= clamp_dust_tot / dust_tot;
-      }
-    }
+    finalize_dust_source(u0, dust_arr, m, k, j, i, nmetal, ndusti, ndust,
+                         dens, dust_tot, rate_Z, num_to_mass_fac);
   });
 }
 
@@ -1837,5 +2331,25 @@ void FreeProfile(ParameterInput *pin, Mesh *pm) {
   dust_bin_centers = DvceArray1D<Real>();
   dust_bin_edges = DvceArray1D<Real>();
   dust_bin_edges_padded = DvceArray1D<Real>();
+  dust_bin_centers_cubed = DvceArray1D<Real>();
+  dust_delta1 = DvceArray1D<Real>();
+  dust_delta2 = DvceArray1D<Real>();
+  dust_delta3 = DvceArray1D<Real>();
+  dust_delta4 = DvceArray1D<Real>();
+  dust_mass_to_num = DvceArray1D<Real>();
+  dust_num_to_mass = DvceArray1D<Real>();
   dust_bin_mass_fractions = DvceArray1D<Real>();
+  dust_bin_centers_h = HostArray1D<Real>();
+  dust_bin_edges_h = HostArray1D<Real>();
+  dust_bin_edges_padded_h = HostArray1D<Real>();
+  dust_bin_centers_cubed_h = HostArray1D<Real>();
+  dust_edge4_h = HostArray1D<Real>();
+  dust_delta1_h = HostArray1D<Real>();
+  dust_delta2_h = HostArray1D<Real>();
+  dust_delta3_h = HostArray1D<Real>();
+  dust_delta4_h = HostArray1D<Real>();
+  dust_mass_to_num_h = HostArray1D<Real>();
+  dust_num_to_mass_h = HostArray1D<Real>();
+  mach_cache = DvceArray4D<Real>();
+  mach_cache_cycle = -1;
 }
