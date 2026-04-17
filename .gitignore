@@ -16,3 +16,11 @@ build/
 # editor temp files
 *~
 *.swp
+
+.venv
+build_*/*
+test_*/*
+**/__pycache__
+**/.cache
+
+snap_rates/plots/*
