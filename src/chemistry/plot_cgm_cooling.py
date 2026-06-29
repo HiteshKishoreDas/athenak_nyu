@@ -18,19 +18,48 @@ from typing import Dict, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-TABLES_PATH = ROOT / "src" / "srcterms" / "cooling_tables.hpp"
+
+def find_tables_path() -> pathlib.Path:
+    """Locate the cooling tables header from this file or the current directory."""
+    candidates = []
+
+    if "__file__" in globals():
+        this_file = pathlib.Path(__file__).resolve()
+        candidates.extend(this_file.parents)
+
+    candidates.extend(pathlib.Path.cwd().resolve().parents)
+    candidates.append(pathlib.Path.cwd().resolve())
+
+    seen = set()
+    for base in candidates:
+        if base in seen:
+            continue
+        seen.add(base)
+
+        direct = base / "src" / "srcterms" / "cooling_tables.hpp"
+        if direct.is_file():
+            return direct
+
+        nested = base / "srcterms" / "cooling_tables.hpp"
+        if nested.is_file():
+            return nested
+
+    raise FileNotFoundError(
+        "Could not locate src/srcterms/cooling_tables.hpp from the script or cwd"
+    )
+
+
+TABLES_PATH = find_tables_path()
 AMU = 1.67262192369e-24  # g
 KB = 1.3806488e-16  # erg/K
 X_H = 0.75
 Z_SOL = 0.02
-T_HOT = 1e6
+T_HOT = 2000  # 1e6
 
 # Temperature grid and environment used for the standalone plot
 TMIN = 1e1  # K
 TMAX = 1e8  # K
 NSAMPLES = 400
-N_H = 0.01  # cm^-3
 Z_REL = 0.2  # Z/Z_sun
 
 # --- User-adjustable parameters (no athinput needed) ---
@@ -41,19 +70,21 @@ USER_CFG: Dict[str, float] = {
     "mass_cgs": 3.036951775493658e40,  # g
     "time_cgs": 3.15576e13,  # s
     "mu": 0.6,
+    "rho0": 5.0,
     # Grid extents (for shielding length estimate)
     "x1min": -0.5,
     "x1max": 0.5,
     "nx1": 256,
     # Heating options
     "hrate": 2e-26,  # erg s^-1 per H atom
+    "hscale_norm": 1.0,  # N_H * T_HOT / 1e4,
     "hscale_flag": 0.0,
-    "hscale_norm": N_H * T_HOT / 1e4,
     "hscale_height": 0.0,
     "hscale_radius": 0.0,
     "hscale_alpha": 0.0,
     # Cooling ceiling
     "T_max": 5e8,
+    "T_cutoff": 5e5,
 }
 
 
@@ -155,13 +186,12 @@ def bilinear_interp(
 
 def cooling_heating(
     T: np.ndarray,
-    nH: float,
+    rho: np.ndarray,
     Z: float,
     tables: Dict[str, np.ndarray],
     cfg: Dict[str, float],
     units: Dict[str, float],
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    temp_unit = units["temperature_cgs"]
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     nH_unit = units["nH_unit"]
     length_unit = units["length_cgs"]
     pressure_cgs = units["pressure_cgs"]
@@ -170,10 +200,10 @@ def cooling_heating(
     h_rate = cfg.get("hrate", 0.0)
     h_flag = bool(cfg.get("hscale_flag", 0.0))
     h_norm = cfg.get("hscale_norm", 1.0)
-    # h_height = cfg.get("hscale_height", 0.0)
-    # h_radius = cfg.get("hscale_radius", 0.0)
-    # h_alpha = cfg.get("hscale_alpha", 0.0)
-    T_max = cfg.get("T_max", 1e10)
+    h_height = cfg.get("hscale_height", 0.0)
+    h_radius = cfg.get("hscale_radius", 0.0)
+    h_alpha = cfg.get("hscale_alpha", 0.0)
+    T_cutoff = cfg.get("T_cutoff", 1e10)
 
     cooling_unit = pressure_cgs / time_cgs / nH_unit / nH_unit
     heating_unit = pressure_cgs / time_cgs / nH_unit
@@ -183,8 +213,9 @@ def cooling_heating(
     nHfloor = 10 ** tables["nHbins"][0]
     nHceil = 10 ** tables["nHbins"][-1]
 
+    nH = X_H * nH_unit * rho
     logT = np.log10(T)
-    logn = np.log10(np.full_like(T, nH))
+    logn = np.log10(nH)
 
     m_lowT = (T < Tfloor).astype(float)
     m_Tin = ((T >= Tfloor) & (T <= Tceil)).astype(float)
@@ -210,14 +241,13 @@ def cooling_heating(
 
     if h_flag:
         x1min, x1max = cfg.get("x1min", -0.5), cfg.get("x1max", 0.5)
-        nx1 = cfg.get("nx1", 1)
-        dx_cgs = (x1max - x1min) / nx1 * length_unit
-        R = abs((x1max + x1min) / 2)
+        x2min, x2max = cfg.get("x2min", -0.5), cfg.get("x2max", 0.5)
+        x3min, x3max = cfg.get("x3min", -0.5), cfg.get("x3max", 0.5)
+        R = math.sqrt((0.5 * (x1min + x1max)) ** 2 + (0.5 * (x2min + x2max)) ** 2)
+        x3v = 0.5 * (x3min + x3max)
         horz_falloff = math.exp(-R / max(h_radius, 1e-12)) if h_radius > 0 else 1.0
         vert_scale2 = h_height**2 + h_alpha * R**2
-        vert_falloff = (
-            math.exp(0.0) if vert_scale2 <= 0 else math.exp(-0.0 / vert_scale2)
-        )
+        vert_falloff = math.exp(-(x3v * x3v) / vert_scale2) if vert_scale2 > 0 else 1.0
         gamma_heating = h_rate * h_norm * X_H * nH_unit * horz_falloff * vert_falloff
     else:
         gamma_heating = h_rate * h_norm * X_H * nH_unit
@@ -237,11 +267,11 @@ def cooling_heating(
     frac = np.exp(-tau)
 
     lambda_cooling = (1.0 - frac) * lambda_CIE + frac * lambda_PIE
-    # lambda_cooling = lambda_CIE
     gamma_heating *= 1.0 - frac
 
-    volumetric_cooling = ((nH * X_H) ** 2) * lambda_cooling / cooling_unit
-    volumetric_heating = gamma_heating * nH * X_H / heating_unit
+    m_cut = (T < T_cutoff).astype(float)
+    volumetric_cooling = m_cut * ((X_H * rho) ** 2) * lambda_cooling / cooling_unit
+    volumetric_heating = m_cut * gamma_heating * X_H * rho / heating_unit
 
     return frac, lambda_cooling, volumetric_cooling, volumetric_heating
 
@@ -252,13 +282,15 @@ def main() -> None:
     units = compute_units(cfg)
 
     T = np.logspace(math.log10(TMIN), math.log10(TMAX), NSAMPLES)
-    RHO = N_H * T_HOT / T
+    rho = cfg["rho0"] * T_HOT / T
 
     frac, lambda_cool, cool_vol, heat_vol = cooling_heating(
-        T, RHO, Z_REL, tables, cfg, units
+        T, rho, Z_REL, tables, cfg, units
     )
+    net_vol = cool_vol - heat_vol
 
-    fig, ax = plt.subplots(1, 3, figsize=(12, 5))
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8), sharex=True)
+    ax = axes.ravel()
 
     ax[0].plot(T, lambda_cool, label=r"$\Lambda_\mathrm{tot}$", color="C0")
     ax[0].plot(T, -lambda_cool, ls="--", color="C0")
@@ -287,15 +319,64 @@ def main() -> None:
     ax[1].grid(True, which="both", alpha=0.3)
     ax[1].legend()
 
-    ax[2].plot(T, frac, label=r"Shielding factor")
+    nonzero_net = np.abs(net_vol[np.nonzero(net_vol)])
+    linthresh = 1e-30 if nonzero_net.size == 0 else np.min(nonzero_net)
+    ax[2].plot(T, net_vol, label="Cooling - Heating", color="C3")
+    ax[2].axhline(0.0, color="0.4", ls="--", lw=1.0)
+
+    crossing_temps = []
+    net_sign = np.sign(net_vol)
+    for i in range(1, net_vol.size):
+        if net_sign[i] == 0.0:
+            crossing_temps.append(T[i])
+        elif net_sign[i - 1] == 0.0 or net_sign[i] == net_sign[i - 1]:
+            continue
+        else:
+            log_t0 = np.log10(T[i - 1])
+            log_t1 = np.log10(T[i])
+            zero_log_t = log_t0 - net_vol[i - 1] * (log_t1 - log_t0) / (
+                net_vol[i] - net_vol[i - 1]
+            )
+            crossing_temps.append(10.0**zero_log_t)
+
+    if crossing_temps:
+        ax[2].scatter(
+            crossing_temps,
+            np.zeros(len(crossing_temps)),
+            color="C3",
+            s=28,
+            zorder=3,
+            label="Zero crossings",
+        )
+        for idx, crossing_temp in enumerate(crossing_temps):
+            y_offset = 12 if idx % 2 == 0 else -18
+            va = "bottom" if y_offset > 0 else "top"
+            ax[2].annotate(
+                f"{crossing_temp:.2e} K",
+                xy=(crossing_temp, 0.0),
+                xytext=(0, y_offset),
+                textcoords="offset points",
+                ha="center",
+                va=va,
+                fontsize=8,
+            )
 
     ax[2].set_xscale("log")
+    ax[2].set_yscale("symlog", linthresh=linthresh)
     ax[2].set_xlabel("Temperature [K]")
-    ax[2].set_ylabel(r"Shielding factor $f_\mathrm{shield}$")
+    ax[2].set_ylabel("Net volumetric rate [erg cm$^{-3}$ s$^{-1}$]")
     ax[2].grid(True, which="both", alpha=0.3)
     ax[2].legend()
 
-    fig.suptitle(f"CGM cooling/heating | nH={N_H:g} cm^-3, Z={Z_REL:g} Z_sun")
+    ax[3].plot(T, frac, label=r"Shielding factor")
+
+    ax[3].set_xscale("log")
+    ax[3].set_xlabel("Temperature [K]")
+    ax[3].set_ylabel(r"Shielding factor $f_\mathrm{shield}$")
+    ax[3].grid(True, which="both", alpha=0.3)
+    ax[3].legend()
+
+    fig.suptitle(f"CGM cooling/heating | rho0={cfg['rho0']:g} cm^-3, Z={Z_REL:g} Z_sun")
     out_path = pathlib.Path(__file__).with_name("cgm_cooling_rates.png")
     fig.tight_layout(rect=[0, 0, 1, 0.95])
     fig.savefig(out_path, dpi=200)
