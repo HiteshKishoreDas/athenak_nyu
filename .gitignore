@@ -16,3 +16,8 @@ build*/
 # editor temp files
 *~
 *.swp
+
+__pycache__/
+
+*test*/**/*.png
+*test*/**/*.out
