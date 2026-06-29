@@ -17,3 +17,8 @@ build*/
 *~
 *.swp
 Lorene
+
+**__pycache__/
+
+*test*/**/*.png
+*test*/**/*.out
