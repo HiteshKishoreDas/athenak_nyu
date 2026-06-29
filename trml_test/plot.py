@@ -41,6 +41,9 @@ gamma_minus_1 = 5.0 / 3.0 - 1.0
 
 Z_solar = 0.0134
 
+output_dir = Path("save/temp")
+output_dir.mkdir(parents=True, exist_ok=True)
+
 
 def compute_temperature(out_dict):
     KE = (
@@ -55,8 +58,8 @@ def compute_temperature(out_dict):
     return T
 
 
-dust_tot_small = []
-dust_tot_large = []
+metal_tot = []
+gas_tot = []
 time = []
 
 for i in range(0, 101):
@@ -93,16 +96,12 @@ for i in range(0, 101):
 
     fig, ax = plt.subplots(figsize=(12, 12))
 
-    # img_arr = out_dict["s_01"][*slice_list]
-    # img_arr = out_dict["s_02"][*slice_list]
-    # img_arr = out_dict["s_03"][*slice_list]
-    img_arr = out_dict["s_02"][*slice_list] / out_dict["s_03"][*slice_list]
-    # img_arr /= Z_solar
+    dens = out_dict["dens"][tuple(slice_list)]
+    s_01 = out_dict["s_01"][tuple(slice_list)]
+    img_arr = np.divide(s_01, dens, out=np.full_like(s_01, np.nan), where=dens != 0) / Z_solar
 
-    # img_arr = out_dict["s_02"][*slice_list] / img_arr
-
-    dust_tot_small.append(np.sum(out_dict["dens"] * out_dict["s_02"]))
-    dust_tot_large.append(np.sum(out_dict["dens"] * out_dict["s_03"]))
+    metal_tot.append(np.sum(out_dict["s_01"]))
+    gas_tot.append(np.sum(out_dict["dens"]))
     time.append(out_dict["Time"])
 
     pc = ax.pcolormesh(
@@ -119,8 +118,7 @@ for i in range(0, 101):
         shading="auto",
     )
     ax.set_aspect("equal", adjustable="box")
-    # fig.colorbar(pc, ax=ax, label="T")
-    fig.colorbar(pc, ax=ax, label=f"$D_s/D_l$")
+    fig.colorbar(pc, ax=ax, label=r"$Z/Z_\odot$")
 
     # after plotting
     ax.xaxis.set_major_locator(MultipleLocator(0.5))
@@ -131,9 +129,7 @@ for i in range(0, 101):
 
     fig.tight_layout(pad=0.25)
 
-    fig.savefig(
-        f"save/temp/temp_{i:05d}.png", dpi=600, bbox_inches="tight", pad_inches=0.02
-    )
+    fig.savefig(output_dir / f"metal_{i:05d}.png", dpi=600, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
 
     # del out_dict, X, Y, fig
@@ -141,15 +137,14 @@ for i in range(0, 101):
 
 # %%
 
-dust_tot_large = np.array(dust_tot_large)
-dust_tot_small = np.array(dust_tot_small)
+gas_tot = np.array(gas_tot)
+metal_tot = np.array(metal_tot)
 
 plt.figure()
-plt.plot(time, dust_tot_small / dust_tot_small[0], label="Small dust")
-plt.plot(time, dust_tot_large / dust_tot_large[0], label="Large dust")
+plt.plot(time, metal_tot / metal_tot[0], label="Metal mass")
 plt.legend()
 
-plt.ylabel(r"$D/D_0$")
+plt.ylabel(r"$M_Z/M_{Z,0}$")
 plt.xlabel(f"$t$ (code units)")
 
 plt.ylim(0, 1.1)
@@ -157,10 +152,10 @@ plt.xlim(0, None)
 
 
 plt.figure()
-plt.plot(time, dust_tot_small / dust_tot_large)
+plt.plot(time, metal_tot / gas_tot / Z_solar, label="Mean metallicity")
 plt.legend()
 
-plt.ylabel(r"$D_s/D_l$")
+plt.ylabel(r"$Z/Z_\odot$")
 plt.xlabel(f"$t$ (code units)")
 
 plt.xlim(0, None)

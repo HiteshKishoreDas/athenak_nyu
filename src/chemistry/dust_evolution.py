@@ -5,8 +5,8 @@ import cmasher as cm
 
 import matplotlib as mt
 
-theme = "bright"
-# theme = "dark"
+# theme = "bright"
+theme = "dark"
 
 
 import own_package
