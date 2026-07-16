@@ -44,7 +44,6 @@ class FrameTracker {
   std::array<Real, 3> FrameDisplacement() const { return frame_displacement_; }
   void StoreStateInParameterInput(ParameterInput *pin) const;
 
- private:
   struct AxisState {
     bool active = false;
     Real target_position = 0.0;
@@ -98,6 +97,7 @@ class FrameTracker {
   void AdvanceFrameDisplacement(const Real dt);
   void RestoreFrameState(ParameterInput *pin);
 
+ private:
   MeshBlockPack *pmy_pack = nullptr;
   std::string block_name_;
 

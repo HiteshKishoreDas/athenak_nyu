@@ -373,7 +373,7 @@ class AthenaPointTensor<T, sym, ndim, 2> {
   Real operator()(int const a, int const b) const {
     if constexpr (sym == TensorSymm::NONE) {
       return data_[b + ndim*a];
-    } else if (sym == TensorSymm::SYM2) {
+    } else if constexpr (sym == TensorSymm::SYM2) {
       if (b < a) {
         return data_[b*(2*ndim - b + 1)/2+a-b];
       } else {
@@ -386,7 +386,7 @@ class AthenaPointTensor<T, sym, ndim, 2> {
   Real & operator()(int const a, int const b) {
     if constexpr (sym == TensorSymm::NONE) {
       return data_[b + ndim*a];
-    } else if (sym == TensorSymm::SYM2) {
+    } else if constexpr (sym == TensorSymm::SYM2) {
       if (b < a) {
         return data_[b*(2*ndim - b + 1)/2+a-b];
       } else {
@@ -423,39 +423,43 @@ class AthenaPointTensor<T, sym, ndim, 3> {
   Real operator()(int const a, int const b, int const c) const {
     if constexpr (sym == TensorSymm::NONE) {
       return data_[c + ndim*(b + ndim*a)];
-    } else if (sym == TensorSymm::SYM2) {
+    } else if constexpr (sym == TensorSymm::SYM2) {
       constexpr int ndof2_ = TensorDOF<TensorSymm::SYM2, ndim, 2>;
       if (c < b) {
         return data_[c*(2*ndim - c + 1)/2 + b - c + ndof2_*a];
       } else {
         return data_[b*(2*ndim - b + 1)/2 + c - b + ndof2_*a];
       }
-    } else if (sym == TensorSymm::ISYM2) {
+    } else if constexpr (sym == TensorSymm::ISYM2) {
       if (b < a) {
         return data_[c + ndim*(b*(2*ndim - b + 1)/2 + a - b)];
       } else {
         return data_[c + ndim*(a*(2*ndim - a + 1)/2 + b - a)];
       }
     }
+    Kokkos::abort("Unhandled AthenaPointTensor rank-3 symmetry");
+    return data_[0];
   }
   KOKKOS_INLINE_FUNCTION
   Real & operator()(int const a, int const b, int const c) {
     if constexpr (sym == TensorSymm::NONE) {
       return data_[c + ndim*(b + ndim*a)];
-    } else if (sym == TensorSymm::SYM2) {
+    } else if constexpr (sym == TensorSymm::SYM2) {
       constexpr int ndof2_ = TensorDOF<TensorSymm::SYM2, ndim, 2>;
       if (c < b) {
         return data_[c*(2*ndim - c + 1)/2 + b - c + ndof2_*a];
       } else {
         return data_[b*(2*ndim - b + 1)/2 + c - b + ndof2_*a];
       }
-    } else if (sym == TensorSymm::ISYM2) {
+    } else if constexpr (sym == TensorSymm::ISYM2) {
       if (b < a) {
         return data_[c + ndim*(b*(2*ndim - b + 1)/2 + a - b)];
       } else {
         return data_[c + ndim*(a*(2*ndim - a + 1)/2 + b - a)];
       }
     }
+    Kokkos::abort("Unhandled AthenaPointTensor rank-3 symmetry");
+    return data_[0];
   }
   KOKKOS_INLINE_FUNCTION
   void ZeroClear() {
@@ -505,6 +509,8 @@ class AthenaPointTensor<T, sym, ndim, 4> {
       }
       return data_[(b*( 2*ndim - b +1)/2 + a - b)*ndof2_ + d*( 2*ndim - d +1)/2 + c - d];
     }
+    Kokkos::abort("Unhandled AthenaPointTensor rank-4 symmetry");
+    return data_[0];
   }
 
 
@@ -522,6 +528,8 @@ class AthenaPointTensor<T, sym, ndim, 4> {
       }
       return data_[(b*( 2*ndim - b +1)/2 + a - b)*ndof2_ + d*( 2*ndim - d +1)/2 + c - d];
     }
+    Kokkos::abort("Unhandled AthenaPointTensor rank-4 symmetry");
+    return data_[0];
   }
 
   KOKKOS_INLINE_FUNCTION
@@ -688,6 +696,8 @@ class AthenaScratchTensor<T, sym, ndim, 3> {
       }
       return data_((b*(2*ndim - b +1)/2 + a - b)*ndim + c,i);
     }
+    Kokkos::abort("Unhandled AthenaScratchTensor rank-3 symmetry");
+    return data_(0, i);
   }
   KOKKOS_INLINE_FUNCTION
   void NewAthenaScratchTensor(const TeamMember_t & member, int scr_level, int nx) {
@@ -741,6 +751,8 @@ class AthenaScratchTensor<T, sym, ndim, 4> {
       return data_((b*( 2*ndim - b +1)/2 + a - b)*(ndim + 1)*ndim/2 +
                     d*( 2*ndim - d +1)/2 + c - d,i);
     }
+    Kokkos::abort("Unhandled AthenaScratchTensor rank-4 symmetry");
+    return data_(0, i);
   }
 
   KOKKOS_INLINE_FUNCTION
