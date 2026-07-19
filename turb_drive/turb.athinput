@@ -1,0 +1,105 @@
+# AthenaXXX input file for hydro turbulence
+
+<comment>
+problem   = turbulence
+
+<job>
+basename  = Turb       # problem ID: basename of output filenames
+
+<mesh>
+nghost    = 4         # Number of ghost cells
+nx1       = 256       # Number of zones in X1-direction
+x1min     = -0.5      # minimum value of X1
+x1max     = 0.5       # maximum value of X1
+ix1_bc    = periodic  # Inner-X1 boundary condition flag
+ox1_bc    = periodic  # Outer-X1 boundary condition flag
+
+nx2       = 256       # Number of zones in X2-direction
+x2min     = -0.5      # minimum value of X2
+x2max     = 0.5       # maximum value of X2
+ix2_bc    = periodic  # Inner-X2 boundary condition flag
+ox2_bc    = periodic  # Outer-X2 boundary condition flag
+
+nx3       = 256        # Number of zones in X3-direction
+x3min     = -0.5      # minimum value of X3
+x3max     = 0.5       # maximum value of X3
+ix3_bc    = periodic  # Inner-X3 boundary condition flag
+ox3_bc    = periodic  # Outer-X3 boundary condition flag
+
+<meshblock>
+nx1       = 64        # Number of cells in each MeshBlock, X1-dir
+nx2       = 64        # Number of cells in each MeshBlock, X2-dir
+nx3       = 64        # Number of cells in each MeshBlock, X3-dir
+
+<time>
+evolution  = dynamic  # dynamic/kinematic/static
+integrator = rk3      # time integration algorithm
+cfl_number = 0.2      # The Courant, Friedrichs, & Lewy (CFL) Number
+nlim       = -1       # cycle limit
+tlim       = 1.0     # time limit
+ndiag      = 1        # cycles between diagostic output
+
+<hydro>
+eos         = ideal   # EOS type
+reconstruct = ppm4    # spatial reconstruction method
+rsolver     = hllc    # Riemann-solver to be used
+gamma       = 1.667   # gamma = C_p/C_v
+fofc        = true    # Enable first order flux correction
+pfloor      = 1.0e-8  # floor on gas pressure
+
+<problem>
+rho0 = 1.0
+prs0 = 1.0
+Tfix_enabled = true
+
+<units>
+length_cgs  = 3.0856775809623245e21  # 1 kpc
+mass_cgs    = 4.91416144649125e40     # 1 amu cm^-3 * (1 kpc)^3
+time_cgs    = 3.15576e13              # 1 Myr
+
+<turb_driving>
+type = hydro
+tcorr = 0.5           # t_eddy ~ L / urms for L = 1 and urms ~ 2
+dedt  = 4.0           # ~ urms^3 / 2 L, targets Mach ~ 2 with cs = 1 and L = 1
+nlow = 1
+nhigh = 2
+
+<cooling>
+enabled       = false
+cooling_model = ism
+units         = cgs
+mu            = 0.62
+
+<output1>
+file_type = hst
+dt        = 0.01
+
+<output2>
+file_type  = bin         # legacy VTK output
+variable   = hydro_w     # variables to be output
+dt         = 0.01         # time increment between outputs
+
+<output3>
+file_type  = rst         # restart file
+dt         = 0.1         # time increment between restart files
+
+<output4>
+file_type  = bin         # Binary data dump
+slice_x1   = 0.0         # slice in X1 plane
+id         = slice_x1    # output id tag
+variable   = hydro_w     # variables to be output
+dt         = 0.01         # time increment between outputs
+
+<output5>
+file_type  = bin         # Binary data dump
+slice_x2   = 0.0         # slice in X2 plane
+id         = slice_x2    # output id tag
+variable   = hydro_w     # variables to be output
+dt         = 0.01         # time increment between outputs
+
+<output6>
+file_type  = bin         # Binary data dump
+slice_x3   = 0.0         # slice in X3 plane
+id         = slice_x3    # output id tag
+variable   = hydro_w     # variables to be output
+dt         = 0.1         # time increment between outputs

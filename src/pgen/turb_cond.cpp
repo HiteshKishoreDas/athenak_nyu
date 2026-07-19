@@ -21,13 +21,167 @@
 // User-defined history functions
 void TurbulentHistory(HistoryData *pdata, Mesh *pm);
 
+namespace{
+
+struct ProblemData {
+
+  Real gm1 = 2.0/3.0;
+  bool Tfix_enabled = false;
+
+  Real rho0 = 1.0;
+  Real prs0 = 1.0;
+  Real T0 = prs0 / rho0;
+
+  Real xmin = -0.5;
+  Real xmax = 0.5;
+
+  // MHD variables
+  Real beta = -1.0;
+  int ifield = -1;
+
+};
+ProblemData prob_data;
+
+void FatalProbInput(const std::string &message) {
+  std::cout << "### FATAL ERROR in TRML_frame_tracking input" << std::endl
+            << message << std::endl;
+  std::exit(EXIT_FAILURE);
+}
+
+void Tfix_source(Mesh *pm, const Real bdt) {
+
+  MeshBlockPack *pmbp = pm->pmb_pack;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is;
+  const int ie = indcs.ie;
+  const int js = indcs.js;
+  const int je = indcs.je;
+  const int ks = indcs.ks;
+  const int ke = indcs.ke;
+
+  auto &size = pm->pmb_pack->pmb->mb_size;
+  auto &u0 = pmbp->phydro->u0;
+  const ProblemData data = prob_data;
+
+  Real sum_Tvol = 0.0;
+  Real sum_vol = 0.0;
+
+  Kokkos::parallel_reduce(
+      "T_collect",
+      Kokkos::RangePolicy<>(DevExeSpace(), 0,
+                            pmbp->nmb_thispack * indcs.nx3 * indcs.nx2 * indcs.nx1),
+      KOKKOS_LAMBDA(const int &idx, Real &block_Tvol, Real &block_vol) {
+    const int nkji = indcs.nx3*indcs.nx2*indcs.nx1;
+    const int nji = indcs.nx2*indcs.nx1;
+    int m = idx/nkji;
+    int k = (idx - m*nkji)/nji + ks;
+    int j = (idx - m*nkji - (k - ks)*nji)/indcs.nx1 + js;
+    int i = (idx - m*nkji - (k - ks)*nji - (j - js)*indcs.nx1) + is;
+
+    const Real density = u0(m, IDN, k, j, i);
+
+    const Real ek = 0.5*(SQR(u0(m, IM1, k, j, i)) + SQR(u0(m, IM2, k, j, i)) +
+             SQR(u0(m, IM3, k, j, i)))/density;
+
+    const Real eint = u0(m, IEN, k, j, i) - ek;
+
+    const Real cell_vol = size.d_view(m).dx1 * size.d_view(m).dx2 * size.d_view(m).dx3;
+    block_Tvol += eint / density * cell_vol;
+    block_vol += cell_vol;
+
+  }, Kokkos::Sum<Real>(sum_Tvol), Kokkos::Sum<Real>(sum_vol));
+
+#if MPI_PARALLEL_ENABLED
+  Real sums[2] = {sum_Tvol, sum_vol};
+  MPI_Allreduce(MPI_IN_PLACE, sums, 2, MPI_ATHENA_REAL, MPI_SUM, MPI_COMM_WORLD);
+  sum_Tvol = sums[0];
+  sum_vol = sums[1];
+#endif
+
+  const Real T_avg_gm1 = sum_Tvol / sum_vol;
+  const Real T_factor = data.T0 / T_avg_gm1;
+  if (global_variable::my_rank == 0) {
+    std::cout << "Volume-averaged temperature =" << T_avg_gm1 * data.gm1 << std::endl;
+  }
+
+  par_for("Tfix_cooling", DevExeSpace(), 0, pmbp->nmb_thispack-1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    const Real density = u0(m, IDN, k, j, i);
+
+    const Real ek = 0.5*(SQR(u0(m, IM1, k, j, i)) + SQR(u0(m, IM2, k, j, i)) +
+             SQR(u0(m, IM3, k, j, i)))/density;
+    const Real eint = u0(m, IEN, k, j, i) - ek;
+
+    u0(m, IEN, k, j, i) = eint * T_factor + ek;
+  });
+
+
+} // Tfix_source
+
+
+void ReadProbParameters(ParameterInput *pin, Mesh *pm) {
+  MeshBlockPack *pmbp = pm->pmb_pack;
+
+  // TODO: Implement MHD version for turb_cond in the future
+  // Just need to get the Tfix_source() implemented for MHD
+  if ((pmbp->pmhd != nullptr)) {
+    FatalProbInput("turb_cond hasn't have a MHD version implemented.");
+  }
+
+  if ((pmbp->phydro  == nullptr) && (pmbp->pmhd == nullptr)) {
+    FatalProbInput("turb_cond requires a <hydro> or <mhd> block.");
+  }
+  if (!pmbp->phydro->peos->eos_data.is_ideal) {
+    FatalProbInput("turb_cond requires an ideal-gas hydro EOS.");
+  }
+
+  ProblemData data;
+  data.gm1 = pmbp->phydro->peos->eos_data.gamma - 1.0;
+  data.rho0 = pin->GetOrAddReal("problem", "rho_0", 1.0);
+  data.prs0 = pin->GetOrAddReal("problem", "pgas_0", 1.0);
+  data.xmin = pm->mesh_size.x1min;
+  data.xmax = pm->mesh_size.x1max;
+
+  data.Tfix_enabled = pin->GetOrAddBoolean("problem", "Tfix_enabled", true);
+
+  if (data.rho0 <= 0.0 || data.prs0 <= 0.0) {
+    FatalProbInput("Require rho_0 > 0 and pgas_0 > 0.");
+  }
+  data.T0 = data.prs0/data.rho0;
+
+  if (pmbp->pmhd != nullptr){
+    data.beta = pin->GetOrAddReal("problem","beta",1.0);
+    data.ifield = pin->GetOrAddInteger("problem","ifield",2);
+  }
+  prob_data = data;
+
+  if (global_variable::my_rank == 0) {
+    std::cout << "turb_cond: rho0=" << data.rho0
+              << ", T0=" << data.T0
+              << ", Tfix_enabled=" << (data.Tfix_enabled? "on" : "off")
+              << std::endl;
+  }
+} // ReadProbParameters
+
+
+
+} // namespace
 
 //----------------------------------------------------------------------------------------
 //! \fn void MeshBlock::Turb_()
 //  \brief Problem Generator for turbulence
 
 void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
+
+  ReadProbParameters(pin, pmy_mesh_);
+  const ProblemData data = prob_data;
+  if (data.Tfix_enabled) {
+    user_srcs = true;
+    user_srcs_func = Tfix_source;
+  }
+
   if (restart) return;
+
   MeshBlockPack *pmbp = pmy_mesh_->pmb_pack;
   auto &indcs = pmy_mesh_->mb_indcs;
 
@@ -46,33 +200,21 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   int &js = indcs.js; int &je = indcs.je;
   int &ks = indcs.ks; int &ke = indcs.ke;
 
-  Real cs = 1.0;
-  if (pmbp->phydro != nullptr) {
-    cs = pin->GetOrAddReal("hydro","iso_sound_speed",1.0);
-  } else if (pmbp->pmhd != nullptr) {
-    cs = pin->GetOrAddReal("mhd","iso_sound_speed",1.0);
-  }
-
-  Real beta = pin->GetOrAddReal("problem","beta",1.0);
 
   // Initialize Hydro variables -------------------------------
   if (pmbp->phydro != nullptr) {
-    Real d_i = pin->GetOrAddReal("problem","d_i",1.0);
-    Real d_n = pin->GetOrAddReal("problem","d_n",1.0);
     auto &u0 = pmbp->phydro->u0;
     EOS_Data &eos = pmbp->phydro->peos->eos_data;
-    Real gm1 = eos.gamma - 1.0;
-    Real p0 = 1.0/eos.gamma;
 
     // Set initial conditions
     par_for("pgen_turb", DevExeSpace(),0,(pmbp->nmb_thispack-1),ks,ke,js,je,is,ie,
     KOKKOS_LAMBDA(int m, int k, int j, int i) {
-      u0(m,IDN,k,j,i) = d_n;
+      u0(m,IDN,k,j,i) = data.rho0;
       u0(m,IM1,k,j,i) = 0.0;
       u0(m,IM2,k,j,i) = 0.0;
       u0(m,IM3,k,j,i) = 0.0;
       if (eos.is_ideal) {
-        u0(m,IEN,k,j,i) = p0/gm1 +
+        u0(m,IEN,k,j,i) = data.prs0/data.gm1 +
            0.5*(SQR(u0(m,IM1,k,j,i)) + SQR(u0(m,IM2,k,j,i)) +
            SQR(u0(m,IM3,k,j,i)))/u0(m,IDN,k,j,i);
       }
@@ -81,36 +223,28 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 
   // Initialize MHD variables ---------------------------------
   if (pmbp->pmhd != nullptr) {
-    Real d_i = pin->GetOrAddReal("problem","d_i",1.0);
-    Real d_n = pin->GetOrAddReal("problem","d_n",1.0);
-    int ifield = pin->GetOrAddInteger("problem","ifield",2);
-    if (ifield != 1 && ifield != 2) {
+    if (data.ifield != 1 && data.ifield != 2) {
       std::cout << "### FATAL ERROR in " << __FILE__
                 << " at line " << __LINE__ << std::endl
-                << "Invalid <problem>/ifield = " << ifield
+                << "Invalid <problem>/ifield = " << data.ifield
                 << ", allowed values are 1 (zero-net-flux Bz) or 2 (uniform Bz)."
                 << std::endl;
       exit(EXIT_FAILURE);
     }
-    Real B0 = cs*std::sqrt(2.0*d_i/beta);
+
     Real x1size = pmy_mesh_->mesh_size.x1max - pmy_mesh_->mesh_size.x1min;
     Real kx = 2.0*(M_PI/x1size);
     auto &u0 = pmbp->pmhd->u0;
     auto &b0 = pmbp->pmhd->b0;
     auto &size = pmbp->pmb->mb_size;
-    EOS_Data &eos = pmbp->pmhd->peos->eos_data;
-    Real gm1 = 0.0;
-    Real p0 = 0.0;
-    if (eos.is_ideal) {
-      gm1 = eos.gamma - 1.0;
-      p0 = d_i*SQR(cs)/eos.gamma;
-      B0 = std::sqrt(2.0*p0/beta);
-    }
+    // EOS_Data &eos = pmbp->pmhd->peos->eos_data;
+
+    Real B0 = std::sqrt(2.0*data.prs0/data.beta);
 
     // Set initial conditions
     par_for("pgen_turb", DevExeSpace(),0,(pmbp->nmb_thispack-1),ks,ke,js,je,is,ie,
     KOKKOS_LAMBDA(int m, int k, int j, int i) {
-      u0(m,IDN,k,j,i) = d_i;
+      u0(m,IDN,k,j,i) = data.rho0;
       u0(m,IM1,k,j,i) = 0.0;
       u0(m,IM2,k,j,i) = 0.0;
       u0(m,IM3,k,j,i) = 0.0;
@@ -120,7 +254,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
       int nx1 = indcs.nx1;
       Real x1v = CellCenterX(i-is, nx1, x1min, x1max);
 
-      if (ifield == 1) {
+      if (data.ifield == 1) {
         // zero-net-flux Bz
         b0.x1f(m,k,j,i) = 0.0;
         b0.x2f(m,k,j,i) = 0.0;
@@ -128,7 +262,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
         if (i==ie) {b0.x1f(m,k,j,i+1) = 0.0;}
         if (j==je) {b0.x2f(m,k,j+1,i) = 0.0;}
         if (k==ke) {b0.x3f(m,k+1,j,i) = B0*std::sin(kx*x1v);}
-      } else if (ifield == 2) {
+      } else if (data.ifield == 2) {
         // constant Bz
         b0.x1f(m,k,j,i) = 0.0;
         b0.x2f(m,k,j,i) = 0.0;
@@ -138,96 +272,10 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
         if (k==ke) {b0.x3f(m,k+1,j,i) = B0;}
       }
 
-      if (eos.is_ideal) {
-        Real bz_cc = 0.5*(b0.x3f(m,k,j,i) + b0.x3f(m,k+1,j,i));
-        u0(m,IEN,k,j,i) = p0/gm1 + 0.5*bz_cc*bz_cc +
-           0.5*(SQR(u0(m,IM1,k,j,i)) + SQR(u0(m,IM2,k,j,i)) +
-           SQR(u0(m,IM3,k,j,i)))/u0(m,IDN,k,j,i);
-      }
-    });
-  }
-
-  // Initialize ion-neutral variables -------------------------
-  if (pmbp->pionn != nullptr) {
-    Real d_i = pin->GetOrAddReal("problem","d_i",1.0);
-    Real d_n = pin->GetOrAddReal("problem","d_n",1.0);
-    int ifield = pin->GetOrAddInteger("problem","ifield",2);
-    if (ifield != 1 && ifield != 2) {
-      std::cout << "### FATAL ERROR in " << __FILE__
-                << " at line " << __LINE__ << std::endl
-                << "Invalid <problem>/ifield = " << ifield
-                << ", allowed values are 1 (zero-net-flux Bz) or 2 (uniform Bz)."
-                << std::endl;
-      exit(EXIT_FAILURE);
-    }
-    Real B0 = cs*std::sqrt(2.0*(d_i+d_n)/beta);
-    Real x1size = pmy_mesh_->mesh_size.x1max - pmy_mesh_->mesh_size.x1min;
-    Real kx = 2.0*(M_PI/x1size);
-
-    // MHD
-    auto &u0 = pmbp->pmhd->u0;
-    auto &b0 = pmbp->pmhd->b0;
-    auto &size = pmbp->pmb->mb_size;
-    EOS_Data &eos = pmbp->pmhd->peos->eos_data;
-    Real gm1 = eos.gamma - 1.0;
-    Real p0 = d_i/eos.gamma; // TODO(@user): multiply by ionized density
-
-    // Set initial conditions
-    par_for("pgen_turb_mhd", DevExeSpace(),0,(pmbp->nmb_thispack-1),ks,ke,js,je,is,ie,
-    KOKKOS_LAMBDA(int m, int k, int j, int i) {
-      u0(m,IDN,k,j,i) = d_i;
-      u0(m,IM1,k,j,i) = 0.0;
-      u0(m,IM2,k,j,i) = 0.0;
-      u0(m,IM3,k,j,i) = 0.0;
-
-      Real &x1min = size.d_view(m).x1min;
-      Real &x1max = size.d_view(m).x1max;
-      int nx1 = indcs.nx1;
-      Real x1v = CellCenterX(i-is, nx1, x1min, x1max);
-
-      if (ifield == 1) {
-        // zero-net-flux Bz
-        b0.x1f(m,k,j,i) = 0.0;
-        b0.x2f(m,k,j,i) = 0.0;
-        b0.x3f(m,k,j,i) = B0*std::sin(kx*x1v);
-        if (i==ie) {b0.x1f(m,k,j,i+1) = 0.0;}
-        if (j==je) {b0.x2f(m,k,j+1,i) = 0.0;}
-        if (k==ke) {b0.x3f(m,k+1,j,i) = B0*std::sin(kx*x1v);}
-      } else if (ifield == 2) {
-        // constant Bz
-        b0.x1f(m,k,j,i) = 0.0;
-        b0.x2f(m,k,j,i) = 0.0;
-        b0.x3f(m,k,j,i) = B0;
-        if (i==ie) {b0.x1f(m,k,j,i+1) = 0.0;}
-        if (j==je) {b0.x2f(m,k,j+1,i) = 0.0;}
-        if (k==ke) {b0.x3f(m,k+1,j,i) = B0;}
-      }
-
-      if (eos.is_ideal) {
-        Real bz_cc = 0.5*(b0.x3f(m,k,j,i) + b0.x3f(m,k+1,j,i));
-        u0(m,IEN,k,j,i) = p0/gm1 + 0.5*bz_cc*bz_cc +
-           0.5*(SQR(u0(m,IM1,k,j,i)) + SQR(u0(m,IM2,k,j,i)) +
-           SQR(u0(m,IM3,k,j,i)))/u0(m,IDN,k,j,i);
-      }
-    });
-    // Hydro
-    auto &u0_ = pmbp->phydro->u0;
-    EOS_Data &eos_ = pmbp->phydro->peos->eos_data;
-    Real gm1_ = eos_.gamma - 1.0;
-    Real p0_ = d_n/eos_.gamma; // TODO(@user): multiply by neutral density
-
-    // Set initial conditions
-    par_for("pgen_turb_hydro", DevExeSpace(),0,(pmbp->nmb_thispack-1),ks,ke,js,je,is,ie,
-    KOKKOS_LAMBDA(int m, int k, int j, int i) {
-      u0_(m,IDN,k,j,i) = d_n;
-      u0_(m,IM1,k,j,i) = 0.0;
-      u0_(m,IM2,k,j,i) = 0.0;
-      u0_(m,IM3,k,j,i) = 0.0;
-      if (eos_.is_ideal) {
-        u0_(m,IEN,k,j,i) = p0_/gm1_ +
-            0.5*(SQR(u0_(m,IM1,k,j,i)) + SQR(u0_(m,IM2,k,j,i)) +
-            SQR(u0_(m,IM3,k,j,i)))/u0_(m,IDN,k,j,i);
-      }
+      Real bz_cc = 0.5*(b0.x3f(m,k,j,i) + b0.x3f(m,k+1,j,i));
+      u0(m,IEN,k,j,i) = data.prs0/data.gm1 + 0.5*bz_cc*bz_cc +
+          0.5*(SQR(u0(m,IM1,k,j,i)) + SQR(u0(m,IM2,k,j,i)) +
+          SQR(u0(m,IM3,k,j,i)))/u0(m,IDN,k,j,i);
     });
   }
 
