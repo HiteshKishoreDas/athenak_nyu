@@ -22,3 +22,10 @@ Lorene
 
 *test*/**/*.png
 *test*/**/*.out
+
+turb_drive*/bin
+turb_drive*/rst
+turb_drive*/*.out
+
+
+.entropy

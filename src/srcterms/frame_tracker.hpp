@@ -45,7 +45,6 @@ class FrameTracker {
   int FillHistoryData(std::string labels[], Real values[], const int max_values) const;
   void StoreStateInParameterInput(ParameterInput *pin) const;
 
- private:
   struct AxisState {
     bool active = false;
     Real target_position = 0.0;
@@ -102,6 +101,7 @@ class FrameTracker {
   bool AdvanceFrameDisplacement(const Real dt);
   void RestoreFrameState(ParameterInput *pin);
 
+ private:
   MeshBlockPack *pmy_pack = nullptr;
   std::string block_name_;
 

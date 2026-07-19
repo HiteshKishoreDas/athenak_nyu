@@ -25,7 +25,6 @@ class InitialPerturbations {
   }
   void Apply();
 
- private:
   bool DensityEnabled() const {
     return perturb_density && density_rms > 0.0;
   }
@@ -35,7 +34,6 @@ class InitialPerturbations {
   bool MagneticEnabled() const {
     return perturb_magnetic && magnetic_rms > 0.0;
   }
-
   void InitializeModes();
   void GenerateAmplitudes(DualArray2D<Real> &amp_real, DualArray2D<Real> &amp_imag,
                           const int ncomp, const bool project_velocity,
@@ -52,6 +50,7 @@ class InitialPerturbations {
   Real FaceCenteredBRMS(const DvceFaceFld4D<Real> &field);
   void Validate() const;
 
+ private:
   MeshBlockPack *pmy_pack;
   const std::string block_name_;
 
