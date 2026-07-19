@@ -47,7 +47,8 @@ void MHD::AssembleMHDTasks(std::map<std::string, std::shared_ptr<TaskList>> tl) 
   // assemble "stagen" task list
   id.copyu     = tl["stagen"]->AddTask(&MHD::CopyCons, this, none);
   id.flux      = tl["stagen"]->AddTask(&MHD::Fluxes, this, id.copyu);
-  id.sendf     = tl["stagen"]->AddTask(&MHD::SendFlux, this, id.flux);
+  id.saveflx   = tl["stagen"]->AddTask(&MHD::SaveFlux, this, id.flux);
+  id.sendf     = tl["stagen"]->AddTask(&MHD::SendFlux, this, id.saveflx);
   id.recvf     = tl["stagen"]->AddTask(&MHD::RecvFlux, this, id.sendf);
   id.rkupdt    = tl["stagen"]->AddTask(&MHD::RKUpdate, this, id.recvf);
   id.srctrms   = tl["stagen"]->AddTask(&MHD::MHDSrcTerms, this, id.rkupdt);
@@ -254,9 +255,10 @@ TaskStatus MHD::RecvFlux(Driver *pdrive, int stage) {
 
 TaskStatus MHD::MHDSrcTerms(Driver *pdrive, int stage) {
   Real beta_dt = (pdrive->beta[stage-1])*(pmy_pack->pmesh->dt);
+  Real history_dt = pdrive->SourceTermHistoryWeight(stage)*(pmy_pack->pmesh->dt);
 
   // Add physics source terms (must be computed from primitives)
-  if (psrc != nullptr) psrc->ApplySrcTerms(w0, peos->eos_data,  beta_dt, u0);
+  if (psrc != nullptr) psrc->ApplySrcTerms(w0, peos->eos_data, beta_dt, history_dt, u0);
 
   // Add shearing box source terms for CC MHD variables
   if (psbox_u != nullptr) psbox_u->SourceTermsCC(w0, bcc0, peos->eos_data, beta_dt, u0);
@@ -542,6 +544,32 @@ TaskStatus MHD::ConToPrim(Driver *pdrive, int stage) {
   int n2m1 = (indcs.nx2 > 1)? (indcs.nx2 + 2*ng - 1) : 0;
   int n3m1 = (indcs.nx3 > 1)? (indcs.nx3 + 2*ng - 1) : 0;
   peos->ConsToPrim(u0, b0, w0, bcc0, false, 0, n1m1, 0, n2m1, 0, n3m1);
+  return TaskStatus::complete;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn TaskStatus MHD::ConToPrimGhostZones
+//! \brief Convert conserved to primitive variables only in ghost-zone slabs.
+
+TaskStatus MHD::ConToPrimGhostZones(Driver *pdrive, int stage) {
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  int &ng = indcs.ng;
+  int n1m1 = indcs.nx1 + 2*ng - 1;
+  int n2m1 = (indcs.nx2 > 1)? (indcs.nx2 + 2*ng - 1) : 0;
+  int n3m1 = (indcs.nx3 > 1)? (indcs.nx3 + 2*ng - 1) : 0;
+  peos->ConsToPrim(u0, b0, w0, bcc0, false, 0, ng-1, 0, n2m1, 0, n3m1);
+  peos->ConsToPrim(u0, b0, w0, bcc0, false, n1m1-ng+1, n1m1,
+                   0, n2m1, 0, n3m1);
+  if (indcs.nx2 > 1) {
+    peos->ConsToPrim(u0, b0, w0, bcc0, false, 0, n1m1, 0, ng-1, 0, n3m1);
+    peos->ConsToPrim(u0, b0, w0, bcc0, false, 0, n1m1, n2m1-ng+1, n2m1,
+                     0, n3m1);
+  }
+  if (indcs.nx3 > 1) {
+    peos->ConsToPrim(u0, b0, w0, bcc0, false, 0, n1m1, 0, n2m1, 0, ng-1);
+    peos->ConsToPrim(u0, b0, w0, bcc0, false, 0, n1m1, 0, n2m1,
+                     n3m1-ng+1, n3m1);
+  }
   return TaskStatus::complete;
 }
 
