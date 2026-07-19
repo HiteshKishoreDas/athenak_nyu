@@ -19,7 +19,7 @@ cmake -S "$athenak" -B "$build" \
   -D Kokkos_ENABLE_CUDA=On \
   -D Kokkos_ARCH_AMPERE80=On \
   -D Athena_ENABLE_MPI=On \
-  -D PROBLEM=turb
+  -D PROBLEM=turb_cond
   # -D CMAKE_BUILD_TYPE=Debug \
   # -D Kokkos_ENABLE_DEBUG=On
 
