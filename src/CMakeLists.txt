@@ -102,18 +102,22 @@ add_executable(
         outputs/spherical_surface.cpp
         outputs/coarsened_binary.cpp
         outputs/track_prtcl.cpp
+        outputs/prtcl_thermo_history.cpp
         outputs/vtk_mesh.cpp
         outputs/vtk_prtcl.cpp
 
         particles/particles.cpp
+        particles/particles_lagrangian_mc.cpp
         particles/particles_pushers.cpp
         particles/particles_tasks.cpp
+        particles/tracer_fields.cpp
         outputs/pdf.cpp
 
         pgen/pgen.cpp
         pgen/tests/advection.cpp
         pgen/tests/collapse.cpp
         pgen/tests/cpaw.cpp
+        pgen/tests/cooling_test.cpp
         pgen/tests/cshock.cpp
         pgen/tests/divb_amr.cpp
         pgen/tests/diffusion.cpp

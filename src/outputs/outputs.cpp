@@ -113,7 +113,8 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
       if (opar.file_type.compare("hst") != 0 &&
           opar.file_type.compare("rst") != 0 &&
           opar.file_type.compare("log") != 0 &&
-          opar.file_type.compare("trk") != 0) {
+          opar.file_type.compare("trk") != 0 &&
+          opar.file_type.compare("prtcl_thermo_history") != 0) {
         if (opar.file_type.compare("pdf") == 0 &&
             !pin->DoesParameterExist(opar.block_name, "variable") &&
             pin->DoesParameterExist(opar.block_name, "variable_1")) {
@@ -121,6 +122,9 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
         } else {
           opar.variable = pin->GetString(opar.block_name, "variable");
         }
+        opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
+      } else if (opar.file_type.compare("prtcl_thermo_history") == 0) {
+        opar.variable = "prtcl_thermo_history";
         opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
       }
 
@@ -241,6 +245,9 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("trk") == 0) {
         pnode = new TrackedParticleOutput(pin,pm,opar);
+        pout_list.insert(pout_list.begin(),pnode);
+      } else if (opar.file_type.compare("prtcl_thermo_history") == 0) {
+        pnode = new ParticleThermoHistoryOutput(pin,pm,opar);
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("cbin") == 0) {
         opar.file_shard_mode = parse_file_shard_mode(opar.block_name);
@@ -465,6 +472,16 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("bin") == 0) {
         opar.file_shard_mode = parse_file_shard_mode(opar.block_name);
+        opar.data_precision = pin->GetOrAddString(opar.block_name,
+          "data_precision", "float32");
+        if (opar.data_precision.compare("float32") != 0 &&
+            opar.data_precision.compare("real") != 0) {
+          std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+              << std::endl << "Invalid data_precision = '" << opar.data_precision
+              << "' in binary output block '" << opar.block_name
+              << "'. Expected float32 or real." << std::endl;
+          exit(EXIT_FAILURE);
+        }
         pnode = new MeshBinaryOutput(pin,pm,opar);
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("cart") == 0) {

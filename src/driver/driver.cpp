@@ -19,6 +19,7 @@
 #include "outputs/outputs.hpp"
 #include "hydro/hydro.hpp"
 #include "mhd/mhd.hpp"
+#include "particles/particles.hpp"
 #include "z4c/z4c.hpp"
 #include "dyn_grmhd/dyn_grmhd.hpp"
 #include "ion-neutral/ion-neutral.hpp"
@@ -293,6 +294,23 @@ Driver::Driver(ParameterInput *pin, Mesh *pmesh, Real wtlim, Kokkos::Timer* ptim
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn Real Driver::SourceTermHistoryWeight()
+//! \brief Weight for source-term history integrals in the final RK solution.
+//!
+//! Source terms are applied after each stage update using beta[stage-1]*dt.  For
+//! multistage RK methods, earlier source increments are blended by later stage updates
+//! before they reach the final solution.  Interval-integrated source histories should
+//! therefore use the final low-storage RK weight, not the raw stage increment.
+
+Real Driver::SourceTermHistoryWeight(int stage) const {
+  Real weight = beta[stage-1];
+  for (int later = stage + 1; later <= nexp_stages; ++later) {
+    weight *= gam0[later-1];
+  }
+  return weight;
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn Driver::ExecuteTaskList()
 //! \brief Perform tasks over all MeshBlocks for the TaskList specified by string "tl".
 //! Integer argument "stage" can be used to indicate at which step in overall algorithm
@@ -325,6 +343,11 @@ void Driver::ExecuteTaskList(Mesh *pm, std::string tl, int stage) {
 void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool res_flag) {
   //---- Step 1.  Set conserved variables in ghost zones for all physics
   InitBoundaryValuesAndPrimitives(pmesh);
+
+  if (!res_flag && pmesh->pmb_pack->ppart != nullptr &&
+      pmesh->pmb_pack->ppart->IsLagrangianMC()) {
+    pmesh->pmb_pack->ppart->SeedInitialTracers();
+  }
 
   //---- Step 2.  Compute time step (if problem involves time evolution)
   // NOTE: For new simulations (!res_flag), the initial conditions haven't been set yet

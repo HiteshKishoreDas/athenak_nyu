@@ -29,6 +29,7 @@
 #include "z4c/compact_object_tracker.hpp"
 #include "z4c/z4c.hpp"
 #include "radiation/radiation.hpp"
+#include "particles/particles.hpp"
 #include "srcterms/turb_driver.hpp"
 #include "pgen.hpp"
 
@@ -1096,6 +1097,8 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm) :
     Advection(pin, false);
   } else if (pgen_fun_name.compare("cpaw") == 0) {
     AlfvenWave(pin, false);
+  } else if (pgen_fun_name.compare("cooling_test") == 0) {
+    CoolingTest(pin, false);
   } else if (pgen_fun_name.compare("gr_bondi") == 0) {
     BondiAccretion(pin, false);
   } else if (pgen_fun_name.compare("cshock") == 0) {
@@ -1219,7 +1222,7 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
   z4c::Z4c* pz4c = pm->pmb_pack->pz4c;
   radiation::Radiation* prad=pm->pmb_pack->prad;
   TurbulenceDriver* pturb=pm->pmb_pack->pturb;
-  int nrad = 0, nhydro = 0, nmhd = 0, nforce = 3, nadm = 0, nz4c = 0;
+  int nrad = 0, nhydro = 0, nmhd = 0, nadm = 0, nz4c = 0;
   if (phydro != nullptr) {
     nhydro = phydro->nhydro + phydro->nscalars;
   }
@@ -1273,25 +1276,58 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
   }
 
   if (pturb != nullptr) {
-    // root process reads size the random seed
-    char *rng_data = new char[sizeof(RNG_State)];
-    // the master process reads the variables data
+    TurbulenceRestartMetadata metadata;
+    RNG_State rng_state;
+    std::vector<Real> amp_real(3 * pturb->mode_count);
+    std::vector<Real> amp_imag(3 * pturb->mode_count);
     if (global_variable::my_rank == 0 || use_serial_io) {
-      if (resfile.Read_bytes(rng_data, 1, sizeof(RNG_State), use_serial_io)
+      if (resfile.Read_bytes(&metadata, 1, sizeof(TurbulenceRestartMetadata),
+                             use_serial_io) != sizeof(TurbulenceRestartMetadata) ||
+          resfile.Read_bytes(&rng_state, 1, sizeof(RNG_State), use_serial_io)
           != sizeof(RNG_State)) {
         std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
-                  << std::endl << "RNG data size read from restart file is incorrect, "
+                  << std::endl
+                  << "Turbulence state data read from restart file is incorrect, "
+                  << "restart file is broken." << std::endl;
+        exit(EXIT_FAILURE);
+      }
+      pturb->ValidateRestartMetadata(metadata);
+      if (resfile.Read_bytes(amp_real.data(), 1, amp_real.size() * sizeof(Real),
+                             use_serial_io) != amp_real.size() * sizeof(Real) ||
+          resfile.Read_bytes(amp_imag.data(), 1, amp_imag.size() * sizeof(Real),
+                             use_serial_io) != amp_imag.size() * sizeof(Real)) {
+        std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                  << std::endl
+                  << "Turbulence modal data read from restart file is incorrect, "
                   << "restart file is broken." << std::endl;
         exit(EXIT_FAILURE);
       }
     }
 #if MPI_PARALLEL_ENABLED
     if (!use_serial_io) {
-      // then broadcast the RNG information
-      io_wrapper::BroadcastBytes(rng_data, sizeof(RNG_State), 0, MPI_COMM_WORLD);
+      io_wrapper::BroadcastBytes(&metadata, sizeof(TurbulenceRestartMetadata), 0,
+                                 MPI_COMM_WORLD);
+      io_wrapper::BroadcastBytes(&rng_state, sizeof(RNG_State), 0, MPI_COMM_WORLD);
+      MPI_Bcast(amp_real.data(), static_cast<int>(amp_real.size()), MPI_ATHENA_REAL, 0,
+                MPI_COMM_WORLD);
+      MPI_Bcast(amp_imag.data(), static_cast<int>(amp_imag.size()), MPI_ATHENA_REAL, 0,
+                MPI_COMM_WORLD);
+      pturb->ValidateRestartMetadata(metadata);
     }
 #endif
-    std::memcpy(&(pturb->rstate), &(rng_data[0]), sizeof(RNG_State));
+    pturb->rstate = rng_state;
+    pturb->n_turb_updates_yet = metadata.n_updates;
+    for (int dir = 0; dir < 3; ++dir) {
+      for (int n = 0; n < pturb->mode_count; ++n) {
+        int idx = dir * pturb->mode_count + n;
+        pturb->mode_amp_real.h_view(dir, n) = amp_real[idx];
+        pturb->mode_amp_imag.h_view(dir, n) = amp_imag[idx];
+      }
+    }
+    pturb->mode_amp_real.template modify<HostMemSpace>();
+    pturb->mode_amp_real.template sync<DevExeSpace>();
+    pturb->mode_amp_imag.template modify<HostMemSpace>();
+    pturb->mode_amp_imag.template sync<DevExeSpace>();
   }
 
   // root process reads size of CC and FC data arrays from restart file
@@ -1342,9 +1378,6 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
   if (prad != nullptr) {
     data_size_ += nout1*nout2*nout3*nrad*sizeof(Real);   // rad i0
   }
-  if (pturb != nullptr) {
-    data_size_ += nout1*nout2*nout3*nforce*sizeof(Real); // forcing
-  }
   if (pz4c != nullptr) {
     data_size_ += nout1*nout2*nout3*nz4c*sizeof(Real);   // z4c u0
   } else if (padm != nullptr) {
@@ -1364,7 +1397,7 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
 
   if (shard_mode != FileShardMode::shared) {
     LoadPartitionedRestartData(pm, headeroffset, data_size_, nout1, nout2, nout3,
-                               nhydro, nmhd, nrad, nforce, nz4c, nadm,
+                               nhydro, nmhd, nrad, 0, nz4c, nadm,
                                ccin, fcin);
   } else {
     // read CC data into host array
@@ -1601,46 +1634,6 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
     myoffset = offset_myrank;
   }
 
-  if (pturb != nullptr) {
-    Kokkos::realloc(ccin, nmb, nforce, nout3, nout2, nout1);
-    for (int m=0;  m<noutmbs_max; ++m) {
-      // every rank has a MB to read, so read collectively
-      if (m < noutmbs_min) {
-        // get ptr to cell-centered MeshBlock data
-        auto mbptr = Kokkos::subview(ccin, m, Kokkos::ALL, Kokkos::ALL, Kokkos::ALL,
-                                     Kokkos::ALL);
-        int mbcnt = mbptr.size();
-        if (resfile.Read_Reals_at_all(mbptr.data(), mbcnt, myoffset,
-                                      use_serial_io) != mbcnt) {
-          std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
-                    << std::endl << "CC turb data not read correctly from rst file, "
-                    << "restart file is broken." << std::endl;
-          exit(EXIT_FAILURE);
-        }
-        myoffset += data_size;
-
-      // some ranks are finished writing, so use non-collective write
-      } else if (m < pm->nmb_thisrank) {
-        // get ptr to MeshBlock data
-        auto mbptr = Kokkos::subview(ccin, m, Kokkos::ALL, Kokkos::ALL, Kokkos::ALL,
-                                     Kokkos::ALL);
-        int mbcnt = mbptr.size();
-        if (resfile.Read_Reals_at(mbptr.data(), mbcnt, myoffset,
-                                  use_serial_io) != mbcnt) {
-          std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
-                    << std::endl << "CC turb data not read correctly from rst file, "
-                    << "restart file is broken." << std::endl;
-          exit(EXIT_FAILURE);
-        }
-        myoffset += data_size;
-      }
-    }
-    Kokkos::deep_copy(Kokkos::subview(pturb->force, std::make_pair(0,nmb), Kokkos::ALL,
-                      Kokkos::ALL, Kokkos::ALL, Kokkos::ALL), ccin);
-    offset_myrank += nout1*nout2*nout3*nforce*sizeof(Real); // forcing
-    myoffset = offset_myrank;
-  }
-
   if (pz4c != nullptr) {
     Kokkos::realloc(ccin, nmb, nz4c, nout3, nout2, nout1);
     for (int m=0;  m<noutmbs_max; ++m) {
@@ -1724,6 +1717,18 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
 
   }
 
+  if (pm->pmb_pack->ppart != nullptr && pm->pmb_pack->ppart->IsLagrangianMC()) {
+#if MPI_PARALLEL_ENABLED
+    if (shard_mode != FileShardMode::per_rank && global_variable::nranks > 1) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "lagrangian_mc particle restarts currently require "
+                << "<output>/single_file_per_rank=true in MPI runs" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+#endif
+    pm->pmb_pack->ppart->ReadRestartData(resfile, use_serial_io);
+  }
+
   // call problem generator again to re-initialize data, fn ptrs, as needed
 #if USER_PROBLEM_ENABLED
   UserProblem(pin, true);
@@ -1734,6 +1739,8 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
     Advection(pin, true);
   } else if (pgen_fun_name.compare("cpaw") == 0) {
     AlfvenWave(pin, true);
+  } else if (pgen_fun_name.compare("cooling_test") == 0) {
+    CoolingTest(pin, true);
   } else if (pgen_fun_name.compare("gr_bondi") == 0) {
     BondiAccretion(pin, true);
   } else if (pgen_fun_name.compare("cshock") == 0) {
