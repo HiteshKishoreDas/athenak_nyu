@@ -98,10 +98,10 @@ void Tfix_source(Mesh *pm, const Real bdt) {
   sum_vol = sums[1];
 #endif
 
-  const Real T_avg_gm1 = sum_Tvol / sum_vol;
-  const Real T_factor = data.T0 / T_avg_gm1;
+  const Real T_avg = data.gm1 * sum_Tvol / sum_vol;
+  const Real T_factor = data.T0 / T_avg;
   if (global_variable::my_rank == 0) {
-    std::cout << "Volume-averaged temperature =" << T_avg_gm1 * data.gm1 << std::endl;
+    std::cout << "Volume-averaged temperature =" << T_avg << std::endl;
   }
 
   par_for("Tfix_cooling", DevExeSpace(), 0, pmbp->nmb_thispack-1, ks, ke, js, je, is, ie,
@@ -179,6 +179,8 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     user_srcs = true;
     user_srcs_func = Tfix_source;
   }
+
+  user_hist_func = TurbulentHistory;
 
   if (restart) return;
 
@@ -285,31 +287,15 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 
 //----------------------------------------------------------------------------------------
 // Function for computing history variables
-// 0 = < B^4 >
-// 1 = < (d_j B_i)(d_j B_i) >
-// 2 = < (B_j d_j B_i)(B_k d_k B_i) >
-// 3 = < |BxJ|^2 >
-// 4 = < |B.J|^2 >
-// 5 = < U^2 >
-// 6 = < (d_j U_i)(d_j U_i) >
+// 0 = < T >
 void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
-  pdata->nhist = 11;
-  pdata->label[0] = "Bx";
-  pdata->label[1] = "By";
-  pdata->label[2] = "Bz";
-  pdata->label[3] = "B^2";
-  pdata->label[4] = "B^4";
-  pdata->label[5] = "dB^2";
-  pdata->label[6] = "BdB^2";
-  pdata->label[7] = "|BxJ|^2";
-  pdata->label[8] = "|B.J|^2";
-  pdata->label[9] = "U^2";
-  pdata->label[10] = "dU";
+  pdata->nhist = 1;
+  pdata->label[0] = "Tsumvol";
+
+  const ProblemData data = prob_data;
 
   // capture class variabels for kernel
-  auto &bcc = pm->pmb_pack->pmhd->bcc0;
-  auto &b = pm->pmb_pack->pmhd->b0;
-  auto &w0_ = pm->pmb_pack->pmhd->w0;
+  auto &u0_ = pm->pmb_pack->phydro->u0;
   auto &size = pm->pmb_pack->pmb->mb_size;
   int &nhist_ = pdata->nhist;
 
@@ -333,98 +319,17 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
     j += js;
 
     Real vol = size.d_view(m).dx1*size.d_view(m).dx2*size.d_view(m).dx3;
-    Real dx_squared = size.d_view(m).dx1 * size.d_view(m).dx1;
 
-    // MHD conserved variables:
     array_sum::GlobalSum hvars;
 
     // calculate mean B
-    hvars.the_array[0] = bcc(m,IBX,k,j,i);
-    hvars.the_array[1] = bcc(m,IBY,k,j,i);
-    hvars.the_array[2] = bcc(m,IBZ,k,j,i);
 
-    // 0 = < B^2 >
-    Real B_mag_sq = bcc(m,IBX,k,j,i)*bcc(m,IBX,k,j,i)
-                  + bcc(m,IBY,k,j,i)*bcc(m,IBY,k,j,i)
-                  + bcc(m,IBZ,k,j,i)*bcc(m,IBZ,k,j,i);
-    hvars.the_array[3] = B_mag_sq*vol;
-    // 0 = < B^4 >
-    Real B_fourth = B_mag_sq*B_mag_sq;
-    hvars.the_array[4] = B_fourth*vol;
-    // 1 = < (d_j B_i)(d_j B_i) >
-    hvars.the_array[5] = (
-      ((b.x1f(m,k,j,i+1)-b.x1f(m,k,j,i))*(b.x1f(m,k,j,i+1)-b.x1f(m,k,j,i))
-     + (b.x2f(m,k,j+1,i)-b.x2f(m,k,j,i))*(b.x2f(m,k,j+1,i)-b.x2f(m,k,j,i))
-     + (b.x3f(m,k+1,j,i)-b.x3f(m,k,j,i))*(b.x3f(m,k+1,j,i)-b.x3f(m,k,j,i))
-     + 0.25*(bcc(m,IBX,k,j+1,i)-bcc(m,IBX,k,j-1,i))
-           *(bcc(m,IBX,k,j+1,i)-bcc(m,IBX,k,j-1,i))
-     + 0.25*(bcc(m,IBX,k+1,j,i)-bcc(m,IBX,k-1,j,i))
-           *(bcc(m,IBX,k+1,j,i)-bcc(m,IBX,k-1,j,i))
-     + 0.25*(bcc(m,IBY,k,j,i+1)-bcc(m,IBY,k,j,i-1))
-           *(bcc(m,IBY,k,j,i+1)-bcc(m,IBY,k,j,i-1))
-     + 0.25*(bcc(m,IBY,k+1,j,i)-bcc(m,IBY,k-1,j,i))
-           *(bcc(m,IBY,k+1,j,i)-bcc(m,IBY,k-1,j,i))
-     + 0.25*(bcc(m,IBZ,k,j,i+1)-bcc(m,IBZ,k,j,i-1))
-           *(bcc(m,IBZ,k,j,i+1)-bcc(m,IBZ,k,j,i-1))
-     + 0.25*(bcc(m,IBZ,k,j+1,i)-bcc(m,IBZ,i,j-1,i))
-           *(bcc(m,IBZ,k,j+1,i)-bcc(m,IBZ,i,j-1,i)))
-       / dx_squared)*vol;
-    // 2 = < (B_j d_j B_i)(B_k d_k B_i) >
-    Real bdb1 = bcc(m,IBX,k,j,i)*(b.x1f(m,k,j,i+1)-b.x1f(m,k,j,i))
-                +0.5*bcc(m,IBY,k,j,i)*(bcc(m,IBX,k,j+1,i)-bcc(m,IBX,k,j-1,i))
-                +0.5*bcc(m,IBZ,k,j,i)*(bcc(m,IBX,k+1,j,i)-bcc(m,IBX,k-1,j,i));
-    Real bdb2 = bcc(m,IBY,k,j,i)*(b.x2f(m,k,j+1,i)-b.x2f(m,k,j,i))
-                +0.5*bcc(m,IBZ,k,j,i)*(bcc(m,IBY,k+1,j,i)-bcc(m,IBY,k-1,j,i))
-                +0.5*bcc(m,IBX,k,j,i)*(bcc(m,IBY,k,j,i+1)-bcc(m,IBY,k,j,i-1));
-    Real bdb3 = bcc(m,IBZ,k,j,i)*(b.x3f(m,k+1,j,i)-b.x3f(m,k,j,i))
-                +0.5*bcc(m,IBX,k,j,i)*(bcc(m,IBZ,k,j,i+1)-bcc(m,IBZ,k,j,i-1))
-                +0.5*bcc(m,IBY,k,j,i)*(bcc(m,IBZ,k,j+1,i)-bcc(m,IBZ,k,j-1,i));
-    hvars.the_array[6] = ((bdb1*bdb1 + bdb2*bdb2 + bdb3*bdb3) / dx_squared)*vol;
-    // 3 = < |BxJ|^2 >
-    Real Jx = 0.5*(bcc(m,IBZ,k,j+1,i)-bcc(m,IBZ,k,j-1,i))
-             -0.5*(bcc(m,IBY,k+1,j,i)-bcc(m,IBY,k-1,j,i));
-    Real Jy = 0.5*(bcc(m,IBX,k+1,j,i)-bcc(m,IBX,k-1,j,i))
-             -0.5*(bcc(m,IBZ,k,j,i+1)-bcc(m,IBZ,k,j,i-1));
-    Real Jz = 0.5*(bcc(m,IBY,k,j,i+1)-bcc(m,IBY,k,j,i-1))
-             -0.5*(bcc(m,IBX,k,j+1,i)-bcc(m,IBX,k,j-1,i));
-    hvars.the_array[7] =((
-       (bcc(m,IBY,k,j,i)*Jz - bcc(m,IBZ,k,j,i)*Jy)
-      *(bcc(m,IBY,k,j,i)*Jz - bcc(m,IBZ,k,j,i)*Jy)
-      +(bcc(m,IBZ,k,j,i)*Jx - bcc(m,IBX,k,j,i)*Jz)
-      *(bcc(m,IBZ,k,j,i)*Jx - bcc(m,IBX,k,j,i)*Jz)
-      +(bcc(m,IBX,k,j,i)*Jy - bcc(m,IBY,k,j,i)*Jx)
-      *(bcc(m,IBX,k,j,i)*Jy - bcc(m,IBY,k,j,i)*Jx))
-                    / dx_squared)*vol;
-    // 4 = < |B.J|^2 >
-    hvars.the_array[8] = (
-      ((bcc(m,IBX,k,j,i)*Jx + bcc(m,IBY,k,j,i)*Jy + bcc(m,IBZ,k,j,i)*Jz)
-      *(bcc(m,IBX,k,j,i)*Jx + bcc(m,IBY,k,j,i)*Jy + bcc(m,IBZ,k,j,i)*Jz)
-                          )/dx_squared)*vol;
-    // 5 = < U^2 >
-    hvars.the_array[9] += ((w0_(m,IVX,k,j,i)*w0_(m,IVX,k,j,i))
-                        + (w0_(m,IVY,k,j,i)*w0_(m,IVY,k,j,i))
-                        + (w0_(m,IVZ,k,j,i)*w0_(m,IVZ,k,j,i)))*vol;
-    // 6 = < (d_j U_i)(d_j U_i) >
-    hvars.the_array[10] +=
-    (((0.25*(w0_(m,IVX,k,j,i+1)-w0_(m,IVX,k,j,i-1))
-           *(w0_(m,IVX,k,j,i+1)-w0_(m,IVX,k,j,i-1))
-     + 0.25*(w0_(m,IVY,k,j+1,i)-w0_(m,IVY,k,j-1,i))
-           *(w0_(m,IVY,k,j+1,i)-w0_(m,IVY,k,j-1,i))
-     + 0.25*(w0_(m,IVZ,k+1,j,i)-w0_(m,IVZ,k-1,j,i))
-           *(w0_(m,IVZ,k+1,j,i)-w0_(m,IVZ,k-1,j,i))
-     + 0.25*(w0_(m,IVX,k,j+1,i)-w0_(m,IVX,k,j-1,i))
-           *(w0_(m,IVX,k,j+1,i)-w0_(m,IVX,k,j-1,i))
-     + 0.25*(w0_(m,IVX,k+1,j,i)-w0_(m,IVX,k-1,j,i))
-           *(w0_(m,IVX,k+1,j,i)-w0_(m,IVX,k-1,j,i))
-     + 0.25*(w0_(m,IVY,k,j,i+1)-w0_(m,IVY,k,j,i-1))
-           *(w0_(m,IVY,k,j,i+1)-w0_(m,IVY,k,j,i-1))
-     + 0.25*(w0_(m,IVY,k+1,j,i)-w0_(m,IVY,k-1,j,i))
-           *(w0_(m,IVY,k+1,j,i)-w0_(m,IVY,k-1,j,i))
-     + 0.25*(w0_(m,IVZ,k,j,i+1)-w0_(m,IVZ,k,j,i-1))
-           *(w0_(m,IVZ,k,j,i+1)-w0_(m,IVZ,k,j,i-1))
-     + 0.25*(w0_(m,IVZ,k,j+1,i)-w0_(m,IVZ,k,j-1,i))
-           *(w0_(m,IVZ,k,j+1,i)-w0_(m,IVZ,k,j-1,i))))
-     / dx_squared)*vol;
+    const Real density = u0_(m, IDN, k, j, i);
+    const Real ek = 0.5*(SQR(u0_(m, IM1, k, j, i)) + SQR(u0_(m, IM2, k, j, i)) +
+             SQR(u0_(m, IM3, k, j, i)))/density;
+    const Real eint = u0_(m, IEN, k, j, i) - ek;
+
+    hvars.the_array[0] = eint / density * data.gm1 * vol;
 
     // fill rest of the_array with zeros, if nhist < NHISTORY_VARIABLES
     for (int n=nhist_; n<NHISTORY_VARIABLES; ++n) {
