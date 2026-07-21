@@ -25,7 +25,11 @@ Lorene
 
 turb_drive*/bin
 turb_drive*/rst
+turb_drive*/pvtk
+turb_drive*/prtcl_thermo_history
 turb_drive*/*.out
+turb_drive*/**/*.png
+turb_drive*/*.hst
 
 
 .entropy

@@ -92,12 +92,11 @@ class TurbulenceDriver {
 
   TurbulenceRestartMetadata RestartMetadata() const;
   void ValidateRestartMetadata(const TurbulenceRestartMetadata& metadata) const;
-
- private:
   void Initialize();
   void BuildBasis();
   void RenderForce();
 
+ private:
   MeshBlockPack* pmy_pack;  // MeshBlockPack containing this driver
 
   int nlow, nhigh;
