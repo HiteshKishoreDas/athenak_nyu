@@ -23,13 +23,14 @@ Lorene
 *test*/**/*.png
 *test*/**/*.out
 
-turb_drive*/bin
-turb_drive*/rst
-turb_drive*/pvtk
-turb_drive*/prtcl_thermo_history
-turb_drive*/*.out
-turb_drive*/**/*.png
-turb_drive*/*.hst
+turb_drive*
+# turb_drive*/rst
+# turb_drive*/pvtk
+# turb_drive*/prtcl_thermo_history
+# turb_drive*/*.out
+# turb_drive*/**/*.png
+# turb_drive*/*.hst
+# turb_drive*/*.py
 
 
 .entropy
