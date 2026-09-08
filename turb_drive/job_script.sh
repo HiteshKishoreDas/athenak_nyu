@@ -9,7 +9,7 @@
 #SBATCH --ntasks-per-node 4
 #SBATCH --cpus-per-task 4
 #SBATCH --gpus-per-task 1     # one full GPU per rank
-#SBATCH --time 06:00:00
+#SBATCH --time 01:00:00
 
 module purge
 module load modules/2.4-20250724 slurm cuda/12.5.1 openmpi/cuda-4.1.8

@@ -16,10 +16,11 @@ mkdir -p "$build"
 
 cmake -S "$athenak" -B "$build" \
   -D CMAKE_CXX_COMPILER="$athenak/kokkos/bin/nvcc_wrapper" \
+  -D Kokkos_ARCH_HOPPER90=On \
   -D Kokkos_ENABLE_CUDA=On \
-  -D Kokkos_ARCH_AMPERE80=On \
   -D Athena_ENABLE_MPI=On \
   -D PROBLEM=turb_cond
+  # -D Kokkos_ARCH_AMPERE80=On \
   # -D CMAKE_BUILD_TYPE=Debug \
   # -D Kokkos_ENABLE_DEBUG=On
 

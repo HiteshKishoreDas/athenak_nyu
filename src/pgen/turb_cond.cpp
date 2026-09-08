@@ -32,6 +32,8 @@ struct ProblemData {
   Real prs0 = 1.0;
   Real T0 = prs0 / rho0;
 
+  Real Tcold = T0/100.0;
+
   Real xmin = -0.5;
   Real xmax = 0.5;
 
@@ -148,6 +150,7 @@ void ReadProbParameters(ParameterInput *pin, Mesh *pm) {
     FatalProbInput("Require rho_0 > 0 and pgas_0 > 0.");
   }
   data.T0 = data.prs0/data.rho0;
+  data.Tcold = pin->GetOrAddReal("problem", "Tcold", data.T0/100.0);
 
   if (pmbp->pmhd != nullptr){
     data.beta = pin->GetOrAddReal("problem","beta",1.0);
@@ -289,8 +292,9 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 // Function for computing history variables
 // 0 = < T >
 void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
-  pdata->nhist = 1;
+  pdata->nhist = 2;
   pdata->label[0] = "Tsumvol";
+  pdata->label[1] = "cold_gas";
 
   const ProblemData data = prob_data;
 
@@ -329,7 +333,12 @@ void TurbulentHistory(HistoryData *pdata, Mesh *pm) {
              SQR(u0_(m, IM3, k, j, i)))/density;
     const Real eint = u0_(m, IEN, k, j, i) - ek;
 
-    hvars.the_array[0] = eint / density * data.gm1 * vol;
+    const Real T = eint / density * data.gm1;
+
+    hvars.the_array[0] = T * vol;
+    hvars.the_array[1] = int(T<(2.0*data.Tcold)) * density * vol;
+
+
 
     // fill rest of the_array with zeros, if nhist < NHISTORY_VARIABLES
     for (int n=nhist_; n<NHISTORY_VARIABLES; ++n) {

@@ -86,10 +86,16 @@ def read_history_file(
 
 
 history = read_history_file()
-print(history)
+print(history.keys())
+
+usr_hist = read_history_file(filepath = "Turb.user.hst") 
+print(usr_hist.keys())
 
 
-skip = 22
+
+skip = 0
+vol = 1.0
+
 time = np.array(history["time"][skip:])
 mass = np.array(history["mass"][skip:])
 KE1 = np.array(history["1-KE"][skip:])
@@ -97,17 +103,27 @@ KE2 = np.array(history["2-KE"][skip:])
 KE3 = np.array(history["3-KE"][skip:])
 Etot = np.array(history["tot-E"][skip:])
 
+time_usr = np.array(usr_hist["time"][skip:])
+Tavg = np.array(usr_hist["Tsumvol"][skip:])/vol
 
 KE = KE1 + KE2 + KE3
 TE = Etot - KE
 
 import matplotlib.pyplot as plt
 
+# plt.plot(time)
+
 plt.plot(time, TE, label="TE")
 plt.plot(time, KE, label="KE")
-# plt.plot(time, Etot, label="Etot")
+plt.plot(time, Etot, label="Etot")
 
 plt.legend()
 plt.xlabel("time")
 plt.ylabel("E")
+plt.show()
+
+plt.plot(time_usr, Tavg, label="Tavg")
+plt.legend()
+plt.xlabel("time")
+plt.ylabel("Tavg")
 plt.show()
