@@ -127,3 +127,14 @@ plt.legend()
 plt.xlabel("time")
 plt.ylabel("Tavg")
 plt.show()
+
+# cold gas mass (T < 2*Tcold); jumps from ~0 to the cloud mass at the restart cycle
+# when a cloud is injected with <problem>/cloud_inject = true
+if "cold_gas" in usr_hist:
+	cold_gas = np.array(usr_hist["cold_gas"][skip:])
+	plt.plot(time_usr, cold_gas, label="cold gas mass")
+	plt.plot(time, mass, label="total mass", ls="--")
+	plt.legend()
+	plt.xlabel("time")
+	plt.ylabel("mass")
+	plt.show()

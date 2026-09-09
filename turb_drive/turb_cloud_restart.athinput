@@ -1,0 +1,168 @@
+# AthenaXXX input file for hydro turbulence -- restart leg with a cold cloud injected
+#
+# Use together with a restart dump from turb.athinput:
+#   athena -r turb_drive/rst/rank_00000000/Turb.00010.rst \
+#          -i turb_drive/turb_cloud_restart.athinput -d turb_drive
+#
+# Only <time>/tlim, <problem> and <units>/mu differ from turb.athinput.  <mesh>,
+# <meshblock>, <hydro>, <turb_driving> and <particles> MUST stay identical to the
+# original run: the mesh comes from the restart header and the other blocks set the
+# layout of the restart byte stream.  Do not set <output*>/file_number, it is carried
+# over from the restart file.
+
+<comment>
+problem   = turbulence
+
+<job>
+basename  = Turb       # problem ID: basename of output filenames
+
+<mesh>
+nghost    = 4         # Number of ghost cells
+nx1       = 256       # Number of zones in X1-direction
+x1min     = -0.5      # minimum value of X1
+x1max     = 0.5       # maximum value of X1
+ix1_bc    = periodic  # Inner-X1 boundary condition flag
+ox1_bc    = periodic  # Outer-X1 boundary condition flag
+
+nx2       = 256       # Number of zones in X2-direction
+x2min     = -0.5      # minimum value of X2
+x2max     = 0.5       # maximum value of X2
+ix2_bc    = periodic  # Inner-X2 boundary condition flag
+ox2_bc    = periodic  # Outer-X2 boundary condition flag
+
+nx3       = 256        # Number of zones in X3-direction
+x3min     = -0.5      # minimum value of X3
+x3max     = 0.5       # maximum value of X3
+ix3_bc    = periodic  # Inner-X3 boundary condition flag
+ox3_bc    = periodic  # Outer-X3 boundary condition flag
+
+<meshblock>
+nx1       = 64        # Number of cells in each MeshBlock, X1-dir
+nx2       = 64        # Number of cells in each MeshBlock, X2-dir
+nx3       = 64        # Number of cells in each MeshBlock, X3-dir
+
+<time>
+evolution  = dynamic  # dynamic/kinematic/static
+integrator = rk3      # time integration algorithm
+cfl_number = 0.2      # The Courant, Friedrichs, & Lewy (CFL) Number
+nlim       = -1       # cycle limit
+tlim       = 20.0     # time limit (must be later than the restart time)
+ndiag      = 1        # cycles between diagostic output
+
+<hydro>
+eos         = ideal   # EOS type
+reconstruct = ppm4    # spatial reconstruction method
+rsolver     = hllc    # Riemann-solver to be used
+gamma       = 1.667   # gamma = C_p/C_v
+fofc        = true    # Enable first order flux correction
+pfloor      = 1.0e-8  # floor on gas pressure
+
+<problem>
+user_hist    = true
+rho0         = 1.0
+prs0         = 1.0
+Tfix_enabled = false          # thermostat off so it does not reheat the cloud
+
+# Cold cloud injected at restart (turb_cond.cpp: InjectCloud).  Isobaric with the
+# local restored state, local turbulent velocity is kept.  Temperature is in Kelvin
+# and converted with <units>; with kpc/Myr and mu = 0.62 the code temperature unit
+# is ~7.1e7 K, so T0 = prs0/rho0 = 1 corresponds to ~7.1e7 K and the value below
+# gives an isobaric density contrast of ~100 (T_cloud ~ 0.01 in code units).
+# The startup log prints cloud_temp_code, T0/Tcloud and cloud_radius/dx -- check
+# them before committing GPU time.
+cloud_inject          = true
+cloud_temp_kelvin     = 7.1e5
+cloud_radius          = 0.1
+cloud_smoothing_width = 0.008   # ~2 cells at dx = 1/256
+cloud_center_x1       = 0.0
+cloud_center_x2       = 0.0
+cloud_center_x3       = 0.0
+# Inject only when the restart time is < cloud_inject_time.  Protects against
+# re-injecting the cloud if this leg is preempted and restarted from a later dump
+# with this same input file.  Restart dumps land slightly after their nominal time,
+# so set this between the dump you restart from and the next one.
+cloud_inject_time     = 10.5
+# Tcold (threshold for the cold_gas history column is T < 2*Tcold) defaults to the
+# cloud temperature in code units when cloud_inject = true; override here if needed.
+# Tcold = 0.01
+
+<units>
+length_cgs  = 3.0856775809623245e21  # 1 kpc
+mass_cgs    = 4.91416144649125e40     # 1 amu cm^-3 * (1 kpc)^3
+time_cgs    = 3.15576e13              # 1 Myr
+mu          = 0.62                    # mean molecular weight, matches <cooling>/mu
+
+<turb_driving>
+type = hydro
+tcorr = 0.5           # t_eddy ~ L / urms for L = 1 and urms ~ 2
+dedt  = 4.0           # ~ urms^3 / 2 L, targets Mach ~ 2 with cs = 1 and L = 1
+nlow = 1
+nhigh = 2
+
+<cooling>
+enabled       = false
+cooling_model = ism
+units         = cgs
+mu            = 0.62
+
+<particles>
+particle_type = lagrangian_mc
+pusher        = lagrangian_mc
+random_seed   = 12345
+track_variables = default, mach, sound_speed, vmag
+
+<tracer_seed1>
+id              = 1
+start_time      = 0.0
+end_time        = 1.0
+cadence         = -1.0
+count_per_event = 16
+weight          = volume
+region          = all
+seed            = 24680
+
+
+<output1>
+file_type = hst
+dt        = 0.01
+
+<output2>
+file_type  = bin         # legacy VTK output
+variable   = hydro_w     # variables to be output
+dt         = 0.1         # time increment between outputs
+
+<output3>
+file_type  = rst         # restart file
+dt         = 1.0         # time increment between restart files
+single_file_per_rank = true
+
+<output4>
+file_type  = bin         # Binary data dump
+slice_x1   = 0.0         # slice in X1 plane
+id         = slice_x1    # output id tag
+variable   = hydro_w     # variables to be output
+dt         = 0.1         # time increment between outputs
+
+<output5>
+file_type  = bin         # Binary data dump
+slice_x2   = 0.0         # slice in X2 plane
+id         = slice_x2    # output id tag
+variable   = hydro_w     # variables to be output
+dt         = 0.1         # time increment between outputs
+
+<output6>
+file_type  = bin         # Binary data dump
+slice_x3   = 0.0         # slice in X3 plane
+id         = slice_x3    # output id tag
+variable   = hydro_w     # variables to be output
+dt         = 0.1         # time increment between outputs
+
+<output7>
+file_type = prtcl_thermo_history
+dt        = 0.001
+variables = density, temperature, mach
+
+<output8>
+file_type = pvtk
+variable  = prtcl_all
+dt        = 0.2

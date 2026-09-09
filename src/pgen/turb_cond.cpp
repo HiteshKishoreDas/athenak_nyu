@@ -6,7 +6,9 @@
 //! \file turb.cpp
 //  \brief Problem generator for turbulence
 #include <cmath>
+#include <cstdint>
 #include <iostream> // cout
+#include <string>
 
 #include "athena.hpp"
 #include "parameter_input.hpp"
@@ -15,6 +17,7 @@
 #include "eos/eos.hpp"
 #include "hydro/hydro.hpp"
 #include "mhd/mhd.hpp"
+#include "units/units.hpp"
 #include "pgen.hpp"
 
 
@@ -36,6 +39,18 @@ struct ProblemData {
 
   Real xmin = -0.5;
   Real xmax = 0.5;
+
+  // Cold cloud injected on restart (<problem>/cloud_inject = true).  The cloud is
+  // isobaric with the local (restored) state and keeps the local turbulent velocity.
+  bool cloud_enabled = false;
+  Real cloud_temp_kelvin = 0.0;
+  Real cloud_temp_code = 0.0;      // cloud_temp_kelvin * punit->kelvin()
+  Real cloud_radius = 0.1;
+  Real cloud_smooth = 0.0;         // tanh edge width; 0 => sharp edge
+  Real cloud_inject_time = -1.0;   // inject only if restart time < this (<0: always)
+  Real cloud_x1 = 0.0;
+  Real cloud_x2 = 0.0;
+  Real cloud_x3 = 0.0;
 
   // MHD variables
   Real beta = -1.0;
@@ -121,6 +136,100 @@ void Tfix_source(Mesh *pm, const Real bdt) {
 } // Tfix_source
 
 
+//----------------------------------------------------------------------------------------
+//! \fn void InjectCloud(Mesh *pm)
+//  \brief Overwrite the restored conserved state inside a sphere with a cold cloud.
+//  For each cell the local pressure and velocity are kept; the temperature is blended
+//  towards cloud_temp_code with a tanh profile and the density follows isobarically.
+//  Must be called after u0 has been read back from the restart file.
+
+void InjectCloud(Mesh *pm) {
+  MeshBlockPack *pmbp = pm->pmb_pack;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is;
+  const int js = indcs.js;
+  const int ks = indcs.ks;
+  const int nx1 = indcs.nx1;
+  const int nx2 = indcs.nx2;
+  const int nx3 = indcs.nx3;
+
+  auto &size = pmbp->pmb->mb_size;
+  auto &u0 = pmbp->phydro->u0;
+  const ProblemData data = prob_data;
+
+  Real added_mass = 0.0;   // mass added to the box by the isobaric compression
+  Real cloud_mass = 0.0;   // mass inside the cloud after injection (weighted by f)
+  Real ncells = 0.0;       // number of cells touched
+
+  Kokkos::parallel_reduce(
+      "cloud_inject",
+      Kokkos::RangePolicy<>(DevExeSpace(), 0, pmbp->nmb_thispack * nx3 * nx2 * nx1),
+      KOKKOS_LAMBDA(const int &idx, Real &dm_sum, Real &mc_sum, Real &n_sum) {
+    const int nkji = nx3*nx2*nx1;
+    const int nji = nx2*nx1;
+    int m = idx/nkji;
+    int k = (idx - m*nkji)/nji + ks;
+    int j = (idx - m*nkji - (k - ks)*nji)/nx1 + js;
+    int i = (idx - m*nkji - (k - ks)*nji - (j - js)*nx1) + is;
+
+    const RegionSize block_size = size.d_view(m);
+    const Real x1 = CellCenterX(i - is, nx1, block_size.x1min, block_size.x1max);
+    const Real x2 = CellCenterX(j - js, nx2, block_size.x2min, block_size.x2max);
+    const Real x3 = CellCenterX(k - ks, nx3, block_size.x3min, block_size.x3max);
+    const Real radius = sqrt(SQR(x1 - data.cloud_x1) + SQR(x2 - data.cloud_x2) +
+                             SQR(x3 - data.cloud_x3));
+
+    Real f = (radius < data.cloud_radius) ? 1.0 : 0.0;
+    if (data.cloud_smooth > 0.0) {
+      f = 0.5*(1.0 - tanh((radius - data.cloud_radius)/data.cloud_smooth));
+    }
+    if (f < 1.0e-6) return;
+
+    // decompose the restored state
+    const Real rho_old = u0(m, IDN, k, j, i);
+    const Real v1 = u0(m, IM1, k, j, i)/rho_old;
+    const Real v2 = u0(m, IM2, k, j, i)/rho_old;
+    const Real v3 = u0(m, IM3, k, j, i)/rho_old;
+    const Real v2sum = SQR(v1) + SQR(v2) + SQR(v3);
+    const Real eint = u0(m, IEN, k, j, i) - 0.5*rho_old*v2sum;
+    const Real prs = data.gm1*eint;
+    const Real T_loc = prs/rho_old;
+
+    // isobaric blend towards the cloud temperature, keeping the local velocity
+    const Real T_new = T_loc + f*(data.cloud_temp_code - T_loc);
+    const Real rho_new = prs/T_new;
+
+    u0(m, IDN, k, j, i) = rho_new;
+    u0(m, IM1, k, j, i) = rho_new*v1;
+    u0(m, IM2, k, j, i) = rho_new*v2;
+    u0(m, IM3, k, j, i) = rho_new*v3;
+    u0(m, IEN, k, j, i) = prs/data.gm1 + 0.5*rho_new*v2sum;
+
+    const Real cell_vol = block_size.dx1*block_size.dx2*block_size.dx3;
+    dm_sum += (rho_new - rho_old)*cell_vol;
+    mc_sum += f*rho_new*cell_vol;
+    n_sum += 1.0;
+  }, Kokkos::Sum<Real>(added_mass), Kokkos::Sum<Real>(cloud_mass),
+     Kokkos::Sum<Real>(ncells));
+  Kokkos::fence();
+
+#if MPI_PARALLEL_ENABLED
+  Real sums[3] = {added_mass, cloud_mass, ncells};
+  MPI_Allreduce(MPI_IN_PLACE, sums, 3, MPI_ATHENA_REAL, MPI_SUM, MPI_COMM_WORLD);
+  added_mass = sums[0];
+  cloud_mass = sums[1];
+  ncells = sums[2];
+#endif
+
+  if (global_variable::my_rank == 0) {
+    std::cout << "turb_cond: injected cloud on restart at t=" << pm->time
+              << ": cells=" << static_cast<int64_t>(ncells)
+              << ", cloud_mass=" << cloud_mass
+              << ", mass_added=" << added_mass << std::endl;
+  }
+} // InjectCloud
+
+
 void ReadProbParameters(ParameterInput *pin, Mesh *pm) {
   MeshBlockPack *pmbp = pm->pmb_pack;
 
@@ -139,18 +248,45 @@ void ReadProbParameters(ParameterInput *pin, Mesh *pm) {
 
   ProblemData data;
   data.gm1 = pmbp->phydro->peos->eos_data.gamma - 1.0;
-  data.rho0 = pin->GetOrAddReal("problem", "rho_0", 1.0);
-  data.prs0 = pin->GetOrAddReal("problem", "pgas_0", 1.0);
+  data.rho0 = pin->GetOrAddReal("problem", "rho0", 1.0);
+  data.prs0 = pin->GetOrAddReal("problem", "prs0", 1.0);
   data.xmin = pm->mesh_size.x1min;
   data.xmax = pm->mesh_size.x1max;
 
   data.Tfix_enabled = pin->GetOrAddBoolean("problem", "Tfix_enabled", true);
 
   if (data.rho0 <= 0.0 || data.prs0 <= 0.0) {
-    FatalProbInput("Require rho_0 > 0 and pgas_0 > 0.");
+    FatalProbInput("Require rho0 > 0 and prs0 > 0.");
   }
   data.T0 = data.prs0/data.rho0;
-  data.Tcold = pin->GetOrAddReal("problem", "Tcold", data.T0/100.0);
+
+  // Cold cloud injected on restart.  Temperature is given in Kelvin and converted
+  // with the <units> block, which must therefore be present.
+  data.cloud_enabled = pin->GetOrAddBoolean("problem", "cloud_inject", false);
+  if (data.cloud_enabled) {
+    if (pmbp->punit == nullptr) {
+      FatalProbInput("cloud_inject requires a <units> block to convert Kelvin.");
+    }
+    data.cloud_temp_kelvin = pin->GetOrAddReal("problem", "cloud_temp_kelvin", 100.0);
+    data.cloud_temp_code = data.cloud_temp_kelvin * pmbp->punit->kelvin();
+    data.cloud_radius = pin->GetOrAddReal("problem", "cloud_radius", 0.1);
+    data.cloud_smooth = pin->GetOrAddReal("problem", "cloud_smoothing_width", 0.0);
+    data.cloud_inject_time = pin->GetOrAddReal("problem", "cloud_inject_time", -1.0);
+    data.cloud_x1 = pin->GetOrAddReal("problem", "cloud_center_x1", 0.0);
+    data.cloud_x2 = pin->GetOrAddReal("problem", "cloud_center_x2", 0.0);
+    data.cloud_x3 = pin->GetOrAddReal("problem", "cloud_center_x3", 0.0);
+    if (data.cloud_temp_code <= 0.0) {
+      FatalProbInput("Require cloud_temp_kelvin > 0.");
+    }
+    if (data.cloud_radius <= 0.0 || data.cloud_smooth < 0.0) {
+      FatalProbInput("Require cloud_radius > 0 and cloud_smoothing_width >= 0.");
+    }
+  }
+
+  // cold-gas threshold for the history output: defaults to the injected cloud
+  // temperature when a cloud is requested, otherwise T0/100
+  const Real Tcold_default = data.cloud_enabled ? data.cloud_temp_code : data.T0/100.0;
+  data.Tcold = pin->GetOrAddReal("problem", "Tcold", Tcold_default);
 
   if (pmbp->pmhd != nullptr){
     data.beta = pin->GetOrAddReal("problem","beta",1.0);
@@ -161,8 +297,21 @@ void ReadProbParameters(ParameterInput *pin, Mesh *pm) {
   if (global_variable::my_rank == 0) {
     std::cout << "turb_cond: rho0=" << data.rho0
               << ", T0=" << data.T0
+              << ", Tcold=" << data.Tcold
               << ", Tfix_enabled=" << (data.Tfix_enabled? "on" : "off")
               << std::endl;
+    if (data.cloud_enabled) {
+      const Real dx = (pm->mesh_size.x1max - pm->mesh_size.x1min)/pm->mesh_indcs.nx1;
+      std::cout << "turb_cond: cloud_inject=on"
+                << ", cloud_temp_kelvin=" << data.cloud_temp_kelvin
+                << ", cloud_temp_code=" << data.cloud_temp_code
+                << ", temperature_cgs=" << pmbp->punit->temperature_cgs()
+                << ", T0/Tcloud=" << data.T0/data.cloud_temp_code
+                << ", cloud_radius/dx=" << data.cloud_radius/dx
+                << ", smoothing_width/dx=" << data.cloud_smooth/dx
+                << ", cloud_inject_time=" << data.cloud_inject_time
+                << std::endl;
+    }
   }
 } // ReadProbParameters
 
@@ -185,10 +334,28 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
 
   user_hist_func = TurbulentHistory;
 
-  if (restart) return;
-
   MeshBlockPack *pmbp = pmy_mesh_->pmb_pack;
   auto &indcs = pmy_mesh_->mb_indcs;
+
+  // On restart u0 (and the tracers) have already been read back from the restart file;
+  // optionally overwrite a sphere with a cold cloud, then leave the rest untouched.
+  // cloud_inject_time guards against re-injecting when a run that already contains
+  // the cloud is itself restarted (e.g. after preemption) with the same input file.
+  if (restart) {
+    if (data.cloud_enabled) {
+      const Real tnow = pmy_mesh_->time;
+      const bool inject = (data.cloud_inject_time < 0.0) ||
+                          (tnow < data.cloud_inject_time);
+      if (inject) {
+        InjectCloud(pmy_mesh_);
+      } else if (global_variable::my_rank == 0) {
+        std::cout << "turb_cond: cloud_inject=on but restart time " << tnow
+                  << " >= cloud_inject_time=" << data.cloud_inject_time
+                  << ", cloud NOT re-injected" << std::endl;
+      }
+    }
+    return;
+  }
 
   if (pmbp->phydro == nullptr && pmbp->pmhd == nullptr) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
