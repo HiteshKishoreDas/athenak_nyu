@@ -1,0 +1,14 @@
+{
+  "name": "rotation_time_0",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-serial/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/serial-core/rotation_time_0/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "f777e9ad966f21246d568a61b940fbac0aa9b7cc799444fe570891d6f0aa28ed",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/serial-core/rotation_time_0",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "c045602abe854ccc992dda6605ba14f9825b980c06981bbb002e2f183319a706"
+}

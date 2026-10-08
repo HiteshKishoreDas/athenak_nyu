@@ -1,0 +1,14 @@
+{
+  "name": "helix_16",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/helix_16/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "cc72a0826f9bb2607f9c533fd6f6c42aa82f2a5ed6f8897ac2f1c9e4258f3694",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/helix_16",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

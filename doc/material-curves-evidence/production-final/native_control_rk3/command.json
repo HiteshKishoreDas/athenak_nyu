@@ -1,0 +1,14 @@
+{
+  "name": "native_control_rk3",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/native_control_rk3/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "48318fb9d5e3482359b630917b9da7514c4203e2cd62c7e960192120f9f0d566",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/native_control_rk3",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

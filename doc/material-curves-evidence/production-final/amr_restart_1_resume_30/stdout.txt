@@ -1,0 +1,28 @@
+
+Root grid = 2 x 2 x 1 MeshBlocks
+Total number of MeshBlocks = 16
+Number of logical  levels of refinement = 2 (3 levels total)
+Number of physical levels of refinement = 1 (2 levels total)
+Number of parallel ranks = 1
+Material curve sampling/push execution space: Serial; topology/adaptation: host
+
+Setup complete, executing task list(s)...
+
+output1 (rst): 0.00130271 s (load=2.0708e-05 s, write=0.001282 s)
+output1 (rst): 0.00123233 s (load=1.1083e-05 s, write=0.00122125 s)
+output1 (rst): 0.00105725 s (load=1.0625e-05 s, write=0.00104663 s)
+output1 (rst): 0.00117671 s (load=1.0875e-05 s, write=0.00116583 s)
+Total Outputs Time: 0.00103304 s (load=1.0708e-05 s, write=0.00102233 s)
+
+Terminating on time limit
+time=0.4 cycle=44
+tlim=0.4 nlim=-1
+
+Current number of MeshBlocks = 4
+0 MeshBlocks created, 12 deleted by AMR
+0 communicated for load balancing, load balancing efficiency = 0
+
+MeshBlock-cycles = 92
+cpu time used  = 0.48461
+zone-cycles/cpu_second = 48599.9
+particle-updates/cpu_second = 0

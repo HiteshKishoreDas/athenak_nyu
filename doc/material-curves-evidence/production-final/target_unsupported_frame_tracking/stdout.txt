@@ -1,0 +1,7 @@
+
+Root grid = 2 x 2 x 1 MeshBlocks
+Total number of MeshBlocks = 4
+Number of logical  levels of refinement = 1 (2 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+FrameTracker configuration: fluid=hydro axes=x1 target=density range=[-4.494232837155789e+307,4.494232837155789e+307] weight=mass mode=pd position_signal=blend slew=per_apply state=new

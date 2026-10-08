@@ -1,0 +1,6 @@
+{
+  "RMS-L1": 2.5e-07,
+  "sound_ratio": 0.29,
+  "entropy_ratio": 0.3,
+  "sound_symmetry": "exact printed RMS-L1 equality"
+}

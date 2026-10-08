@@ -1,0 +1,14 @@
+{
+  "name": "right_sound",
+  "nx": 32,
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-release/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/native-hydro-port/right_sound_32/input.athinput"
+  ],
+  "returncode": 0,
+  "input_sha256": "bd2937979952eca01bee9a6c3085d67478f91760eb761e9a3ec869951c77e8c5",
+  "executable_sha256": "14461bc1c008dcfa3738efe5c171ff4e703fb1ff47929a52e4ae681cbaec7f39",
+  "cwd": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-port/right_sound_32",
+  "background_velocity_parameter": "vx0"
+}

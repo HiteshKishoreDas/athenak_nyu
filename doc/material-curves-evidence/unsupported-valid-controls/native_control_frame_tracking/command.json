@@ -1,0 +1,14 @@
+{
+  "name": "native_control_frame_tracking",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/unsupported-valid-controls/native_control_frame_tracking/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "1bafb76b9d68946ab2c6e9b1ee34fe3770c20665c408d37e6fdbb9910ba8ee68",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/unsupported-valid-controls/native_control_frame_tracking",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

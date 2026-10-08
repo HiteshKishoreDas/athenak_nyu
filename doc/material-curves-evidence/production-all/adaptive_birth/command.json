@@ -1,0 +1,14 @@
+{
+  "name": "adaptive_birth",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/adaptive_birth/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "281085debba9e8b71de47046dea557ac12810919018327956919f361f3a1ffbf",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/adaptive_birth",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

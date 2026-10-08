@@ -1,0 +1,14 @@
+{
+  "name": "native_control_forcing",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/unsupported-pilot/native_control_forcing/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "1ebcc9b65c8dc5eb15bfbbf00f0ad6c046fc561be00c82476841a0dafbdf416d",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/unsupported-pilot/native_control_forcing",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

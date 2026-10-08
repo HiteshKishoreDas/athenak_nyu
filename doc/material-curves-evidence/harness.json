@@ -1,0 +1,45 @@
+{
+  "schema": "athenak-material-curves-harness-v1",
+  "status": "pass",
+  "tests": [
+    {
+      "case": "R05",
+      "name": "cmake3",
+      "status": "pass",
+      "command": [
+        "/tools/cmake3",
+        "../../",
+        "-DAthena_ENABLE_MPI=OFF"
+      ]
+    },
+    {
+      "case": "R05",
+      "name": "cmake",
+      "status": "pass",
+      "command": [
+        "/tools/cmake",
+        "../../",
+        "-DAthena_ENABLE_MPI=OFF"
+      ]
+    },
+    {
+      "case": "R05",
+      "name": "missing_cmake_rejected",
+      "status": "pass"
+    },
+    {
+      "case": "R05",
+      "name": "mpi_separate_argv",
+      "status": "pass",
+      "command": [
+        "mpiexec",
+        "-n",
+        "2",
+        "./athena",
+        "-i",
+        "../../../inputs/tests/example.athinput",
+        "time/nlim=1"
+      ]
+    }
+  ]
+}

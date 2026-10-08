@@ -1,0 +1,28 @@
+{
+  "captured_utc": "2026-10-08T20:11:08.633510+00:00",
+  "source": "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu",
+  "source_revision": "313977256c95e0aee17433afed27379f0b5579bc",
+  "source_revision_observed": "313977256c95e0aee17433afed27379f0b5579bc",
+  "source_manifest_sha256": "d916856fc259e4fb15ae18ba4e071413cf501602f2c01990363795b7665b361a",
+  "source_archive": "/private/tmp/athenak-multiphase-curves-validation/release-provenance/source.tar.gz",
+  "source_archive_sha256": "5317bbe596936640fc7b6f155ffcda7f4c24856f0c6d92956a10181c56004b1e",
+  "source_diff_sha256": "0bdd6ae5bd6605a1c3e55244409b34ce0f527ca196d587b4c4adea355d307341",
+  "executable": "/private/tmp/athenak-multiphase-curves-release/src/athena",
+  "executable_sha256": "14461bc1c008dcfa3738efe5c171ff4e703fb1ff47929a52e4ae681cbaec7f39",
+  "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "qualification_scope": "this exact executable and source manifest; uncommitted port is separate from source HEAD",
+  "build_files": {
+    "CMakeCache.txt": {
+      "archive": "/private/tmp/athenak-multiphase-curves-validation/release-provenance/CMakeCache.txt",
+      "sha256": "8c923707a805c9b92955b057d377bf2493caaf163d19543f40e33064beab8a02"
+    },
+    "config.hpp": {
+      "archive": "/private/tmp/athenak-multiphase-curves-validation/release-provenance/config.hpp",
+      "sha256": "aa8a435cbb2f93eb67b7fe46f2d17ed0023f5dc36153968c78f8a279c44acbfe"
+    },
+    "src/CMakeFiles/athena.dir/flags.make": {
+      "archive": "/private/tmp/athenak-multiphase-curves-validation/release-provenance/src_CMakeFiles_athena.dir_flags.make",
+      "sha256": "ca7a6d6bdbbb853942ed66ebc3da87477eca0b878ab74dbd3ef6639c7070516a"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "shear",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/shear/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "7c3295534a4d1544a0fcafef4351ddf398846c952ba11d0507d9e2e01ba31bfc",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/shear",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

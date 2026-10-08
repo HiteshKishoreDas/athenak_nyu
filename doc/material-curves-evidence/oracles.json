@@ -1,0 +1,337 @@
+{
+  "schema": "athenak-material-curves-oracles-v1",
+  "implementation_execution": false,
+  "status": "pass",
+  "thresholds": {
+    "rounding": 2e-12,
+    "quadrature": 1e-12,
+    "position": 0.0001,
+    "rk2_order": 1.8
+  },
+  "tests": [
+    {
+      "case": "A02",
+      "name": "translation",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "A03",
+      "name": "acceleration",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "A03",
+      "name": "sinusoidal",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "A04",
+      "name": "quarter_rotation",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "A04",
+      "name": "oblique_rotation_preserves_norm",
+      "status": "pass",
+      "error": 1.1102230246251565e-16,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "A05",
+      "name": "diagonal_strain",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "A06",
+      "name": "shear",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "A05",
+      "name": "material_stretch",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G02",
+      "name": "polygon_length_8",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G02",
+      "name": "circle_curvature_8",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G02",
+      "name": "polygon_length_16",
+      "status": "pass",
+      "error": 8.881784197001252e-16,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G02",
+      "name": "circle_curvature_16",
+      "status": "pass",
+      "error": 6.661338147750939e-16,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G02",
+      "name": "polygon_length_32",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G02",
+      "name": "circle_curvature_32",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G02",
+      "name": "polygon_length_64",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G02",
+      "name": "circle_curvature_64",
+      "status": "pass",
+      "error": 3.419486915845482e-14,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "E04",
+      "name": "circle_smooth_length_refinement",
+      "status": "pass",
+      "errors": [
+        0.025504641595567312,
+        0.006413148855794377,
+        0.001605606964381667,
+        0.0004015468503209491
+      ],
+      "slopes": [
+        1.9916550282636796,
+        1.9979141144313877,
+        1.999478551019132
+      ],
+      "minimum_order": 1.8,
+      "budget": 0.0005
+    },
+    {
+      "case": "G03",
+      "name": "helix_length",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G03",
+      "name": "helix_curvature",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "E04",
+      "name": "helix_length_refinement",
+      "status": "pass",
+      "errors": [
+        0.02355652112645678,
+        0.005927694179461029,
+        0.0014843390065858834,
+        0.0003712358002518968
+      ],
+      "slopes": [
+        1.9905835714361402,
+        1.9976503931424716,
+        1.9994128760777767
+      ],
+      "minimum_order": 1.8,
+      "budget": 0.0005
+    },
+    {
+      "case": "E04",
+      "name": "helix_curvature_refinement",
+      "status": "pass",
+      "errors": [
+        0.0052648671328914265,
+        0.0012896647320799204,
+        0.00032078715966576965,
+        8.00954450683733e-05
+      ],
+      "slopes": [
+        2.02940105913901,
+        2.0073077634511267,
+        2.001824289607351
+      ],
+      "minimum_order": 1.8,
+      "budget": 0.0005
+    },
+    {
+      "case": "G01",
+      "name": "straight_curvature",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G04",
+      "name": "quadrature_circle",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "G05",
+      "name": "nonuniform_arc_weights",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "E04",
+      "name": "geometric_resampling",
+      "status": "pass",
+      "error": 4.440892098500626e-16,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "E04",
+      "name": "geometric_displacement",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "E06",
+      "name": "ellipse_reference_refinement",
+      "status": "pass",
+      "error": 0.0,
+      "tolerance": 1e-12
+    },
+    {
+      "case": "E02",
+      "name": "rk2_reference_harness",
+      "status": "pass",
+      "errors": [
+        0.0002527865429777787,
+        6.318873513033729e-05,
+        1.579669010431939e-05,
+        3.949141672787704e-06
+      ],
+      "slopes": [
+        2.000180371774497,
+        2.0000450864105632,
+        2.0000112712385074
+      ],
+      "minimum_order": 1.8,
+      "budget": 0.0001,
+      "coverage": "reference selfcheck, no production execution"
+    },
+    {
+      "case": "A08",
+      "name": "dense_reversing_shear_reference",
+      "status": "pass",
+      "errors": [
+        2.4848985653302957e-06,
+        1.5477130688168472e-07,
+        9.664881395199387e-09,
+        6.039251460032702e-10
+      ],
+      "slopes": [
+        4.004977021995367,
+        4.001242196016793,
+        4.000310378457601
+      ],
+      "minimum_order": 3.8,
+      "budget": 1e-08,
+      "coverage": "reference convergence, no production execution"
+    },
+    {
+      "case": "A08",
+      "name": "full_period_exact_return",
+      "status": "pass",
+      "error": 5.551115123125783e-17,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "A08",
+      "name": "full_period_dense_return",
+      "status": "pass",
+      "error": 4.385380947269368e-15,
+      "tolerance": 2e-12
+    },
+    {
+      "case": "R04",
+      "name": "stale_stage_velocity",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "first_order",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "one_good_slope",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "nan_output",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "nan_later_row",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "missing_component",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "empty_output",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "large_absolute_error",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "zero_reference_tangent",
+      "status": "pass"
+    },
+    {
+      "case": "R04",
+      "name": "missing_closure_length",
+      "status": "pass"
+    }
+  ]
+}

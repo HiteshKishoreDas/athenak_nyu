@@ -1,0 +1,14 @@
+{
+  "name": "target_unsupported_restart_per_rank",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/unsupported-valid-controls/target_unsupported_restart_per_rank/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "e12d46319f822620ce61918bc29827391f7957532551932acf3ce9d3afdaeeb7",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/unsupported-valid-controls/target_unsupported_restart_per_rank",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

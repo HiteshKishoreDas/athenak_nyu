@@ -1,0 +1,25 @@
+{
+  "case": "F01",
+  "name": "unforced_stationary_shear_16",
+  "nx": 16,
+  "time": 0.4,
+  "cycle": 6,
+  "samples": 3084,
+  "nodes": 257,
+  "position_error": 0.0015357838696740678,
+  "fluid_profile_error": 0.0,
+  "fluid_budget": 2e-12,
+  "polygon_length_error": 5.26136428318732e-05,
+  "smooth_length_error": 5.2684587906588794e-05,
+  "source_hook_enabled": false,
+  "rsolver": "hllc",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/evolved-shear/16/input.athinput"
+  ],
+  "input_sha256": "ee65818632c4c5605f2843e94777852022e14d57e931fe8db8e71620743d19ba",
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/evolved-shear/16",
+  "status": "pass"
+}

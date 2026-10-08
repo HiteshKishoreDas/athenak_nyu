@@ -1,0 +1,14 @@
+{
+  "name": "target_unsupported_standalone_cooling",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/unsupported-valid-controls/target_unsupported_standalone_cooling/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "cd7b8851b85acb100a49b796125806958828f2374e9bfd1f9e133b4ac8fca0e5",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/unsupported-valid-controls/target_unsupported_standalone_cooling",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

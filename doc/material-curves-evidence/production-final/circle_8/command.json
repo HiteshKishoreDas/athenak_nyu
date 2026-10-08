@@ -1,0 +1,14 @@
+{
+  "name": "circle_8",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/circle_8/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "68abe7c59cfb5944b4855006f8043fe1745f34bc1dc6fd3999b1f69248523fba",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/circle_8",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "native_control_lagrangian_mc",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/native_control_lagrangian_mc/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "e6ad493231b1d37eda1b20b114ea6f141c4ad7975143b7dac076c321fc65aebe",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/native_control_lagrangian_mc",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

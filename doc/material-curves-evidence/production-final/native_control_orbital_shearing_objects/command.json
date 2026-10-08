@@ -1,0 +1,14 @@
+{
+  "name": "native_control_orbital_shearing_objects",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/native_control_orbital_shearing_objects/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "582e7fafaf581a6585fff7cdf03d5ec65a3a8591d6b53194d974a950ee7a3ade",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/native_control_orbital_shearing_objects",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

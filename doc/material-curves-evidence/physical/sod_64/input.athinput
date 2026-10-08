@@ -1,0 +1,84 @@
+<job>
+basename = physical
+<mesh>
+nghost = 2
+nx1 = 64
+x1min = -0.5
+x1max = 0.5
+ix1_bc = periodic
+ox1_bc = periodic
+nx2 = 8
+x2min = -0.5
+x2max = 0.5
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 1
+x3min = -0.5
+x3max = 0.5
+ix3_bc = periodic
+ox3_bc = periodic
+<meshblock>
+nx1 = 32
+nx2 = 8
+nx3 = 1
+<time>
+evolution = dynamic
+integrator = rk2
+cfl_number = 0.4
+tlim = 0.1
+nlim = -1
+ndiag = 100000
+<hydro>
+eos = ideal
+reconstruct = plm
+rsolver = hllc
+gamma = 1.4
+<problem>
+pgen_name = shock_tube
+shock_dir = 1
+xshock = 0
+dl = 1.0
+dr = 0.125
+pl = 1.0
+pr = 0.1
+ul = 0.0
+ur = 0.0
+vl = 0
+vr = 0
+wl = 0
+wr = 0
+<material_curves>
+enabled = true
+ncurves = 1
+max_nodes = 10000
+spacing_cells = 1000000
+max_spacing = 1000
+max_angle = 3
+chord_error = 1000
+adaptive = false
+output_dcycle = 0
+<curve1>
+id = 1
+type = line
+closed = false
+count = 64
+x1 = -0.25
+x2 = -0.2
+x3 = 0
+end1 = 0.25
+end2 = 0.2
+end3 = 0
+<output1>
+file_type = tab
+variable = hydro_w
+slice_x2 = 0
+slice_x3 = 0
+data_format = %24.17e
+dt = 0.1
+<output2>
+file_type = tab
+variable = hydro_u
+slice_x2 = 0
+slice_x3 = 0
+data_format = %24.17e
+dt = 0.1

@@ -1,0 +1,40 @@
+diff --git a/src/outputs/restart.cpp b/src/outputs/restart.cpp
+index bf9aebae..fc0b1baa 100644
+--- a/src/outputs/restart.cpp
++++ b/src/outputs/restart.cpp
+@@ -23,6 +23,7 @@
+ #include "file_sharding.hpp"
+ #include "globals.hpp"
+ #include "mesh/mesh.hpp"
++#include "material_curves/material_curves.hpp"
+ #include "hydro/hydro.hpp"
+ #include "mhd/mhd.hpp"
+ #include "coordinates/adm.hpp"
+@@ -76,6 +77,9 @@ void PrintRestartWriteStats(FileShardMode mode, double open_time, double header_
+ 
+ RestartOutput::RestartOutput(ParameterInput *pin, Mesh *pm, OutputParameters op) :
+   BaseTypeOutput(pin, pm, op) {
++  if (pm->pmb_pack->pcurves && op.file_shard_mode != FileShardMode::shared) {
++    material_curves::MaterialCurves::Fail("curves require shared fluid checkpoints");
++  }
+   // create directories for outputs. Comments in binary.cpp constructor explain why
+   mkdir("rst",0775);
+   if (op.file_shard_mode != FileShardMode::shared) {
+@@ -169,6 +173,9 @@ void RestartOutput::LoadOutputData(Mesh *pm) {
+ //  \brief Cycles over all MeshBlocks and writes everything to a single restart file
+ 
+ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
++  if (pm->pmb_pack->pcurves && out_params.file_shard_mode != FileShardMode::shared) {
++    material_curves::MaterialCurves::Fail("curves require shared fluid checkpoints");
++  }
+   // get spatial dimensions of arrays, including ghost zones
+   auto &indcs = pm->pmb_pack->pmesh->mb_indcs;
+   int nout1 = indcs.nx1 + 2*(indcs.ng);
+@@ -694,6 +701,7 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
+   phase_timer.reset();
+   resfile.Close(use_serial_io);
+   close_time = phase_timer.seconds();
++  if (pm->pmb_pack->pcurves) pm->pmb_pack->pcurves->Save(fname);
+   PrintRestartWriteStats(shard_mode, open_time, header_time, payload_time, close_time);
+ 
+   return;

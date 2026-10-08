@@ -1,0 +1,14 @@
+{
+  "name": "acceleration",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/acceleration/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "f97b1819c1198df06d1cbb4088283e3ed3dbf63ca67e284902749908392ffa60",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/acceleration",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

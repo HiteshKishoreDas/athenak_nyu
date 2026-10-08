@@ -1,0 +1,40 @@
+
+Root grid = 2 x 2 x 1 MeshBlocks
+Total number of MeshBlocks = 4
+Number of logical  levels of refinement = 2 (3 levels total)
+Number of physical levels of refinement = 1 (2 levels total)
+Number of parallel ranks = 1
+Material curve sampling/push execution space: Serial; topology/adaptation: host
+Total Outputs Time: 0.00097075 s (load=2.1625e-05 s, write=0.000949125 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=1.306021e-02 cycle=0 time=0.000000e+00 dt=1.250000e-02 nmb=4
+output1 (rst): 1.067124e-03 s (load=1.141600e-05 s, write=1.055708e-03 s)
+output1 (rst): 1.078833e-03 s (load=1.070800e-05 s, write=1.068125e-03 s)
+output1 (rst): 1.875167e-03 s (load=3.562500e-05 s, write=1.839542e-03 s)
+output1 (rst): 2.519542e-03 s (load=1.870900e-05 s, write=2.500833e-03 s)
+output1 (rst): 1.904583e-03 s (load=1.600000e-05 s, write=1.888583e-03 s)
+output1 (rst): 2.207709e-03 s (load=1.829200e-05 s, write=2.189417e-03 s)
+output1 (rst): 1.991583e-03 s (load=1.545800e-05 s, write=1.976125e-03 s)
+output1 (rst): 2.352167e-03 s (load=1.633400e-05 s, write=2.335833e-03 s)
+output1 (rst): 2.093874e-03 s (load=1.708300e-05 s, write=2.076791e-03 s)
+output1 (rst): 2.150375e-03 s (load=1.883300e-05 s, write=2.131542e-03 s)
+output1 (rst): 1.198250e-03 s (load=1.675000e-05 s, write=1.181500e-03 s)
+output1 (rst): 1.234375e-03 s (load=1.062500e-05 s, write=1.223750e-03 s)
+output1 (rst): 1.049834e-03 s (load=1.104200e-05 s, write=1.038792e-03 s)
+output1 (rst): 1.238334e-03 s (load=1.079200e-05 s, write=1.227542e-03 s)
+Total Outputs Time: 1.361584e-03 s (load=1.366700e-05 s, write=1.347917e-03 s)
+
+Terminating on time limit
+time=4.000000e-01 cycle=44
+tlim=4.000000e-01 nlim=-1
+
+Current number of MeshBlocks = 4
+12 MeshBlocks created, 12 deleted by AMR
+0 communicated for load balancing, load balancing efficiency = 0.000000e+00
+
+MeshBlock-cycles = 464
+cpu time used  = 2.234826e+00
+zone-cycles/cpu_second = 5.315133e+04
+particle-updates/cpu_second = 0.000000e+00

@@ -1,0 +1,14 @@
+{
+  "name": "fluid_curves_off",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/fluid_curves_off/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "3f24377de5cbef7deae463a9691e0a095481cbd751e45b7d64504b547e2390cd",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/fluid_curves_off",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

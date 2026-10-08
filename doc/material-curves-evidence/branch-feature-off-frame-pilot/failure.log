@@ -1,0 +1,7 @@
+plain_hydro PASS 6 byte-identical native output files
+standalone_cooling PASS 2 byte-identical native output files
+Traceback (most recent call last):
+  File "/private/tmp/athenak-multiphase-compare-native.py", line 68, in <module>
+    assert 'FrameTracker applied boost' in result.stdout, 'frame controller path did not execute'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: frame controller path did not execute

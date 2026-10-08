@@ -1,0 +1,14 @@
+{
+  "name": "winding",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/winding/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "2c70b9423a04dfb799fbdcad49a2f1a995e3794b137a9097c1e98b7608c3e141",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/winding",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

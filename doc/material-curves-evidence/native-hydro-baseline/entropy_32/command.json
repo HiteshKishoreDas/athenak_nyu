@@ -1,0 +1,14 @@
+{
+  "name": "entropy",
+  "nx": 32,
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-baseline/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/entropy_32/input.athinput"
+  ],
+  "returncode": 0,
+  "input_sha256": "99352ceed216948d4643b7f56f84dc55c84d9ead72c078c2259626c649c48ac1",
+  "executable_sha256": "374e0cd6782acc52aa545ee2fdd9deb6be6f3e1c2c2d90d3731b8a24a95b8adb",
+  "cwd": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/entropy_32",
+  "background_velocity_parameter": "vx0"
+}

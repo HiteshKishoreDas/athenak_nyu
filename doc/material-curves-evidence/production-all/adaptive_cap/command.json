@@ -1,0 +1,14 @@
+{
+  "name": "adaptive_cap",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/adaptive_cap/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "bc7531b567d2da7baf716d554792702a2c3e082c42f3a8c10437f546fdd22c1a",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/adaptive_cap",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

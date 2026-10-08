@@ -1,0 +1,16 @@
+{
+  "name": "amr_restart_1_resume_33",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/amr_restart_1_resume_33/input.athinput",
+    "-r",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/amr_restart_1_interrupted/rst/material.00012.rst"
+  ],
+  "ranks": 1,
+  "input_sha256": "1425192f692b32f10c608f0f81ccac7ae51a9212c009c5273b68730b7978860a",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/amr_restart_1_resume_33",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

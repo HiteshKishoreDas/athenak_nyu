@@ -1,0 +1,50 @@
+{
+  "recorded_utc": "2026-10-08T20:07:17.890663+00:00",
+  "runtime_commit": "313977256c95e0aee17433afed27379f0b5579bc",
+  "source_head": "313977256c95e0aee17433afed27379f0b5579bc",
+  "source_status": "M tst/scripts/utils/athena.py\n?? doc/\n?? tst/scripts/material_curves/\n?? tst/scripts/material_curves_io/\n?? vis/python/material_curves.py",
+  "build_git_state": "08ceff92b-CLEAN",
+  "build_git_state_note": "Configure-time value; source HEAD and exact source hashes below record the tested port.",
+  "source_root": "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu",
+  "build": "/private/tmp/athenak-multiphase-curves-debug",
+  "kokkos_commit": "08ceff92bcf3a828844480bc1e6137eb74028517",
+  "kokkos_status": "",
+  "python": "3.14.0 (main, Oct  7 2025, 09:34:52) [Clang 17.0.0 (clang-1700.0.13.3)]",
+  "python_executable": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+  "launcher": "/opt/homebrew/bin/prterun",
+  "hashes": {
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/src/material_curves/material_curves_io.cpp": "edd941252d619f9c77b50c5d377c944a1a51e77b0b7b32b5c21d13e77b480faf",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/src/material_curves/material_curves.hpp": "a78685f11d3f9bd3f764ca875a08567dfac637f774c6c966f042ccd3efe7848b",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/src/outputs/restart.cpp": "93cabfe892b7a8c1fa30ec03154d3b5506ab586fc7ff22bf0a9e8fcd27487661",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/src/athena.hpp": "58425b282cbec9e2eebb06eda8e41ad5817a1a998f2f4344c05a8937150be81d",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/src/globals.hpp": "8401c07881fb3cb2192a70eab9da6a2a9e3c07b7e29e90bb4c3dd17a86271fc8",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/src/mesh/mesh.hpp": "309f3d9b4daa6f0613b132d092cb70b3f2048910f9e5cc3d4d193d36e82c6e57",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/src/mesh/mesh_refinement.hpp": "4dcbf462d0dd558bd215aa572274097b6de3f3b4abd32881fafb9de815dfa28e",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/src/mesh/meshblock_pack.hpp": "bf4dd97582c60bd8a01d3a8afda976db08bab1230952331886fb8add691eab34",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/vis/python/material_curves.py": "737f3a1da75fe663eccf40720bc3f1f7e385a62b570cd780f8a4e74b3e7dbc3e",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/tst/scripts/material_curves_io/test_reader.py": "c57ec44eb2a2d12155b9908afbe5766ced0b9b02cde3190aa668bcf333ca8062",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/tst/scripts/material_curves_io/test_cpp.py": "313e26e8f3d01189252cfb4900ac7e3fd56d27a87c93d1b400bac52dd7d9d842",
+    "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/tst/scripts/material_curves_io/roundtrip.cpp": "34cc3f0acca8a53c51e31e519b7974d02a65c1279e632d7dd58be34d99facceb",
+    "/private/tmp/athenak-multiphase-curves-debug/kokkos/core/src/libkokkoscore.a": "ea92b3ff49909cc3f23e073f598302499e057f9b5988844ef68e2718a9974c8c",
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6",
+    "/opt/homebrew/bin/prterun": "24c3324d1104d8d2ee78d407150e9cae9b46731591b4dfaf8cd5684c7e9a9a51",
+    "/private/tmp/athenak-multiphase-curves-debug/config.hpp": "4b138d9a17cd2d316b793398e8804c1edcecec86bbc3d94995c77f750ad4907a",
+    "/private/tmp/athenak-multiphase-curves-debug/compile_commands.json": "e37b597263bc9732df8b4f55a484fb60b0d2c13ce537252d0aea6474b2384000"
+  },
+  "commands": [
+    [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/tst/scripts/material_curves_io/test_reader.py"
+    ],
+    [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/tst/scripts/material_curves_io/test_cpp.py",
+      "--build",
+      "/private/tmp/athenak-multiphase-curves-debug",
+      "--kokkos-library",
+      "/private/tmp/athenak-multiphase-curves-debug/kokkos/core/src/libkokkoscore.a",
+      "--launcher",
+      "/opt/homebrew/bin/prterun"
+    ]
+  ]
+}

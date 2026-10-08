@@ -1,0 +1,14 @@
+{
+  "name": "strain_time_0",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/strain_time_0/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "e6530b87893d738026d05be81480d1247b6f27e7899430801e3f64807396dcc6",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/strain_time_0",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

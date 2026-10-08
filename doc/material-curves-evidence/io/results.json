@@ -1,0 +1,32 @@
+[
+  {
+    "check": "reader",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/tst/scripts/material_curves_io/test_reader.py"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.22766404100002546,
+    "assertions": "passed",
+    "stdout": "reader.stdout",
+    "stderr": "reader.stderr"
+  },
+  {
+    "check": "native",
+    "command": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/tst/scripts/material_curves_io/test_cpp.py",
+      "--build",
+      "/private/tmp/athenak-multiphase-curves-debug",
+      "--kokkos-library",
+      "/private/tmp/athenak-multiphase-curves-debug/kokkos/core/src/libkokkoscore.a",
+      "--launcher",
+      "/opt/homebrew/bin/prterun"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 34.017927958000655,
+    "assertions": "passed",
+    "stdout": "native.stdout",
+    "stderr": "native.stderr"
+  }
+]

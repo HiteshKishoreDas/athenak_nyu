@@ -1,0 +1,26 @@
+
+Root grid = 2 x 2 x 1 MeshBlocks
+Total number of MeshBlocks = 4
+Number of logical  levels of refinement = 1 (2 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 4
+  Rank = 0: 1 MeshBlocks, cost = 1
+  Rank = 1: 1 MeshBlocks, cost = 1
+  Rank = 2: 1 MeshBlocks, cost = 1
+  Rank = 3: 1 MeshBlocks, cost = 1
+Load Balancing:
+  Maximum normalized cost = 1, Average = 1
+Material curve sampling/push execution space: Serial; topology/adaptation: host
+
+Setup complete, executing task list(s)...
+
+Total Outputs Time: 0.00307288 s (load=1.9959e-05 s, write=0.00305746 s)
+
+Terminating on time limit
+time=0.8 cycle=65
+tlim=0.8 nlim=-1
+
+MeshBlock-cycles = 132
+cpu time used  = 0.288388
+zone-cycles/cpu_second = 117175
+particle-updates/cpu_second = 0

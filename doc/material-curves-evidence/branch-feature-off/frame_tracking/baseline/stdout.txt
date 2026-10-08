@@ -1,0 +1,175 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+FrameTracker configuration: fluid=hydro axes=x1 target=density range=[-4.494232837155789e+307,4.494232837155789e+307] weight=mass mode=velocity position_signal=blend slew=per_apply state=new
+Total Outputs Time: 0.002519708 s (load=6.4e-05 s, write=0.002455708 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=4.525166e-03 cycle=0 time=0.000000e+00 dt=1.135679e-02 nmb=1
+output1 (bin): 1.233417e-03 s (load=3.700000e-05 s, write=1.196417e-03 s)
+elapsed=6.270083e-03 cycle=1 time=1.135679e-02 dt=1.135679e-02 nmb=1
+FrameTracker primed filter state; skipping first actuation
+ x1_global_weight=1.000000e+00
+ x1_centroid=1.580571e-04
+ x1_mean_velocity=9.999950e-02
+ x1_midpoint=0.000000e+00
+ x1_control_position=4.741713e-05
+ x1_filtered_position=4.741713e-05
+ x1_filtered_velocity=9.999950e-02
+ x1_position_error=4.741713e-05
+ x1_frame_velocity=0.000000e+00
+ x1_frame_displacement=0.000000e+00
+ target_min_active=-4.494233e+307
+ target_max_active=4.494233e+307
+output1 (bin): 1.127208e-03 s (load=3.579200e-05 s, write=1.091416e-03 s)
+output2 (rst): 1.239458e-03 s (load=8.250000e-06 s, write=1.231208e-03 s)
+elapsed=9.194750e-03 cycle=2 time=2.271358e-02 dt=1.135679e-02 nmb=1
+FrameTracker applied boost
+ x1_global_weight=1.000000e+00
+ x1_centroid=1.563928e-04
+ x1_mean_velocity=9.999950e-02
+ x1_midpoint=0.000000e+00
+ x1_control_position=4.691785e-05
+ x1_filtered_position=4.741150e-05
+ x1_filtered_velocity=9.999950e-02
+ x1_position_error=4.741150e-05
+ x1_v_p=0.000000e+00
+ x1_v_d=-9.999950e-02
+ x1_v_i=0.000000e+00
+ x1_cmd_pre=-9.999950e-02
+ x1_boost=-9.999950e-02
+ x1_frame_velocity=9.999950e-02
+ x1_frame_displacement=0.000000e+00
+ x1_slew_limited=0
+ target_min_active=-4.494233e+307
+ target_max_active=4.494233e+307
+ ft_miss_streak=0
+output1 (bin): 1.219917e-03 s (load=3.862500e-05 s, write=1.181292e-03 s)
+elapsed=1.105908e-02 cycle=3 time=3.407038e-02 dt=1.248348e-02 nmb=1
+FrameTracker applied boost
+ x1_global_weight=1.000000e+00
+ x1_centroid=1.534792e-04
+ x1_mean_velocity=-2.209603e-16
+ x1_midpoint=0.000000e+00
+ x1_control_position=4.604375e-05
+ x1_filtered_position=4.739605e-05
+ x1_filtered_velocity=9.887025e-02
+ x1_position_error=4.739605e-05
+ x1_v_p=0.000000e+00
+ x1_v_d=-9.887025e-02
+ x1_v_i=0.000000e+00
+ x1_cmd_pre=-9.887025e-02
+ x1_boost=-9.887025e-02
+ x1_frame_velocity=1.988698e-01
+ x1_frame_displacement=1.248342e-03
+ x1_slew_limited=0
+ target_min_active=-4.494233e+307
+ target_max_active=4.494233e+307
+ ft_miss_streak=0
+output1 (bin): 7.991250e-04 s (load=3.054100e-05 s, write=7.685840e-04 s)
+output2 (rst): 7.723330e-04 s (load=5.541000e-06 s, write=7.667920e-04 s)
+elapsed=1.300275e-02 cycle=4 time=4.655386e-02 dt=1.136169e-02 nmb=1
+FrameTracker applied boost
+ x1_global_weight=1.000000e+00
+ x1_centroid=1.496146e-04
+ x1_mean_velocity=-9.887025e-02
+ x1_midpoint=0.000000e+00
+ x1_control_position=4.488438e-05
+ x1_filtered_position=4.736489e-05
+ x1_filtered_velocity=9.641710e-02
+ x1_position_error=4.736489e-05
+ x1_v_p=0.000000e+00
+ x1_v_d=-9.641710e-02
+ x1_v_i=0.000000e+00
+ x1_cmd_pre=-9.641710e-02
+ x1_boost=-9.641710e-02
+ x1_frame_velocity=2.952869e-01
+ x1_frame_displacement=3.507839e-03
+ x1_slew_limited=0
+ target_min_active=-4.494233e+307
+ target_max_active=4.494233e+307
+ ft_miss_streak=0
+output1 (bin): 6.537080e-04 s (load=2.766600e-05 s, write=6.260420e-04 s)
+elapsed=1.399587e-02 cycle=5 time=5.791555e-02 dt=1.044622e-02 nmb=1
+FrameTracker applied boost
+ x1_global_weight=1.000000e+00
+ x1_centroid=1.448242e-04
+ x1_mean_velocity=-1.952874e-01
+ x1_midpoint=0.000000e+00
+ x1_control_position=4.344725e-05
+ x1_filtered_position=4.732063e-05
+ x1_filtered_velocity=9.312160e-02
+ x1_position_error=4.732063e-05
+ x1_v_p=0.000000e+00
+ x1_v_d=-9.312160e-02
+ x1_v_i=0.000000e+00
+ x1_cmd_pre=-9.312160e-02
+ x1_boost=-9.312160e-02
+ x1_frame_velocity=3.884085e-01
+ x1_frame_displacement=6.592471e-03
+ x1_slew_limited=0
+ target_min_active=-4.494233e+307
+ target_max_active=4.494233e+307
+ ft_miss_streak=0
+output1 (bin): 6.417920e-04 s (load=2.512500e-05 s, write=6.166670e-04 s)
+output2 (rst): 7.015000e-04 s (load=4.208000e-06 s, write=6.972920e-04 s)
+elapsed=1.568438e-02 cycle=6 time=6.836177e-02 dt=9.691994e-03 nmb=1
+FrameTracker applied boost
+ x1_global_weight=1.000000e+00
+ x1_centroid=1.391355e-04
+ x1_mean_velocity=-2.884090e-01
+ x1_midpoint=0.000000e+00
+ x1_control_position=4.174065e-05
+ x1_filtered_position=4.726265e-05
+ x1_filtered_velocity=8.915680e-02
+ x1_position_error=4.726265e-05
+ x1_v_p=0.000000e+00
+ x1_v_d=-8.915680e-02
+ x1_v_i=0.000000e+00
+ x1_cmd_pre=-8.915680e-02
+ x1_boost=-8.915680e-02
+ x1_frame_velocity=4.775653e-01
+ x1_frame_displacement=1.035692e-02
+ x1_slew_limited=0
+ target_min_active=-4.494233e+307
+ target_max_active=4.494233e+307
+ ft_miss_streak=0
+output1 (bin): 6.425010e-04 s (load=2.554200e-05 s, write=6.169590e-04 s)
+elapsed=1.666021e-02 cycle=7 time=7.805377e-02 dt=9.065342e-03 nmb=1
+FrameTracker applied boost
+ x1_global_weight=1.000000e+00
+ x1_centroid=1.325764e-04
+ x1_mean_velocity=-3.775658e-01
+ x1_midpoint=0.000000e+00
+ x1_control_position=3.977292e-05
+ x1_filtered_position=4.719041e-05
+ x1_filtered_velocity=8.465517e-02
+ x1_position_error=4.719041e-05
+ x1_v_p=0.000000e+00
+ x1_v_d=-8.465517e-02
+ x1_v_i=0.000000e+00
+ x1_cmd_pre=-8.465517e-02
+ x1_boost=-8.465517e-02
+ x1_frame_velocity=5.622204e-01
+ x1_frame_displacement=1.468622e-02
+ x1_slew_limited=0
+ target_min_active=-4.494233e+307
+ target_max_active=4.494233e+307
+ ft_miss_streak=0
+output1 (bin): 6.317080e-04 s (load=2.462500e-05 s, write=6.070830e-04 s)
+output2 (rst): 6.912500e-04 s (load=4.167000e-06 s, write=6.870830e-04 s)
+Total Outputs Time: 1.326417e-03 s (load=2.904200e-05 s, write=1.297375e-03 s)
+elapsed=1.983408e-02 cycle=8 time=8.711911e-02 dt=8.540978e-03 nmb=1
+
+Terminating on cycle limit
+time=8.711911e-02 cycle=8
+tlim=1.111110e-01 nlim=8
+
+MeshBlock-cycles = 8
+cpu time used  = 1.531346e-02
+zone-cycles/cpu_second = 5.349543e+05
+particle-updates/cpu_second = 0.000000e+00

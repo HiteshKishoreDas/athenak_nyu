@@ -1,0 +1,10 @@
+--------------------------------------------------------------------------
+WARNING: A deprecated command line option was used.
+
+  Deprecated option:   oversubscribe
+  Corrected option:    --mapby :oversubscribe
+
+We have updated this for you and will proceed. However, this will be treated
+as an error in a future release. Please update your command line.
+--------------------------------------------------------------------------
+

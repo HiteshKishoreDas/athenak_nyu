@@ -1,0 +1,16 @@
+No <amr_criterion> blocks were found in input file
+Traceback functionality not available
+[10-18-73-154:37878] *** Process received signal ***
+[10-18-73-154:37878] Signal: Abort trap: 6 (6)
+[10-18-73-154:37878] Signal code:  (0)
+[10-18-73-154:37878] [ 0] 0   libsystem_platform.dylib            0x0000000194859764 _sigtramp + 56
+[10-18-73-154:37878] [ 1] 0   libsystem_pthread.dylib             0x000000019484f888 pthread_kill + 296
+[10-18-73-154:37878] [ 2] 0   libsystem_c.dylib                   0x0000000194754850 abort + 124
+[10-18-73-154:37878] [ 3] 0   athena                              0x00000001034ac3e4 _ZN6Kokkos4Impl18mpi_ranks_per_nodeEv + 0
+[10-18-73-154:37878] [ 4] 0   athena                              0x0000000102d56784 _ZNSt3__115__list_iteratorI10InputBlockPvEppB8ne200100Ev + 0
+[10-18-73-154:37878] [ 5] 0   athena                              0x0000000103149d20 _ZN18RefinementCriteriaC2EP4MeshP14ParameterInput + 2292
+[10-18-73-154:37878] [ 6] 0   athena                              0x000000010314af1c _ZN18RefinementCriteriaC1EP4MeshP14ParameterInput + 44
+[10-18-73-154:37878] [ 7] 0   athena                              0x00000001030dfd3c _ZN4Mesh24AddCoordinatesAndPhysicsEP14ParameterInput + 236
+[10-18-73-154:37878] [ 8] 0   athena                              0x0000000102d4a748 main + 4880
+[10-18-73-154:37878] [ 9] 0   dyld                                0x0000000194485d54 start + 7184
+[10-18-73-154:37878] *** End of error message ***

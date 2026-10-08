@@ -1,0 +1,14 @@
+{
+  "name": "left_sound",
+  "nx": 32,
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-baseline/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/left_sound_32/input.athinput"
+  ],
+  "returncode": 0,
+  "input_sha256": "e5f94f456005020aabe37d7b3bc874f6513b50c5ad7773e476758aefcdf42e4c",
+  "executable_sha256": "374e0cd6782acc52aa545ee2fdd9deb6be6f3e1c2c2d90d3731b8a24a95b8adb",
+  "cwd": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/left_sound_32",
+  "background_velocity_parameter": "vx0"
+}
