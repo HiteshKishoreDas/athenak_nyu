@@ -16,6 +16,7 @@ cmake --build /tmp/sgs-build -j3
 ctest --test-dir /tmp/sgs-build --output-on-failure
 python3 -B tst/sgs/verify.py --exe /tmp/sgs-build/src/athena \
   --output /tmp/sgs-new-verification
+python3 -B tst/sgs/test_configuration.py
 python3 -B tst/sgs/configuration.py --exe /tmp/sgs-build/src/athena \
   --output /tmp/sgs-new-configuration
 python3 -B tst/sgs/verify_wave.py --exe /tmp/sgs-build/src/athena \
@@ -26,6 +27,10 @@ mkdir /tmp/sgs-example
 cd /tmp/sgs-example
 /tmp/sgs-build/src/athena -i /absolute/checkout/inputs/hydro/sgs_box.athinput
 ```
+
+The configuration runner saves each attempted result before execution and after
+completion. Timeouts and unreadable outputs are recorded as failures; later checks
+continue. `test_configuration.py` exercises these failure paths without a build.
 
 The box input is a short energy-evolving example, not a stationary turbulence
 validation campaign. `verify_forcing.py` provides capped pilots and measured-work checks.

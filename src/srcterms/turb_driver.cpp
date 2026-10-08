@@ -1142,36 +1142,32 @@ TaskStatus TurbulenceDriver::UpdateForcing(Driver* pdrive, int stage) {
         });
   }
 
-  if (stage_consistent) {
-    if (pmy_pack->phydro->isgs >= 0) {
-      auto w0 = pmy_pack->phydro->w0;
-      Real dt_force = std::numeric_limits<Real>::max();
-      Kokkos::parallel_reduce("forcing_initial_bound",
-      Kokkos::RangePolicy<>(DevExeSpace(), 0, nmkji),
-      KOKKOS_LAMBDA(const int idx, Real &bound) {
-        int m = idx/nkji;
-        int k = (idx-m*nkji)/nji;
-        int j = (idx-m*nkji-k*nji)/nx1;
-        int i = (idx-m*nkji-k*nji-j*nx1)+is;
-        j += js;
-        k += ks;
-        Real accel = sqrt(SQR(force_(m,0,k,j,i))+SQR(force_(m,1,k,j,i))+
-                          SQR(force_(m,2,k,j,i)));
-        if (accel > 0.0) {
-          bound = fmin(bound, 0.5*sqrt(2.0*w0(m,IEN,k,j,i)/w0(m,IDN,k,j,i))/accel);
-        }
-      }, Kokkos::Min<Real>(dt_force));
-#if MPI_PARALLEL_ENABLED
-      MPI_Allreduce(MPI_IN_PLACE, &dt_force, 1, MPI_ATHENA_REAL, MPI_MIN,
-                    MPI_COMM_WORLD);
-#endif
-      if (!(dt_force > 0.0) || !std::isfinite(dt_force)) {
-        std::cerr << "Stage-consistent forcing: invalid thermal timestep bound"
-                  << std::endl;
-        std::exit(EXIT_FAILURE);
+  if (stage_consistent && pmy_pack->phydro->isgs >= 0) {
+    auto w0 = pmy_pack->phydro->w0;
+    Real dt_force = std::numeric_limits<Real>::max();
+    Kokkos::parallel_reduce("forcing_initial_bound",
+    Kokkos::RangePolicy<>(DevExeSpace(), 0, nmkji),
+    KOKKOS_LAMBDA(const int idx, Real &bound) {
+      int m = idx/nkji;
+      int k = (idx-m*nkji)/nji;
+      int j = (idx-m*nkji-k*nji)/nx1;
+      int i = (idx-m*nkji-k*nji-j*nx1)+is;
+      j += js;
+      k += ks;
+      Real accel = sqrt(SQR(force_(m,0,k,j,i))+SQR(force_(m,1,k,j,i))+
+                        SQR(force_(m,2,k,j,i)));
+      if (accel > 0.0) {
+        bound = fmin(bound, 0.5*sqrt(2.0*w0(m,IEN,k,j,i)/w0(m,IDN,k,j,i))/accel);
       }
-      pm->dt = std::min(pm->dt, dt_force);
+    }, Kokkos::Min<Real>(dt_force));
+#if MPI_PARALLEL_ENABLED
+    MPI_Allreduce(MPI_IN_PLACE, &dt_force, 1, MPI_ATHENA_REAL, MPI_MIN,
+                  MPI_COMM_WORLD);
+#endif
+    if (!(dt_force > 0.0) || !std::isfinite(dt_force)) {
+      FatalTurbulenceError("Stage-consistent forcing: invalid thermal timestep bound");
     }
+    pm->dt = std::min(pm->dt, dt_force);
   }
 
   return TaskStatus::complete;
@@ -1190,14 +1186,12 @@ bool TurbulenceDriver::IsDrivingActive() const {
 Real TurbulenceDriver::StageNormalization(Real m0, Real m1, Real target) {
   if (!std::isfinite(m0) || !std::isfinite(m1) || !std::isfinite(target) ||
       m0 < 0.0 || target < 0.0) {
-    std::cerr << "Stage-consistent forcing: invalid normalization moments" << std::endl;
-    std::exit(EXIT_FAILURE);
+    FatalTurbulenceError("Stage-consistent forcing: invalid normalization moments");
   }
   if (target == 0.0) return 0.0;
   if (m0 == 0.0) {
-    std::cerr << "Stage-consistent forcing: positive target with zero forcing norm"
-              << std::endl;
-    std::exit(EXIT_FAILURE);
+    FatalTurbulenceError(
+        "Stage-consistent forcing: positive target with zero forcing norm");
   }
   Real half_b = 0.5*m1;
   Real product = sqrt(m0)*sqrt(target);
@@ -1206,8 +1200,7 @@ Real TurbulenceDriver::StageNormalization(Real m0, Real m1, Real target) {
   Real root = std::hypot(b, product/scale);
   Real s = (m1 >= 0.0) ? (target/scale)/(root+b) : (scale/m0)*(root-b);
   if (!(s >= 0.0) || !std::isfinite(s)) {
-    std::cerr << "Stage-consistent forcing: nonfinite normalization scale" << std::endl;
-    std::exit(EXIT_FAILURE);
+    FatalTurbulenceError("Stage-consistent forcing: nonfinite normalization scale");
   }
   return s;
 }
@@ -1220,8 +1213,7 @@ TaskStatus TurbulenceDriver::StageForcing(Driver *pdrive, int stage) {
     return TaskStatus::complete;
   }
   if (!stage_consistent || stage < 1 || stage > 2 || pdrive->nexp_stages != 2) {
-    std::cerr << "StageForcing requires configured stage-consistent RK2" << std::endl;
-    std::exit(EXIT_FAILURE);
+    FatalTurbulenceError("StageForcing requires configured stage-consistent RK2");
   }
   auto ind = pm->mb_indcs;
   auto u = pmy_pack->phydro->u0;

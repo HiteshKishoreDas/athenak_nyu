@@ -14,15 +14,6 @@ import time
 import verify
 
 
-def input_text(config):
-    blocks = {}
-    for key, value in config.items():
-        block, name = key.split('/')
-        blocks.setdefault(block, []).append(f'{name} = {value}')
-    return '\n'.join(f'<{block}>\n'+'\n'.join(values)
-                     for block, values in blocks.items())+'\n'
-
-
 class ForcingVerification(verify.Verification):
     def run_forcing(self, name, enabled, sol_fraction, seed=42, tlim=1., rst=None,
                     oracle=False, nscalars=2):
@@ -48,7 +39,7 @@ class ForcingVerification(verify.Verification):
         wd = self.output/name
         wd.mkdir()
         inp = wd/'input.athinput'
-        inp.write_text(input_text(config))
+        inp.write_text(verify.input_text(config))
         cmd = [str(self.exe), '-i', str(inp)]
         if rst:
             cmd = [str(self.exe), '-r', str(rst), f'job/basename={name}',

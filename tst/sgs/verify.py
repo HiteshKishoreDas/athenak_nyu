@@ -39,6 +39,15 @@ def parameters(text):
     return result
 
 
+def input_text(config):
+    blocks = {}
+    for key, value in config.items():
+        block, name = key.split('/')
+        blocks.setdefault(block, []).append(f'{name} = {value}')
+    return '\n'.join(f'<{block}>\n'+'\n'.join(values)
+                     for block, values in blocks.items())+'\n'
+
+
 def restart(path):
     raw = path.read_bytes()
     pos = raw.index(b'<par_end>\n') + len(b'<par_end>\n')
@@ -189,12 +198,7 @@ class Verification:
         wd = self.output/name
         wd.mkdir()
         inp = wd/'input.athinput'
-        sections = {}
-        for key, value in config.items():
-            section, parameter = key.split('/')
-            sections.setdefault(section, []).append(f'{parameter} = {value}')
-        inp.write_text('\n'.join(f'<{section}>\n'+'\n'.join(values)
-                                 for section, values in sections.items())+'\n')
+        inp.write_text(input_text(config))
         cmd = [str(self.exe), '-i', str(inp)]
         if rst:
             # Restart input comes from checkpoint; preserve its integrator/stage state.

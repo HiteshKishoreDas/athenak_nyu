@@ -148,12 +148,6 @@ void HistoryOutput::LoadHydroHistoryData(HistoryData *pdata, Mesh *pm) {
       pdata->label[pdata->nhist++] = "force-mom"+std::to_string(v+1);
     }
   }
-  if (pdata->nhist > NHISTORY_VARIABLES) {
-    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
-              << std::endl << "Hydro history variables exceed NHISTORY_VARIABLES"
-              << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
 
   // capture class variables for kernel
   auto &u0_ = pm->pmb_pack->phydro->u0;
