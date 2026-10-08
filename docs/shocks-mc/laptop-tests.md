@@ -41,7 +41,7 @@ raw runs occupied1.2GB. The compact exported gallery is about9MB. Build time is 
 
 ## What to inspect
 
-The HTML gallery and28-page PDF include native128×4 density, pressure andP/rho maps;
+The HTML gallery and explained36-page PDF (28 figure pages) include native128×4 density, pressure andP/rho maps;
 fluid profiles against independent Rankine–Hugoniot states; Eulerian front position;
 space/time membership; ten sets of sampled parent histories; three strength/state
 histories; event counts and Mach errors for all21 fixtures; resolution/CFL timing
@@ -94,3 +94,24 @@ in a fresh directory. It passed all engineering checks, completed 21 physical
 fixtures and 28 plots, and repeated 18 benchmarks. All 21 physical measurement
 dictionaries and 27 PNGs match the first gallery exactly, including output cost.
 Runtime variation was retained; reproduction reports are under `clean-reproduction/`.
+
+## Explained PDF report
+
+The gallery PDF now includes eight explanatory pages and reading notes beneath all
+28 original vector plots. The original plot-only PDF is preserved as
+`evidence/shocks-mc/laptop-visuals/plots-only.pdf`. The explained report is also saved
+in `output/pdf/athenak-shock-test-report.pdf`. No simulator source or results changed.
+
+To author explanations for a new plot packet, use the bundled document Python:
+
+```sh
+/Users/hitesh/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 \
+  tst/shocks-mc/explained_pdf.py \
+  --packet /tmp/athenak-laptop-plots-new \
+  --plots /tmp/athenak-laptop-plots-new/all-plots.pdf \
+  --output /tmp/athenak-laptop-explained.pdf
+```
+
+This separate documentation step uses already bundled ReportLab/pypdf; it consumes
+recorded results without rerunning AthenaK. The local test environment needs no
+new package. Rendering/layout verification is in evidence/shocks-mc/explained-report/.

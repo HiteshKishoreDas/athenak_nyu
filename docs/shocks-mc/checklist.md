@@ -41,3 +41,6 @@ See ledger.md for commands/results/failures and README.md for supported behavior
 - [x] Requested laptop visual checks: fresh20engineering/21physical runs, native
   state check, actual128×4 snapshots and18sequential small-job benchmarks;28plots
   plus portablePDF/HTML/data/input/log packet. M8/M9scientific gates remain open.
+
+- [x] Requested PDF explanations:36-page self-contained report with test methods,
+  results, limits and28 original vector plots; all pages rendered/visually reviewed.

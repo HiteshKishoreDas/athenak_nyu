@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-08",
+  "production_commit": "3de18d97",
+  "core_source_fingerprint": "3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc",
+  "authoring_helper": "tst/shocks-mc/explained_pdf.py",
+  "helper_sha256": "741c508d5ebfdaadc7c10fdd8559a811e3dde8010fc948588e03f14ccca849fa",
+  "output_pdf": "output/pdf/athenak-shock-test-report.pdf",
+  "pdf_sha256": "5d32c61151b912e482984b74911b74ffea866c9cd6032df47619ba17bab4c76f",
+  "gallery_pdf_alias": "evidence/shocks-mc/laptop-visuals/all-plots.pdf",
+  "aliases_exact_equal": true,
+  "pages": 36,
+  "explanation_pages": 8,
+  "original_vector_figures": 28,
+  "original_plot_pdf_sha256": "ac7c058289313061fcc17fbd2e84aed985e585a1fbfcd41597e0059a82e07b32",
+  "sources_sha256": {
+    "evidence/shocks-mc/laptop-visuals/report.json": "2715d7fcbdf992fc3b4d506225280b23bff74cd15d6ebeab1ee192ac9f26c7c4",
+    "evidence/shocks-mc/laptop-visuals/integration-report.json": "4f002f50b4db2f92b1811a1daaa806742b40a8bcce508e67423b04c21ed171c0",
+    "evidence/shocks-mc/laptop-visuals/qualification-report.json": "4002380630756ed9aec1825803afba14288628e5647a10b9def9a8102dd8daf1",
+    "docs/shocks-mc/schema.md": "8a457ad9372d7be27de86b4cc943a1a5cafde38e6671344d9d7f7f6fe93009fa",
+    "docs/shocks-mc/README.md": "c96d161a2c77f65870a35655d0b4ef7d987505a4bdbc914b2ab341e025d6f4f4"
+  },
+  "render_command": "pdftoppm -r 85 -png output/pdf/athenak-shock-test-report.pdf /private/tmp/athenak-explained-pdf-render/page",
+  "all_pages_rendered": 36,
+  "all_pages_visually_reviewed_via_contact_sheets": true,
+  "full_page_inspection": [
+    3,
+    5,
+    8,
+    19,
+    34
+  ],
+  "no_extracted_glyphs_outside_page_bounds": true,
+  "production_source_changed": false,
+  "simulations_rerun_for_report": false,
+  "scientific_signoff": "pending",
+  "libraries": {
+    "reportlab": "4.4.9",
+    "pypdf": "6.10.0"
+  }
+}

@@ -258,3 +258,18 @@ includes output cost. Corrected count, no numerical/test tolerance changed.
 Reproduction reports are in laptop-visuals/clean-reproduction; verification.json
 records exact commands and equality scope. Compact native 2D snapshots are explicitly
 tracked despite the repository binary-output ignore rule, so the packet is portable.
+
+## Requested explanations inside the PDF - 2026-10-08
+
+Added a self-contained36-page report: eight pages explain feature/setup, engineering
+checks, reference parity and independent transport, physical limits, timing/persistence,
+performance and reproduction;28 original vector figure pages add reading notes.
+Old plot-only PDF retained. Gallery all-plots.pdf matches output/pdf report bytes.
+ReportLab4.4.9/pypdf6.10.0 came from the bundled document runtime; no simulation
+rerun, code/tolerance change or new scientific acceptance. Authoring helper checks
+input status/identities, original28plots, eight explanation pages and total36pages.
+Poppler rendered all36pages; contact sheets reviewed; full pages3/5/8/19/34 inspected.
+PDF text extraction found no glyph outside page bounds. Verification/source hashes
+and render-contact sheets are in evidence/shocks-mc/explained-report.
+First metadata update used system Python lacking pypdf and failed at import before
+any mutation; rerun with the bundled document Python succeeded. No install required.
