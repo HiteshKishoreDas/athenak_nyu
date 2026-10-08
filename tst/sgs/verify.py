@@ -183,7 +183,8 @@ class Verification:
             measured=value, threshold=threshold, description=description))
         return passed
 
-    def run(self, name, mode='uniform', ndim=1, block=8, overrides=None, rst=None):
+    def run(self, name, mode='uniform', ndim=1, block=8, overrides=None, rst=None,
+            grid_cap=None):
         config = parameters((SOURCE/'inputs/hydro/sgs_verify.athinput').read_text())
         config.update({'job/basename': name, 'problem/mode': mode,
                        'time/tlim': '0.004' if ndim == 3 else '0.01', 'time/nlim': str(LIMITS['maximum_cycles']),
@@ -193,7 +194,8 @@ class Verification:
             config[f'mesh/nx{d}'] = '16' if d <= ndim else '1'
             config[f'meshblock/nx{d}'] = str(block) if d <= ndim else '1'
         config.update(overrides or {})
-        if any(int(config[f'mesh/nx{d}']) > LIMITS['maximum_grid_axis'] for d in (1, 2, 3)):
+        grid_cap = LIMITS['maximum_grid_axis'] if grid_cap is None else grid_cap
+        if any(int(config[f'mesh/nx{d}']) > grid_cap for d in (1, 2, 3)):
             raise ValueError('grid cap exceeded')
         wd = self.output/name
         wd.mkdir()
@@ -205,7 +207,7 @@ class Verification:
             cmd = [str(self.exe), '-r', str(rst), f'job/basename={name}',
                    f"time/tlim={config['time/tlim']}"]
         row = dict(name=name, mode=mode, ndim=ndim, command=cmd, input_sha256=sha(inp),
-                   status='running')
+                   status='running', grid_cap=grid_cap)
         self.results.append(row)
         self.save()
         started = time.monotonic()

@@ -87,6 +87,59 @@ three velocity components and kz=0, not stationary or reference-validated
 in the original log), with output included. They are single short local measurements;
 they are not a statistically controlled performance benchmark.
 
+## High-resolution turbulence versus low-resolution SGS
+
+`compare_resolution.py` first drives a 128² hydro flow (SGS off) for t=2 with
+seed 42, mixed solenoidal/compressive forcing in modes 1–3 and dedt=1. It then
+compares unforced decay for another t=0.5 in four lanes: 128² reference, 64²
+reference sensitivity check, 32² SGS off and 32² SGS on. This is a developed
+2D flow with three velocity components; it is not a validated DNS or a 3D
+stationary-turbulence qualification.
+
+All lanes start from the same high-resolution snapshot. Coarse density,
+momentum, total energy and scalar masses are aligned finite-volume averages.
+The density-weighted velocity variance removed by filtering supplies initial K.
+SGS-on subtracts that K from resolved E and stores it separately, preserving
+thermal energy and represented E+K. SGS-off retains the conservative average E,
+so the removed kinetic variance initially becomes heat. Both lanes have exactly
+the same initial filtered density, momentum and represented energy; their initial
+thermal pressures differ by the stated energy partition.
+
+Reuse the build and Python environment above:
+
+```sh
+/tmp/sgs-plot-env/bin/python -B tst/sgs/compare_resolution.py --self-test \
+  --exe build-sgs-laptop/src/athena
+/tmp/sgs-plot-env/bin/python -B tst/sgs/compare_resolution.py \
+  --exe build-sgs-laptop/src/athena --output /tmp/sgs-resolution-comparison
+open /tmp/sgs-resolution-comparison/index.html
+```
+
+The self-check covers a hand-calculated Favre variance, energy partition,
+alignment, boost invariance, native file round-trip and eight malformed inputs.
+The full run keeps every IC, checkpoint, history and log, plus nine plotted PDF
+pages, PNGs, HTML and `comparison.json`. To regenerate plots, use `--plot-only`
+with the same output directory. The matched-initial-state checks compare file
+readback exactly and bound global represented-energy differences at 1e-12.
+
+For a smaller smoke run, use `--high 64 --low 16 --spinup 0.1 --decay 0.01`.
+The comparison explicitly raises its grid cap; the original qualification runner
+retains its default 32-cell cap and unchanged numerical thresholds.
+
+Final errors compare all lanes at the exact same stop time. Intermediate error
+curves linearly interpolate conserved checkpoints to common times, with maximum
+brackets recorded. Every high-resolution reference field is block-filtered onto
+the low grid before comparing density, Favre velocity, thermal pressure, kinetic
+variance and spectra. The 64² versus 128² sensitivity is plotted alongside the
+coarse errors. Improvement from SGS is a measured outcome, never a pass criterion.
+One seed and two reference resolutions do not prove converged closure accuracy.
+
+The test generator's optional `problem/initial_state` reads a text file containing
+`nx ny nvar`, followed by rows in y/x order: rho, three momenta, resolved E, true
+scalar densities, then K. E excludes K. SGS-off files must give K=0. Shapes,
+finite values, positive density/thermal energy and nonnegative K are checked.
+This input path is confined to `sgs_verify.cpp`; solver/restart machinery is unchanged.
+
 ## Model and state
 
 The baseline is Schmidt & Federrath (2011), Eqs. (7)–(14):

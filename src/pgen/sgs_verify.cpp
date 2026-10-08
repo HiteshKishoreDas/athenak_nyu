@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <limits>
 #include <string>
@@ -34,6 +35,59 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   if (pack->phydro == nullptr || !pack->phydro->peos->eos_data.is_ideal) {
     std::cerr << "sgs_verify requires ideal-gas hydro" << std::endl;
     std::exit(EXIT_FAILURE);
+  }
+  // Test-only input: nx, ny, nvar; then y/x ordered conserved fields and K.
+  // E excludes K. SGS-off files must provide zero K rather than lose energy.
+  if (pin->DoesParameterExist("problem", "initial_state")) {
+    const int nx = pin->GetInteger("mesh", "nx1");
+    const int ny = pin->GetInteger("mesh", "nx2");
+    const int nvar = pack->phydro->nhydro + pack->phydro->nscalars + 1;
+    auto fail = []() {
+      std::cerr << "sgs_verify: invalid 2D initial_state file/layout/reservoir"
+                << std::endl;
+      std::exit(EXIT_FAILURE);
+    };
+    if (pin->GetInteger("mesh", "nx3") != 1 || pmy_mesh_->multilevel ||
+        (pack->phydro->isgs >= 0 && !pack->phydro->sgs_pgen_initialization)) fail();
+    std::ifstream input(pin->GetString("problem", "initial_state"));
+    int file_nx = 0, file_ny = 0, file_nvar = 0;
+    if (!(input >> file_nx >> file_ny >> file_nvar) || file_nx != nx ||
+        file_ny != ny || file_nvar != nvar) fail();
+    HostArray3D<Real> host("sgs_initial_host", ny, nx, nvar);
+    for (int j=0; j<ny; ++j) {
+      for (int i=0; i<nx; ++i) {
+        for (int n=0; n<nvar; ++n) {
+          if (!(input >> host(j,i,n)) || !std::isfinite(host(j,i,n))) fail();
+        }
+        Real rho = host(j,i,IDN);
+        Real kinetic = 0.0;
+        for (int n=IM1; n<=IM3; ++n) kinetic += SQR(host(j,i,n));
+        if (rho <= 0.0 || host(j,i,IEN) <= kinetic/(2.0*rho) ||
+            host(j,i,nvar-1) < 0.0 ||
+            (pack->phydro->isgs < 0 && host(j,i,nvar-1) != 0.0)) fail();
+      }
+    }
+    std::string extra;
+    if (input >> extra) fail();
+    DvceArray3D<Real> data("sgs_initial_data", ny, nx, nvar);
+    Kokkos::deep_copy(data, host);
+    const auto ind = pmy_mesh_->mb_indcs;
+    const auto domain = pmy_mesh_->mesh_size;
+    auto size = pack->pmb->mb_size;
+    auto u = pack->phydro->u0;
+    const int count = pack->phydro->nvars;
+    par_for("pgen_sgs_initial_state", DevExeSpace(), 0, pack->nmb_thispack-1,
+            ind.ks, ind.ke, ind.js, ind.je, ind.is, ind.ie,
+    KOKKOS_LAMBDA(int m, int k, int j, int i) {
+      Real x = CellCenterX(i-ind.is, ind.nx1,
+                           size.d_view(m).x1min, size.d_view(m).x1max);
+      Real y = CellCenterX(j-ind.js, ind.nx2,
+                           size.d_view(m).x2min, size.d_view(m).x2max);
+      int ix = static_cast<int>(nx*(x-domain.x1min)/(domain.x1max-domain.x1min));
+      int iy = static_cast<int>(ny*(y-domain.x2min)/(domain.x2max-domain.x2min));
+      for (int n=0; n<count; ++n) u(m,n,k,j,i) = data(iy,ix,n);
+    });
+    return;
   }
   const std::string mode = pin->GetOrAddString("problem", "mode", "uniform");
   int which = -1;
