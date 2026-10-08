@@ -273,3 +273,17 @@ PDF text extraction found no glyph outside page bounds. Verification/source hash
 and render-contact sheets are in evidence/shocks-mc/explained-report.
 First metadata update used system Python lacking pypdf and failed at import before
 any mutation; rerun with the bundled document Python succeeded. No install required.
+
+## Requested descriptions beside each plot - 2026-10-08
+
+Reorganized the same36-page PDF: one overview,28 plot pages each with substantial
+setup, reading guide, measured result and limitations immediately above the vector
+chart, then seven methods/reproduction appendix pages. Numerical measurements are
+read from the existing packet; original plots, source and tolerances are unchanged.
+Previous PDF, verification, QA/contact sheets and manifest are retained in
+explained-report/previous-layout/. Regenerated with the bundled document Python:
+`python3 tst/shocks-mc/explained_pdf.py --packet evidence/shocks-mc/laptop-visuals --output output/pdf/athenak-shock-test-report.pdf`.
+Poppler rendered all36pages at85dpi; all four contact sheets and full pages
+2/12/19/27/28/30 reviewed. Text extraction verifies all four explanation headings
+on every plot page and no out-of-page glyphs. Report/gallery bytes agree.
+No simulations rerun, no production changes or scientific/hardware gate promotion.

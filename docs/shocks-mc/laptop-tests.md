@@ -97,8 +97,10 @@ Runtime variation was retained; reproduction reports are under `clean-reproducti
 
 ## Explained PDF report
 
-The gallery PDF now includes eight explanatory pages and reading notes beneath all
-28 original vector plots. The original plot-only PDF is preserved as
+The 36-page gallery PDF starts with one overview, then 28 original vector plots.
+Each plot has its test setup, reading guide, measured result and limitations
+immediately above it on the same page. Seven general-methods and reproduction
+pages follow in the appendix. The original plot-only PDF is preserved as
 `evidence/shocks-mc/laptop-visuals/plots-only.pdf`. The explained report is also saved
 in `output/pdf/athenak-shock-test-report.pdf`. No simulator source or results changed.
 

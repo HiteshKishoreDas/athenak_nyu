@@ -3,9 +3,9 @@
   "production_commit": "3de18d97",
   "core_source_fingerprint": "3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc",
   "authoring_helper": "tst/shocks-mc/explained_pdf.py",
-  "helper_sha256": "741c508d5ebfdaadc7c10fdd8559a811e3dde8010fc948588e03f14ccca849fa",
+  "helper_sha256": "981e26b70448d8ddb489cd2d7edfe30c2719d4742ef0aa44c499cb2294b32474",
   "output_pdf": "output/pdf/athenak-shock-test-report.pdf",
-  "pdf_sha256": "5d32c61151b912e482984b74911b74ffea866c9cd6032df47619ba17bab4c76f",
+  "pdf_sha256": "dd96fdc393f8767aa4ee1cd66a4fe30aee288764c5320faf32f6a0e9af3b2dde",
   "gallery_pdf_alias": "evidence/shocks-mc/laptop-visuals/all-plots.pdf",
   "aliases_exact_equal": true,
   "pages": 36,
@@ -19,15 +19,16 @@
     "docs/shocks-mc/schema.md": "8a457ad9372d7be27de86b4cc943a1a5cafde38e6671344d9d7f7f6fe93009fa",
     "docs/shocks-mc/README.md": "c96d161a2c77f65870a35655d0b4ef7d987505a4bdbc914b2ab341e025d6f4f4"
   },
-  "render_command": "pdftoppm -r 85 -png output/pdf/athenak-shock-test-report.pdf /private/tmp/athenak-explained-pdf-render/page",
+  "render_command": "pdftoppm -r 85 -png output/pdf/athenak-shock-test-report.pdf /private/tmp/athenak-plot-local-pdf-render/page",
   "all_pages_rendered": 36,
   "all_pages_visually_reviewed_via_contact_sheets": true,
   "full_page_inspection": [
-    3,
-    5,
-    8,
+    2,
+    12,
     19,
-    34
+    27,
+    28,
+    30
   ],
   "no_extracted_glyphs_outside_page_bounds": true,
   "production_source_changed": false,
@@ -36,5 +37,11 @@
   "libraries": {
     "reportlab": "4.4.9",
     "pypdf": "6.10.0"
-  }
+  },
+  "plot_local_explanations": 28,
+  "overview_pages": 1,
+  "appendix_pages": 7,
+  "layout": "One overview, 28 vector plots with four adjacent explanation blocks, seven methods/reproduction appendix pages.",
+  "all_plot_pages_have_setup_reading_result_and_limits": true,
+  "previous_layout": "evidence/shocks-mc/explained-report/previous-layout/"
 }

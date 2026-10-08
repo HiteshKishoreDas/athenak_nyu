@@ -50,6 +50,210 @@ def table(rows, widths, header=True):
     return value
 
 
+def figure_description(name, report, measured, packet):
+    """Test setup, plot reading, measured result and caveat for this exact figure."""
+    pilot = ('Mach 2 planar shock, gamma=1.4, RK2/PLM/HLLC, 128 x 4 cells, '
+             '128 MC tracers, CFL=0.3, t_limit=0.25. The known front is x=0.3+0.5t.')
+    endpoints = ('Fixed sampling endpoints are not certified undisturbed plateaus. '
+                 'Strength and physical passage acceptance remain pending.')
+    if name.startswith('2d_'):
+        field = {'2d_dens': 'density', '2d_pressure': 'pressure',
+                 '2d_temperature': 'temperature proxy P/rho'}[name]
+        plateau = {'2d_dens': 'density 1 upstream and 2.6667 downstream',
+                   '2d_pressure': 'pressure 1 upstream and 4.5 downstream',
+                   '2d_temperature': 'P/rho 1 upstream and 1.6875 downstream'}[name]
+        return (pilot + ' This page shows native ' + field + ' snapshots.',
+                'Read top to bottom from t=0 to t=0.25; the middle panels show their actual '
+                'recorded times. Color is ' + field + '. Dashed red marks the analytic front; '
+                'white dots are sampled particles inside the unreduced shock region.',
+                'The independent jump conditions prescribe ' + plateau + '. The front moves '
+                'right to x=0.425 at t=0.25. Synchronization checks separately match particle '
+                'time, cell position and density exactly to native thermo observations.',
+                'The y direction is stretched to display four real grid rows. White dots are '
+                'particle samples, not a full mesh mask. This planar fixture does not qualify '
+                'curved, interacting or turbulent 2D shocks.')
+    if name == 'rh_profiles':
+        return (pilot + ' Initial states satisfy mass, momentum and energy conservation in the shock frame.',
+                'The four panels compare numerical density, pressure, x velocity and P/rho '
+                'with dashed independent Rankine-Hugoniot plateau values at t=0.25.',
+                'The reference front is x=0.425. Density ratio is 8/3 and pressure ratio is 4.5; '
+                'velocities are -1.86643 upstream and -0.38741 downstream. The resolved '
+                'profiles show finite shock thickness and small downstream oscillations.',
+                'This checks the fluid against a physical reference independent of ShockIt. '
+                'It does not establish a plateau-certified particle Mach estimator or an exact '
+                'particle crossing time.')
+    if name == 'shock_space_time':
+        return (pilot + ' Native grid snapshots are written throughout the run.',
+                'Horizontal coordinate is x; vertical coordinate is simulation time. Color '
+                'shows density. The red dashed line is the prescribed Eulerian front; white '
+                'dots mark synchronized inside-region particle observations.',
+                'The density jump follows the translating front, and the sampled membership '
+                'appears around the resolved shock. At the end the analytic front is x=0.425. '
+                'The matching particle timestamp/position/density tests passed.',
+                'Space-time interpolation of sparse grid outputs is a visualization. It is '
+                'not a continuous material trajectory or a fitted crossing-time oracle.')
+    if name == 'front_position':
+        import csv
+        rows = list(csv.DictReader((packet / 'data/front-position.csv').open()))
+        errors = [float(r['error_cells']) for r in rows]
+        return (pilot + ' The fluid front is measured by linearly interpolating its density midpoint.',
+                'Left: midpoint location versus the known front. Right: midpoint minus '
+                'analytic position, divided by the x cell width; zero means coincident locations.',
+                f'The recorded midpoint offsets range from {min(errors):.3f} to '
+                f'{max(errors):.3f} cells across {len(rows)} snapshots. Initial cell placement '
+                'contributes an offset; the midpoint is required to have a unique crossing.',
+                'This is an Eulerian front diagnostic, not a particle timing estimate. No '
+                'physical acceptance tolerance is inferred from the displayed offset.')
+    if name.endswith('_parents') or name.endswith('_strength_time'):
+        key = name.removesuffix('_parents').removesuffix('_strength_time')
+        m = measured[key]
+        speed = 2.5 if key == 'boost2' else 0 if key == 'stationary' else -.5 if key == 'reflected' else .5
+        origin = .7 if key == 'reflected' else .3
+        nx = 64 if key == 'nx64' else 256 if key == 'nx256' else 128
+        duration = .45 if key == 'mach1.2' else .3 if key == 'mach1.5' else .25
+        setup = (f"Input Mach {m['expected_input_mach']:g}, {nx} x 4 cells, 128 MC tracers, "
+                 f'gamma=1.4, CFL=0.3, t_limit={duration:g}. Analytic front: '
+                 f'x={origin:g}+({speed:g})t. The plotted IDs are selected samples.')
+        low, high = m['pressure_mach_error_range']
+        result = (f"{m['completed_events']} completed numerical episodes for "
+                  f"{m['emitted_particles']} unique particles; {m['terminal_suspended']} suspended. "
+                  f'First-inside pressure-Mach error is {low:+.4f} to {high:+.4f} '
+                  '(estimate minus input Mach).')
+        if key in ('mach5', 'boost2'):
+            result += f" {len(m['particles_with_multiple_episodes'])} particles have a second episode; scientific interpretation remains pending."
+        if name.endswith('_parents'):
+            read = ('Top: sampled cell-center x versus time, with inside-region dots and the '
+                    'known dashed front. Bottom: parent x minus analytic front x. Stair steps '
+                    'show discrete cell hops; selected extra-episode/censored IDs are included.')
+            limit = ('MC sample sequences are not continuous material paths. A numerical '
+                     're-entry need not represent a distinct physical shock. No exact crossing '
+                     'time is assigned, and a suspended encounter is retained at cutoff.')
+        else:
+            read = ('Top: outside/active/pending-exit tracker state. Lower panels: pressure '
+                    'and temperature Mach for every valid inside observation. Dashed lines '
+                    'mark input Mach; gaps mean no valid inside strength sample.')
+            limit = ('The lower panels include follow-up samples, whereas each emitted event '
+                     'uses its first valid inside sample as representative. ' + endpoints)
+        return setup, read, result, limit
+    if name == 'episode_counts':
+        return ('21 held-out runs: eight Mach 2 seeds, four other Mach numbers, gamma, front '
+                'speed/direction, resolution, CFL and one thin-3D variation; 128 initial particles each.',
+                'Blue bars count completed numerical episodes; orange adds partial episodes. '
+                'Black dots count unique IDs with events; red crosses count suspended views. '
+                'The dashed reference is 128 initially seeded particles.',
+                'Every Mach 2 seed gives 128/128. Mach 5 gives 134 episodes/128 IDs. Boosted '
+                'Mach 2 gives 132/127 plus one suspended. Mach 1.5 gives 127 plus one suspended. '
+                'Other held-out cases give 128/128.',
+                'Successful execution is not scientific acceptance. Extra episodes violate '
+                'the simple single-front counting expectation; unfinished encounters are '
+                'censored evidence, not discarded failures.')
+    if name == 'mach_errors':
+        return ('First-inside representative strengths from all emitted events in the 21 '
+                'held-out cases, compared with independently prescribed input Mach.',
+                'Top boxes use pressure Mach; bottom boxes use temperature Mach. The y axis '
+                'is estimated minus input Mach. Zero is unbiased. Boxes, whiskers and outliers '
+                'retain every emitted event, including weak secondary detections.',
+                'Pressure-Mach errors: seed-11 Mach 2, -0.0163 to +0.0118; Mach 1.2, -0.1031 '
+                'to -0.0157; Mach 5, -3.9657 to +0.0594; boosted Mach 2, -0.1091 to -0.0771.',
+                'A box plot diagnoses bias/spread, not an approved error budget. No outliers '
+                'were removed, and the full vertical range intentionally exposes strong-case '
+                'failures. ' + endpoints)
+    if name == 'timing_bracket_widths':
+        widths = {}
+        for key in ('nx64', 'seed11', 'nx256', 'cfl0.15', 'cfl0.45'):
+            values = [e['entry_region_bracket'][1]-e['entry_region_bracket'][0]
+                      for e in measured[key]['event_evidence']]
+            widths[key] = max(values)
+        return ('Compare x resolutions 64/128/256 and CFL 0.15/0.3/0.45 for the same Mach 2 '
+                'planar test, measuring each event\'s recorded entry and exit bracket width.',
+                'Left: entry widths; right: exit widths. Each cumulative curve shows the '
+                'fraction of events below a width. A left shift means tighter observation '
+                'brackets. Coincident curves can overlap.',
+                f"Largest recorded entry widths: nx64 {widths['nx64']:.6g}, baseline "
+                f"{widths['seed11']:.6g}, nx256 {widths['nx256']:.6g} code-time units. "
+                'All five cases record 128 episodes for 128 IDs.',
+                'Widths describe adjacent mask observations, not errors against an exact '
+                'material crossing. Halving CFL and doubling resolution can yield similar '
+                'cadence; that does not prove converged physical passage histories.')
+    if name == 'encounter_brackets':
+        return ('Selected particle IDs in baseline Mach 2, Mach 5 and boosted Mach 2, including '
+                'IDs with rearmed episodes and terminal suspended evidence.',
+                'Blue is the first episode; red is a later episode for the same ID. Pale '
+                'thick ends are entry/exit brackets. Solid segments join first and last inside '
+                'observations; a black cross denotes a suspended terminal view.',
+                'Baseline has one event per ID. Mach 5 has six IDs with a second episode; '
+                'the boosted case has five and one suspended encounter. The tracker preserves '
+                'these distinct identities and timing evidence rather than hiding them.',
+                'A solid segment is not exact physical residence: flicker can be merged, and '
+                'MC returns are stochastic. Brackets limit sampled region transitions, not '
+                'exact material shock crossings.')
+    if name == 'uniform_transport':
+        o = report['independent_transport']
+        return ('Uniform periodic flow, velocity u=1, 64 x 4 cells, 1,024 tracers, t_limit=0.25. '
+                'The independent reference uses per-step Bernoulli probabilities p=u*dt/dx.',
+                'Left: measured net-hop histogram versus the probability distribution of the '
+                'Bernoulli sum. Right: mean and variance differences measured in their '
+                'predeclared standard errors, with the existing +/-6 diagnostic lines.',
+                f"Expected mean {o['expected_hops']:.4f}, measured {o['observed_hops_mean']:.4f}; "
+                f"expected variance {o['expected_variance']:.4f}, measured {o['observed_hops_variance']:.4f}. "
+                'Mean/variance deviations are -0.89/-2.40 standard errors; both pass.',
+                'This is a fixed-seed ensemble transport check, not proof of RNG independence '
+                'at research scale. The inherited additive RNG key has alias/correlation '
+                'questions; no deterministic per-particle path oracle is used.')
+    if name == 'negative_controls':
+        return ('Uniform flow, a contact with density ratio 2:1 at constant pressure and '
+                'velocity, and a zero-particle run. A contact should not be mistaken for a shock.',
+                'Left: sampled density versus parent-cell x at the first and last generations '
+                'for uniform/contact runs. Right: emitted event counts for all three controls.',
+                'All three emit zero shock episodes. Tracking-on/off uniform and planar runs '
+                'also preserve exact native particle observations and byte-identical '
+                '17-digit conserved slices in the separate non-interference checks.',
+                'These controls check specific false detections and empty-population behavior. '
+                'They do not bound the false-positive rate in turbulence or complex shock geometry.')
+    if name == 'restart_agreement':
+        return ('Checkpoint the baseline run in outside, active and pending-exit phases '
+                '(generations 1, 61 and 68), then resume with identical source/configuration/partition.',
+                'Each panel plots maximum absolute position and density differences from '
+                'uninterrupted particle observations. The display unit is 1e-14 code units; '
+                'comparisons use exact equality, not a 1e-14 tolerance.',
+                'All differences are exactly zero. Outside/active/pending resumes match '
+                '41,600 / 33,920 / 33,024 rows, respectively, and each preserves all 128 '
+                'canonical events with no duplicate identities.',
+                'Requires the matching implementation, native ABI, rank count and mesh '
+                'partition plus retained event prefix. No cross-rank, all-rank atomic '
+                'transaction or power-loss/storage-fault qualification is claimed.')
+    if name == 'runtime_cost':
+        return ('Uniform flow, 1,024 particles, t_limit=0.1, grids 64 x 4 and 256 x 4. '
+                'Three trials per off/tracking/trace mode; order is rotated.',
+                'Left: median whole-process wall seconds, with dots for actual repeats. '
+                'Right: runtime divided by the matching tracking-off median. Blue is off, '
+                'orange tracking with trace off, and green full diagnostic traces.',
+                '64 x 4: off 0.01163 s, tracking 0.04171 s (3.59x), trace 0.28880 s (24.84x). '
+                '256 x 4: off 0.04174 s, tracking 0.12862 s (3.08x), trace 1.10772 s (26.54x).',
+                'Startup, ordinary output and durable empty event chunks are included. '
+                'Full traces are expensive small-job qualification diagnostics. These '
+                'timings do not establish sustained RUSTY/Frontier or MPI/GPU performance.')
+    if name == 'output_cost':
+        import statistics
+        summary = {}
+        for nx in (64, 256):
+            rows = [r for r in report['benchmark_runs'] if r['mesh'][0] == nx and r['mode'] == 'trace']
+            summary[nx] = (statistics.median(r['shock_output_bytes'] for r in rows)/1e6,
+                           int(statistics.median(r['shock_output_files'] for r in rows)))
+        return ('The same two-mesh, 1,024-particle benchmark, inspecting shock diagnostic '
+                'directories after each off/tracking/trace run.',
+                'Left: bytes written in decimal MB; right: file count. Bars use the same '
+                'three diagnostic modes as the runtime plot. Counts include immutable '
+                'per-generation chunks and optional observation/transfer CSVs.',
+                f"Trace mode writes {summary[64][0]:.2f} MB / {summary[64][1]} files on 64 x 4, "
+                f"and {summary[256][0]:.2f} MB / {summary[256][1]} files on 256 x 4. "
+                'Tracking-off writes no shock diagnostic directory.',
+                'Fluid and legacy thermo outputs are excluded from these totals. Empty '
+                'event generations still require durable files. Resident memory and '
+                'production-filesystem behavior were not measured.')
+    raise ValueError('Missing local explanation: ' + name)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--packet', type=Path, required=True)
@@ -101,9 +305,9 @@ def main():
          'for 128 particles in each of eight seeds. Strong and boosted fixtures expose additional '
          'episodes and strength bias. Human scientific approval and R1 release acceptance remain pending.')
     sub('How to read this report')
-    text('Pages 2-8 explain the test setup, methods, measurements, persistence, performance and '
-         'reproduction. The following 28 figure pages retain the original vector plots and add '
-         'plain-language reading notes and case-specific results.')
+    text('Pages 2-29 pair each original vector plot with its own test setup, reading guide, '
+         'measured result and limitation directly above it. General methods, persistence '
+         'details and reproducible run instructions follow in the appendix on pages 30-36.')
     text('The existing lagrangian_mc tracer makes stochastic parent-cell hops. Positions are cell '
          'centers. Lines in trajectory plots are sample sequences, and timing brackets describe '
          'neighboring shock-region observations. Neither is an exact continuous material crossing.')
@@ -111,7 +315,7 @@ def main():
          '526a187f938e38634e89a88192ebe9731c4d36bb. This report adds explanation to recorded results; '
          'no simulations or numerical thresholds were changed to produce it.')
 
-    section('2. The primary physical experiment')
+    section('Appendix A. The primary physical experiment')
     text('A translating planar shock is evolved in a thin two-dimensional domain. Independent '
          'Rankine-Hugoniot jump relations define its initial states and known speed. This is '
          'genuine 2D fluid output, but the planar setup does not qualify curved or intersecting shocks.')
@@ -138,7 +342,7 @@ def main():
          'left. Their histories meet the resolved shock region. Staying inside that region for '
          'many timesteps should create one numerical episode, not one event per timestep.')
 
-    section('3. Engineering tests: what each checks')
+    section('Appendix B. Engineering tests: what each checks')
     text('The recent integration suite has 20 subprocess runs. Some must succeed; others must '
          'abort with a specific diagnostic. All produced the expected outcome. Test IDs refer '
          'to the implementation plan and recorded checks.')
@@ -156,7 +360,7 @@ def main():
          '(with some simplified harness context), and 13 actual production domain-exit records. '
          'These categories must not be summed as independent physical shock passages.')
 
-    section('4. Detector parity and independent transport')
+    section('Appendix C. Detector parity and independent transport')
     sub('ShockIt parity: fidelity of the numerical port')
     text('53 fixtures compare the native detector against the frozen ShockIt local_pass reference. '
          'Shock-region masks must match exactly. Floating quantities use unchanged absolute '
@@ -181,7 +385,7 @@ def main():
          'The inherited additive RNG key has alias/correlation questions that remain open. '
          'There is no deterministic per-particle material-path oracle.')
 
-    section('5. Physical recovery and strength limitations')
+    section('Appendix D. Physical recovery and strength limitations')
     text('All 21 held-out fixtures executed. They vary eight Mach 2 seeds, Mach=1.2/1.5/3/5, '
          'gamma=5/3, stationary/boosted/reflected fronts, nx=64/256, CFL=0.15/0.45 and one '
          'thin-3D case. Run success is distinct from physical acceptance.')
@@ -210,7 +414,7 @@ def main():
          'sample, with fixed endpoints that are not certified plateaus. Weak secondary episodes '
          'remain in the Mach 5 range. No outliers or tolerances were adjusted for acceptance.')
 
-    section('6. Encounter timing, output and restart')
+    section('Appendix E. Encounter timing, output and restart')
     text('An episode begins from valid unreduced-region membership, with an upstream-state '
          'entry guard where prior evidence exists. A first outside observation starts pending '
          'exit; two consecutive valid outside samples close/rearm. Earlier re-entry merges '
@@ -237,7 +441,7 @@ def main():
          'pass; the local two-rank launcher failed before AthenaK because of runtime '
          'compatibility. True distributed migration/restart and target filesystems remain untested.')
 
-    section('7. Measured laptop performance')
+    section('Appendix F. Measured laptop performance')
     text('Uniform flow, 1,024 tracers, t_limit=0.1; two meshes and three modes. Three repetitions '
          'per mode/mesh, with execution order rotated. All 18 benchmark runs completed. '
          'Times below are whole-process medians, including startup and ordinary outputs.')
@@ -273,7 +477,7 @@ def main():
          'threaded/GPU/single precision and cluster budgets. AMR, cooling/source terms, '
          'MHD and relativistic physics require separate qualification. Material loops/strings are excluded.')
 
-    section('8. Run the tests and locate the evidence')
+    section('Appendix G. Run the tests and locate the evidence')
     text('Run from the development worktree using the existing Release executable. Use new '
          'work and output directories each time. The existing ShockIt Python environment '
          'contains NumPy, Matplotlib and h5py; the PDF authoring step uses the separate '
@@ -319,7 +523,8 @@ codex-primary-runtime/dependencies/python/bin/python3 \\
         c.setFillColor(GRAY)
         c.drawString(48, A4[1] - 29, 'ATHENAK  |  SHOCK ENCOUNTER TEST REPORT')
         c.drawString(48, 27, 'Scientific review pending  |  Recorded local CPU evidence')
-        c.drawRightString(A4[0] - 48, 27, f'{doc.page} / {total}')
+        number = 1 if doc.page == 1 else doc.page + len(figures)
+        c.drawRightString(A4[0] - 48, 27, f'{number} / {total}')
     output = args.output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(prefix='athenak-explained-pdf-') as directory:
@@ -331,52 +536,56 @@ codex-primary-runtime/dependencies/python/bin/python3 \\
         intro = PdfReader(front)
         assert len(intro.pages) == 8, f'Explanation overflow: {len(intro.pages)} pages'
         writer = PdfWriter()
-        writer.append(intro)
+        writer.add_page(intro.pages[0])
         for i, (figure, source) in enumerate(zip(figures, plots.pages)):
             pw, ph = float(source.mediabox.width), float(source.mediabox.height)
-            page_width, page_height = max(pw + 72, A4[0]), ph + 200
+            page_width = max(pw + 72, A4[0])
+            column_width = (page_width - 96) / 2
+            setup, read, result, caveat = figure_description(
+                figure['name'], report, measured, packet)
+            columns = [[('Test setup', setup), ('How to read the plot', read)],
+                       [('Measured result', result), ('What this establishes', caveat)]]
+            blocks = []
+            for column in columns:
+                parts = []
+                for label, content in column:
+                    for value, style in ((label, SUB), (content, BODY)):
+                        p = paragraph(value, style)
+                        _, height = p.wrap(column_width, 1000)
+                        parts.append((p, height, 6 if style is SUB else 10))
+                blocks.append(parts)
+            explanation_height = max(sum(h + gap for p, h, gap in parts)
+                                     for parts in blocks)
+            page_height = ph + 133 + explanation_height
             page = Path(directory) / f'figure-{i}.pdf'
             c = canvas.Canvas(str(page), pagesize=(page_width, page_height))
             c.setFillColor(BLUE)
             c.setFont('Helvetica-Bold', 14)
-            c.drawString(36, page_height - 40, f'Figure {i + 1:02d}  |  ' + figure['name'].replace('_', ' '))
-            c.setFillColor(GRAY)
-            c.setFont('Helvetica', 9)
-            c.drawString(36, page_height - 61, 'Read the plotted quantities with the notes below; code time and spatial code units apply.')
-            note = figure['caption']
-            name = figure['name']
-            if name.endswith('_parents') or name.endswith('_strength_time'):
-                key = name.removesuffix('_parents').removesuffix('_strength_time')
-                m = measured[key]
-                note += (f" Case: input Mach={m['expected_input_mach']}; {m['completed_events']} complete "
-                         f"episodes / {m['emitted_particles']} unique particles; {m['terminal_suspended']} suspended. "
-                         'Each trace is a selected ID, not an ensemble-averaged material path.')
-            if name == 'episode_counts':
-                note += ' All eight Mach 2 seeds recover 128/128; Mach 5 gives 134/128; boosted Mach 2 gives 132/127 plus one suspended.'
-            if name == 'restart_agreement':
-                note += ' All plotted differences are exactly zero. The 1e-14 display unit is not a tolerance; comparisons use exact equality.'
-            if name.startswith('2d_'):
-                note += ' Top panel is the initial state (t=0); later panels use the actual recorded generation/time. All four y rows are native grid values.'
-            if name == 'timing_bracket_widths':
-                note += ' Coincident curves can overlap: halving CFL and doubling x resolution give similar observation cadences in these fixtures.'
-            if name == 'uniform_transport':
-                note += ' The reference is a sum of per-step Bernoulli probabilities. The measured mean/variance deviations are -0.89/-2.40 standard errors.'
-            p = paragraph(note, SMALL)
-            _, height = p.wrap(page_width - 72, 90)
-            assert height <= 84, (name, height)
-            p.drawOn(c, 36, 111 - height)
+            c.drawString(36, page_height - 34, f'Test {i + 1:02d}  |  ' +
+                         figure['name'].replace('_', ' '))
+            for column, parts in enumerate(blocks):
+                y = page_height - 65
+                x = 36 + column * (column_width + 24)
+                for p, height, gap in parts:
+                    y -= height
+                    p.drawOn(c, x, y)
+                    y -= gap
+                assert y >= ph + 48, 'Explanation overlaps its plot'
             c.setFillColor(GRAY)
             c.setFont('Helvetica', 8)
             c.drawString(36, 24, 'Scientific review pending  |  Original vector plot retained')
-            c.drawRightString(page_width - 36, 24, f'{9 + i} / {total}')
+            c.drawRightString(page_width - 36, 24, f'{2 + i} / {total}')
             c.showPage()
             c.save()
             explained = PdfReader(page).pages[0]
-            explained.merge_transformed_page(source, Transformation().translate(tx=36, ty=120))
+            explained.merge_transformed_page(
+                source, Transformation().translate(tx=36, ty=48))
             writer.add_page(explained)
+        for page in intro.pages[1:]:
+            writer.add_page(page)
         writer.add_metadata({'/Title': 'AthenaK shock encounters - implementation and test report',
                              '/Author': 'AthenaK implementation evidence',
-                             '/Subject': 'Engineering methods, measured outcomes, physical limitations and 28 explained plots'})
+                             '/Subject': '28 plots with adjacent test setup, reading guide, measured results and limitations'})
         with output.open('wb') as stream:
             writer.write(stream)
     check = PdfReader(output)
@@ -385,7 +594,8 @@ codex-primary-runtime/dependencies/python/bin/python3 \\
     for text_check in ('Rankine-Hugoniot', 'Scientific', '3de18d97', '134', 'same-layout', '119,808'):
         assert text_check in contents, text_check
     print(json.dumps({'output': str(output), 'pages': total, 'explanation_pages': 8,
-                      'explained_vector_figures': len(figures), 'scientific_signoff': 'pending'}))
+                      'explained_vector_figures': len(figures), 'plot_local_explanations': 28,
+                      'overview_pages': 1, 'appendix_pages': 7, 'scientific_signoff': 'pending'}))
 
 
 if __name__ == '__main__':

@@ -44,3 +44,6 @@ See ledger.md for commands/results/failures and README.md for supported behavior
 
 - [x] Requested PDF explanations:36-page self-contained report with test methods,
   results, limits and28 original vector plots; all pages rendered/visually reviewed.
+
+- [x] Requested plot-local explanations: setup, reading guide, measured result and
+  limits on each of28plot pages;36pages rendered and reviewed; methods in appendix.
