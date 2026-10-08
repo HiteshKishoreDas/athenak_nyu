@@ -124,6 +124,8 @@ TaskStatus Hydro::NewTimeStep(Driver *pdrive, int stage) {
   if (pmy_pack->pmesh->multi_d) { dtnew = std::min(dtnew, dt2); }
   if (pmy_pack->pmesh->three_d) { dtnew = std::min(dtnew, dt3); }
 
+  if (isgs >= 0) SGSNewTimeStep();
+
   // compute timestep for diffusion
   if (pcond != nullptr) {
     pcond->NewTimeStep(w0, peos->eos_data);

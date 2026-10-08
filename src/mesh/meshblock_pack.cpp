@@ -126,6 +126,12 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
     phydro = nullptr;
   }
 
+  if (pin->DoesBlockExist("sgs") &&
+      pin->GetOrAddBoolean("sgs", "enabled", true) && phydro == nullptr) {
+    std::cerr << "SGS requires a hydro block" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
   // (3) MHD
   // Create MHD physics module.  Create TaskLists only for single-fluid MHD
   if (pin->DoesBlockExist("mhd")) {
@@ -184,7 +190,9 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
   if (pin->DoesBlockExist("turb_driving")) {
     pturb = new TurbulenceDriver(this, pin);
     pturb->IncludeInitializeModesTask(tl_map["before_timeintegrator"], none);
-    pturb->IncludeAddForcingTask(tl_map["stagen"], none);
+    if (!pturb->stage_consistent) {
+      pturb->IncludeAddForcingTask(tl_map["stagen"], none);
+    }
   } else {
     pturb = nullptr;
   }

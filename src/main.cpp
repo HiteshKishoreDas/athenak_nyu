@@ -34,6 +34,8 @@
 #include <string>
 #include <system_error>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 // Athena headers
 #include "athena.hpp"
@@ -466,6 +468,29 @@ int main(int argc, char *argv[]) {
     IOWrapperSizeT headeroffset = restartfile.GetPosition(UsesSerialIO(restart_shard_mode));
   }
 
+  // Keep SGS restart layout and physical parameters immutable across overrides.
+  bool restart_sgs = res_flag && pinput->DoesBlockExist("sgs") &&
+                     pinput->GetOrAddBoolean("sgs", "enabled", true);
+  bool restart_stage_force = res_flag && pinput->DoesBlockExist("turb_driving") &&
+      pinput->GetOrAddBoolean("turb_driving", "stage_consistent", false);
+  std::vector<std::pair<std::string, std::string>> restart_force_parameters;
+  if (restart_stage_force) {
+    for (const auto &block : pinput->block) {
+      if (block.block_name != "turb_driving") continue;
+      for (const auto &line : block.line) {
+        restart_force_parameters.emplace_back(line.param_name, line.param_value);
+      }
+    }
+  }
+  std::vector<std::pair<std::string, Real>> restart_sgs_parameters;
+  int restart_scalars = 0;
+  if (restart_sgs) {
+    for (const char *key : {"c1", "c2", "ceps", "ckappa"}) {
+      restart_sgs_parameters.emplace_back(key, pinput->GetReal("sgs", key));
+    }
+    restart_scalars = pinput->GetOrAddInteger("hydro", "nscalars", 0);
+  }
+
   // read parameters from input file.  If both -r and -i are specified, this will
   // override parameters from the restart file
   if (iarg_flag) {
@@ -474,6 +499,38 @@ int main(int argc, char *argv[]) {
     infile.Close();
   }
   pinput->ModifyFromCmdline(argc, argv);
+
+  if (res_flag) {
+    bool new_sgs = pinput->DoesBlockExist("sgs") &&
+                   pinput->GetOrAddBoolean("sgs", "enabled", true);
+    bool incompatible = (restart_sgs != new_sgs);
+    bool new_stage_force = pinput->DoesBlockExist("turb_driving") &&
+        pinput->GetOrAddBoolean("turb_driving", "stage_consistent", new_sgs);
+    incompatible |= (restart_stage_force != new_stage_force);
+    if (restart_stage_force) {
+      for (const auto &entry : restart_force_parameters) {
+        incompatible |= (!pinput->DoesParameterExist("turb_driving", entry.first) ||
+            pinput->GetString("turb_driving", entry.first) != entry.second);
+      }
+      for (const auto &block : pinput->block) {
+        if (block.block_name == "turb_driving") {
+          incompatible |= (block.line.size() != restart_force_parameters.size());
+        }
+      }
+    }
+    for (const auto &entry : restart_sgs_parameters) {
+      incompatible |= (entry.second != pinput->GetReal("sgs", entry.first));
+    }
+    if (restart_sgs) {
+      incompatible |= (restart_scalars !=
+          pinput->GetOrAddInteger("hydro", "nscalars", 0));
+    }
+    if (incompatible) {
+      std::cerr << "SGS restart mode, coefficients, forcing and scalar layout must match"
+                << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+  }
 
   // Dump input parameters and quit if code was run with -n option.
   if (narg_flag) {

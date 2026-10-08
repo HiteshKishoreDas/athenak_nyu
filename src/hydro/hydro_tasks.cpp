@@ -21,6 +21,7 @@
 #include "diffusion/viscosity.hpp"
 #include "diffusion/conduction.hpp"
 #include "srcterms/srcterms.hpp"
+#include "srcterms/turb_driver.hpp"
 #include "bvals/bvals.hpp"
 #include "shearing_box/shearing_box.hpp"
 #include "shearing_box/orbital_advection.hpp"
@@ -87,13 +88,13 @@ void Hydro::AssembleHydroTasks(std::map<std::string, std::shared_ptr<TaskList>> 
 
 TaskStatus Hydro::InitRecv(Driver *pdrive, int stage) {
   // post receives for U
-  TaskStatus tstat = pbval_u->InitRecv(nhydro+nscalars);
+  TaskStatus tstat = pbval_u->InitRecv(nvars);
   if (tstat != TaskStatus::complete) return tstat;
 
   // with SMR/AMR post receives for fluxes of U
   // do not post receives for fluxes when stage < 0 (i.e. ICs)
   if (pmy_pack->pmesh->multilevel && (stage >= 0)) {
-    tstat = pbval_u->InitFluxRecv(nhydro+nscalars);
+    tstat = pbval_u->InitFluxRecv(nvars);
   }
   if (tstat != TaskStatus::complete) return tstat;
 
@@ -139,7 +140,7 @@ TaskStatus Hydro::CopyCons(Driver *pdrive, int stage) {
       int js = indcs.js, je = indcs.je;
       int ks = indcs.ks, ke = indcs.ke;
       int nmb1 = pmy_pack->nmb_thispack - 1;
-      int nvar = nhydro + nscalars;
+      int nvar = nvars;
       auto &u0 = pmy_pack->phydro->u0;
       auto &u1 = pmy_pack->phydro->u1;
       Real &delta = pdrive->delta[stage-1];
@@ -179,6 +180,26 @@ TaskStatus Hydro::Fluxes(Driver *pdrive, int stage) {
     CalculateFluxes<Hydro_RSolver::llf_gr>(pdrive, stage);
   } else if (rsolver_method == Hydro_RSolver::hlle_gr) {
     CalculateFluxes<Hydro_RSolver::hlle_gr>(pdrive, stage);
+  }
+
+  if (isgs >= 0) {
+    SGSFluxes();
+    SGSRates();
+    if (SGSTrial(pdrive, stage) > 0) {
+      auto saved = recon_method;
+      recon_method = ReconstructionMethod::dc;
+      CalculateFluxes<Hydro_RSolver::llf>(pdrive, stage);
+      recon_method = saved;
+      SGSFluxes();
+      SGSRates();
+      ++sgs_fallbacks;
+      if (SGSTrial(pdrive, stage) > 0) {
+        std::cerr << "SGS donor-cell predictor inadmissible; reduce time/cfl_number"
+                  << std::endl;
+        std::exit(EXIT_FAILURE);
+      }
+    }
+    return TaskStatus::complete;
   }
 
   // Add viscous, heat-flux, etc fluxes
@@ -238,6 +259,11 @@ TaskStatus Hydro::RecvFlux(Driver *pdrive, int stage) {
 TaskStatus Hydro::HydroSrcTerms(Driver *pdrive, int stage) {
   Real beta_dt = (pdrive->beta[stage-1])*(pmy_pack->pmesh->dt);
   Real history_dt = pdrive->SourceTermHistoryWeight(stage)*(pmy_pack->pmesh->dt);
+
+  if (isgs >= 0) SGSSources(pdrive, stage);
+  if (pmy_pack->pturb != nullptr && pmy_pack->pturb->stage_consistent) {
+    pmy_pack->pturb->StageForcing(pdrive, stage);
+  }
 
   // Add physics source terms (must be computed from primitives)
   if (psrc != nullptr) psrc->ApplySrcTerms(w0, peos->eos_data, beta_dt, history_dt, u0);
@@ -394,6 +420,7 @@ TaskStatus Hydro::Prolongate(Driver *pdrive, int stage) {
 //! \brief Wrapper task list function to call ConsToPrim over entire mesh (including gz)
 
 TaskStatus Hydro::ConToPrim(Driver *pdrive, int stage) {
+  if (isgs >= 0) CheckSGSState();
   auto &indcs = pmy_pack->pmesh->mb_indcs;
   int &ng = indcs.ng;
   int n1m1 = indcs.nx1 + 2*ng - 1;

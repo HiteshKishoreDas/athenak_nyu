@@ -105,7 +105,7 @@ void RestartOutput::LoadOutputData(Mesh *pm) {
   radiation::Radiation* prad = pm->pmb_pack->prad;
   int nhydro=0, nmhd=0, nrad=0, nadm=0, nz4c=0;
   if (phydro != nullptr) {
-    nhydro = phydro->nhydro + phydro->nscalars;
+    nhydro = phydro->nvars;
   }
   if (pmhd != nullptr) {
     nmhd = pmhd->nmhd + pmhd->nscalars;
@@ -182,7 +182,7 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
   adm::ADM* padm = pm->pmb_pack->padm;
   int nhydro=0, nmhd=0, nrad=0, nz4c=0, nadm=0, nco=0;
   if (phydro != nullptr) {
-    nhydro = phydro->nhydro + phydro->nscalars;
+    nhydro = phydro->nvars;
   }
   if (pmhd != nullptr) {
     nmhd = pmhd->nmhd + pmhd->nscalars;
@@ -227,6 +227,21 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
   pin->SetReal(out_params.block_name, "last_time", out_params.last_time);
   if (pm->pmb_pack != nullptr && pm->pmb_pack->pframe_tracker != nullptr) {
     pm->pmb_pack->pframe_tracker->StoreStateInParameterInput(pin);
+  }
+
+  if (phydro != nullptr && phydro->isgs >= 0) {
+    pin->SetRealPrecise("sgs", "integrated_production", phydro->sgs_produced);
+    pin->SetRealPrecise("sgs", "integrated_dissipation", phydro->sgs_dissipated);
+    pin->SetRealPrecise("sgs", "integrated_limited", phydro->sgs_limited);
+    pin->SetRealPrecise("sgs", "integrated_diffusion_limited", phydro->sgs_diff_limited);
+    pin->SetInteger("sgs", "fallbacks", phydro->sgs_fallbacks);
+  }
+  if (pturb != nullptr && pturb->stage_consistent) {
+    pin->SetRealPrecise("turb_driving", "integrated_work", pturb->integrated_work);
+    for (int v=0; v<3; ++v) {
+      pin->SetRealPrecise("turb_driving", "integrated_momentum"+std::to_string(v+1),
+                         pturb->integrated_momentum[v]);
+    }
   }
 
   // create string holding input parameters (copy of input file)

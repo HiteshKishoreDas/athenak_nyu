@@ -81,10 +81,27 @@ TurbulenceDriver::TurbulenceDriver(MeshBlockPack* pp, ParameterInput* pin)
   Kokkos::realloc(force, nmb_alloc, 3, ncells3, ncells2, ncells1);
 
   const std::string block_name = "turb_driving";
+  stage_consistent = pin->GetOrAddBoolean(block_name, "stage_consistent",
+                                         pp->phydro != nullptr && pp->phydro->isgs >= 0);
+  if (pp->phydro != nullptr && pp->phydro->isgs >= 0 && !stage_consistent) {
+    FatalTurbulenceError("SGS requires stage_consistent = true");
+  }
+  if (stage_consistent &&
+      (pp->phydro == nullptr || !pp->phydro->peos->eos_data.is_ideal ||
+       pp->pcoord->is_special_relativistic || pp->pcoord->is_general_relativistic ||
+       pp->pmhd != nullptr || pp->prad != nullptr || pp->pionn != nullptr ||
+       pm->multilevel || pin->GetOrAddString("time", "integrator", "rk2") != "rk2")) {
+    FatalTurbulenceError("stage_consistent requires uniform Newtonian ideal HD and RK2");
+  }
   // Default values are written to restart parameter dumps as text. Use that
   // same representation from the first cycle so restart comparisons are exact.
-  auto get_serialized_real = [pin, &block_name](const char* name, Real default_value) {
+  auto get_serialized_real = [this, pin, &block_name](const char* name,
+                                                     Real default_value) {
+    bool exists = pin->DoesParameterExist(block_name, name);
     pin->GetOrAddReal(block_name, name, default_value);
+    if (stage_consistent && !exists) {
+      pin->SetRealPrecise(block_name, name, default_value);
+    }
     return pin->GetReal(block_name, name);
   };
   const std::pair<const char*, const char*> removed_parameters[] = {
@@ -293,6 +310,29 @@ TurbulenceDriver::TurbulenceDriver(MeshBlockPack* pp, ParameterInput* pin)
   }
   tdriv_start = get_serialized_real(
       "tdriv_start", 0.);  // If not specified, start driving at t=0
+  if (stage_consistent) {
+    for (Real x : {dedt, accel_rms, tcorr, dt_update, sol_fraction, kpeak, npeak,
+                   expo, exp_prl, exp_prp, tdriv_start, tdriv_duration,
+                   sigma_x1, sigma_x2, sigma_x3, center_x1, center_x2, center_x3}) {
+      if (!std::isfinite(x)) FatalTurbulenceError("forcing parameters must be finite");
+    }
+    if (kpeak <= 0.0 || tdriv_start < 0.0 || tdriv_duration < 0.0 ||
+        (turb_flag != 1 && turb_flag != 2) || nhigh > 26754 ||
+        min_kx < 0 || min_ky < 0 || min_kz < 0 || max_kx < min_kx ||
+        max_ky < min_ky || max_kz < min_kz || max_kx > 26754 ||
+        max_ky > 26754 || max_kz > 26754) {
+      FatalTurbulenceError("invalid stage-consistent forcing range or duration");
+    }
+    integrated_work = pin->GetOrAddReal(block_name, "integrated_work", 0.0);
+    if (!std::isfinite(integrated_work)) FatalTurbulenceError("nonfinite work counter");
+    for (int d = 0; d < 3; ++d) {
+      std::string name = "integrated_momentum" + std::to_string(d+1);
+      integrated_momentum[d] = pin->GetOrAddReal(block_name, name, 0.0);
+      if (!std::isfinite(integrated_momentum[d])) {
+        FatalTurbulenceError("nonfinite momentum counter");
+      }
+    }
+  }
   if (global_variable::my_rank == 0) {
     std::cout << "Initialising turbulence driving module" << std::endl
               << " dedt = " << dedt << " tcorr = " << tcorr
@@ -591,6 +631,7 @@ void TurbulenceDriver::IncludeInitializeModesTask(std::shared_ptr<TaskList> tl,
 //  Called by MeshBlockPack::AddPhysics() function
 
 void TurbulenceDriver::IncludeAddForcingTask(std::shared_ptr<TaskList> tl, TaskID start) {
+  if (stage_consistent) return;  // The hydro source task applies the RK2 RHS.
   // These must be inserted after update task, but before the source terms
   // We apply the forcing in each step of the time integration,
   // note that we do not update the forcing in each RK stage
@@ -887,6 +928,7 @@ TaskStatus TurbulenceDriver::UpdateForcing(Driver* pdrive, int stage) {
   int& nx2 = indcs.nx2;
   int& nx3 = indcs.nx3;
 
+  if (stage_consistent) pm->dt = std::min(pm->dt, dt_update);
   Real dt = pm->dt;
   Real current_time = pm->time;
   Real t_since_start = current_time - tdriv_start;
@@ -919,7 +961,7 @@ TaskStatus TurbulenceDriver::UpdateForcing(Driver* pdrive, int stage) {
   const Real center_x3_ = center_x3;
   const TurbLocalization localization_ = localization;
 
-  if ((pm->ncycle >= 1) && (current_time >= tdriv_start) &&
+  if ((stage_consistent || pm->ncycle >= 1) && (current_time >= tdriv_start) &&
       ((t_since_start < tdriv_duration) || turb_flag != 1)) {
     RenderForce();
 
@@ -1062,19 +1104,26 @@ TaskStatus TurbulenceDriver::UpdateForcing(Driver* pdrive, int stage) {
     Real s = 0.0;
     if (normalization == TurbNormalization::edot) {
       // Solve m0*s^2 + m1*s = dedt using its non-negative root.
-      if (m0 > 1.0e-30) {
+      if (stage_consistent) {
+        s = StageNormalization(m0, m1, dedt);
+      } else if (m0 > 1.0e-30) {
         s = (-m1 + sqrt(m1 * m1 + 4.0 * m0 * dedt)) / (2.0 * m0);
       } else if (dedt > 0.0) {
         FatalTurbulenceError("cannot inject non-zero dedt with a zero forcing field");
       }
     } else {
       // Match the volume-weighted RMS acceleration independently of AMR layout.
-      if (m0 > 1.0e-30) {
+      if (stage_consistent && accel_rms == 0.0) {
+        s = 0.0;
+      } else if ((stage_consistent && m0 > 0.0) || m0 > 1.0e-30) {
         s = accel_rms / sqrt(m0);
       } else if (accel_rms > 0.0) {
         FatalTurbulenceError(
             "cannot impose non-zero accel_rms with a zero forcing field");
       }
+    }
+    if (stage_consistent && (!std::isfinite(s) || s < 0.0)) {
+      FatalTurbulenceError("nonfinite forcing normalization");
     }
     par_for(
         "force_norm", DevExeSpace(), 0, nmb - 1, ks, ke, js, je, is, ie,
@@ -1093,10 +1142,130 @@ TaskStatus TurbulenceDriver::UpdateForcing(Driver* pdrive, int stage) {
         });
   }
 
+  if (stage_consistent) {
+    if (pmy_pack->phydro->isgs >= 0) {
+      auto w0 = pmy_pack->phydro->w0;
+      Real dt_force = std::numeric_limits<Real>::max();
+      Kokkos::parallel_reduce("forcing_initial_bound",
+      Kokkos::RangePolicy<>(DevExeSpace(), 0, nmkji),
+      KOKKOS_LAMBDA(const int idx, Real &bound) {
+        int m = idx/nkji;
+        int k = (idx-m*nkji)/nji;
+        int j = (idx-m*nkji-k*nji)/nx1;
+        int i = (idx-m*nkji-k*nji-j*nx1)+is;
+        j += js;
+        k += ks;
+        Real accel = sqrt(SQR(force_(m,0,k,j,i))+SQR(force_(m,1,k,j,i))+
+                          SQR(force_(m,2,k,j,i)));
+        if (accel > 0.0) {
+          bound = fmin(bound, 0.5*sqrt(2.0*w0(m,IEN,k,j,i)/w0(m,IDN,k,j,i))/accel);
+        }
+      }, Kokkos::Min<Real>(dt_force));
+#if MPI_PARALLEL_ENABLED
+      MPI_Allreduce(MPI_IN_PLACE, &dt_force, 1, MPI_ATHENA_REAL, MPI_MIN,
+                    MPI_COMM_WORLD);
+#endif
+      if (!(dt_force > 0.0) || !std::isfinite(dt_force)) {
+        std::cerr << "Stage-consistent forcing: invalid thermal timestep bound"
+                  << std::endl;
+        std::exit(EXIT_FAILURE);
+      }
+      pm->dt = std::min(pm->dt, dt_force);
+    }
+  }
+
   return TaskStatus::complete;
 }
 
 //----------------------------------------------------------------------------------------
+// Driving uses the beginning-of-cycle time, with acceleration held across RK stages.
+bool TurbulenceDriver::IsDrivingActive() const {
+  Real time = pmy_pack->pmesh->time;
+  return time >= tdriv_start &&
+         (turb_flag != 1 || time-tdriv_start < tdriv_duration);
+}
+
+// Positive root of m0*s^2 + m1*s - target = 0, evaluated without cancellation.
+// Zero requested work deliberately means no forcing, including when m1 is negative.
+Real TurbulenceDriver::StageNormalization(Real m0, Real m1, Real target) {
+  if (!std::isfinite(m0) || !std::isfinite(m1) || !std::isfinite(target) ||
+      m0 < 0.0 || target < 0.0) {
+    std::cerr << "Stage-consistent forcing: invalid normalization moments" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  if (target == 0.0) return 0.0;
+  if (m0 == 0.0) {
+    std::cerr << "Stage-consistent forcing: positive target with zero forcing norm"
+              << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  Real half_b = 0.5*m1;
+  Real product = sqrt(m0)*sqrt(target);
+  Real scale = std::max(fabs(half_b), product);
+  Real b = half_b/scale;
+  Real root = std::hypot(b, product/scale);
+  Real s = (m1 >= 0.0) ? (target/scale)/(root+b) : (scale/m0)*(root-b);
+  if (!(s >= 0.0) || !std::isfinite(s)) {
+    std::cerr << "Stage-consistent forcing: nonfinite normalization scale" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  return s;
+}
+
+// Use old-stage primitives for the RHS. Heun quadrature counts half of each
+// full-dt RHS even though the final stage update coefficient beta is one half.
+TaskStatus TurbulenceDriver::StageForcing(Driver *pdrive, int stage) {
+  auto *pm = pmy_pack->pmesh;
+  if (!IsDrivingActive()) {
+    return TaskStatus::complete;
+  }
+  if (!stage_consistent || stage < 1 || stage > 2 || pdrive->nexp_stages != 2) {
+    std::cerr << "StageForcing requires configured stage-consistent RK2" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  auto ind = pm->mb_indcs;
+  auto u = pmy_pack->phydro->u0;
+  auto w = pmy_pack->phydro->w0;
+  auto accel = force;
+  auto size = pmy_pack->pmb->mb_size;
+  Real bdt = pdrive->beta[stage-1]*pm->dt;
+  Real weight = pdrive->SourceTermHistoryWeight(stage)*pm->dt;
+  int ni = ind.nx1, nji = ind.nx2*ni, nkji = ind.nx3*nji;
+  int count = pmy_pack->nmb_thispack*nkji;
+  Real work = 0.0, mx = 0.0, my = 0.0, mz = 0.0;
+  Kokkos::parallel_reduce("forcing_stage_rhs",
+  Kokkos::RangePolicy<>(DevExeSpace(), 0, count),
+  KOKKOS_LAMBDA(const int idx, Real &sum_work, Real &sum_x, Real &sum_y, Real &sum_z) {
+    int m = idx/nkji;
+    int k = (idx-m*nkji)/nji;
+    int j = (idx-m*nkji-k*nji)/ni;
+    int i = (idx-m*nkji-k*nji-j*ni)+ind.is;
+    j += ind.js;
+    k += ind.ks;
+    Real fx = w(m,IDN,k,j,i)*accel(m,0,k,j,i);
+    Real fy = w(m,IDN,k,j,i)*accel(m,1,k,j,i);
+    Real fz = w(m,IDN,k,j,i)*accel(m,2,k,j,i);
+    Real rhs_work = fx*w(m,IVX,k,j,i)+fy*w(m,IVY,k,j,i)+fz*w(m,IVZ,k,j,i);
+    u(m,IM1,k,j,i) += bdt*fx;
+    u(m,IM2,k,j,i) += bdt*fy;
+    u(m,IM3,k,j,i) += bdt*fz;
+    u(m,IEN,k,j,i) += bdt*rhs_work;
+    Real vol = size.d_view(m).dx1*size.d_view(m).dx2*size.d_view(m).dx3;
+    sum_work += weight*vol*rhs_work;
+    sum_x += weight*vol*fx;
+    sum_y += weight*vol*fy;
+    sum_z += weight*vol*fz;
+  }, Kokkos::Sum<Real>(work), Kokkos::Sum<Real>(mx),
+    Kokkos::Sum<Real>(my), Kokkos::Sum<Real>(mz));
+  Real sums[4] = {work, mx, my, mz};
+#if MPI_PARALLEL_ENABLED
+  MPI_Allreduce(MPI_IN_PLACE, sums, 4, MPI_ATHENA_REAL, MPI_SUM, MPI_COMM_WORLD);
+#endif
+  integrated_work += sums[0];
+  for (int d=0; d<3; ++d) integrated_momentum[d] += sums[d+1];
+  return TaskStatus::complete;
+}
+
 //! \fn apply forcing
 
 //

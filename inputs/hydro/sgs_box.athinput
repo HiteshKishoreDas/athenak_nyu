@@ -1,0 +1,96 @@
+# Build with -DPROBLEM=sgs_verify. Small deterministic periodic SGS verification.
+# Modes: uniform, shear, diffusion, wave, contact, collision, box.
+# All terms use the published baseline coefficients. This is not a term-isolation test.
+
+<job>
+basename = sgs_box
+
+<mesh>
+nghost = 2
+nx1 = 16
+nx2 = 16
+nx3 = 16
+x1min = -0.5
+x1max = 0.5
+x2min = -0.5
+x2max = 0.5
+x3min = -0.5
+x3max = 0.5
+ix1_bc = periodic
+ox1_bc = periodic
+ix2_bc = periodic
+ox2_bc = periodic
+ix3_bc = periodic
+ox3_bc = periodic
+
+<meshblock>
+nx1 = 8
+nx2 = 8
+nx3 = 8
+
+<time>
+evolution = dynamic
+integrator = rk2
+cfl_number = 0.1
+tlim = 0.05
+nlim = -1
+ndiag = 10
+
+<hydro>
+eos = ideal
+gamma = 1.6666666666666667
+reconstruct = plm
+rsolver = llf
+nscalars = 2
+fofc = false
+
+<sgs>
+enabled = true
+model = schmidt_federrath
+initialization = pgen
+c1 = 0.02
+c2 = 0.7
+ceps = 1.5
+ckappa = 0.65
+
+<problem>
+mode = box
+density0 = 1.0
+pressure0 = 1.0
+k0 = 0.01
+amplitude = 0.2
+velocity = 0.3
+
+<output1>
+file_type = hst
+data_format = %24.16e
+dt = 0.01
+
+<output2>
+file_type = bin
+variable = hydro_u
+dt = 0.025
+
+<output3>
+file_type = bin
+variable = hydro_w
+dt = 0.025
+
+<output4>
+file_type = rst
+dt = 0.025
+
+<turb_driving>
+# RK2 stage sources; actual work is measured in history.
+stage_consistent = true
+nlow = 1
+nhigh = 3
+npeak = 2
+rseed = 42
+tcorr = 0.1
+dt_update = 0.01
+normalization = edot
+spectrum = parabolic
+dedt = 0.1
+sol_fraction = 1.0
+turb_flag = 2

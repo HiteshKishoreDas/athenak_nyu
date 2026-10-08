@@ -111,6 +111,8 @@ endif()
 #------ create configuration header file from template in /src directory -----------------
 
 # add subdirectories for source code and include files
+include(CTest)
+
 add_subdirectory(src)
 add_subdirectory(kokkos)
 include_directories(${Kokkos_INCLUDE_DIRS_RET})

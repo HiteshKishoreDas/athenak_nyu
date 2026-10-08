@@ -20,7 +20,8 @@ KOKKOS_INLINE_FUNCTION
 void LLF(TeamMember_t const &member, const EOS_Data &eos,
      const RegionIndcs &indcs,const DualArray1D<RegionSize> &size,const CoordData &coord,
      const int m, const int k, const int j, const int il, const int iu, const int ivx,
-     const ScrArray2D<Real> &wl, const ScrArray2D<Real> &wr, DvceArray5D<Real> flx) {
+     const ScrArray2D<Real> &wl, const ScrArray2D<Real> &wr, DvceArray5D<Real> flx,
+     const int isgs = -1) {
   int ivy = IVX + ((ivx-IVX)+1)%3;
   int ivz = IVX + ((ivx-IVX)+2)%3;
 
@@ -44,7 +45,11 @@ void LLF(TeamMember_t const &member, const EOS_Data &eos,
 
     // Call LLF solver on single interface state
     HydCons1D flux;
-    SingleStateLLF_Hyd(wli,wri,eos,flux);
+    if (isgs >= 0) {
+      SingleStateLLF_Hyd(wli, wri, eos, flux, wl(isgs,i), wr(isgs,i));
+    } else {
+      SingleStateLLF_Hyd(wli,wri,eos,flux);
+    }
 
     // Store results in 3D array of fluxes
     flx(m,IDN,k,j,i) = flux.d;

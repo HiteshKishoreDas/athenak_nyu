@@ -1224,7 +1224,7 @@ ProblemGenerator::ProblemGenerator(ParameterInput *pin, Mesh *pm, IOWrapper resf
   TurbulenceDriver* pturb=pm->pmb_pack->pturb;
   int nrad = 0, nhydro = 0, nmhd = 0, nadm = 0, nz4c = 0;
   if (phydro != nullptr) {
-    nhydro = phydro->nhydro + phydro->nscalars;
+    nhydro = phydro->nvars;
   }
   if (pmhd != nullptr) {
     nmhd = pmhd->nmhd + pmhd->nscalars;

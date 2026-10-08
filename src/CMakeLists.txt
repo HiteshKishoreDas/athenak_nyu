@@ -61,6 +61,7 @@ add_executable(
         geodesic-grid/gauss_legendre.cpp
 
         hydro/hydro.cpp
+        hydro/hydro_sgs.cpp
         hydro/hydro_fluxes.cpp
         hydro/hydro_fofc.cpp
         hydro/hydro_newdt.cpp
@@ -201,3 +202,12 @@ endif()
 
 # enable include of header files with /src/ as root of path
 target_include_directories(athena PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Independent SGS algebra/device oracle; no additional dependency.
+if(BUILD_TESTING AND NOT Athena_SINGLE_PRECISION)
+  add_executable(sgs_closure_oracle ../tst/sgs/closure_oracle.cpp)
+  target_include_directories(sgs_closure_oracle PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+  target_link_libraries(sgs_closure_oracle PRIVATE Kokkos::kokkos)
+  add_test(NAME sgs_closure_oracle COMMAND sgs_closure_oracle)
+endif()

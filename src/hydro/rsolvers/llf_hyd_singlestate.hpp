@@ -26,7 +26,7 @@ namespace hydro {
 
 KOKKOS_INLINE_FUNCTION
 void SingleStateLLF_Hyd(const HydPrim1D &wl, const HydPrim1D &wr, const EOS_Data &eos,
-                        HydCons1D &flux) {
+                        HydCons1D &flux, const Real kl = 0.0, const Real kr = 0.0) {
   Real qa = wl.d*wl.vx;
   Real qb = wr.d*wr.vx;
 
@@ -56,6 +56,10 @@ void SingleStateLLF_Hyd(const HydPrim1D &wl, const HydPrim1D &wr, const EOS_Data
   } else {
     qa = eos.iso_cs;
     qb = eos.iso_cs;
+  }
+  if (kl > 0.0 || kr > 0.0) {
+    qa = sqrt(qa*qa + 6.0*kl);
+    qb = sqrt(qb*qb + 6.0*kr);
   }
   Real a = fmax( (fabs(wl.vx) + qa), (fabs(wr.vx) + qb) );
 

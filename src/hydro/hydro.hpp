@@ -16,6 +16,7 @@
 #include "parameter_input.hpp"
 #include "tasklist/task_list.hpp"
 #include "bvals/bvals.hpp"
+#include "hydro/sgs_closure.hpp"
 
 // forward declarations
 class EquationOfState;
@@ -77,6 +78,16 @@ class Hydro {
 
   int nhydro;             // number of hydro variables (5/4 for ideal/isothermal EOS)
   int nscalars;           // number of passive scalars
+  int nvars;             // hydro + true passive scalars + optional SGS energy
+  int isgs = -1;         // conservative K; primitive k=K/rho (-1 when disabled)
+  sgs::Coefficients sgs_coeff;
+  bool sgs_pgen_initialization = false;
+  Real sgs_seed = 0.0;    // specific energy added once, after pgen
+  DvceFaceFld5D<Real> sgs_face;  // final traction, work, limiter deficits
+  DvceArray5D<Real> sgs_rates;   // production, dissipation, suppressed transfer
+  Real sgs_produced = 0.0, sgs_dissipated = 0.0, sgs_limited = 0.0;
+  Real sgs_diff_limited = 0.0;
+  int sgs_fallbacks = 0;
   DvceArray5D<Real> u0;   // conserved variables
   DvceArray5D<Real> w0;   // primitive variables
 
@@ -146,6 +157,14 @@ class Hydro {
   // first-order flux correction
   void FOFC(Driver *d, int stage);
   void SetSaveUFlxIdn();
+  void ConfigureSGS(ParameterInput *pin);
+  void InitializeSGS();
+  void SGSFluxes();
+  void SGSRates();
+  void SGSSources(Driver *d, int stage);
+  int SGSTrial(Driver *d, int stage);
+  void SGSNewTimeStep();
+  void CheckSGSState();
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Hydro

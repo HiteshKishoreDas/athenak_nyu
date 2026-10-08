@@ -179,6 +179,7 @@ struct DvceFaceFld4D {
 template <typename T>
 struct DvceFaceFld5D {
   DvceArray5D<T> x1f, x2f, x3f;  // name indicates both direction and location
+  DvceFaceFld5D() = default;  // optional fields may remain unallocated
   DvceFaceFld5D(const std::string &label, int nmb, int nvar, int n3, int n2, int n1) :
     x1f(label + ".x1f", nmb, nvar, n3, n2, n1+1),
     x2f(label + ".x2f", nmb, nvar, n3, n2+1, n1),
@@ -443,7 +444,7 @@ KOKKOS_INLINE_FUNCTION void par_for_inner(TeamMember_t tmember, const int il,con
   Kokkos::parallel_for(Kokkos::TeamVectorRange(tmember, il, iu+1), function);
 }
 
-#define NREDUCTION_VARIABLES 20
+#define NREDUCTION_VARIABLES 32
 //----------------------------------------------------------------------------------------
 //! \struct summed_array_type
 // Following code is copied from Kokkos wiki pages on building custom reducers.  It allows

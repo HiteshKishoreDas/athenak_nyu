@@ -19,6 +19,7 @@
 #include "mesh/mesh.hpp"
 #include "eos/eos.hpp"
 #include "hydro/hydro.hpp"
+#include "srcterms/turb_driver.hpp"
 #include "mhd/mhd.hpp"
 #include "srcterms/frame_tracker.hpp"
 #include "srcterms/srcterms.hpp"
@@ -96,6 +97,10 @@ void HistoryOutput::LoadHydroHistoryData(HistoryData *pdata, Mesh *pm) {
   if (nscalars_>0) {
     pdata->nhist += nscalars_;
   }
+  if (pdata->nhist > NHISTORY_VARIABLES) {
+    std::cerr << "Hydro history exceeds NHISTORY_VARIABLES" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
   pdata->label[IDN] = "mass";
   pdata->label[IM1] = "1-mom";
   pdata->label[IM2] = "2-mom";
@@ -116,6 +121,32 @@ void HistoryOutput::LoadHydroHistoryData(HistoryData *pdata, Mesh *pm) {
       pm->pmb_pack->phydro->psrc->CoolingHistoryEnabled()) {
     pdata->nhist += pm->pmb_pack->phydro->psrc->AddCoolingHistoryLabels(
         pdata->label, cooling_hist_start, NHISTORY_VARIABLES);
+  }
+  const int isgs = pm->pmb_pack->phydro->isgs;
+  const int sgs_index = pdata->nhist;
+  if (isgs >= 0) {
+    const char *labels[] = {"sgs-E", "represented-E", "thermal-E",
+        "sgs-production-integral", "sgs-dissipation-integral",
+        "sgs-stress-limited-integral", "sgs-fallback-stages",
+        "sgs-diffusion-limited-integral"};
+    if (pdata->nhist+8 > NHISTORY_VARIABLES) {
+      std::cerr << "SGS history exceeds NHISTORY_VARIABLES" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    for (int n=0; n<8; ++n) pdata->label[pdata->nhist++] = labels[n];
+  }
+  auto *turb = pm->pmb_pack->pturb;
+  const bool stage_forcing = turb != nullptr && turb->stage_consistent;
+  const int forcing_index = pdata->nhist;
+  if (stage_forcing) {
+    if (pdata->nhist+4 > NHISTORY_VARIABLES) {
+      std::cerr << "Forcing history exceeds NHISTORY_VARIABLES" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    pdata->label[pdata->nhist++] = "force-work";
+    for (int v=0; v<3; ++v) {
+      pdata->label[pdata->nhist++] = "force-mom"+std::to_string(v+1);
+    }
   }
   if (pdata->nhist > NHISTORY_VARIABLES) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
@@ -175,6 +206,13 @@ void HistoryOutput::LoadHydroHistoryData(HistoryData *pdata, Mesh *pm) {
       hvars.the_array[n] = 0.0;
     }
 
+    if (isgs >= 0) {
+      hvars.the_array[sgs_index] = vol*u0_(m,isgs,k,j,i);
+      hvars.the_array[sgs_index+1] = hvars.the_array[IEN]+hvars.the_array[sgs_index];
+      hvars.the_array[sgs_index+2] = hvars.the_array[IEN]-hvars.the_array[nhydro_]-
+                                  hvars.the_array[nhydro_+1]-hvars.the_array[nhydro_+2];
+    }
+
     // sum into parallel reduce
     mb_sum += hvars;
   }, Kokkos::Sum<array_sum::GlobalSum>(sum_this_mb));
@@ -187,6 +225,22 @@ void HistoryOutput::LoadHydroHistoryData(HistoryData *pdata, Mesh *pm) {
       pm->pmb_pack->phydro->psrc->CoolingHistoryEnabled()) {
     pm->pmb_pack->phydro->psrc->AddCoolingHistoryData(
         pdata->hdata, cooling_hist_start, NHISTORY_VARIABLES, pm->time);
+  }
+  if (isgs >= 0) {
+    auto *h = pm->pmb_pack->phydro;
+    Real ranks = global_variable::nranks;
+    pdata->hdata[sgs_index+3] = h->sgs_produced/ranks;
+    pdata->hdata[sgs_index+4] = h->sgs_dissipated/ranks;
+    pdata->hdata[sgs_index+5] = h->sgs_limited/ranks;
+    pdata->hdata[sgs_index+6] = h->sgs_fallbacks/ranks;
+    pdata->hdata[sgs_index+7] = h->sgs_diff_limited/ranks;
+  }
+  if (stage_forcing) {
+    Real ranks = global_variable::nranks;
+    pdata->hdata[forcing_index] = turb->integrated_work/ranks;
+    for (int v=0; v<3; ++v) {
+      pdata->hdata[forcing_index+1+v] = turb->integrated_momentum[v]/ranks;
+    }
   }
 
   return;

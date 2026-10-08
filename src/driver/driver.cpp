@@ -341,6 +341,16 @@ void Driver::ExecuteTaskList(Mesh *pm, std::string tl, int stage) {
 //  outputting ICs, and computing initial time step
 
 void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool res_flag) {
+  auto *sgs_hydro = pmesh->pmb_pack->phydro;
+  if (sgs_hydro != nullptr && sgs_hydro->isgs >= 0) {
+    if (pmesh->pgen->user_srcs || pmesh->pgen->user_cooling_func != nullptr) {
+      std::cerr << "SGS does not support user source/cooling hooks" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    if (!res_flag && !sgs_hydro->sgs_pgen_initialization) sgs_hydro->InitializeSGS();
+    sgs_hydro->CheckSGSState();
+  }
+
   //---- Step 1.  Set conserved variables in ghost zones for all physics
   InitBoundaryValuesAndPrimitives(pmesh);
 

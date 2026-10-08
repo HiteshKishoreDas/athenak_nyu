@@ -20,12 +20,12 @@
 #include "io_wrapper.hpp"
 #include "particles/tracer_fields.hpp"
 
-#define NHISTORY_VARIABLES 20
+#define NHISTORY_VARIABLES 32
 #if NHISTORY_VARIABLES > NREDUCTION_VARIABLES
     #error NHISTORY > NREDUCTION in outputs.hpp
 #endif
 
-#define NOUTPUT_CHOICES 219
+#define NOUTPUT_CHOICES 221
 // choices for output variables used in <ouput> blocks in input file
 // TO ADD MORE CHOICES:
 //   - add more strings to array below, change NOUTPUT_CHOICES above appropriately
@@ -136,6 +136,9 @@ static const char *var_choice[NOUTPUT_CHOICES] = {
 
   // Particle history output (218)
   "prtcl_thermo_history",
+
+  // Evolved HD SGS energy (219-220); append to preserve existing choice indices.
+  "hydro_u_sgs", "hydro_w_sgs",
 };
 
 

@@ -82,6 +82,10 @@ class TurbulenceDriver {
   int mode_count;
   int n_turb_updates_yet;
 
+  bool stage_consistent = false;  // RK2 forcing RHS; legacy default with SGS off
+  Real integrated_work = 0.0;
+  Real integrated_momentum[3] = {0.0, 0.0, 0.0};
+
   void IncludeInitializeModesTask(std::shared_ptr<TaskList> tl, TaskID start);
   void IncludeAddForcingTask(std::shared_ptr<TaskList> tl, TaskID start);
   TaskStatus InitializeModes(Driver* pdrive, int stage);
@@ -89,6 +93,9 @@ class TurbulenceDriver {
   TaskStatus UpdateForcing(Driver* pdrive, int stage);
   TaskStatus AddForcing(Driver* pdrive, int stage);
   void ApplyForcingWithStep(Real bdt);
+  TaskStatus StageForcing(Driver* pdrive, int stage);
+  static Real StageNormalization(Real m0, Real m1, Real target);
+  bool IsDrivingActive() const;
 
   TurbulenceRestartMetadata RestartMetadata() const;
   void ValidateRestartMetadata(const TurbulenceRestartMetadata& metadata) const;

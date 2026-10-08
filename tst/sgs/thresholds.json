@@ -1,0 +1,16 @@
+{
+  "precision": "double",
+  "represented_energy_scaled_absolute": 1e-10,
+  "paired_transfer_scaled_absolute": 1e-8,
+  "mass_momentum_scaled_absolute": 1e-11,
+  "scalar_mass_scaled_absolute": 1e-11,
+  "decomposition_scaled_linf": 1e-12,
+  "checkpoint_restart_scaled_linf": 1e-12,
+  "history_vs_restart_scaled_absolute": 1e-10,
+  "decay_order_min": 1.7,
+  "decay_order_max": 2.3,
+  "maximum_grid_axis": 32,
+  "maximum_cycles": 1000,
+  "run_timeout_seconds": 20,
+  "positivity": "finite rho > 0, thermal energy > 0, SGS energy >= 0"
+}

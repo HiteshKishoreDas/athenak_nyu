@@ -34,6 +34,7 @@ void IdealHydro::ConsToPrim(DvceArray5D<Real> &cons, DvceArray5D<Real> &prim,
                             const int kl, const int ku) {
   int &nhyd  = pmy_pack->phydro->nhydro;
   int &nscal = pmy_pack->phydro->nscalars;
+  int isgs = pmy_pack->phydro->isgs;
   int &nmb = pmy_pack->nmb_thispack;
   auto &eos = eos_data;
   auto &fofc_ = pmy_pack->phydro->fofc;
@@ -61,11 +62,21 @@ void IdealHydro::ConsToPrim(DvceArray5D<Real> &cons, DvceArray5D<Real> &prim,
     u.mz = cons(m,IM3,k,j,i);
     u.e  = cons(m,IEN,k,j,i);
 
+    // SGS predictors are checked before C2P; forbid any unrecorded floor.
+    if (isgs >= 0 && (cons(m,isgs,k,j,i) < 0.0 ||
+        !Kokkos::isfinite(cons(m,isgs,k,j,i)))) {
+      Kokkos::abort("SGS energy is negative or nonfinite");
+    }
+
     // call c2p function
     // (inline function in ideal_c2p_hyd.hpp file)
     HydPrim1D w;
     bool dfloor_used=false, efloor_used=false, tfloor_used=false;
     SingleC2P_IdealHyd(u, eos, w, dfloor_used, efloor_used, tfloor_used);
+
+    if (isgs >= 0 && (dfloor_used || efloor_used || tfloor_used)) {
+      Kokkos::abort("SGS state requires an EOS floor; reduce timestep");
+    }
 
     // set FOFC flag and quit loop if this function called only to check floors
     if (only_testfloors) {
@@ -93,6 +104,7 @@ void IdealHydro::ConsToPrim(DvceArray5D<Real> &cons, DvceArray5D<Real> &prim,
       prim(m,IVY,k,j,i) = w.vy;
       prim(m,IVZ,k,j,i) = w.vz;
       prim(m,IEN,k,j,i) = w.e;
+      if (isgs >= 0) prim(m,isgs,k,j,i) = cons(m,isgs,k,j,i)/u.d;
       // convert scalars (if any)
       for (int n=nhyd; n<(nhyd+nscal); ++n) {
         // apply scalar floor
@@ -126,6 +138,7 @@ void IdealHydro::PrimToCons(const DvceArray5D<Real> &prim, DvceArray5D<Real> &co
                             const int kl, const int ku) {
   int &nhyd  = pmy_pack->phydro->nhydro;
   int &nscal = pmy_pack->phydro->nscalars;
+  int isgs = pmy_pack->phydro->isgs;
   int &nmb = pmy_pack->nmb_thispack;
 
   par_for("hyd_p2c", DevExeSpace(), 0, (nmb-1), kl, ku, jl, ju, il, iu,
@@ -149,6 +162,7 @@ void IdealHydro::PrimToCons(const DvceArray5D<Real> &prim, DvceArray5D<Real> &co
     cons(m,IM3,k,j,i) = u.mz;
     cons(m,IEN,k,j,i) = u.e;
 
+    if (isgs >= 0) cons(m,isgs,k,j,i) = u.d*prim(m,isgs,k,j,i);
     // convert scalars (if any)
     for (int n=nhyd; n<(nhyd+nscal); ++n) {
       cons(m,n,k,j,i) = u.d*prim(m,n,k,j,i);
