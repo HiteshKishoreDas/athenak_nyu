@@ -1,0 +1,7 @@
+{
+  "status": "pass",
+  "comparison": "fresh cleanup outputs versus pre-cleanup cohort",
+  "curve_files_byte_identical": 390,
+  "reference_directory": "/private/tmp/athenak-multiphase-curves-validation/production-final",
+  "current_directory": "/private/tmp/athenak-multiphase-curves-cleanup-20261008/production"
+}

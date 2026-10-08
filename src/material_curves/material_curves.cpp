@@ -10,7 +10,6 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <numeric>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -206,10 +205,7 @@ void MaterialCurves::Initialize() {
         if (positions.size() > max_nodes) Fail("seed exceeds max_nodes");
       }
     } else if (type == "line" || type == "circle") {
-      int count = pin_->GetOrAddInteger(block, "count", type == "circle" ? 32 : 16);
-      if (count < (c.closed ? 3 : 2) || static_cast<std::uint64_t>(count) > max_nodes) {
-        Fail("invalid seed sample count");
-      }
+      int count = static_cast<int>(requested);
       Vec origin;
       for (int d=0; d<3; ++d) {
         origin[d] = pin_->GetOrAddReal(block, "x"+std::to_string(d+1), 0.0);
@@ -302,10 +298,7 @@ void MaterialCurves::Initialize() {
       c.period = a;
     }
     Links(c);
-    if (c.id % global_variable::nranks ==
-        static_cast<unsigned>(global_variable::my_rank)) {
-      curves.push_back(std::move(c));
-    }
+    curves.push_back(std::move(c));
   }
   Audit();
   if (adaptive) Adapt(mesh->time, true);
@@ -581,12 +574,11 @@ void MaterialCurves::Audit() const {
         Fail("winding exceeds reliable lifted geometry range");
       }
     }
-    std::unordered_set<std::uint64_t> ids;
     std::unordered_map<std::uint64_t, const Node *> by_id;
     for (std::size_t i=0; i<c.nodes.size(); ++i) {
       const auto &n=c.nodes[i];
       if ((n.id>>32)!=c.id || (n.id&UINT32_MAX)==0 ||
-          (n.id&UINT32_MAX)>=c.next_sequence || !ids.insert(n.id).second ||
+          (n.id&UINT32_MAX)>=c.next_sequence || !by_id.emplace(n.id, &n).second ||
           !std::isfinite(n.a) || n.a<0 || n.a>c.period ||
           (c.closed && n.a>=c.period) || (i && n.a<=c.nodes[i-1].a) ||
           !std::isfinite(n.birth) || n.birth<0 || n.birth>mesh->time ||
@@ -597,7 +589,6 @@ void MaterialCurves::Audit() const {
       auto next=i+1<c.nodes.size() ? c.nodes[i+1].id :
                 (c.closed ? c.nodes.front().id : 0);
       if (n.prev!=prev || n.next!=next) Fail("nonreciprocal or unordered connectivity");
-      by_id.emplace(n.id, &n);
       Vec wrapped;
       Locate(n.x, wrapped);
       if (!mesh->three_d && n.x[2]!=c.nodes.front().x[2]) {
@@ -609,7 +600,7 @@ void MaterialCurves::Audit() const {
         if (n.parent_left || n.parent_right || n.placement) {
           Fail("invalid anchor provenance");
         }
-      } else if (!ids.count(n.parent_left) || !ids.count(n.parent_right) ||
+      } else if (!by_id.count(n.parent_left) || !by_id.count(n.parent_right) ||
                  n.parent_left==n.parent_right || n.parent_left>=n.id ||
                  n.parent_right>=n.id || !n.placement) {
         Fail("invalid insertion parents/method");
@@ -775,7 +766,6 @@ void MaterialCurves::Adapt(Real birth_time, bool initial, Real affected_time) {
 
 void MaterialCurves::CompleteStep() {
   Adapt(mesh->time, false, mesh->time-mesh->dt);
-  Audit();
   if (output_dcycle>0 && mesh->ncycle%output_dcycle==0) {
     std::ostringstream path;
     path << basename << ".curves." << std::setw(8) << std::setfill('0')

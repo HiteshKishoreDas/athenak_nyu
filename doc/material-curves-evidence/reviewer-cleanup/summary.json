@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "pre_cleanup_revision": "dda93e6753f035d2bb28bb1e3fa312fd097861f1",
+  "runtime_net_lines_removed": 21,
+  "implementation_execution": true,
+  "analysis_replay": false,
+  "production_records": 93,
+  "executed_production_cases": 78,
+  "serial_core_records": 31,
+  "reader_tests": 10,
+  "cpp_io": "serial and MPI 2 -> 4/1/2 ranks; exact metadata, AMR clocks, corruption and mixed-pair rejection",
+  "curve_files_byte_identical_to_pre_cleanup": 390,
+  "style": "cpplint and source length/tab/trailing whitespace checks pass",
+  "qualification_scope": "local CPU double precision Newtonian HD/RK2; CUDA/HIP remains pending",
+  "raw_artifacts": "/private/tmp/athenak-multiphase-curves-cleanup-20261008"
+}

@@ -162,6 +162,39 @@ Real Number(const std::string &text, bool diagnostic = false) {
           && std::isfinite(value), "invalid real: " + text);
   return value;
 }
+Curve DecodeCurve(const std::vector<std::string> &f) {
+  Curve curve;
+  curve.id = Integer<std::uint64_t>(f[1]);
+  int closed = Integer<int>(f[2]);
+  Require(closed == 0 || closed == 1, "invalid closed flag");
+  curve.closed = closed != 0;
+  for (int i = 0; i < 3; ++i) curve.winding[i] = Integer<std::int64_t>(f[3+i]);
+  curve.period = Number(f[6]);
+  curve.unresolved_since = Number(f[7]);
+  curve.reason = Integer<std::int32_t>(f[8]);
+  curve.next_sequence = Integer<std::uint64_t>(f[9]);
+  curve.inserted = Integer<std::uint64_t>(f[10]);
+  curve.migrations = Integer<std::uint64_t>(f[11]);
+  curve.samples = Integer<std::uint64_t>(f[12]);
+  return curve;
+}
+
+Node DecodeNode(const std::vector<std::string> &f) {
+  Node node;
+  node.id = Integer<std::uint64_t>(f[1]);
+  node.prev = Integer<std::uint64_t>(f[2]);
+  node.next = Integer<std::uint64_t>(f[3]);
+  node.parent_left = Integer<std::uint64_t>(f[4]);
+  node.parent_right = Integer<std::uint64_t>(f[5]);
+  node.a = Number(f[6]);
+  node.birth = Number(f[7]);
+  node.anchor = Integer<std::int32_t>(f[8]);
+  node.placement = Integer<std::int32_t>(f[9]);
+  for (int j = 0; j < 3; ++j) node.x[j] = Number(f[10+j]);
+  node.old = node.x;
+  return node;
+}
+
 struct Header {
   std::string kind, basename;
   int precision = 0, cycle = 0, adaptive = 0, dcycle = 0;
@@ -269,19 +302,7 @@ class Reader {
   Curve Next() {
     Require(curves_ < header.count, "too many curves");
     auto f = Fields(15, "curve");
-    Curve curve;
-    curve.id = Integer<std::uint64_t>(f[1]);
-    int closed = Integer<int>(f[2]);
-    Require(closed == 0 || closed == 1, "invalid closed flag");
-    curve.closed = closed != 0;
-    for (int i = 0; i < 3; ++i) curve.winding[i] = Integer<std::int64_t>(f[3+i]);
-    curve.period = Number(f[6]);
-    curve.unresolved_since = Number(f[7]);
-    curve.reason = Integer<std::int32_t>(f[8]);
-    curve.next_sequence = Integer<std::uint64_t>(f[9]);
-    curve.inserted = Integer<std::uint64_t>(f[10]);
-    curve.migrations = Integer<std::uint64_t>(f[11]);
-    curve.samples = Integer<std::uint64_t>(f[12]);
+    Curve curve = DecodeCurve(f);
     auto count = Integer<std::uint64_t>(f[13]);
     Require(Number(f[14]) >= 0, "negative diagnostic length");
     Require(curve.id > 0 && curve.id <= UINT32_MAX && ids_.insert(curve.id).second,
@@ -305,17 +326,7 @@ class Reader {
     curve.nodes.reserve(static_cast<std::size_t>(count));
     for (std::uint64_t i = 0; i < count; ++i) {
       f = Fields(20, "node");
-      Node node;
-      node.id = Integer<std::uint64_t>(f[1]);
-      node.prev = Integer<std::uint64_t>(f[2]);
-      node.next = Integer<std::uint64_t>(f[3]);
-      node.parent_left = Integer<std::uint64_t>(f[4]);
-      node.parent_right = Integer<std::uint64_t>(f[5]);
-      node.a = Number(f[6]);
-      node.birth = Number(f[7]);
-      node.anchor = Integer<std::int32_t>(f[8]);
-      node.placement = Integer<std::int32_t>(f[9]);
-      for (int j = 0; j < 3; ++j) node.x[j] = Number(f[10+j]);
+      Node node = DecodeNode(f);
       for (int j = 0; j < 3; ++j) {
         long double lift = (static_cast<long double>(node.x[j])-header.domain[2*j])
             / (static_cast<long double>(header.domain[2*j+1])-header.domain[2*j]);
@@ -325,7 +336,6 @@ class Reader {
       if (header.dimensions[2] == 1 && !curve.nodes.empty()) {
         Require(node.x[2] == curve.nodes.front().x[2], "2D curve is not planar");
       }
-      node.old = node.x;
       for (int j = 0; j < 3; ++j) Integer<std::int64_t>(f[13+j]);
       Require(Number(f[16]) >= 0 && Number(f[17]) >= 0,
               "negative edge/stretch diagnostic");
@@ -652,34 +662,13 @@ void MaterialCurves::Load(const std::string &fluid_path) {
         std::string line;
         std::getline(lines, line);
         auto f = Tokens(line);
-        Curve c;
-        c.id = Integer<std::uint64_t>(f[1]);
-        c.closed = Integer<int>(f[2]) != 0;
-        for (int j = 0; j < 3; ++j) c.winding[j] = Integer<std::int64_t>(f[3+j]);
-        c.period = Number(f[6]);
-        c.unresolved_since = Number(f[7]);
-        c.reason = Integer<std::int32_t>(f[8]);
-        c.next_sequence = Integer<std::uint64_t>(f[9]);
-        c.inserted = Integer<std::uint64_t>(f[10]);
-        c.migrations = Integer<std::uint64_t>(f[11]);
-        c.samples = Integer<std::uint64_t>(f[12]);
+        Curve c = DecodeCurve(f);
         auto count = Integer<std::uint64_t>(f[13]);
         c.nodes.reserve(static_cast<std::size_t>(count));
         for (std::uint64_t i = 0; i < count; ++i) {
           std::getline(lines, line);
           f = Tokens(line);
-          Node n;
-          n.id = Integer<std::uint64_t>(f[1]);
-          n.prev = Integer<std::uint64_t>(f[2]);
-          n.next = Integer<std::uint64_t>(f[3]);
-          n.parent_left = Integer<std::uint64_t>(f[4]);
-          n.parent_right = Integer<std::uint64_t>(f[5]);
-          n.a = Number(f[6]);
-          n.birth = Number(f[7]);
-          n.anchor = Integer<std::int32_t>(f[8]);
-          n.placement = Integer<std::int32_t>(f[9]);
-          for (int j = 0; j < 3; ++j) n.x[j] = Number(f[10+j]);
-          n.old = n.x;
+          Node n = DecodeNode(f);
           c.nodes.push_back(n);
         }
         Require(c.id % ranks == static_cast<std::uint64_t>(rank), "load ownership");

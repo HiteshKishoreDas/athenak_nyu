@@ -1,0 +1,66 @@
+{
+  "working_directory": "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu",
+  "commands": {
+    "build_debug": [
+      "cmake",
+      "--build",
+      "/private/tmp/athenak-multiphase-curves-debug",
+      "-j4"
+    ],
+    "build_serial": [
+      "cmake",
+      "--build",
+      "/private/tmp/athenak-multiphase-curves-serial",
+      "-j4"
+    ],
+    "reader": [
+      "python3",
+      "-B",
+      "tst/scripts/material_curves_io/test_reader.py"
+    ],
+    "production": [
+      "python3",
+      "-B",
+      "tst/scripts/material_curves/production.py",
+      "--executable",
+      "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+      "--output-dir",
+      "/private/tmp/athenak-multiphase-curves-cleanup-20261008/production",
+      "--suite",
+      "all",
+      "--launcher",
+      "/opt/homebrew/bin/prterun"
+    ],
+    "serial_core": [
+      "python3",
+      "-B",
+      "tst/scripts/material_curves/production.py",
+      "--executable",
+      "/private/tmp/athenak-multiphase-curves-serial/src/athena",
+      "--output-dir",
+      "/private/tmp/athenak-multiphase-curves-cleanup-20261008/serial-core",
+      "--suite",
+      "core"
+    ],
+    "io_debug": [
+      "python3",
+      "-B",
+      "tst/scripts/material_curves_io/test_cpp.py",
+      "--build",
+      "/private/tmp/athenak-multiphase-curves-debug",
+      "--kokkos-library",
+      "/private/tmp/athenak-multiphase-curves-debug/kokkos/core/src/libkokkoscore.a",
+      "--launcher",
+      "/opt/homebrew/bin/prterun"
+    ],
+    "io_serial": [
+      "python3",
+      "-B",
+      "tst/scripts/material_curves_io/test_cpp.py",
+      "--build",
+      "/private/tmp/athenak-multiphase-curves-serial",
+      "--kokkos-library",
+      "/private/tmp/athenak-multiphase-curves-serial/kokkos/core/src/libkokkoscore.a"
+    ]
+  }
+}

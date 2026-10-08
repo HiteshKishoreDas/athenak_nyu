@@ -40,7 +40,8 @@ Existing target restart payloads for MC/forcing/frame remain unchanged feature-o
 Runtime/examples: `313977256c95e0aee17433afed27379f0b5579bc`.
 Tests/reader/native AMR selector: `15b40a7ceb35521651244326fa7cab92b87552aa`.
 The 323 runtime source files are byte-identical between those revisions and the
-archived build source. Later documentation/evidence commits do not change runtime.
+archived build source. Documentation/evidence commits through `dda93e67` do not change runtime.
+The reviewer cleanup below modifies two runtime files and has fresh validation.
 The generated Kokkos git-state file identifies Kokkos, not the application revision.
 
 | Gate | Executed result |
@@ -72,6 +73,32 @@ The final Debug executable SHA256 is
 `1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6`;
 builtin Release is
 `14461bc1c008dcfa3738efe5c171ff4e703fb1ff47929a52e4ae681cbaec7f39`.
+
+## Reviewer cleanup qualification
+
+The six accepted simplicity findings remove 21 net runtime lines: reuse the
+validated seed count and home-rank decision, use one ID map for duplicate and
+parent checks, remove the repeated end-step audit and unused include, and share
+curve/node decoding between file reads and MPI restore. The defensive native
+restart write guard remains. Solver hooks, numerical gates and schemas are unchanged.
+
+Fresh Debug/MPI and Release/non-MPI builds pass. The full integrated suite passes
+93 records from 78 actual cases; the serial core passes 31 records. All 390 curve
+output/checkpoint files match the pre-cleanup cohort byte for byte. Ten independent
+reader tests and both serial/MPI C++ persistence checks pass, including exact
+metadata/AMR-clock restore, empty ranks, rank changes and corrupt/mixed-pair
+rejection. Both changed C++ files pass cpplint and length/tab/whitespace checks.
+
+[Cleanup summary](reviewer-cleanup/summary.json),
+[production results](reviewer-cleanup/production-results.json),
+[serial results](reviewer-cleanup/serial-core-results.json),
+[comparison](reviewer-cleanup/before-after-comparison.json),
+[commands](reviewer-cleanup/commands.json), and
+[manifest](reviewer-cleanup/manifest.json) record the new checks separately from
+initial port evidence. Source and rebuilt executable hashes accompany the records.
+Raw per-case artifacts remain in
+`/private/tmp/athenak-multiphase-curves-cleanup-20261008`.
+No CUDA/HIP tests ran; the pending device qualification remains unchanged.
 
 ## Preserved failures and review
 
