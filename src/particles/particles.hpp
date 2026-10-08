@@ -122,7 +122,6 @@ class Particles {
   void EmitShockExits(const std::vector<int> &indices);
   void PrepareShockStore(bool restarting);
   void DrainShockEvents(const std::vector<shocks::Event> &events, uint64_t generation);
-  void InitializeShockState();
   void ObserveShocks(Real time, uint64_t generation);
   void ResizeShockState(int nold);
   void WriteShockTransfers(const HostArray2D<Real> &evidence);
@@ -164,6 +163,7 @@ class Particles {
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles
   std::vector<TracerSeedSchedule> seed_schedules_;
 
+  void ConfigureShockTracking(ParameterInput *pin);
   void ParseTracerSeedSchedules(ParameterInput *pin);
   void SeedTracersAtTime(Real event_time, bool initial_only);
   void AppendParticles(const HostArray2D<Real> &new_rdata,

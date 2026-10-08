@@ -1,0 +1,23 @@
+{
+  "reviewer": "Independent detector_contract agent; read-only review",
+  "review": "PASS; exact reconstruction of prior three files by reversing only config extraction/include relocation and unused initializer removal. No runtime/scientific claims by reviewer.",
+  "prior_commit": "9fd83788452fc10f96e8d1e4621a5bd4da018f33",
+  "source_fingerprint": "80da5390b07a322b83f3ce829f97975c4326b3216a764d77bf530a8f355265c4",
+  "moved_body_sha256": "92032f973f66b7c95c8cef2a3e3332214fca48bf8dbf8be1e3cfef3745850194",
+  "source_sha256": {
+    "src/particles/particles.cpp": "81c2ff5477c0032f488f8b07c70f20b04f0cde1c1375663de8cef0e85606355a",
+    "src/particles/particles.hpp": "3cf1be87ede5b7d007065ad396a2faed5fba70be0f66da938aeb27153ff70b4f",
+    "src/particles/shock_particles.cpp": "bbf7887d500ffb473ba654d64bc48cd71d77346a890f6dce416b4fddd24db9fd"
+  },
+  "checks": {
+    "byte_identical_configuration_body": true,
+    "same_call_order_and_private_helper": true,
+    "unused_initializer_has_no_callers": true,
+    "newbirth_resize_call_retained": true,
+    "detector_encounter_migration_restart_logic_unchanged": true,
+    "all_21_physical_measurements_exactly_equal": true,
+    "integration_physical_measurements_exactly_equal": true
+  },
+  "style": "Native --filter=-build/include_subdir (as repository wrapper) reports zero findings in all three changed files; unfiltered first invocation flags repository include convention. No style filter invented.",
+  "runtime_scope": "Release parity/state/integration/reject/replay/physical repeat; Debug and MPI rebuild plus state checks. No cross-rank/GPU/cluster/new performance/clean archive claim."
+}

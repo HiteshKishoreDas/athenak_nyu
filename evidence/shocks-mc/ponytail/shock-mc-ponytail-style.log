@@ -1,0 +1,18 @@
+/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/scripts/style/cpplint.py:6485: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(cfg_file, 'r', 'utf8', 'replace') as file_handle:
+/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/scripts/style/cpplint.py:6587: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(filename, 'r', 'utf8', 'replace') as target_file:
+src/particles/particles.cpp:14:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/particles.cpp:15:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/particles.cpp:16:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/particles.cpp:22:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/particles.hpp:18:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/particles.hpp:19:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/shock_particles.cpp:25:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/shock_particles.cpp:26:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/shock_particles.cpp:32:  Include the directory when naming header files  [build/include_subdir] [4]
+src/particles/shock_particles.cpp:33:  Include the directory when naming header files  [build/include_subdir] [4]
+Done processing src/particles/particles.cpp
+Done processing src/particles/particles.hpp
+Done processing src/particles/shock_particles.cpp
+Total errors found: 10

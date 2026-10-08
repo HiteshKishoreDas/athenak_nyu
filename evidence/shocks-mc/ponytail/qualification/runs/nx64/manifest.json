@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-ponytail-checks/qualification/raw/nx64/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-ponytail-checks/qualification/raw/nx64",
+  "exit": 0,
+  "elapsed_seconds": 0.3475085419995594,
+  "input_sha256": "ce5c5dadc8ae9e0340c46714478a8bb0946809782478f738b2053bb2f1846bf9",
+  "log_sha256": "57a0532568873dbee1874ab4c82e45697d73bb7a75aaa3f54664a86a12672aec",
+  "executable_sha256": "eb1258bdcd338c8a85f82c16650e2e5d2a59e8db995c7e4698503cf1bdce1177",
+  "label": "nx64"
+}

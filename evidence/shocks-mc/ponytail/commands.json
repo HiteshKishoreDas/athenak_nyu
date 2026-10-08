@@ -1,0 +1,84 @@
+[
+  {
+    "command": [
+      "build-release/shock_encounter_test"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 0.016386458999477327
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks/parity.py",
+      "build-release/shock_detector_test",
+      "--reference",
+      "evidence/shocks/reference",
+      "--report",
+      "/private/tmp/shock-mc-ponytail-checks/parity/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 1.7904416250003123
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/integration.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-ponytail-checks/integration/raw",
+      "--report",
+      "/private/tmp/shock-mc-ponytail-checks/integration/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 20.893976207999003
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/rejects.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-ponytail-checks/rejects/raw",
+      "--report",
+      "/private/tmp/shock-mc-ponytail-checks/rejects/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 0.24760874999992666
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/replay.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-ponytail-checks/replay/raw",
+      "--report",
+      "/private/tmp/shock-mc-ponytail-checks/replay/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 1.3088649160017667
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/qualification.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-ponytail-checks/qualification/raw",
+      "--report",
+      "/private/tmp/shock-mc-ponytail-checks/qualification/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 27.987028415998793
+  }
+]

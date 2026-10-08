@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-ponytail-checks/integration/raw/unsupported_rk3/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-ponytail-checks/integration/raw/unsupported_rk3",
+  "exit": 1,
+  "elapsed_seconds": 0.00542604099973687,
+  "input_sha256": "f2a830a5c57b770b5d165dd3d2999a60f27414c6bce402ae27600d6a75c32677",
+  "log_sha256": "6de7ed4106c759dd6829e39a413d595449fd9f4576cb38de7e88480f317aab8a",
+  "executable_sha256": "eb1258bdcd338c8a85f82c16650e2e5d2a59e8db995c7e4698503cf1bdce1177",
+  "label": "unsupported_rk3",
+  "expected_error": "RK2",
+  "passed": true
+}
