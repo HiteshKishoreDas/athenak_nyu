@@ -39,7 +39,7 @@ struct EncounterState {
   bool suppressing_reentry = false;
   uint64_t suppressed_reentries = 0;
   uint32_t flags = cadence_limited;
-  Observation previous, first, last, post, representative;
+  Observation previous, first, last, post;
 };
 struct Event {
   uint64_t particle_id = 0, sequence = 0;
@@ -58,7 +58,7 @@ void FillEvent(const EncounterState &s, Event &e, uint32_t reason = 0) {
   e.first = s.first;
   e.last = s.last;
   e.post = s.post;
-  e.representative = s.representative;
+  e.representative = s.first;  // first inside sample, never a peak Mach selector
 }
 
 // Two successive valid outside observations rearm an episode. Reentry sooner
@@ -105,7 +105,6 @@ bool UpdateEncounter(EncounterState &s, const Observation &o, Event &e) {
       s.flags &= ~downstream_reentry;
       s.flags |= s.previous.valid ? 0u : left_censored;
       s.first = o;
-      s.representative = o;  // first valid region cell, never a peak Mach selector
     } else if (s.phase == pending_exit) {
       s.flags |= merged_flicker;
     }
@@ -141,7 +140,6 @@ bool UpdateEncounter(EncounterState &s, const Observation &o, Event &e) {
   s.first = Observation{};
   s.last = Observation{};
   s.post = Observation{};
-  s.representative = Observation{};
   return true;
 }
 }  // namespace shocks

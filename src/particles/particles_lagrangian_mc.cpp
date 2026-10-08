@@ -36,6 +36,17 @@
 
 namespace {
 
+struct ParticleRestartHeader {
+  char magic[16];
+  int version;
+  int enabled;
+  int nrdata;
+  int nidata;
+  int nlocal;
+  int nschedules;
+  std::int64_t next_tag;
+};
+
 KOKKOS_INLINE_FUNCTION
 std::uint64_t SplitMix64(std::uint64_t x) {
   x += 0x9e3779b97f4a7c15ULL;
@@ -920,17 +931,6 @@ void Particles::RemapAfterMeshRefinement() {
 //! \fn void Particles::WriteRestartData
 
 void Particles::WriteRestartData(IOWrapper &resfile, bool single_file_per_rank) {
-  struct ParticleRestartHeader {
-    char magic[16];
-    int version;
-    int enabled;
-    int nrdata;
-    int nidata;
-    int nlocal;
-    int nschedules;
-    std::int64_t next_tag;
-  };
-
   ParticleRestartHeader header;
   std::memset(&header, 0, sizeof(header));
   std::strncpy(header.magic, "ATHKPRTCLMC", sizeof(header.magic)-1);
@@ -947,7 +947,6 @@ void Particles::WriteRestartData(IOWrapper &resfile, bool single_file_per_rank) 
   if (header.nlocal < 0 || header.nschedules < 0 ||
       header.nlocal > std::numeric_limits<int>::max()/std::max(nrdata,nidata) ||
       header.nschedules > std::numeric_limits<int>::max()/3 ||
-      header.nschedules != static_cast<int>(seed_schedules_.size()) ||
       header.next_tag < 0 || header.next_tag >
       static_cast<std::int64_t>(std::numeric_limits<int>::max())+1) {
     FatalParticleInput("invalid particle restart count/schedule/identity range");
@@ -994,17 +993,6 @@ void Particles::WriteRestartData(IOWrapper &resfile, bool single_file_per_rank) 
 //! \fn void Particles::ReadRestartData
 
 void Particles::ReadRestartData(IOWrapper &resfile, bool single_file_per_rank) {
-  struct ParticleRestartHeader {
-    char magic[16];
-    int version;
-    int enabled;
-    int nrdata;
-    int nidata;
-    int nlocal;
-    int nschedules;
-    std::int64_t next_tag;
-  };
-
   ParticleRestartHeader header;
   if (resfile.Read_bytes(&header, sizeof(header), 1, single_file_per_rank) != 1) {
     FatalParticleInput("particle restart section is missing or truncated");

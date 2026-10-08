@@ -64,8 +64,8 @@ static shocks::EncounterState MakeState(int id) {
   s.flags = 512+id;
   s.suppressing_reentry = true;
   s.suppressed_reentries = 900+id;
-  shocks::Observation *obs[] = {&s.previous,&s.first,&s.last,&s.post,&s.representative};
-  for (int n=0; n<5; ++n) {
+  shocks::Observation *obs[] = {&s.previous,&s.first,&s.last,&s.post};
+  for (int n=0; n<4; ++n) {
     auto &o = *obs[n];
     o.time = id+0.01*n;
     o.generation = 80*id+n;

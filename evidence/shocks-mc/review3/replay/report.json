@@ -1,0 +1,78 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "compiled_source_fingerprint": "3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "runs": [
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-review3-checks/replay/raw/seed/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-review3-checks/replay/raw/seed",
+      "exit": 0,
+      "elapsed_seconds": 0.010035000001153094,
+      "input_sha256": "e020c5c7413e0c07b5ce1fbc020f3febe6973a9b2ed23984a182452e3489b448",
+      "log_sha256": "3f1359d704d542d6fc648a016461ae7b91e386882ffe1bc77d5298fad39839c3",
+      "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+      "label": "seed"
+    },
+    {
+      "label": "later_checkpoint",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-review3-checks/replay/raw/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.501275833001273,
+      "log_sha256": "698c7af0890e644739a92ac90dfb2677c367c77eb63af0c54bf36a93935d1f08",
+      "directory": "/private/tmp/shock-mc-review3-checks/replay/raw/seed"
+    },
+    {
+      "label": "old_checkpoint_collision",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-review3-checks/replay/raw/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.24051145799967344,
+      "log_sha256": "b018c4e1eaa4acef61b0f37d3d46b3f2019fedf05a8343fc0b293c5042551f09",
+      "directory": "/private/tmp/shock-mc-review3-checks/replay/raw/seed"
+    },
+    {
+      "label": "new_basename_replay",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-review3-checks/replay/raw/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1",
+        "job/basename=mc_replayed"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.23032120799871336,
+      "log_sha256": "5bec0207fb75f9898d13e48060d9349012b6ab4f97c8ea955e6f568469a8f7d8",
+      "directory": "/private/tmp/shock-mc-review3-checks/replay/raw/seed"
+    }
+  ],
+  "status": "passed_immutable_pair_and_canonical_replay",
+  "checks": {
+    "test_ids": [
+      "RST04",
+      "RST07",
+      "IO08"
+    ],
+    "old_checkpoint": "/private/tmp/shock-mc-review3-checks/replay/raw/seed/rst/shock_mc.00001.rst",
+    "old_pairs_byte_unchanged": true,
+    "canonical_event_history_unchanged": true,
+    "new_basename_replay_supported": true,
+    "legacy_thermo_scope": "legacy append-only thermo may append identical rows; no claim its whole file remains unchanged"
+  }
+}

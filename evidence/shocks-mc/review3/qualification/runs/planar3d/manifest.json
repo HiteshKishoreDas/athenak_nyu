@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-review3-checks/qualification/raw/planar3d/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-review3-checks/qualification/raw/planar3d",
+  "exit": 0,
+  "elapsed_seconds": 0.9351292089995695,
+  "input_sha256": "e541755ced886ecfa72b72d140e16f5b428743c6e9cbb0348f2f44816dc47767",
+  "log_sha256": "1ef2d7063a7eb206ea34b0fe0483e19619f6b1f150ed1788dc12c05121d3ea17",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "planar3d"
+}

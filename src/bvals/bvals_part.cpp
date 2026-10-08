@@ -323,7 +323,6 @@ TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
   shock_destroylist.template sync<HostMemSpace>();
   std::vector<int> exits;
   for (int n=0; n<nprtcl_destroy; ++n) exits.push_back(shock_destroylist.h_view(n));
-  std::sort(exits.begin(), exits.end());
   if (!exits.empty()) pmy_part->EmitShockExits(exits);
   return TaskStatus::complete;
 }

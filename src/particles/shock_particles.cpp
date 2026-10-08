@@ -105,6 +105,15 @@ void PutObservation(std::ostream &out, const shocks::Observation &o) {
   for (Real x : o.downstream) out << ',' << x;
 }
 
+void PutEvent(std::ostream &out, const shocks::Event &e) {
+  out << e.particle_id << ',' << e.sequence << ',' << e.status << ',' << e.flags;
+  for (const auto *o : {&e.pre, &e.first, &e.last, &e.post, &e.representative}) {
+    out << ',';
+    PutObservation(out,*o);
+  }
+  out << '\n';
+}
+
 struct CheckpointHeader {
   char magic[8] = {'A','K','S','H','O','C','K','2'};
   uint32_t version = 2, endian = 0x12345678, real_bytes = sizeof(Real);
@@ -131,38 +140,30 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
     shock_enabled = pin->GetOrAddBoolean("shock_tracking", "enabled", false);
     if (!shock_enabled &&
         pin->GetOrAddBoolean("shock_tracking", "history_present", false)) {
-      std::cerr << "Shock history cannot be disabled on restart" << std::endl;
-      std::exit(EXIT_FAILURE);
+      ShockError("Shock history cannot be disabled on restart");
     }
   }
   if (shock_enabled) {
     if (pusher != ParticlesPusher::lagrangian_mc || !IsLagrangianMC()) {
-      std::cerr << "Shock tracking requires lagrangian_mc particles"
-                << std::endl;
-      std::exit(EXIT_FAILURE);
+      ShockError("Shock tracking requires lagrangian_mc particles");
     }
     if (pin->GetOrAddString("time", "integrator", "rk2") != "rk2" ||
         (pin->DoesBlockExist("cooling") &&
          pin->GetOrAddBoolean("cooling", "enabled", false))) {
-      std::cerr << "Shock MC qualification requires RK2 and cooling disabled"
-                << std::endl;
-      std::exit(EXIT_FAILURE);
+      ShockError("Shock MC qualification requires RK2 and cooling disabled");
     }
     for (auto block=pin->block.begin(); block != pin->block.end(); ++block) {
       if (block->block_name.rfind("output",0) == 0 &&
           pin->DoesParameterExist(block->block_name,"file_type") &&
           pin->GetString(block->block_name,"file_type") == "rst" &&
           pin->GetOrAddBoolean(block->block_name,"single_file_per_node",false)) {
-        std::cerr << "Shock MC restart does not support per-node files" << std::endl;
-        std::exit(EXIT_FAILURE);
+        ShockError("Shock MC restart does not support per-node files");
       }
     }
     std::set<int> schedule_ids;
     for (const auto &seed : seed_schedules_) {
       if (!schedule_ids.insert(seed.id).second) {
-        std::cerr << "Shock restart requires unique tracer seed schedule IDs"
-                  << std::endl;
-        std::exit(EXIT_FAILURE);
+        ShockError("Shock restart requires unique tracer seed schedule IDs");
       }
     }
     auto &c = shock_config;
@@ -184,16 +185,11 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
       ok = ok && ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') ||
                   (ch >= '0' && ch <= '9') || ch == '-' || ch == '_');
     }
-    for (Real v : {c.min_mach, c.mach_max, c.grad_floor, c.div_limit,
-                   c.density_floor, c.temperature_floor}) ok = ok && std::isfinite(v);
-    ok = ok && c.min_mach >= 1 && c.mach_max > 1 && c.grad_floor >= 0 &&
-         c.div_limit <= 0 && c.density_floor >= 0 && c.temperature_floor >= 0;
+    ok = ok && shocks::ConfigValid(c) && c.div_limit <= 0;
     if (!ok) {
-      std::cerr << "Invalid shock_tracking configuration: finite floors and "
-                << "nonpositive divergence threshold, "
-                << "width in [1,nghost], positive capacity and safe lineage required"
-                << std::endl;
-      std::exit(EXIT_FAILURE);
+      ShockError("Invalid shock_tracking configuration: finite floors and "
+                 "nonpositive divergence threshold, "
+                 "width in [1,nghost], positive capacity and safe lineage required");
     }
     c.gamma = pmy_pack->phydro ? pmy_pack->phydro->peos->eos_data.gamma : 0;
     std::ostringstream contract;
@@ -222,9 +218,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
       int index = 0;
       for (Real floor : {eos.dfloor,eos.pfloor,eos.tfloor,eos.sfloor}) {
         if (!std::isfinite(floor) || floor < 0) {
-          std::cerr << "Shock MC requires finite nonnegative native EOS floors"
-                    << std::endl;
-          std::exit(EXIT_FAILURE);
+          ShockError("Shock MC requires finite nonnegative native EOS floors");
         }
         pin->SetRealPrecise("hydro",names[index++],floor);
         contract << ' ' << floor;
@@ -244,15 +238,13 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
           {"center3",seed.center3},{"radius",seed.radius},
           {"slab_min",seed.slab_min},{"slab_max",seed.slab_max}}) {
         if (!std::isfinite(entry.second)) {
-          std::cerr << "Shock tracer schedule contains nonfinite values" << std::endl;
-          std::exit(EXIT_FAILURE);
+          ShockError("Shock tracer schedule contains nonfinite values");
         }
         pin->SetRealPrecise(seed.block_name,entry.first,entry.second);
       }
       if ((seed.has_target_min && !std::isfinite(seed.target_min)) ||
           (seed.has_target_max && !std::isfinite(seed.target_max))) {
-        std::cerr << "Shock tracer target contains nonfinite thresholds" << std::endl;
-        std::exit(EXIT_FAILURE);
+        ShockError("Shock tracer target contains nonfinite thresholds");
       }
       if (seed.has_target_min) {
         pin->SetRealPrecise(seed.block_name,"target_min",seed.target_min);
@@ -276,8 +268,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
     }
     shock_contract = contract.str();
     if (shock_contract.size()+shock_lineage.size()+1 > 16384) {
-      std::cerr << "Shock restart contract exceeds supported metadata size" << std::endl;
-      std::exit(EXIT_FAILURE);
+      ShockError("Shock restart contract exceeds supported metadata size");
     }
     Kokkos::realloc(shock_state, nprtcl_thispack);
     Kokkos::realloc(shock_events, shock_capacity);
@@ -545,14 +536,7 @@ void Particles::DrainShockEvents(const std::vector<shocks::Event> &events,
   out << std::setprecision(std::numeric_limits<Real>::max_digits10)
       << "# AKSHOCK-EVENTS 1 " << shock_lineage << ' ' << generation << ' '
       << ordered.size() << '\n' << "# " << shock_contract << '\n';
-  for (const auto &e : ordered) {
-    out << e.particle_id << ',' << e.sequence << ',' << e.status << ',' << e.flags;
-    for (const auto *o : {&e.pre, &e.first, &e.last, &e.post, &e.representative}) {
-      out << ',';
-      PutObservation(out,*o);
-    }
-    out << '\n';
-  }
+  for (const auto &e : ordered) PutEvent(out,e);
   out << "# END " << ordered.size() << '\n';
   const auto data = out.str();
   CommitFile(shock_directory + "/cycle" + std::to_string(generation) + RankName() +
@@ -629,9 +613,7 @@ void Particles::WriteShockRestart(const std::string &fname) {
   std::string data;
   AppendBytes(data, &h, 1);
   data += contract;
-  for (int p=0; p<nprtcl_thispack; ++p) {
-    AppendBytes(data, &s(p), 1);
-  }
+  if (nprtcl_thispack > 0) AppendBytes(data,s.data(),nprtcl_thispack);
   uint64_t checksum = Digest(UINT64_C(14695981039346656037),data.data(),data.size());
   AppendBytes(data,&checksum,1);
   CommitFile(fname + ".shock" + RankName(), data, false);
@@ -735,14 +717,7 @@ void Particles::WriteShockSuspended() {
   out << std::setprecision(std::numeric_limits<Real>::max_digits10)
       << "# AKSHOCK-SUSPENDED 1 " << shock_lineage << ' ' << shock_generation << ' '
       << records.size() << '\n' << "# " << shock_contract << '\n';
-  for (const auto &e : records) {
-    out << e.particle_id << ',' << e.sequence << ',' << e.status << ',' << e.flags;
-    for (const auto *o : {&e.pre,&e.first,&e.last,&e.post,&e.representative}) {
-      out << ',';
-      PutObservation(out,*o);
-    }
-    out << '\n';
-  }
+  for (const auto &e : records) PutEvent(out,e);
   out << "# END " << records.size() << '\n';
   CommitFile(shock_directory + "/suspended" + std::to_string(shock_generation) +
                RankName() + ".csv", out.str(), true);

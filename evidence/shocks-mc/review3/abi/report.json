@@ -1,0 +1,42 @@
+{
+  "compiler_command": [
+    "/usr/bin/c++",
+    "-DKOKKOS_DEPENDENCE",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/kokkos",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/kokkos/core/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/desul/include",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/mdspan/include",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/kokkos/containers/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/containers/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/kokkos/algorithms/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/algorithms/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/kokkos/simd/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/simd/src",
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-arch",
+    "arm64",
+    "/private/tmp/shock-mc-review3-extra/abi/abi_probe.cpp",
+    "-o",
+    "/private/tmp/shock-mc-review3-extra/abi/abi_probe"
+  ],
+  "compile_exit": 0,
+  "probe_command": [
+    "/private/tmp/shock-mc-review3-extra/abi/abi_probe"
+  ],
+  "probe_exit": 0,
+  "output": "48 184 1000 816 944\n",
+  "native_header_size": 48,
+  "observation_size": 184,
+  "old_state_size": 1000,
+  "new_state_size": 816,
+  "event_size": 944,
+  "all_surviving_field_offsets_equal": true,
+  "native_header_all_field_offsets_equal": true,
+  "scope": "Actual Release compile flags on local Serial double ABI; no other target ABI claimed."
+}
