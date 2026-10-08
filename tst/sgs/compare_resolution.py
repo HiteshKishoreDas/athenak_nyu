@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Develop a 2D turbulent snapshot, then compare coarse SGS-on/off to finer hydro.
+"""Develop a 2D/3D turbulent snapshot, then compare coarse SGS-on/off to finer hydro.
 
 The high-resolution run is a numerical reference, not a proven DNS. Coarse data
 are aligned finite-volume block averages. Removed kinetic variance initializes K;
@@ -21,31 +21,69 @@ from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 
 from filter_reference import error_metrics
-from laptop_2d import grid, spectrum
+from laptop_2d import grid as grid_2d, spectrum as spectrum_2d
 import verify
+import resolution_closure
 from verify_forcing import ForcingVerification
 
 plt.switch_backend("Agg")
 GAMMA = 5 / 3
 
 
-def average(data, n):
-    size = data.shape[0]
-    if data.shape[1] != size or size % n or n > size:
-        raise ValueError("require aligned square grids and an integer refinement ratio")
-    r = size // n
-    return data.reshape(n, r, n, r, *data.shape[2:]).mean(axis=(1, 3))
+def grid(state):
+    if "grid" in state:
+        return state["grid"]
+    nz = int(state["config"]["mesh/nx3"])
+    if nz == 1:
+        return grid_2d(state)
+    nx = int(state["config"]["mesh/nx1"])
+    ny = int(state["config"]["mesh/nx2"])
+    data = np.empty((nz, ny, nx, len(state["totals"])))
+    assert len(state["field"]) == nx * ny * nz
+    for (x, y, z), values in state["field"].items():
+        assert 0 <= x < nx and 0 <= y < ny and 0 <= z < nz
+        data[z, y, x] = values
+    return data
+
+
+def spectrum(rho, velocity):
+    if rho.ndim == 2:
+        return spectrum_2d(rho, velocity)
+    axes = tuple(range(rho.ndim))
+    mean = np.sum(rho[..., None] * velocity, axis=axes) / rho.sum()
+    modes = np.fft.fftn(
+        np.sqrt(rho[..., None]) * (velocity - mean), axes=axes, norm="forward"
+    )
+    power = 0.5 * np.sum(abs(modes) ** 2, axis=-1)
+    modes_1d = [np.fft.fftfreq(n) * n for n in rho.shape]
+    ks = np.meshgrid(*modes_1d, indexing="ij", sparse=True)
+    shells = np.rint(np.sqrt(sum(k * k for k in ks))).astype(int)
+    return np.bincount(shells.ravel(), weights=power.ravel())
+
+
+def average(data, n, ndim=2):
+    sizes = data.shape[:ndim]
+    size = sizes[0]
+    if any(v != size for v in sizes) or size % n or n > size:
+        raise ValueError("require aligned square/cubic grids and an integer ratio")
+    ratio = size // n
+    return data.reshape(*(n, ratio) * ndim, *data.shape[ndim:]).mean(
+        axis=tuple(range(1, 2 * ndim, 2))
+    )
 
 
 def restrict(data, n):
     """Conserved averages plus stable density-weighted unresolved kinetic variance."""
-    coarse = average(data, n)
+    ndim = data.ndim - 1
+    coarse = average(data, n, ndim)
     velocity = data[..., 1:4] / data[..., :1]
     favre = coarse[..., 1:4] / coarse[..., :1]
     r = data.shape[0] // n
-    expanded = favre.repeat(r, axis=0).repeat(r, axis=1)
+    expanded = favre
+    for axis in range(ndim):
+        expanded = expanded.repeat(r, axis=axis)
     variance = average(
-        0.5 * data[..., 0] * np.sum((velocity - expanded) ** 2, axis=-1), n
+        0.5 * data[..., 0] * np.sum((velocity - expanded) ** 2, axis=-1), n, ndim
     )
     return coarse, variance
 
@@ -55,10 +93,23 @@ def physical(data, K):
     velocity = data[..., 1:4] / rho[..., None]
     thermal = data[..., 4] - 0.5 * rho * np.sum(velocity**2, axis=-1)
     dx = 1 / rho.shape[0]
-    omega = (
-        (np.roll(velocity[..., 1], -1, axis=1) - np.roll(velocity[..., 1], 1, axis=1))
-        - (np.roll(velocity[..., 0], -1, axis=0) - np.roll(velocity[..., 0], 1, axis=0))
-    ) / (2 * dx)
+
+    def derivative(component, direction):
+        axis = rho.ndim - 1 - direction
+        return (np.roll(component, -1, axis=axis) - np.roll(component, 1, axis=axis)) / (
+            2 * dx
+        )
+
+    omega = derivative(velocity[..., 1], 0) - derivative(velocity[..., 0], 1)
+    if rho.ndim == 3:
+        omega = np.stack(
+            (
+                derivative(velocity[..., 2], 1) - derivative(velocity[..., 1], 2),
+                derivative(velocity[..., 0], 2) - derivative(velocity[..., 2], 0),
+                omega,
+            ),
+            axis=-1,
+        )
     return dict(
         rho=rho,
         velocity=velocity,
@@ -79,12 +130,13 @@ def reference_fields(data, n):
 
 
 def write_state(path, data, K, sgs):
-    packed = np.concatenate((data.copy(), np.zeros(data.shape[:2] + (1,))), axis=-1)
+    packed = np.concatenate((data.copy(), np.zeros(data.shape[:-1] + (1,))), axis=-1)
     if sgs:
         packed[..., 4] -= K
         packed[..., -1] = K
     with path.open("w") as f:
-        f.write(f"{data.shape[1]} {data.shape[0]} {packed.shape[-1]}\n")
+        dimensions = " ".join(str(v) for v in reversed(data.shape[:-1]))
+        f.write(f"{dimensions} {packed.shape[-1]}\n")
         np.savetxt(f, packed.reshape(-1, packed.shape[-1]), fmt="%.17e")
     return packed
 
@@ -105,10 +157,26 @@ def self_test():
     boosted[..., 4] += 5 * data[..., 1] + 0.5 * 25 * data[..., 0]
     assert np.max(abs(restrict(boosted, 1)[1] - K)) < 1e-14
     assert np.array_equal(average(data, 2), data)
-    print("Favre hand case, energy partition, alignment and boost checks pass")
+    cube = np.repeat(data[None, ...], 2, axis=0)
+    c3, k3 = restrict(cube, 1)
+    assert abs(c3[0, 0, 0, 0] - 2) < 1e-14 and abs(k3.item() - 0.75) < 1e-14
+    n = 16
+    yy = (np.arange(n) + 0.5) / n
+    cube = np.zeros((n, n, n, 7))
+    cube[..., 0] = 1
+    cube[..., 1] = np.sin(2 * np.pi * yy)[None, :, None]
+    cube[..., 4] = 2 + 0.5 * cube[..., 1] ** 2
+    f = physical(cube, np.zeros((n, n, n)))
+    expected = -n * np.sin(2 * np.pi / n) * np.cos(2 * np.pi * yy)
+    assert np.max(abs(f["omega"][..., 2] - expected[None, :, None])) < 1e-13
+    assert np.max(abs(f["omega"][..., :2])) == 0
+    power = spectrum(f["rho"], f["velocity"])
+    assert abs(power.sum() - 0.25) < 1e-14 and abs(power[1] - 0.25) < 1e-14
+    resolution_closure.self_test()
+    print("2D/3D Favre, energy, alignment, boost, curl and FFT checks pass")
 
 
-def initial_file_checks(exe):
+def initial_file_checks(exe, ndim=2):
     config = verify.parameters(
         (verify.SOURCE / "inputs/hydro/sgs_verify.athinput").read_text()
     )
@@ -116,18 +184,21 @@ def initial_file_checks(exe):
         {
             "mesh/nx1": "4",
             "mesh/nx2": "4",
-            "mesh/nx3": "1",
+            "mesh/nx3": "4" if ndim == 3 else "1",
             "meshblock/nx1": "4",
             "meshblock/nx2": "4",
-            "meshblock/nx3": "1",
+            "meshblock/nx3": "4" if ndim == 3 else "1",
             "time/tlim": "0",
             "time/nlim": "0",
         }
     )
-    good = np.zeros((4, 4, 8))
+    good = np.zeros((4,) * ndim + (8,))
     good[..., 0] = 1
     good[..., 4] = 1.5
-    good[..., 5:7] = [0.2, 0.25]
+    positions = np.indices((4,) * ndim)
+    tagged = sum((axis + 1) * position for axis, position in enumerate(positions))
+    good[..., 5] = 0.2 + 0.01 * tagged
+    good[..., 6] = 0.25 - 0.005 * tagged
     good[..., -1] = 0.01
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
@@ -147,7 +218,7 @@ def initial_file_checks(exe):
             data = good.copy()
             if name in ("rho", "thermal", "K", "nonfinite"):
                 index = {"rho": 0, "thermal": 4, "K": 7, "nonfinite": 1}[name]
-                data[0, 0, index] = {
+                data[(0,) * ndim + (index,)] = {
                     "rho": 0,
                     "thermal": -1,
                     "K": -0.1,
@@ -155,7 +226,8 @@ def initial_file_checks(exe):
                 }[name]
             path = run / "state.dat"
             with path.open("w") as f:
-                f.write("3 4 8\n" if name == "header" else "4 4 8\n")
+                dimensions = ([3] if name == "header" else [4]) + [4] * (ndim - 1)
+                f.write(" ".join(map(str, dimensions + [8])) + "\n")
                 np.savetxt(
                     f,
                     data.reshape(-1, 8)[:-1]
@@ -189,7 +261,7 @@ def initial_file_checks(exe):
                 loaded = grid(verify.restart(sorted((run / "rst").glob("*.rst"))[0]))
                 assert np.array_equal(loaded, good)
             else:
-                assert "invalid 2D initial_state" in process.stdout + process.stderr
+                assert "invalid initial_state" in process.stdout + process.stderr
     print("Native initial-state round-trip and eight malformed-input checks pass")
 
 
@@ -198,6 +270,8 @@ def run_cases(args):
     manifest_path = suite.output / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["resolution_comparison"] = dict(
+        ndim=args.ndim,
+        timeout_seconds=args.timeout,
         high=args.high,
         low=args.low,
         spinup=args.spinup,
@@ -212,15 +286,18 @@ def run_cases(args):
         "spinup",
         False,
         0.5,
-        ndim=2,
+        ndim=args.ndim,
+        timeout=args.timeout,
         tlim=args.spinup,
         overrides={
             "mesh/nx1": str(args.high),
             "mesh/nx2": str(args.high),
+            "mesh/nx3": str(args.high) if args.ndim == 3 else "1",
             "meshblock/nx1": "16",
             "meshblock/nx2": "16",
+            "meshblock/nx3": "16" if args.ndim == 3 else "1",
             "turb_driving/min_kz": "0",
-            "turb_driving/max_kz": "0",
+            "turb_driving/max_kz": "3" if args.ndim == 3 else "0",
             "turb_driving/dedt": "1.0",
             "time/nlim": "20000",
             "output1/dt": str(args.spinup / 20),
@@ -230,6 +307,7 @@ def run_cases(args):
     if "spinup" not in suite.states or suite.results[-1]["status"] != "pass":
         return suite.results
     fine = grid(suite.states["spinup"][1])
+    suite.states.clear()
     initial = {}
     initial_errors = {}
     for name, n, enabled in (
@@ -245,12 +323,14 @@ def run_cases(args):
         suite.run(
             name,
             mode="box",
-            ndim=2,
+            ndim=args.ndim,
+            timeout=args.timeout,
             block=16,
             grid_cap=args.high,
             overrides={
                 "mesh/nx1": str(n),
                 "mesh/nx2": str(n),
+                "mesh/nx3": str(n) if args.ndim == 3 else "1",
                 "time/tlim": str(args.decay),
                 "time/nlim": "20000",
                 "time/ndiag": "1000",
@@ -265,6 +345,7 @@ def run_cases(args):
             loaded = grid(suite.states[name][0])
             target = expected if enabled else expected[..., :-1]
             initial_errors[name] = float(np.max(abs(loaded - target)))
+            suite.states.clear()
     row = dict(name="matched_initial_state", status="blocked")
     suite.results.append(row)
     if len(initial_errors) == 4:
@@ -294,10 +375,19 @@ def run_cases(args):
 
 def report(output):
     rows = json.loads((output / "results.json").read_text())
+
+    def load_dense(path):
+        state = verify.restart(path)
+        state["grid"] = grid(state)
+        del state["field"]  # Keep full volumes without retaining per-cell dictionaries.
+        return state
+
     states = {
-        name: [verify.restart(p) for p in sorted((output / name / "rst").glob("*.rst"))]
+        name: [load_dense(p) for p in sorted((output / name / "rst").glob("*.rst"))]
         for name in ("reference", "reference_check", "low_off", "low_on")
     }
+    ndim = grid(states["low_on"][0]).ndim - 1
+    exponent = "³" if ndim == 3 else "²"
     n = int(states["low_on"][0]["config"]["mesh/nx1"])
     high_n = int(states["reference"][0]["config"]["mesh/nx1"])
     times = np.linspace(0, states["reference"][-1]["time"], 11)
@@ -322,7 +412,7 @@ def report(output):
         lanes = {}
         for name in ("low_off", "low_on"):
             data = at(name, t)
-            K = data[..., -1] if name == "low_on" else np.zeros((n, n))
+            K = data[..., -1] if name == "low_on" else np.zeros(data.shape[:-1])
             lanes[name] = physical(data[..., :7], K)
         return reference, check, lanes
 
@@ -367,7 +457,15 @@ def report(output):
         plt.close(fig)
         gallery.append((name, title, caption, len(flat)))
 
+    def displayed(data):
+        if ndim == 3:
+            if data.ndim == 4:
+                data = np.linalg.norm(data, axis=-1)
+            data = data[data.shape[0] // 2]
+        return data
+
     def image(ax, data, title, bounds=None, difference=False):
+        data = displayed(data)
         if difference:
             maximum = max(float(np.max(abs(data))), 1e-16)
             bounds = (-maximum, maximum)
@@ -385,15 +483,15 @@ def report(output):
 
     ref, check, lanes = comparisons[-1]
     high = physical(
-        grid(states["reference"][-1]), np.zeros(grid(states["reference"][-1]).shape[:2])
+        grid(states["reference"][-1]), np.zeros(grid(states["reference"][-1]).shape[:-1])
     )
 
     def field_maps(axes):
         all_fields = [high, ref, lanes["low_off"], lanes["low_on"]]
         for j, key in enumerate(("rho", "speed", "omega")):
             bounds = (
-                min(f[key].min() for f in all_fields),
-                max(f[key].max() for f in all_fields),
+                min(displayed(f[key]).min() for f in all_fields),
+                max(displayed(f[key]).max() for f in all_fields),
             )
             for i, (label, f) in enumerate(
                 zip(
@@ -401,13 +499,24 @@ def report(output):
                     all_fields,
                 )
             ):
-                image(axes[3 * i + j], f[key], label + ": " + key, bounds)
+                image(
+                    axes[3 * i + j],
+                    f[key],
+                    label + ": " + ("|omega|" if ndim == 3 and key == "omega" else key),
+                    bounds,
+                )
 
     save(
         "01_fields",
         "High-resolution turbulence versus coarse SGS-on/off",
         "Final matched time. The high reference is block-filtered onto "
-        "the low grid; column color scales are shared.",
+        "the low grid; column color scales are shared. "
+        + (
+            "Central z-cell slices; native/coarse centres differ. "
+            "Diagnostics use full volumes."
+            if ndim == 3
+            else ""
+        ),
         (4, 3),
         field_maps,
     )
@@ -444,7 +553,8 @@ def report(output):
                     times,
                     [m["reference_sensitivity"][key]["rms_error"] for m in metrics],
                     "k--",
-                    label=f"{high_n // 2}² vs {high_n}² reference sensitivity",
+                    label=f"{high_n // 2}{exponent} vs {high_n}{exponent} "
+                    "reference sensitivity",
                 )
             ax.set(title=key + " absolute RMS error", xlabel="Decay time")
 
@@ -540,7 +650,8 @@ def report(output):
             ax.plot(
                 times,
                 [m["reference_sensitivity"][key]["rms_error"] for m in metrics],
-                label=f"{high_n // 2}² vs {high_n}², both filtered to low grid",
+                label=f"{high_n // 2}{exponent} vs {high_n}{exponent}, "
+                "both filtered to low grid",
             )
             ax.set(title=key + " reference sensitivity", xlabel="Decay time")
 
@@ -633,6 +744,57 @@ def report(output):
         (1, 2),
         cost,
     )
+    closure_metrics = {}
+    if ndim == 3:
+        diagnostics = []
+        for label, state in (
+            ("Initial", states["reference"][0]),
+            ("Final", states["reference"][-1]),
+        ):
+            data = grid(state)
+            coarse, K = restrict(data, n)
+            diagnosis = resolution_closure.assess(data, coarse, K)
+            closure_metrics[label.lower()] = diagnosis["metrics"]
+            diagnostics.append((label, diagnosis["fields"]))
+
+        def closure_plots(axes):
+            for row, (label, f) in enumerate(diagnostics):
+                exact = f["exact_production"]
+                modeled = f["modeled_production"]
+                bound = max(abs(exact).max(), abs(modeled).max(), 1e-16)
+                image(
+                    axes[3 * row],
+                    exact,
+                    label + ": exact tau:A",
+                    (-bound, bound),
+                    difference=False,
+                )
+                image(
+                    axes[3 * row + 1],
+                    modeled,
+                    label + ": modeled tau:A",
+                    (-bound, bound),
+                    difference=False,
+                )
+                axes[3 * row + 2].scatter(exact.ravel(), modeled.ravel(), s=3, alpha=0.3)
+                axes[3 * row + 2].plot(
+                    [-bound, bound], [-bound, bound], "k--", label="Exact agreement"
+                )
+                axes[3 * row + 2].set(
+                    title=label + ": full-volume production",
+                    xlabel="Exact tau:A",
+                    ylabel="Modeled tau:A",
+                )
+
+        save(
+            "10_closure",
+            "Stress closure with exact filtered SGS energy supplied",
+            "Central z slices and full-volume scatter. Coarse centered gradients; "
+            "this diagnostic tests the mathematical closure, not native face production. "
+            "No coefficient tuning; numerical reference remains unresolved.",
+            (2, 3),
+            closure_plots,
+        )
     pdf.close()
     summary = dict(
         final_time=float(times[-1]),
@@ -641,12 +803,14 @@ def report(output):
         figure_pages=len(gallery),
         panels=sum(p[3] for p in gallery),
         final_errors=metrics[-1],
+        closure_with_exact_K=closure_metrics,
         solver_elapsed_seconds=costs,
         interpolation_max_bracket=spans,
         passing_records=sum(r["status"] == "pass" for r in rows),
         result_records=len(rows),
-        qualification="2D decaying numerical comparison from one developed seed; "
-        "not validated DNS or 3D turbulence",
+        ndim=ndim,
+        qualification=f"{ndim}D decaying numerical comparison from one developed seed; "
+        "not validated DNS or a stationary statistical campaign",
     )
     (output / "comparison.json").write_text(
         json.dumps(dict(summary=summary, time_series=metrics), indent=2) + "\n"
@@ -664,7 +828,8 @@ def report(output):
         "system-ui;padding:0 20px}"
         "img{width:100%}pre{white-space:pre-wrap}a{color:#1265a8}</style>"
         "<h1>High-resolution turbulence versus coarse SGS-on/off</h1>"
-        "<p>Developed 2D flow, conservative matched initialization, then unforced decay. "
+        f"<p>Developed {ndim}D flow, conservative matched initialization, "
+        "then unforced decay. "
         "The finer hydro run is a numerical reference, not a proven DNS.</p>"
         "<p>SGS-on stores removed kinetic variance as K; SGS-off stores it as heat. "
         "Both start with the same filtered mass, momentum, scalar masses "
@@ -685,17 +850,26 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exe", type=Path)
     parser.add_argument("--output", type=Path)
-    parser.add_argument("--high", type=int, default=128, choices=(64, 128))
-    parser.add_argument("--low", type=int, default=32, choices=(16, 32))
+    parser.add_argument("--ndim", type=int, default=2, choices=(2, 3))
+    parser.add_argument("--timeout", type=float, default=600)
+    parser.add_argument("--high", type=int, choices=(64, 128))
+    parser.add_argument("--low", type=int, choices=(16, 32))
     parser.add_argument("--spinup", type=float, default=2.0)
     parser.add_argument("--decay", type=float, default=0.5)
     parser.add_argument("--plot-only", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
+    args.high = args.high or (64 if args.ndim == 3 else 128)
+    args.low = args.low or (16 if args.ndim == 3 else 32)
+    if args.ndim == 3 and args.high > 64:
+        parser.error("3D laptop comparison is capped at 64³")
+    if not 0 < args.timeout <= 1800:
+        parser.error("require 0 < timeout <= 1800 seconds per simulation")
     if args.self_test:
         self_test()
         if args.exe is not None:
-            initial_file_checks(args.exe)
+            initial_file_checks(args.exe, 2)
+            initial_file_checks(args.exe, 3)
         return 0
     if args.output is None or (args.exe is None and not args.plot_only):
         parser.error("--output and (unless --plot-only) --exe are required")

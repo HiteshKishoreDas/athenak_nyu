@@ -16,7 +16,7 @@ import verify
 
 class ForcingVerification(verify.Verification):
     def run_forcing(self, name, enabled, sol_fraction, seed=42, tlim=1., rst=None,
-                    oracle=False, nscalars=2, ndim=3, overrides=None):
+                    oracle=False, nscalars=2, ndim=3, overrides=None, timeout=60):
         config = verify.parameters((verify.SOURCE/'inputs/hydro/sgs_verify.athinput').read_text())
         config.update({'job/basename':name, 'problem/mode':'uniform',
             'problem/velocity':'0', 'problem/k0':'1e-6', 'problem/pressure0':'1',
@@ -46,14 +46,15 @@ class ForcingVerification(verify.Verification):
             cmd = [str(self.exe), '-r', str(rst), f'job/basename={name}',
                    f'time/tlim={tlim}']
         row = dict(name=name, enabled=enabled, sol_fraction=sol_fraction,
-                   seed=seed, command=cmd, input_sha256=verify.sha(inp), status='running')
+                   seed=seed, command=cmd, input_sha256=verify.sha(inp), status='running',
+                   timeout_seconds=timeout)
         self.results.append(row)
         self.save()
         started = time.monotonic()
         try:
             with (wd/'run.log').open('w') as log:
                 proc = subprocess.run(cmd, cwd=wd, stdout=log, stderr=subprocess.STDOUT,
-                                      timeout=60)
+                                      timeout=timeout)
             row['returncode'] = proc.returncode
             if proc.returncode:
                 raise RuntimeError(f'execution returned {proc.returncode}')
@@ -138,7 +139,7 @@ class ForcingVerification(verify.Verification):
             row['status'] = 'pass' if all(c['passed'] for c in row['checks']) else 'fail'
             self.states[name] = (first,last,snapshots,hist)
         except subprocess.TimeoutExpired:
-            row.update(status='fail',error='60-second cap exceeded; retained as incomplete')
+            row.update(status='fail',error=f'{timeout}-second cap exceeded; retained as incomplete')
         except Exception as exc:
             row.update(status='fail',error=str(exc))
         row['seconds'] = time.monotonic()-started

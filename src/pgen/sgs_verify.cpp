@@ -36,40 +36,44 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     std::cerr << "sgs_verify requires ideal-gas hydro" << std::endl;
     std::exit(EXIT_FAILURE);
   }
-  // Test-only input: nx, ny, nvar; then y/x ordered conserved fields and K.
+  // Test-only input: nx, ny, [nz for 3D], nvar; then z/y/x conserved fields and K.
   // E excludes K. SGS-off files must provide zero K rather than lose energy.
   if (pin->DoesParameterExist("problem", "initial_state")) {
     const int nx = pin->GetInteger("mesh", "nx1");
     const int ny = pin->GetInteger("mesh", "nx2");
+    const int nz = pin->GetInteger("mesh", "nx3");
     const int nvar = pack->phydro->nhydro + pack->phydro->nscalars + 1;
     auto fail = []() {
-      std::cerr << "sgs_verify: invalid 2D initial_state file/layout/reservoir"
+      std::cerr << "sgs_verify: invalid initial_state file/layout/reservoir"
                 << std::endl;
       std::exit(EXIT_FAILURE);
     };
-    if (pin->GetInteger("mesh", "nx3") != 1 || pmy_mesh_->multilevel ||
+    if (pmy_mesh_->multilevel ||
         (pack->phydro->isgs >= 0 && !pack->phydro->sgs_pgen_initialization)) fail();
     std::ifstream input(pin->GetString("problem", "initial_state"));
-    int file_nx = 0, file_ny = 0, file_nvar = 0;
-    if (!(input >> file_nx >> file_ny >> file_nvar) || file_nx != nx ||
-        file_ny != ny || file_nvar != nvar) fail();
-    HostArray3D<Real> host("sgs_initial_host", ny, nx, nvar);
-    for (int j=0; j<ny; ++j) {
-      for (int i=0; i<nx; ++i) {
-        for (int n=0; n<nvar; ++n) {
-          if (!(input >> host(j,i,n)) || !std::isfinite(host(j,i,n))) fail();
+    int file_nx = 0, file_ny = 0, file_nz = 1, file_nvar = 0;
+    if (!(input >> file_nx >> file_ny) ||
+        (nz > 1 && !(input >> file_nz)) || !(input >> file_nvar) ||
+        file_nx != nx || file_ny != ny || file_nz != nz || file_nvar != nvar) fail();
+    HostArray4D<Real> host("sgs_initial_host", nz, ny, nx, nvar);
+    for (int k=0; k<nz; ++k) {
+      for (int j=0; j<ny; ++j) {
+        for (int i=0; i<nx; ++i) {
+          for (int n=0; n<nvar; ++n) {
+            if (!(input >> host(k,j,i,n)) || !std::isfinite(host(k,j,i,n))) fail();
+          }
+          Real rho = host(k,j,i,IDN);
+          Real kinetic = 0.0;
+          for (int n=IM1; n<=IM3; ++n) kinetic += SQR(host(k,j,i,n));
+          if (rho <= 0.0 || host(k,j,i,IEN) <= kinetic/(2.0*rho) ||
+              host(k,j,i,nvar-1) < 0.0 ||
+              (pack->phydro->isgs < 0 && host(k,j,i,nvar-1) != 0.0)) fail();
         }
-        Real rho = host(j,i,IDN);
-        Real kinetic = 0.0;
-        for (int n=IM1; n<=IM3; ++n) kinetic += SQR(host(j,i,n));
-        if (rho <= 0.0 || host(j,i,IEN) <= kinetic/(2.0*rho) ||
-            host(j,i,nvar-1) < 0.0 ||
-            (pack->phydro->isgs < 0 && host(j,i,nvar-1) != 0.0)) fail();
       }
     }
     std::string extra;
     if (input >> extra) fail();
-    DvceArray3D<Real> data("sgs_initial_data", ny, nx, nvar);
+    DvceArray4D<Real> data("sgs_initial_data", nz, ny, nx, nvar);
     Kokkos::deep_copy(data, host);
     const auto ind = pmy_mesh_->mb_indcs;
     const auto domain = pmy_mesh_->mesh_size;
@@ -83,9 +87,12 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
                            size.d_view(m).x1min, size.d_view(m).x1max);
       Real y = CellCenterX(j-ind.js, ind.nx2,
                            size.d_view(m).x2min, size.d_view(m).x2max);
+      Real z = CellCenterX(k-ind.ks, ind.nx3,
+                           size.d_view(m).x3min, size.d_view(m).x3max);
       int ix = static_cast<int>(nx*(x-domain.x1min)/(domain.x1max-domain.x1min));
       int iy = static_cast<int>(ny*(y-domain.x2min)/(domain.x2max-domain.x2min));
-      for (int n=0; n<count; ++n) u(m,n,k,j,i) = data(iy,ix,n);
+      int iz = static_cast<int>(nz*(z-domain.x3min)/(domain.x3max-domain.x3min));
+      for (int n=0; n<count; ++n) u(m,n,k,j,i) = data(iz,iy,ix,n);
     });
     return;
   }

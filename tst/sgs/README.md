@@ -248,3 +248,43 @@ solutions, compression/expansion PDE oracles, active diffusion limiting, arbitra
 hard-flow stability, multi-rank/GPU performance, converged turbulent reference
 accuracy and stationary campaign statistics remain open. Passing budgets is not
 evidence of closure accuracy or scientific benefit.
+
+### 3D comparison
+
+The same runner accepts `--ndim 3`. Laptop defaults become 64³ versus 16³,
+with a 32³ reference sensitivity check. Preparation still drives to t=2,
+followed by t=.5 unforced decay. All three directions have forcing modes,
+and all diagnostics use complete volumes. Field maps show central z-cell
+slices: native and coarse cell centers differ; the filtered reference and
+both coarse lanes share the same slice. Vorticity errors compare vectors.
+
+Rebuild the executable after updating the test initial-state loader, then run:
+
+```sh
+cmake --build build-sgs-laptop -j2
+/tmp/sgs-plot-env/bin/python -B tst/sgs/compare_resolution.py --self-test \
+  --exe build-sgs-laptop/src/athena
+/tmp/sgs-plot-env/bin/python -B tst/sgs/compare_resolution.py --ndim 3 \
+  --timeout 900 --exe build-sgs-laptop/src/athena \
+  --output /tmp/sgs-3d-resolution-comparison
+open /tmp/sgs-3d-resolution-comparison/index.html
+```
+
+Pilot with `--spinup .1 --decay .01` in a separate directory. 3D is capped at
+64³; the explicit `--timeout` bounds each simulation (at most 1800 seconds).
+Existing verification runners retain their original default caps and numerical
+thresholds. Timeouts and incomplete runs stay in the result ledger.
+
+The report adds initial/final stress and production checks with exact filtered K
+supplied, using the fixed published coefficients. `resolution_closure.py` checks
+aligned density-weighted covariance and physical derivative axes. Its coarse,
+cell-centered tau:gradient diagnostic tests the mathematical closure; it does
+not reproduce the native face-centered production discretization. All statistical
+metrics and spectra use full 3D volumes. Ten plot pages contain 47 panels.
+
+The test generator accepts `nx ny nz nvar` initial-state headers with z/y/x rows
+for 3D; the 2D `nx ny nvar` format remains supported. No solver changes.
+A 64³ reference with a four-to-one filter ratio is not established DNS. These
+single-seed decay runs cannot attribute every difference to dimensionality or
+establish statistical convergence. To compare the same cell counts in 2D,
+run `--ndim 2 --high 64 --low 16` with the same preparation/decay times.
