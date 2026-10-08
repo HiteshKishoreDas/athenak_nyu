@@ -1,0 +1,25 @@
+{
+  "plot_helper_sha256": "df6da44501ac993991caacb0e766d274a5cc699e2d24a4ab1c08a49fe279ca41",
+  "verified_packet_files_before_adding_verification": 210,
+  "plots": 28,
+  "successful_sequential_benchmark_runs": 18,
+  "native_state_command": "build-release/shock_encounter_test",
+  "native_state_exit": 0,
+  "native_state_stdout": "EVT01-08, EVT11-14 state checks PASS; seed72941; large typed IDs\n",
+  "visually_inspected": [
+    "2d_dens",
+    "rh_profiles",
+    "mach_errors",
+    "encounter_brackets",
+    "uniform_transport",
+    "restart_agreement",
+    "runtime_cost",
+    "output_cost",
+    "seed11_parents",
+    "mach5_strength_time",
+    "episode_counts",
+    "timing_bracket_widths"
+  ],
+  "first_plot_failure": "Matplotlib layout ValueError: cannot convert float NaN to integer on tiny all-zero restart axis; fixed display scaling and label transform, exact assertions unchanged",
+  "scientific_signoff": "pending"
+}

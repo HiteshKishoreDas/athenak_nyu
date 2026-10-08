@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-laptop-20261008/integration/delayed_inside/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-laptop-20261008/integration/delayed_inside",
+  "exit": 0,
+  "elapsed_seconds": 0.8325732499997684,
+  "input_sha256": "ca3ba84ebdb3ca2c433dc18514090bc1421742020e94afd180f6c676d352e1a1",
+  "log_sha256": "b908e2a83d20abec2518d07a928779d32d80100342cce1dc4befb13b1d8ae484",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "delayed_inside",
+  "expected_error": null,
+  "passed": true
+}

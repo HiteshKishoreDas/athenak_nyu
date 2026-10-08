@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-laptop-20261008/qualification/reflected/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-laptop-20261008/qualification/reflected",
+  "exit": 0,
+  "elapsed_seconds": 0.7184578329997748,
+  "input_sha256": "9aa7af4682c305d623f7d7720bba2e9eb74ca299f1e04070c216b8a6d75e4e0e",
+  "log_sha256": "6e3394bd84648d2ef2a550eb862b2ff3fd4302ee018742a63ccad27c93f890bb",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "reflected"
+}

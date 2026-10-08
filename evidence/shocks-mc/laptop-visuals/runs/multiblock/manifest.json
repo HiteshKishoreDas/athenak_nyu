@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-laptop-20261008/integration/multiblock/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-laptop-20261008/integration/multiblock",
+  "exit": 0,
+  "elapsed_seconds": 0.6781803750000108,
+  "input_sha256": "c993073bcdb7006234e1850ed86c857ed7d771ed9a33077482aa04ddbaadb081",
+  "log_sha256": "317d5a1893e20fd77ae8834d9d3eea9a2ae546141b463a246983db6238e7d923",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "multiblock",
+  "expected_error": null,
+  "passed": true
+}

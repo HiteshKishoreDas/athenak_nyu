@@ -37,3 +37,7 @@ Checked boxes refer to the named engineering evidence, not scientific approval.
 - [ ] M10: separate AMR, cooling/source, MHD and relativistic gates. Excluded here.
 
 See ledger.md for commands/results/failures and README.md for supported behavior.
+
+- [x] Requested laptop visual checks: fresh20engineering/21physical runs, native
+  state check, actual128×4 snapshots and18sequential small-job benchmarks;28plots
+  plus portablePDF/HTML/data/input/log packet. M8/M9scientific gates remain open.

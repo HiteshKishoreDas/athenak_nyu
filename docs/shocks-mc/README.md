@@ -166,3 +166,10 @@ Small local medians do not establish a production overhead budget.
 See checklist.md, ledger.md and the independent review/evidence packet under
 `evidence/shocks-mc/`. Physical reentries, weak-shock misses/bias and censored
 outcomes must remain visible during scientific review. No merge/push/release occurred.
+
+## Laptop plots
+
+See [laptop-tests.md](laptop-tests.md) for a one-command local runner, measured
+costs and figure interpretation. The fresh28plot gallery and complete PDF are in
+`evidence/shocks-mc/laptop-visuals/`; engineering passes and physical limits
+are shown together. Core production source remains3de18d97/3feb3b.

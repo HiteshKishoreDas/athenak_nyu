@@ -230,3 +230,22 @@ review3/ contains reviewer findings, accepted changes/hashes, exact commands/con
 inputs/logs, native ABI/old-layout probe and equivalence reports. Old packets retained
 with their own identities; raw grids/binaries are not committed. No new cross-rank,
 device, cluster, sustained performance or human scientific sign-off is claimed.
+
+## Requested local2D execution and28plot gallery — 2026-10-08
+
+Fresh commands used existing Release executable and ShockIt Python environment:
+`integration.py --executable build-release/src/athena --workdir /private/tmp/shock-mc-laptop-20261008/integration --report /private/tmp/shock-mc-laptop-20261008/integration-report.json`; matching qualification.py arguments use qualification paths.
+20engineering passed13.8254s;21physical runs measured28.0548s (run success, not physical approval).
+`MPLCONFIGDIR=/private/tmp/shock-mc-mpl .venv/bin/python tst/shocks-mc/laptop_visuals.py --executable build-release/src/athena --workdir /private/tmp/shock-mc-laptop-20261008 --output evidence/shocks-mc/laptop-visuals --reuse`
+completed28plots and18sequential benchmark runs. `.venv/bin/python` resolves to
+`/Users/hitesh/hitesh/git/shockit/.venv/bin/python`. An initial native snapshot
+preflight and failed plot attempt remain in the raw root and/private/tmp. First
+Matplotlib failure/repair are recorded in laptop-tests.md and verification.json.
+Exact restart equality and all numerical thresholds were retained. Native state
+unit passed;210initial packet hashes verified. Benchmark modes rotated order;
+medians and every actual command/input/log/digest are in report.json/runs.
+Raw1.2GB; compact9MB.12representative figures visually inspected.
+Known Mach5/boost/M1.5 outcomes match review3; no production source edits.
+Ponytail reused test/readers/installed libraries; no new framework.
+Scientific acceptance, resident-memory measurement, sustained performance and
+RUSTY/Frontier/MPI/GPU qualification remain pending.
