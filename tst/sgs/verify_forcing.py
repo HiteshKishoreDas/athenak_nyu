@@ -16,7 +16,7 @@ import verify
 
 class ForcingVerification(verify.Verification):
     def run_forcing(self, name, enabled, sol_fraction, seed=42, tlim=1., rst=None,
-                    oracle=False, nscalars=2):
+                    oracle=False, nscalars=2, ndim=3, overrides=None):
         config = verify.parameters((verify.SOURCE/'inputs/hydro/sgs_verify.athinput').read_text())
         config.update({'job/basename':name, 'problem/mode':'uniform',
             'problem/velocity':'0', 'problem/k0':'1e-6', 'problem/pressure0':'1',
@@ -34,8 +34,9 @@ class ForcingVerification(verify.Verification):
         if oracle:
             config['problem/forcing_oracle'] = 'true'
         for d in (1,2,3):
-            config[f'mesh/nx{d}'] = '16'
-            config[f'meshblock/nx{d}'] = '8'
+            config[f'mesh/nx{d}'] = '16' if d <= ndim else '1'
+            config[f'meshblock/nx{d}'] = '8' if d <= ndim else '1'
+        config.update(overrides or {})
         wd = self.output/name
         wd.mkdir()
         inp = wd/'input.athinput'

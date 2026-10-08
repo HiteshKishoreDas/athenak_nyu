@@ -37,6 +37,56 @@ validation campaign. `verify_forcing.py` provides capped pilots and measured-wor
 `filter_reference.py` and `test_filter_reference.py` require NumPy; their synthetic
 tests validate the analysis machinery, not the physical closure.
 
+## Laptop 2D visual report
+
+`laptop_2d.py` runs 22 small serial 2D simulations on 16² and 32² grids and
+checks 25 result records. It reuses the problem generator, native checkpoint
+reader and acceptance thresholds above. It leaves every input, checkpoint,
+history, log and result on disk, plus 15 PNG figures (92 panels), a PDF and
+an HTML gallery. The C++ solver is unchanged.
+
+From this SGS branch's checkout, build and run locally on a Mac:
+
+```sh
+cmake -S . -B build-sgs-laptop -DPROBLEM=sgs_verify \
+  -DCMAKE_BUILD_TYPE=Release -DAthena_ENABLE_MPI=OFF
+cmake --build build-sgs-laptop -j2
+python3 -m venv /tmp/sgs-plot-env
+/tmp/sgs-plot-env/bin/python -m pip install numpy matplotlib
+/tmp/sgs-plot-env/bin/python -B tst/sgs/laptop_2d.py --self-test
+/tmp/sgs-plot-env/bin/python -B tst/sgs/laptop_2d.py \
+  --exe build-sgs-laptop/src/athena --output /tmp/sgs-2d-report
+open /tmp/sgs-2d-report/index.html
+```
+
+Use a new output directory for each simulation run. To regenerate plots from
+saved results without rerunning the simulation:
+
+```sh
+/tmp/sgs-plot-env/bin/python -B tst/sgs/laptop_2d.py \
+  --plot-only --output /tmp/sgs-2d-report
+```
+
+Inspect `results.json` for thresholds and measured residuals, `manifest.json`
+for source/executable fingerprints, and each case's `input.athinput` to run or
+change one case yourself. If running the executable directly, use a fresh working
+directory so its output folders do not collide with saved results.
+
+The plots cover analytic uniform SGS decay and heat gain; RK2 time refinement;
+2D shear, diffusion and moving-contact profiles; box evolution and SGS-on/off
+maps; independent mass/energy/scalar budgets; zero-K, restart and block-layout
+checks; solenoidal/compressive driving; density-weighted shell spectra; solver
+elapsed time, throughput and admissibility. The standalone check validates image
+orientation, pressure conversion, periodic vorticity and FFT energy normalization.
+
+The contact oracle disables dissipation and SGS diffusion to isolate advection.
+Grid refinement changes the SGS filter width in the full-model cases, so those
+resolution comparisons are sensitivity checks. Driven boxes are t=1 pilots with
+three velocity components and kz=0, not stationary or reference-validated
+2D turbulence. Runtime bars use AthenaK's elapsed Kokkos timer (labelled `cpu time used`
+in the original log), with output included. They are single short local measurements;
+they are not a statistically controlled performance benchmark.
+
 ## Model and state
 
 The baseline is Schmidt & Federrath (2011), Eqs. (7)–(14):
