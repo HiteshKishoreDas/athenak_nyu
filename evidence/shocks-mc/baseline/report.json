@@ -1,0 +1,369 @@
+{
+  "scope": "baseline MC tracer qualification only, shock history unimplemented",
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+  "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+  "input_sha256": "be32d13293f1a2654c6b657c65015d822c9ae9d3dd37ecfba78a4e603670a0a7",
+  "predeclared_seeds": [
+    11,
+    29,
+    47,
+    83,
+    127,
+    211,
+    307,
+    401
+  ],
+  "runs": [
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed11/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed11",
+      "exit": 0,
+      "elapsed_seconds": 1.675808957999834,
+      "input_sha256": "30011bd476d3ed08d3b82e761d6e55250cebcfb424453a9a6775b68d83fd1844",
+      "log_sha256": "40892f7a1efcbb2d7fe92be6e2ce7e036c8aeeebd1eabf61ca63bc0fa73488fd",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed11"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed29/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed29",
+      "exit": 0,
+      "elapsed_seconds": 2.075014916999862,
+      "input_sha256": "2b6c04a9879762b5c88b7b1d644bea92914f47705a24551886e071f4731301af",
+      "log_sha256": "a459624d86c25743379aa87da01c1815bcb4134f569e706fae60c5a1d0a52ac5",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed29"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed47/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed47",
+      "exit": 0,
+      "elapsed_seconds": 1.689608832999511,
+      "input_sha256": "e856af21683a82946fab857b568026d08a98ddeb7416eda832b10cfa9d30d4fa",
+      "log_sha256": "aaab478b51dfdf564e0ab8c28c9402caa421c0c0722393dc812ba55654ae4e94",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed47"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed83/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed83",
+      "exit": 0,
+      "elapsed_seconds": 1.588524958000562,
+      "input_sha256": "2b194f1a4543f5c29cb75cce75c5976cf82706fab2e58a481f25cdd6a0f8a08b",
+      "log_sha256": "7c24561ce6d5d4d5bd1a774fb33788c984c5f4e8c7e293daf41b8e82845955b2",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed83"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed127/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed127",
+      "exit": 0,
+      "elapsed_seconds": 1.6014839170002233,
+      "input_sha256": "7077c346c0b70145cf34761698afef8e485ba7d884342b14929be3e86f9009eb",
+      "log_sha256": "79aee0f342df4aed26b9e8e6e1aed0b595d9ff7ead028b0772e444c69f643024",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed127"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed211/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed211",
+      "exit": 0,
+      "elapsed_seconds": 1.688738958000613,
+      "input_sha256": "e27f7d326ac310f070f285ce10829756bb059d2ddfd5bb9d3a304b6a6275b592",
+      "log_sha256": "ae3536ce2106ba86c6cc6003a258ca3aeb9e606a0b44607bb209189de70938a2",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed211"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed307/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed307",
+      "exit": 0,
+      "elapsed_seconds": 1.5913688749997164,
+      "input_sha256": "fe6f4652ac959ab20b63aafb59911fd5057d608cb6c938672b350ea69f8f827d",
+      "log_sha256": "7c6b75dc1eda75a55c493e4affc1cbb9da99a1bcc8873d3fd1780bdaa0488598",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed307"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed401/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_seed401",
+      "exit": 0,
+      "elapsed_seconds": 1.5944007910002256,
+      "input_sha256": "43257f3155181a95d637bf5ce709dc398470dc7bd7be7d3cd98890a6872b71be",
+      "log_sha256": "08261fc341de478e06fe8aa3113ca86b9c0ac5b7f53272f85b438b9ced5debc9",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed401"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/uniform_fourblocks/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/uniform_fourblocks",
+      "exit": 0,
+      "elapsed_seconds": 1.0868545419998554,
+      "input_sha256": "cf12e5f65e57cd7ccecd76439bb9ecae33b5ad35b8d39a0006f2d29c93e81623",
+      "log_sha256": "81ff8d21eb599197122a2e072e2809dcf59eb041c22d37f864355889cc7014b7",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_fourblocks"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/checkpoint/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/checkpoint",
+      "exit": 0,
+      "elapsed_seconds": 0.23521191600048041,
+      "input_sha256": "479e65d314b10bb4b8834c6a948c526985c6e34f529109d6dc1ec98aecb9172e",
+      "log_sha256": "fac1a16cf4dcadc5f8a965757c2d2e503da3d7c5925532b6964d7e7efaf0498a",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "checkpoint"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-baseline-thermo-replay/checkpoint/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "job/basename=mc_continued",
+        "output1/dt=-1"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/continuation",
+      "exit": 0,
+      "elapsed_seconds": 1.0799750000005588,
+      "input_sha256": "454cef41829b5dcac5fad397300d2fd499afe86142d3745c0ade9fe2bab140e4",
+      "log_sha256": "8854e7ba39b0642644c543708aa738c76fb7a3cc84afaa969b104ef4b8dda777",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "continuation"
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline-thermo-replay/zero/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline-thermo-replay/zero",
+      "exit": 0,
+      "elapsed_seconds": 0.7727251249998517,
+      "input_sha256": "97a07871240a696b3d12fe0bbd1315b8dc3354e24b341efa185e46ce088e2900",
+      "log_sha256": "6e6239ac5cbee6ff808b8e9709b4ec6a07e7f719d58004fd165c349ef1f11a74",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "zero"
+    }
+  ],
+  "uniform_moments": [
+    {
+      "particles": 4096,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 16.06201171875,
+      "observed_hops_variance": 13.429120640644078,
+      "mean_standard_errors": 1.0681172119217186,
+      "variance_standard_errors": -1.228964511486566,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle",
+      "seed": 11,
+      "legacy_identical_terminal_replay_rows": 4096
+    },
+    {
+      "particles": 4096,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 15.938232421875,
+      "observed_hops_variance": 13.509981148408883,
+      "mean_standard_errors": -1.063912026048011,
+      "variance_standard_errors": -0.965326570261463,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle",
+      "seed": 29,
+      "legacy_identical_terminal_replay_rows": 4096
+    },
+    {
+      "particles": 4096,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 15.978271484375,
+      "observed_hops_variance": 14.163386120173229,
+      "mean_standard_errors": -0.37426154275997225,
+      "variance_standard_errors": 1.1650377609055904,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle",
+      "seed": 47,
+      "legacy_identical_terminal_replay_rows": 4096
+    },
+    {
+      "particles": 4096,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 15.93994140625,
+      "observed_hops_variance": 13.900665588751526,
+      "mean_standard_errors": -1.0344757249320582,
+      "variance_standard_errors": 0.30846263002656676,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle",
+      "seed": 83,
+      "legacy_identical_terminal_replay_rows": 4096
+    },
+    {
+      "particles": 4096,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 16.006591796875,
+      "observed_hops_variance": 14.163814901461386,
+      "mean_standard_errors": 0.11354001859010394,
+      "variance_standard_errors": 1.1664357612294864,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle",
+      "seed": 127,
+      "legacy_identical_terminal_replay_rows": 4096
+    },
+    {
+      "particles": 4096,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 16.046142578125,
+      "observed_hops_variance": 13.536087680765416,
+      "mean_standard_errors": 0.7947801301307276,
+      "variance_standard_errors": -0.8802087218425287,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle",
+      "seed": 211,
+      "legacy_identical_terminal_replay_rows": 4096
+    },
+    {
+      "particles": 4096,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 16.0146484375,
+      "observed_hops_variance": 13.769748740842491,
+      "mean_standard_errors": 0.2523111524224532,
+      "variance_standard_errors": -0.11837921413806024,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle",
+      "seed": 307,
+      "legacy_identical_terminal_replay_rows": 4096
+    },
+    {
+      "particles": 4096,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 15.982177734375,
+      "observed_hops_variance": 13.747911837511447,
+      "mean_standard_errors": -0.3069785687806514,
+      "variance_standard_errors": -0.1895763460392503,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle",
+      "seed": 401,
+      "legacy_identical_terminal_replay_rows": 4096
+    }
+  ],
+  "limitations": [],
+  "scientific_signoff": "pending",
+  "elapsed_seconds": 29.22578304200033,
+  "local_migration": {
+    "count": 1024,
+    "identity_preserved": true,
+    "changed_gid": 1024,
+    "moments": {
+      "particles": 1024,
+      "steps": 117,
+      "expected_hops": 16.0,
+      "expected_variance": 13.806056881163725,
+      "observed_hops_mean": 15.896484375,
+      "observed_hops_variance": 12.331405028103617,
+      "mean_standard_errors": -0.8914994052260014,
+      "variance_standard_errors": -2.4031089839251574,
+      "mean_pass": true,
+      "variance_pass": true,
+      "statistical_assumption": "fixed hash draws tested as independent Bernoulli ensemble",
+      "scientific_signoff": "pending; no deterministic per-particle path oracle"
+    }
+  },
+  "restart": {
+    "checkpoint": "/private/tmp/shock-mc-baseline-thermo-replay/checkpoint/rst/shock_mc.00001.rst",
+    "checkpoint_sha256": "454cef41829b5dcac5fad397300d2fd499afe86142d3745c0ade9fe2bab140e4",
+    "first_restored_cycle": 18,
+    "exact_observations_equal": true,
+    "observations_compared": 102400
+  },
+  "zero": {
+    "observations": 0,
+    "passed": true
+  },
+  "status": "passed_selected_baseline_checks",
+  "baseline_commit": "526a187f938e38634e89a88192ebe9731c4d36bb",
+  "kokkos_revision": "08ceff92bcf3a828844480bc1e6137eb74028517",
+  "pinned_baseline_source_sha256": {
+    "src/particles/particles_lagrangian_mc.cpp": "2c3ce015541f81d0f12daa5176f4b86fa43061a30ceb341325610af4cec18115",
+    "src/particles/particles.cpp": "597d804ec263162c8e0bdc391034b67d6d8e462f25b1c78430df709f4a69cd44",
+    "src/particles/particles.hpp": "11868a098b81b53cfda0bb3aab835f9c6511b8c8ebacdeb52329f40415453194",
+    "src/particles/particles_tasks.cpp": "24da2b5dcef92ae6b0039382fbdeb9b9891f5b6b43c98510545d1e978ee8bbf4",
+    "src/hydro/hydro_fluxes.cpp": "7f25c8e8496c4446cdff8ba6e924259251bda6e0bdea9d0e2b3f5e4dc2c7f447",
+    "src/outputs/prtcl_thermo_history.cpp": "7da57e53874315bafbb3d1d256557d6b1d5e6c4f17c39f66b3c8bb6dea79e00c",
+    "src/outputs/restart.cpp": "38baf1a637804284ba39a10a184141bb22735e856d15e312fe80428186ff51f1",
+    "src/driver/driver.cpp": "42672f011604b016ce86d946472866406120717dbb2104119399a561e11132f4"
+  },
+  "build_cache_sha256": "506382bac0aebe261b09eec8c21ce64e900e5d1a48077decb2c2d9ed6bef9b94",
+  "runner_sha256": "6a09d834527b181107e95982cb4b9f93f42f1e0858f143092af875ff87c80829",
+  "frozen_criteria_sha256": "3a4df0c10ee0e556e1fc50519f7517471a0ccf4f996cbae7bd3b335a8627cd18",
+  "legacy_output_limitation": "dcycle1 existing thermo output appends identical terminal rows; analysis permits exact replay only and reports counts; shock event reader unchanged strict"
+}

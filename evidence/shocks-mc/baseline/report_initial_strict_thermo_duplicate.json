@@ -1,0 +1,38 @@
+{
+  "scope": "baseline MC tracer qualification only, shock history unimplemented",
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+  "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+  "input_sha256": "be32d13293f1a2654c6b657c65015d822c9ae9d3dd37ecfba78a4e603670a0a7",
+  "predeclared_seeds": [
+    11,
+    29,
+    47,
+    83,
+    127,
+    211,
+    307,
+    401
+  ],
+  "runs": [
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-baseline/uniform_seed11/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-baseline/uniform_seed11",
+      "exit": 0,
+      "elapsed_seconds": 2.0397678749995976,
+      "input_sha256": "30011bd476d3ed08d3b82e761d6e55250cebcfb424453a9a6775b68d83fd1844",
+      "log_sha256": "9f16bd3cec132dd3ac3fee36d72f85414d1010b822fa1a25daa6bad0cb94b49b",
+      "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+      "label": "uniform_seed11"
+    }
+  ],
+  "uniform_moments": [],
+  "limitations": [],
+  "scientific_signoff": "pending",
+  "elapsed_seconds": 2.8956520829997316,
+  "status": "failed",
+  "error": "ValueError('duplicate thermo observation identity')"
+}
