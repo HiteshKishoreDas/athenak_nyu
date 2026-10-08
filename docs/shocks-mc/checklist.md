@@ -26,7 +26,8 @@ Checked boxes refer to the named engineering evidence, not scientific approval.
 - [ ] M8: held-out physical measurements/performance; owner tolerance/budget acceptance.
 - [ ] M8: supported-physics turbulence pilot, production-scale cluster qualification.
 - [x] M9 engineering evidence: reproducible docs, independent integrated review
-  and exact-code bundle; clean-checkout core reproduction recorded below.
+  and exact-code bundle; clean archived full Release build plus state, 53-case parity
+  and 20-process serial integration reproduction passes (clean-reproduction/).
 - [ ] M9.6: human review of exact code/evidence. Scientific sign-off remains pending.
 - [ ] M9.7–8: PR/release action if requested; R1 is not declared release-ready.
 - [ ] M10: separate AMR, cooling/source, MHD and relativistic gates. Excluded here.

@@ -1,0 +1,66 @@
+{
+  "source_archive_commit": "42bcf12cf57d8e834b80f39f08b3f5603b24e0a4",
+  "source_fingerprint": "78e5cb1d425daaa8ab2e06deaa40db6c8249de79cd1480c7d0b069fd1587f7c3",
+  "scope": "Clean git archive plus clean pinned Kokkos source copy; full Release Serial executable and core serial suite. No new scientific, cluster or cross-rank acceptance.",
+  "configure_command": [
+    "cmake",
+    "-S",
+    "/private/tmp/shock-mc-clean-42bcf12c",
+    "-B",
+    "/private/tmp/shock-mc-clean-42bcf12c/build",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DAthena_SHOCK_TESTS=ON"
+  ],
+  "build_command": [
+    "cmake",
+    "--build",
+    "/private/tmp/shock-mc-clean-42bcf12c/build",
+    "-j8"
+  ],
+  "configure_exit": 0,
+  "build_exit": 0,
+  "tests": [
+    {
+      "command": [
+        "build/shock_encounter_test"
+      ],
+      "cwd": "/private/tmp/shock-mc-clean-42bcf12c",
+      "exit": 0,
+      "seconds": 0.25427387499985343
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+        "tst/shocks/parity.py",
+        "build/shock_detector_test",
+        "--reference",
+        "evidence/shocks/reference",
+        "--report",
+        "/private/tmp/shock-mc-clean-results/parity.json"
+      ],
+      "cwd": "/private/tmp/shock-mc-clean-42bcf12c",
+      "exit": 0,
+      "seconds": 0.8352569159997074
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+        "tst/shocks-mc/integration.py",
+        "--executable",
+        "build/src/athena",
+        "--workdir",
+        "/private/tmp/shock-mc-clean-integration",
+        "--report",
+        "/private/tmp/shock-mc-clean-results/integration.json"
+      ],
+      "cwd": "/private/tmp/shock-mc-clean-42bcf12c",
+      "exit": 0,
+      "seconds": 14.144933834000767
+    }
+  ],
+  "executable_sha256": "d2edc6cf634b20bbf66b66a834ad521cc7bbe5ed866ec6392262d3c1d62cbd9b",
+  "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+  "encounter_executable_sha256": "cdfa31b627d27dc03a8b33ec0a749cc93336e7129a60c0082ec598e56f33c333",
+  "build_cache_sha256": "053ab7d033cebe52ba5f64b53850264072427a703603d461fcf9e6a9daf43dc8",
+  "retention": "Inputs/logs/parity fixtures/reports retained; binaries and complete simulation outputs remain in named local directories."
+}

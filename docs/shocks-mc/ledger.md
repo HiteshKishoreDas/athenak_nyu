@@ -119,3 +119,32 @@ durable generation chunks; empty-particle controls are reported separately.
 No production throughput/scaling or acceptable overhead budget is inferred.
 RUSTY/Frontier were not accessed; node/backend/rank/cell/particle scale and allowed
 runtime/memory/I/O overhead are outstanding deployment decisions.
+
+
+## Clean archived reproduction and final packet (M9)
+
+Archived `42bcf12c` using `git archive`, extracted to
+`/private/tmp/shock-mc-clean-42bcf12c`, and copied the clean pinned Kokkos source
+without `.git`. Configured Release Serial with `-DAthena_SHOCK_TESTS=ON` and
+built all targets with `-j8`; exit0. Compiled source fingerprint remains78e5.
+The clean executable passes the native encounter state suite, all53parity cases
+with unchanged tolerances, and all20serial integration processes including
+all-phase restart and feature-off noninterference. Exact commands, logs, input
+copies, retained fixtures, executable/cache hashes and archive provenance are
+in `evidence/shocks-mc/clean-reproduction/`. This is a clean full build and core
+suite reproduction, not a repeat of every heldout/cluster gate.
+
+Final packet includes explicit four-mode CMake caches/generated configuration,
+actual two-rank pre-launch failure log, source hashes verified against the
+independent review, and a noncircular file manifest (manifest itself excluded).
+No production source changed after38c55570. Human review, broader physical
+association, multi-rank/device execution and deployment budgets remain pending.
+
+
+Packet collection notes: the first final-manifest invocation used system Python
+without NumPy and aborted before writing a manifest; rerun with the recorded
+ShockIt virtual environment. Raw copied CMake caches/generated headers/configure
+logs retain their exact trailing whitespace/terminal blank lines; whole-packet
+`git diff --cached --check` therefore reports these generated-artifact findings.
+Source/tests/documentation diff checks remain clean. Artifacts were not normalized,
+so their saved hashes continue to match the build inputs actually used.

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/private/tmp/shock-mc-clean-42bcf12c/build/src/athena",
+    "-r",
+    "/private/tmp/shock-mc-clean-integration/seed_outside/rst/shock_mc.00001.rst",
+    "time/nlim=-1",
+    "output1/dt=-1",
+    "job/basename=continued_outside"
+  ],
+  "directory": "/private/tmp/shock-mc-clean-integration/resume_outside",
+  "exit": 0,
+  "elapsed_seconds": 0.6780757500000618,
+  "input_sha256": "a68fffaa69f649c0df64ebb6ecb4bd2433323f3016ff333fab7108b05f6a833b",
+  "log_sha256": "a1da38619d8c06e8137bf328ff42a8ec7d31ac91d16c80d1f96d1c7e363c48b8",
+  "executable_sha256": "d2edc6cf634b20bbf66b66a834ad521cc7bbe5ed866ec6392262d3c1d62cbd9b",
+  "label": "resume_outside",
+  "expected_error": null,
+  "passed": true
+}

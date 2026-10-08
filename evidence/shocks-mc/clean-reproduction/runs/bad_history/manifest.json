@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/private/tmp/shock-mc-clean-42bcf12c/build/src/athena",
+    "-r",
+    "/private/tmp/shock-mc-clean-integration/bad_history_artifacts/rst/shock_mc.00001.rst",
+    "output1/dt=-1",
+    "shock_tracking/directory=/private/tmp/shock-mc-clean-integration/bad_history_artifacts/shock_events"
+  ],
+  "directory": "/private/tmp/shock-mc-clean-integration/bad_history",
+  "exit": 1,
+  "elapsed_seconds": 0.0105848330003937,
+  "input_sha256": "1c25fb194a02d9215d8a87cb2930eb20099c553218ce0fd19499b33c7b8eca64",
+  "log_sha256": "787d7f1a1d1073ef7404830588a09c7058e3c8e861f0cb5eb38b22fc017b3af0",
+  "executable_sha256": "d2edc6cf634b20bbf66b66a834ad521cc7bbe5ed866ec6392262d3c1d62cbd9b",
+  "label": "bad_history",
+  "expected_error": "history corrupted",
+  "passed": true
+}

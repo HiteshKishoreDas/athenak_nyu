@@ -7,7 +7,10 @@ Final core fingerprint
 Scientific sign-off pending. Local commits are not remote pushes/releases.
 
 - `baseline`: frozen criteria, existing MC statistical/restart results and failures.
-- `environment`: exact tool/build/parity logs and selected baseline identity.
+- `environment`: exact tool/build/parity logs, four CMake caches/generated configs
+  and selected baseline identity.
+- `clean-reproduction`: clean archived full Release build, native state suite,
+  53-case parity and 20-process serial integration; commands/inputs/logs retained.
 - `review`: independent timing/persistence audit and26source hashes; style-only
   source equivalence recorded. Source review is separate from native runtime tests.
 - `integration/report_stylefinal.json`:20successful finalRelease processes.

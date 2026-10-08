@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/shock-mc-clean-42bcf12c/build/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-clean-integration/multiblock/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-clean-integration/multiblock",
+  "exit": 0,
+  "elapsed_seconds": 0.7310989580000751,
+  "input_sha256": "381431a6a6307a631c3bdded8ff40e8bc48d33035b06a2c574e1814e99d46f01",
+  "log_sha256": "8d918c487aaa42cae894e08bd3a79a2b3a8e8ebee67b95db31a8eb38e91f217e",
+  "executable_sha256": "d2edc6cf634b20bbf66b66a834ad521cc7bbe5ed866ec6392262d3c1d62cbd9b",
+  "label": "multiblock",
+  "expected_error": null,
+  "passed": true
+}
