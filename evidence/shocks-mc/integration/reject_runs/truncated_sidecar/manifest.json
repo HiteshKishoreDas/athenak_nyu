@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-r",
+    "/private/tmp/shock-mc-rejects-stylefinal/truncated_sidecar_artifacts/rst/shock_mc.00001.rst",
+    "output1/dt=-1",
+    "shock_tracking/directory=/private/tmp/shock-mc-rejects-stylefinal/truncated_sidecar_artifacts/shock_events"
+  ],
+  "directory": "/private/tmp/shock-mc-rejects-stylefinal/truncated_sidecar",
+  "exit": 1,
+  "elapsed_seconds": 0.004933958998663002,
+  "input_sha256": "cce3739bfdba096bab3877faee843e2e7f146d2af8be3103eea818e9f18f0f55",
+  "log_sha256": "7f826901e7b54f96afaf92f2013b385969bf7eed71ca72270e90ce5e6b3c0235",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "truncated_sidecar",
+  "expected_diagnostic": "sidecar",
+  "passed": true
+}

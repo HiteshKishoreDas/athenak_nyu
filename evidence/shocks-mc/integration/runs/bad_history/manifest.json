@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-r",
+    "/private/tmp/shock-mc-integration-stylefinal/bad_history_artifacts/rst/shock_mc.00001.rst",
+    "output1/dt=-1",
+    "shock_tracking/directory=/private/tmp/shock-mc-integration-stylefinal/bad_history_artifacts/shock_events"
+  ],
+  "directory": "/private/tmp/shock-mc-integration-stylefinal/bad_history",
+  "exit": 1,
+  "elapsed_seconds": 0.010522459000640083,
+  "input_sha256": "b0500941e9ad6a4b44c2fd276dd1a174615075fb37e23d6f17d5f3ca7b1fec03",
+  "log_sha256": "787d7f1a1d1073ef7404830588a09c7058e3c8e861f0cb5eb38b22fc017b3af0",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "bad_history",
+  "expected_error": "history corrupted",
+  "passed": true
+}

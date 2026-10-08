@@ -1,0 +1,36 @@
+/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/scripts/style/cpplint.py:6485: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(cfg_file, 'r', 'utf8', 'replace') as file_handle:
+/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/scripts/style/cpplint.py:6587: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(filename, 'r', 'utf8', 'replace') as target_file:
+src/driver/driver.cpp:540:  Redundant blank line at the end of a code block should be deleted.  [whitespace/blank_line] [3]
+src/main.cpp:35:  <system_error> is an unapproved C++11 header.  [build/c++11] [5]
+src/main.cpp:127:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/main.cpp:466:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/main.cpp:294:  Add #include <vector> for vector<>  [build/include_what_you_use] [4]
+src/outputs/restart.cpp:208:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/outputs/restart.cpp:211:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/outputs/restart.cpp:318:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/outputs/restart.cpp:319:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/outputs/restart.cpp:406:  Add #include <vector> for vector<>  [build/include_what_you_use] [4]
+src/particles/particles_lagrangian_mc.cpp:498:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/particles/particles_lagrangian_mc.cpp:771:  If an else has a brace on one side, it should have it on both  [readability/braces] [5]
+src/particles/particles_lagrangian_mc.cpp:775:  If an else has a brace on one side, it should have it on both  [readability/braces] [5]
+src/particles/particles_lagrangian_mc.cpp:779:  If an else has a brace on one side, it should have it on both  [readability/braces] [5]
+src/particles/particles_lagrangian_mc.cpp:816:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/particles/particles_lagrangian_mc.cpp:817:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/particles/particles_lagrangian_mc.cpp:819:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/particles/particles_lagrangian_mc.cpp:820:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/particles/particles_lagrangian_mc.cpp:822:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/particles/particles_lagrangian_mc.cpp:823:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+Done processing src/bvals/bvals.hpp
+Done processing src/bvals/bvals_part.cpp
+Done processing src/driver/driver.cpp
+Done processing src/main.cpp
+Done processing src/outputs/restart.cpp
+Done processing src/particles/particles.cpp
+Done processing src/particles/particles.hpp
+Done processing src/particles/particles_lagrangian_mc.cpp
+Done processing src/particles/shock_particles.cpp
+Done processing src/shocks/detector.hpp
+Done processing src/shocks/encounter.hpp
+Total errors found: 20

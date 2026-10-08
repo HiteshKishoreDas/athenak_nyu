@@ -1,0 +1,119 @@
+{
+  "scope": "MC full-region recovery measured; no exact physical path/crossing-time estimator",
+  "physical_acceptance": "owner stochastic recovery/strength/timing thresholds pending",
+  "experimental_defaults": {
+    "width": 4,
+    "min_mach": 1.1,
+    "integrator": "rk2"
+  },
+  "runs": [
+    {
+      "label": "seed11",
+      "input_sha256": "75e885202643460c018cf1a1c5fb39dc95ac0509d206c1a4e572fc7c7615c74a",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "seed29",
+      "input_sha256": "a529eca286c1a7e9202927938c8793c7b1a2e984db2dcfb155106bffe9ba955b",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "seed47",
+      "input_sha256": "ce6f51949d8952f084ceaca98f424eeffc98522acce81819b8ce18c821e1a0f3",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "seed83",
+      "input_sha256": "f1f7c29b3844de86a2c5946ad64156f658533a2507b3aaff2a805e827e1dcd45",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "seed127",
+      "input_sha256": "4c576e239ae459bd4623743258e02926fe7971e3fdfb2e2f64de3b937cc4691e",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "seed211",
+      "input_sha256": "0f821bd60bcbb7f7a480126c8d09873edebf8b6c37913eaef16f7d5f59a40fb6",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "seed307",
+      "input_sha256": "f642e955ca63867f329d3d53d5546440b01b392f3e8dfbd9b4c068964793a369",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "seed401",
+      "input_sha256": "9a9d641c035f3da5b78760934a4831a3e22ec855d5255b8244b502888f1a2bdd",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "mach1.2",
+      "input_sha256": "58cdb6846f0d2086d06ca1e15415e07c619acecf60c739f7caa71038ffad98b9",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "mach1.5",
+      "input_sha256": "28e894835c73327b08872ee9c1df91d420d65d155f2d26a233c2595fe5da6cad",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "mach3",
+      "input_sha256": "d2de0c97b156ed9709117f9b10b7a345351b2b65c393289d06c40fcfa506b1b8",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "mach5",
+      "input_sha256": "7aafc3138e384ba80e05a8d94f84cac7294a19db0dea6aba8ba7a1f52af89d9c",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "gamma53",
+      "input_sha256": "d299a547c59cf478e0f7d02901bb1f503f3f08c98d595eb928674770fee23ba6",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "stationary",
+      "input_sha256": "686cd00abdf3709b7c214f2e9a1c8cc368ba54c862019848c8dcecf5de131ba3",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "boost2",
+      "input_sha256": "961310b60240f34af57cb935a6e5d65c9dbe2e311aff52194ed883fabc2efd25",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "reflected",
+      "input_sha256": "79d76077a2eb09262762bbb2defa737672a3a5bc635c2e58bbfe499e9b3a79b8",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "nx64",
+      "input_sha256": "8d173ff062dc3e3a27b754b7a4bdc2c64e9e4b4cc8dfe6c6e138d1a132501843",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "nx256",
+      "input_sha256": "8f352f3e28b992bcccc78a43e13aa2f91448072a6e76f0a06889057b7fe4b6c5",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "cfl0.15",
+      "input_sha256": "4d3cc78a88227a64dac4c7bcc8844afc00a9f44d137c84d974c32e9e1b2f42cc",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "cfl0.45",
+      "input_sha256": "3fd2653609e5f32aa62ad80b00a70b971fe53b10952bc6b90ea257e8434aa16c",
+      "status": "prepared_unrun"
+    },
+    {
+      "label": "planar3d",
+      "input_sha256": "be5df434faf25499b08913c2504ca9604055a444a753fe84c0ae73d46228221d",
+      "status": "prepared_unrun"
+    }
+  ],
+  "measurements": [],
+  "elapsed_seconds": 0.02624424999976327,
+  "status": "prepared_unrun"
+}

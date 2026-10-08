@@ -1,0 +1,29 @@
+-- Setting default Kokkos CXX standard to 17
+-- Kokkos version: 4.4.0
+-- The project name is: Kokkos
+-- Using internal gtest for testing
+-- Using -std=c++17 for C++17 standard as feature
+-- Built-in Execution Spaces:
+--     Device Parallel: NoTypeDefined
+--     Host Parallel: NoTypeDefined
+--       Host Serial: SERIAL
+-- 
+-- Architectures:
+-- Using internal desul_atomics copy
+-- Experimental mdspan support is enabled
+-- Using internal mdspan directory /Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/mdspan/include
+-- Kokkos Backends: SERIAL
+-- Configuring done (0.6s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release
+[  1%] Built target kokkossimd
+[  1%] Built target AlwaysCheckGit
+[ 10%] Built target kokkoscore
+[ 11%] Built target impl_git_version
+[ 12%] Built target kokkoscontainers
+[ 14%] Built target shock_encounter_test
+[ 15%] Built target shock_detector_test
+[ 16%] Building CXX object src/CMakeFiles/athena.dir/particles/particles_lagrangian_mc.cpp.o
+[ 16%] Building CXX object src/CMakeFiles/athena.dir/particles/particles.cpp.o
+[ 17%] Linking CXX executable athena
+[100%] Built target athena

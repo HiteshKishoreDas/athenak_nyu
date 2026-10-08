@@ -1,0 +1,11 @@
+Old compiled contract stored in native v2 sidecar:
+experimental-mc-m2
+v1-entry-upstream-logdistance-mc-massflux-rk2-temperature-nearest-reference6f5ec8bc 8b1226ee7759e5e2dc7b116c4f515a83b94e59b8525ac63a27ad75172ef024e3 8 1.3999999999999999 4 1.1000000000000001 1000 1.0000000000000001e-30 0 0 0 rk2 plm hllc 0.29999999999999999 128 4 1 128 4 1 0 1 0 0.10000000000000001 0 0.10000000000000001 3 3 6 6 -1 -1 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 0 0 rng 11 schedules 1 1 0 0 -1 128 903 0 3 0 1 0 0.10000000000000001 0 0.10000000000000001 0.5 0.050000000000000003 0.050000000000000003 0 1 0.45000000000000001 0.75 0 density 0 0 0 0
+
+Default EOS floors serialized in fluid input:
+dfloor      = 1.17549e-38 # Default value added at run time
+pfloor      = 1.17549e-38 # Default value added at run time
+tfloor      = 1.17549e-38 # Default value added at run time
+sfloor      = 1.17549e-38 # Default valu
+
+Native sidecar source path: /private/tmp/shock-mc-integration-final/seed_outside/rst/shock_mc.00000.rst.shock.rank0

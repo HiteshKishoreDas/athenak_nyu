@@ -1,0 +1,11 @@
+{
+  "status": "frozen before modified binary outcomes",
+  "test_id": "TRC11",
+  "source_parent": "exact existing thermo GID and cell-center coordinates at previous generation",
+  "bin": "exact t_start=t_previous and t_end=t_current, one record per pushed particle",
+  "probability_oracle": "uniform density1, velocity1, dx1/64: [0,u*(t_end-t_start)/dx,0,0,0,0]",
+  "roundoff_tolerance": 1e-12,
+  "draw_direction": "0<=draw<1; direction2 iff draw<rightgoing probability, else0",
+  "realized_cell_hop": "observed wrapped displacement is0 or dx according to logged direction",
+  "limits": "does not invert RNG or infer deterministic physical trajectory; general shock probabilities recorded for later scientific review"
+}

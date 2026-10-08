@@ -62,3 +62,60 @@ removed. Suspended output is also bounded by event_capacity.
 
 Pending results are appended as final runs/review complete. No GPU or remote cluster
 was used. RUSTY/Frontier are requested deployment targets, not tested hardware.
+
+## Final supported engineering evidence (78e5 source)
+
+Production commit `38c55570`, based on `e58c482d` M0 baseline record. Core source
+fingerprint `78e5cb1d425daaa8ab2e06deaa40db6c8249de79cd1480c7d0b069fd1587f7c3`.
+Independent review verifies26source files and closes identified source blockers;
+it does not supply runtime/scientific approval. Exact runtime commands/configs,
+executable and build-cache hashes appear in the linked JSON run manifests.
+
+| Milestone/test scope | Actually executed | Result/remaining gate |
+| --- | --- | --- |
+| M0/G0 | Baseline Debug;8seeds4096MCtracers; zero/fourblock/restart | Statistical bounds and102400exact continuation records pass |
+| M1/G1 | Frozen numerical/MC/support definitions and independent RH fixtures | User branch/tracer accepted; physical release tolerances remain experimental |
+| M2/G2 | Debug/Release/MPI-compiled native state tests;53case parity suites | Exact masks and1e-12 field tolerances; no changed oracle |
+| M3/M4 |20finalRelease integration runs; synchronized .thp comparison; TRC11source/probability/draw/time-bin evidence | Exact on/off fluid/MC records and valid timing pass |
+| M5 pilot |8M2seeds128tracers each; independent conditional analytic-front bins |128events/128unique parent-front change bins each; no exact material crossing time claimed |
+| M6 local |18actual-boundary fixtures; OUTSIDE/ACTIVE/PENDING restart;12reject and4replay processes;13active domain-exit records | Complete state and local replay/censoring pass; real cross-rank and storage failure remain untested |
+| M7 local |3build modes;6existing linear-wave runs each on baseline/final; noninterference; style and encounter sanitizers | Unchanged wave thresholds/error tables pass;0introduced style findings; limited sanitizers pass |
+| M7 MPI |Successful MPI build/directsingleton; actual2rank launcher attempt |2rank exit213 before AthenaK: PMIx runtime6.1.0 versus PRRTE build5.0.9; no multirank/GPU pass |
+| M8 measured |21heldout physical runs,4frontplots, local small-job timings | Physical acceptance/budget pending; strong/boosted association failures retained |
+| M9 engineering |Source review, docs/schema, scoped evidence ledger/manifest | Human exact-code sign-off pending; no release/push |
+
+Final detector command:
+`python tst/shocks/parity.py build-release/shock_detector_test --reference
+ evidence/shocks/reference --report <report>`; field tolerances unchanged.
+Final integration/qualification commands are in `evidence/shocks-mc/README.md`.
+`python tst/shocks/system_mc.py --executable build-release/src/athena --baseline
+ build-baseline/src/athena --mpi build-mpi/src/athena --workdir <newdir> --report
+ <report>` runs the bounded existing hydro subset, small local timings and launcher
+checks. Existing hydro regression still names removed parameter `vflow`; the
+wrapper maps it to the documented equivalent `vx0` without changing thresholds.
+The initial stale-runner failure was retained. Whole-repo style is not clean:
+20warnings/19unique inherited findings remain; baseline22unique, introduced0.
+
+Final full-precision replay failure corrected in production: GetOrAddReal encoded
+FLT_MIN as1.17549e-38, while active EOS used1.1754943508222875e-38. SetRealPrecise
+now writes bound native floors/seed defaults with max_digits10; exact comparisons
+remain unchanged. All authentic all-phase continuation cases pass again. Earlier
+failed crash/reader-key/floor-serialization fixtures are retained compactly.
+
+HeldoutM5:134events/128unique, six IDs have2episodes, although actual MC parents
+show128analytic-front change bins. BoostedM2:132events/127unique plus1suspended;
+five IDs have2episodes. Its MC parents show209positive-to-nonpositive front-distance
+bins, illustrating stochastic return ambiguity;200bins lie in retained event
+ envelopes. These bins describe observed cell parents, not continuous material
+paths. M1.2:128events, pressure-Mach error range[-.103117,-.0156752]; M1.5:
+127completed+1suspended at cutoff. No detector/exit thresholds were retuned to
+remove these outcomes. Strength comes from first-inside fixed endpoints and is
+not a certified plateau measurement. `parent_front_bins.json` records the
+independent observable-bin definition and every match.
+
+Small quiet-run whole-process medians (3trials,1024particles,64×4/256×4cells)
+full/off ratios 3.229/2.599. Includes startup, detector/tracking and
+durable generation chunks; empty-particle controls are reported separately.
+No production throughput/scaling or acceptable overhead budget is inferred.
+RUSTY/Frontier were not accessed; node/backend/rank/cell/particle scale and allowed
+runtime/memory/I/O overhead are outstanding deployment decisions.

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-r",
+    "/private/tmp/shock-mc-rejects-stylefinal/corrupt_fluid_artifacts/rst/shock_mc.00001.rst",
+    "output1/dt=-1",
+    "shock_tracking/directory=/private/tmp/shock-mc-rejects-stylefinal/corrupt_fluid_artifacts/shock_events"
+  ],
+  "directory": "/private/tmp/shock-mc-rejects-stylefinal/corrupt_fluid",
+  "exit": 1,
+  "elapsed_seconds": 0.004841750000196043,
+  "input_sha256": "6a3ef965c9f4750e5e1ae5069940856909c529943d367586fcc2a53f9306f9b6",
+  "log_sha256": "59726d3f6045d3d91f119cd9e042995a565e810ce2d8046d4de2f61e380a5bbc",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "corrupt_fluid",
+  "expected_diagnostic": "checksum",
+  "passed": true
+}

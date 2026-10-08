@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks/system_mc.py", line 109, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks/system_mc.py", line 49, in main
+    module.run()
+    ~~~~~~~~~~^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/scripts/hydro/hydro_linwave.py", line 50, in run
+    athena.run('tests/linear_wave_hydro.athinput', args_l)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks/system_mc.py", line 47, in existing_run
+    if completed.returncode:raise RuntimeError('legacy wave run failed')
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: legacy wave run failed

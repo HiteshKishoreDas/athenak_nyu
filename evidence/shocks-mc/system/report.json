@@ -1,0 +1,770 @@
+{
+  "final": {
+    "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a",
+    "compiled_source_fingerprint": "8b1226ee7759e5e2dc7b116c4f515a83b94e59b8525ac63a27ad75172ef024e3",
+    "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b"
+  },
+  "baseline": {
+    "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+    "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+    "build_cache_sha256": "506382bac0aebe261b09eec8c21ce64e900e5d1a48077decb2c2d9ed6bef9b94"
+  },
+  "mpi": {
+    "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/src/athena",
+    "executable_sha256": "6ae4a77516dd4dac5fb5c7b5362b61d93d6fbcf3cd4c107e7951520235879951",
+    "compiled_source_fingerprint": "8b1226ee7759e5e2dc7b116c4f515a83b94e59b8525ac63a27ad75172ef024e3",
+    "build_cache_sha256": "9485d814073a0afa82dc749f9001a37ff3d8966d03ee734eb0a6b0d6203c2bc8"
+  },
+  "regressions": [
+    {
+      "name": "baseline",
+      "six_existing_wave_runs": true,
+      "unchanged_thresholds_passed": true,
+      "commands": [
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=16",
+          "mesh/nx2=8.0",
+          "mesh/nx3=8.0",
+          "meshblock/nx1=4.0",
+          "meshblock/nx2=4.0",
+          "meshblock/nx3=4.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=0",
+          "problem/vx0=0.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=16",
+          "mesh/nx2=8.0",
+          "mesh/nx3=8.0",
+          "meshblock/nx1=4.0",
+          "meshblock/nx2=4.0",
+          "meshblock/nx3=4.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=4",
+          "problem/vx0=0.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=16",
+          "mesh/nx2=8.0",
+          "mesh/nx3=8.0",
+          "meshblock/nx1=4.0",
+          "meshblock/nx2=4.0",
+          "meshblock/nx3=4.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=3",
+          "problem/vx0=1.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=32",
+          "mesh/nx2=16.0",
+          "mesh/nx3=16.0",
+          "meshblock/nx1=8.0",
+          "meshblock/nx2=8.0",
+          "meshblock/nx3=8.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=0",
+          "problem/vx0=0.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=32",
+          "mesh/nx2=16.0",
+          "mesh/nx3=16.0",
+          "meshblock/nx1=8.0",
+          "meshblock/nx2=8.0",
+          "meshblock/nx3=8.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=4",
+          "problem/vx0=0.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=32",
+          "mesh/nx2=16.0",
+          "mesh/nx3=16.0",
+          "meshblock/nx1=8.0",
+          "meshblock/nx2=8.0",
+          "meshblock/nx3=8.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=3",
+          "problem/vx0=1.0"
+        ]
+      ],
+      "error_table": "# Nx1  Nx2  Nx3   Ncycle   RMS-L1       L-infty       d_L1          M1_L1         M2_L1         M3_L1         E_L1          \n0016  0008  0008  00018  6.727418e-07 7.850172e-10  3.261109e-07  1.100060e-07  2.177707e-07  2.177707e-07  4.891664e-07\n0016  0008  0008  00018  6.727418e-07 7.850172e-10  3.261109e-07  1.100060e-07  2.177707e-07  2.177707e-07  4.891664e-07\n0016  0008  0008  00030  3.417848e-07 4.106898e-10  9.855985e-10  9.263388e-08  2.086135e-07  2.543736e-07  3.053807e-09\n0032  0016  0016  00036  1.875944e-07 3.485735e-11  9.143640e-08  2.910685e-08  5.988510e-08  5.988510e-08  1.371546e-07\n0032  0016  0016  00036  1.875944e-07 3.485735e-11  9.143640e-08  2.910685e-08  5.988510e-08  5.988510e-08  1.371546e-07\n0032  0016  0016  00060  8.764179e-08 1.788986e-11  1.180449e-10  2.422986e-08  5.342688e-08  6.511103e-08  3.267281e-10\n"
+    },
+    {
+      "name": "final",
+      "six_existing_wave_runs": true,
+      "unchanged_thresholds_passed": true,
+      "commands": [
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=16",
+          "mesh/nx2=8.0",
+          "mesh/nx3=8.0",
+          "meshblock/nx1=4.0",
+          "meshblock/nx2=4.0",
+          "meshblock/nx3=4.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=0",
+          "problem/vx0=0.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=16",
+          "mesh/nx2=8.0",
+          "mesh/nx3=8.0",
+          "meshblock/nx1=4.0",
+          "meshblock/nx2=4.0",
+          "meshblock/nx3=4.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=4",
+          "problem/vx0=0.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=16",
+          "mesh/nx2=8.0",
+          "mesh/nx3=8.0",
+          "meshblock/nx1=4.0",
+          "meshblock/nx2=4.0",
+          "meshblock/nx3=4.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=3",
+          "problem/vx0=1.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=32",
+          "mesh/nx2=16.0",
+          "mesh/nx3=16.0",
+          "meshblock/nx1=8.0",
+          "meshblock/nx2=8.0",
+          "meshblock/nx3=8.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=0",
+          "problem/vx0=0.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=32",
+          "mesh/nx2=16.0",
+          "mesh/nx3=16.0",
+          "meshblock/nx1=8.0",
+          "meshblock/nx2=8.0",
+          "meshblock/nx3=8.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=4",
+          "problem/vx0=0.0"
+        ],
+        [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/inputs/tests/linear_wave_hydro.athinput",
+          "job/basename=hydro_lin_wave",
+          "time/tlim=1.0",
+          "time/nlim=1000",
+          "time/integrator=rk2",
+          "mesh/nghost=3",
+          "mesh/nx1=32",
+          "mesh/nx2=16.0",
+          "mesh/nx3=16.0",
+          "meshblock/nx1=8.0",
+          "meshblock/nx2=8.0",
+          "meshblock/nx3=8.0",
+          "hydro/reconstruct=plm",
+          "hydro/rsolver=hllc",
+          "problem/amp=1.0e-6",
+          "output1/dt=-1.0",
+          "output2/dt=-1.0",
+          "output3/dt=-1.0",
+          "problem/wave_flag=3",
+          "problem/vx0=1.0"
+        ]
+      ],
+      "error_table": "# Nx1  Nx2  Nx3   Ncycle   RMS-L1       L-infty       d_L1          M1_L1         M2_L1         M3_L1         E_L1          \n0016  0008  0008  00018  6.727418e-07 7.850172e-10  3.261109e-07  1.100060e-07  2.177707e-07  2.177707e-07  4.891664e-07\n0016  0008  0008  00018  6.727418e-07 7.850172e-10  3.261109e-07  1.100060e-07  2.177707e-07  2.177707e-07  4.891664e-07\n0016  0008  0008  00030  3.417848e-07 4.106898e-10  9.855985e-10  9.263388e-08  2.086135e-07  2.543736e-07  3.053807e-09\n0032  0016  0016  00036  1.875944e-07 3.485735e-11  9.143640e-08  2.910685e-08  5.988510e-08  5.988510e-08  1.371546e-07\n0032  0016  0016  00036  1.875944e-07 3.485735e-11  9.143640e-08  2.910685e-08  5.988510e-08  5.988510e-08  1.371546e-07\n0032  0016  0016  00060  8.764179e-08 1.788986e-11  1.180449e-10  2.422986e-08  5.342688e-08  6.511103e-08  3.267281e-10\n"
+    }
+  ],
+  "performance": [
+    {
+      "mesh": [
+        64,
+        4,
+        1
+      ],
+      "measurements": {
+        "off": {
+          "whole_process_seconds": [
+            0.04614895799932128,
+            0.04331458399974508,
+            0.027532333000635845
+          ],
+          "median_seconds": 0.04331458399974508,
+          "runs": [
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_off_0/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_off_0",
+              "exit": 0,
+              "elapsed_seconds": 0.03975400000126683,
+              "input_sha256": "f13d0eebfdff4371b9ace8819edd596fa37812f9d5fb311b447f04aa67fa0831",
+              "log_sha256": "e0d7df999731eb79799fa09c837a833c4c27f9b92c9c1a40917cffe10ebff0b6",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_off_1/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_off_1",
+              "exit": 0,
+              "elapsed_seconds": 0.038017708000552375,
+              "input_sha256": "52ee66c2e964f2d49d8ac11420ffcd6c1e9c715f826c91fd1187b0f9e83801f7",
+              "log_sha256": "8528fc1e3b97adc5389c73890da9788d1fc746c534d1505040df158de77ef731",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_off_2/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_off_2",
+              "exit": 0,
+              "elapsed_seconds": 0.021507667001060327,
+              "input_sha256": "b61d41fcdea024217eb9c585e564e8e8940e8e6cb7fe6126b3cee5ce5cb38fb7",
+              "log_sha256": "3d2a8bb4a935f729c85cdd63cd6754171cbcdcef5d5cae53ba484bfe5b5ea416",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            }
+          ]
+        },
+        "full": {
+          "whole_process_seconds": [
+            0.13801695800066227,
+            0.13040416700096102,
+            0.1342607089991361
+          ],
+          "median_seconds": 0.1342607089991361,
+          "runs": [
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_full_0/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_full_0",
+              "exit": 0,
+              "elapsed_seconds": 0.1326708750002581,
+              "input_sha256": "46f25feacb31155212c3f213ba02f7c757a5decb349b299521f9c818a8f4717c",
+              "log_sha256": "3689710a2f168a4472c2972de84b84f376b77bebc692a52723ffb3eb6fbc2f57",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_full_1/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_full_1",
+              "exit": 0,
+              "elapsed_seconds": 0.1250279590003629,
+              "input_sha256": "8d58687f299f9d3596896192a0d30f9037576ff67803f23a5e8d3b0117d91ed2",
+              "log_sha256": "98e3933a230294abf3162c211935380a3f0b0d5764ac2ae96fc0d64f1bad1c5a",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_full_2/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_full_2",
+              "exit": 0,
+              "elapsed_seconds": 0.12824970800102165,
+              "input_sha256": "e00a810249e727c71d6ae1da2b68bd40899e0be029e4a226de4b998f3184c477",
+              "log_sha256": "c30a405e96d084c431922646d3c2e556d01176e6fcc0ab61d9a44f15c6d98b0d",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            }
+          ]
+        },
+        "empty_off": {
+          "whole_process_seconds": [
+            0.02696283299883362,
+            0.02659762499934004,
+            0.028169291999802226
+          ],
+          "median_seconds": 0.02696283299883362,
+          "runs": [
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_empty_off_0/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_empty_off_0",
+              "exit": 0,
+              "elapsed_seconds": 0.02057799999965937,
+              "input_sha256": "a89e650b9144aab0bc738e180c241b56161d2b05e772b0bb8e9ca13c0ca09d4a",
+              "log_sha256": "08df320a5972d3faa656ccb3a92b738b738a18d8a62355f4fbd6fe912061b988",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_empty_off_1/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_empty_off_1",
+              "exit": 0,
+              "elapsed_seconds": 0.020660250000219094,
+              "input_sha256": "4a841688ed009327a98581ac737ab77ffeeddd1b68b3f0f2cb512969b7419937",
+              "log_sha256": "842a9f2e2c6c63e3049a55ca24964abe1faca15fc2b84b75f5b003497ed7e061",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_empty_off_2/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_empty_off_2",
+              "exit": 0,
+              "elapsed_seconds": 0.021725541999330744,
+              "input_sha256": "23604f3d9e12f643acbbf03d13ed5f19903bbf8d2ca8ddd963f19b3e2ff7ed71",
+              "log_sha256": "cd1896db48896f28d4966ee2c9407756f407fc76ec0e60d11fe1611b5fbfdcb9",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            }
+          ]
+        },
+        "mesh_only_empty": {
+          "whole_process_seconds": [
+            0.13770808300068893,
+            0.13270849999935308,
+            0.13067533300090872
+          ],
+          "median_seconds": 0.13270849999935308,
+          "runs": [
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_mesh_only_empty_0/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_mesh_only_empty_0",
+              "exit": 0,
+              "elapsed_seconds": 0.13092104099996504,
+              "input_sha256": "4e8c302ed7267a6786a5c21da5caa0cbae96b389a0cd93c9aa69cb3a6fd7d6ba",
+              "log_sha256": "32aced180367c395959a5ff5774637b338d73c33eb9529b978d97f566b7b1ce6",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_mesh_only_empty_1/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_mesh_only_empty_1",
+              "exit": 0,
+              "elapsed_seconds": 0.12640154200016696,
+              "input_sha256": "ddc2cecc2d2b8b2d7a9a70790b31b918f054f9f850da8a5798943770387528c4",
+              "log_sha256": "23cb722398c170089721d6b2c3320e030b5975676c846fccc95411990a919279",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_64_mesh_only_empty_2/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_64_mesh_only_empty_2",
+              "exit": 0,
+              "elapsed_seconds": 0.12411724999947182,
+              "input_sha256": "a5c54de15780fab55d666d2d154c7a6db59693fa1278fc31dc2e745957c13f07",
+              "log_sha256": "6e901287f8f5e6dcef3b0d11a1e4b65e21ff1bd8a51c7e7cd8d5d2eec1529bc7",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            }
+          ]
+        },
+        "full_off_ratio": 3.09966520744898
+      },
+      "qualification": "local whole-process medians only; no accepted cluster budget"
+    },
+    {
+      "mesh": [
+        256,
+        4,
+        1
+      ],
+      "measurements": {
+        "off": {
+          "whole_process_seconds": [
+            0.1377854580005078,
+            0.18243812500077183,
+            0.13612516699868138
+          ],
+          "median_seconds": 0.1377854580005078,
+          "runs": [
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_off_0/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_off_0",
+              "exit": 0,
+              "elapsed_seconds": 0.1318890829988959,
+              "input_sha256": "e40c4d8892ad38b5b15c6d45ad38fc4d09fdb455c377d5870bc1d6845e867619",
+              "log_sha256": "e029174ac42bce81cabdaf272218090e4bef955c02ab696d295ecf28abb4d602",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_off_1/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_off_1",
+              "exit": 0,
+              "elapsed_seconds": 0.17517195799882757,
+              "input_sha256": "d508ab77a948926477278ffa053a7fd988856a6d576611c4b2006ac50251da81",
+              "log_sha256": "b5bff837bdd49c7801fd427de17d32f6156ddc7f915e1cadc17a07604631e4a2",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_off_2/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_off_2",
+              "exit": 0,
+              "elapsed_seconds": 0.1298681670014048,
+              "input_sha256": "9fb9bc978ebfa2dc300efe1db68d60f7506fdc70df87d7ab3885dd8e1a6e079b",
+              "log_sha256": "b26ad0c7bd2a50a5db17f2b51802186f0e0e4625fbc8122ba5f62421b0337509",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            }
+          ]
+        },
+        "full": {
+          "whole_process_seconds": [
+            0.5057024999987334,
+            0.5056802919989423,
+            0.5142605839992029
+          ],
+          "median_seconds": 0.5057024999987334,
+          "runs": [
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_full_0/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_full_0",
+              "exit": 0,
+              "elapsed_seconds": 0.49956712500170397,
+              "input_sha256": "89c20d6d87795d90c1b366d20ee6724c7fa8d07cd4db366dcbfd40488bc9675a",
+              "log_sha256": "cec99c3f6de8f6a6fbfecc8ecce46a83b97dd52a3f117231633602237eaa3cda",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_full_1/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_full_1",
+              "exit": 0,
+              "elapsed_seconds": 0.49969795800097927,
+              "input_sha256": "5a83a556b1237211b4578d1cc8f04d5259ba2aaa033985693da715d37533bec8",
+              "log_sha256": "91b0481ae4aa0e0934dd22dfec38696dc7bdb82b7bfe72a9ac52866748974590",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_full_2/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_full_2",
+              "exit": 0,
+              "elapsed_seconds": 0.5083470419995137,
+              "input_sha256": "ba4fbbe183b793ec0912b1006953f1347c497df57d3f8eeb653d4ccfb2c04cdc",
+              "log_sha256": "f0dbd50323c2173096e550d86b5bbddc95dc6753f24e5b6eeda72b17ddb69cd4",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            }
+          ]
+        },
+        "empty_off": {
+          "whole_process_seconds": [
+            0.1674962079996476,
+            0.1319182080005703,
+            0.13075595800000883
+          ],
+          "median_seconds": 0.1319182080005703,
+          "runs": [
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_empty_off_0/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_empty_off_0",
+              "exit": 0,
+              "elapsed_seconds": 0.16116954199969769,
+              "input_sha256": "d488a1462a300f87dff71c636eaa0b8bc3349bf04c8a45fb1aeabc58e597f54c",
+              "log_sha256": "cd60e9c7eca114deb902bbfe9e0fc3a5ab3b201fa32df43febd0b7e990e4a181",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_empty_off_1/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_empty_off_1",
+              "exit": 0,
+              "elapsed_seconds": 0.12547545899906254,
+              "input_sha256": "f1355af6d1e6f8ca9babcc9a6be8a0bfe613ec0eee4704870eb1e54f16d20adf",
+              "log_sha256": "2416fe5843e19bf84a4e2860e171d2f61b5324c1dac0ea193bedaaed829df700",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_empty_off_2/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_empty_off_2",
+              "exit": 0,
+              "elapsed_seconds": 0.1243627080002625,
+              "input_sha256": "da679c988743e8eb1eb17be7bb9dbc125f40da0d581d4da05b38891d4352bf5d",
+              "log_sha256": "fc87ff5a82d3e93fc5b23da0497fae0229b66ae24fb854d570c34a10417167f4",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            }
+          ]
+        },
+        "mesh_only_empty": {
+          "whole_process_seconds": [
+            0.4533239170013985,
+            0.40098495799975353,
+            0.3875111659999675
+          ],
+          "median_seconds": 0.40098495799975353,
+          "runs": [
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_mesh_only_empty_0/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_mesh_only_empty_0",
+              "exit": 0,
+              "elapsed_seconds": 0.4472946250007226,
+              "input_sha256": "7ae8d95b4b894622c1f4f4fd51cfe9a33e3793ad26ad6cf586274c066b4a2777",
+              "log_sha256": "93a8903cfb6558bd455c913cbcccc41c25114b8af7f510891941723e07c2cdfa",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_mesh_only_empty_1/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_mesh_only_empty_1",
+              "exit": 0,
+              "elapsed_seconds": 0.3947561669992865,
+              "input_sha256": "795d86f802020322cabd93b77d087905fbb7acf478d8c0756198745c24ec13e5",
+              "log_sha256": "d674d9f53f239700073709f6f9d32fdf87b275f9a9a6cb77d16d50b32302a877",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            },
+            {
+              "command": [
+                "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+                "-i",
+                "/private/tmp/shock-mc-system-final-v2/perf_256_mesh_only_empty_2/input.athinput"
+              ],
+              "directory": "/private/tmp/shock-mc-system-final-v2/perf_256_mesh_only_empty_2",
+              "exit": 0,
+              "elapsed_seconds": 0.3822195410011773,
+              "input_sha256": "86e92851a8dece9067d47577b2f6ca8f325a272a327112fddfaece4e18ea7fff",
+              "log_sha256": "9567b1522db23d821c0c1608de4527e37fefd5e4e2749f7e4fc5042129c7f135",
+              "executable_sha256": "7c50286f84b05ff0d1ac1103094a5f07c2e3b03dc98b7edc83ba4bf7aa3b4d5a"
+            }
+          ]
+        },
+        "full_off_ratio": 3.670216780038353
+      },
+      "qualification": "local whole-process medians only; no accepted cluster budget"
+    }
+  ],
+  "scientific_signoff": "pending",
+  "remote_cluster_used": false,
+  "wave_error_tables_exact_equal": true,
+  "mpi_singleton": {
+    "command": [
+      "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/src/athena",
+      "-i",
+      "/private/tmp/shock-mc-system-final-v2/mpi_singleton/input.athinput"
+    ],
+    "directory": "/private/tmp/shock-mc-system-final-v2/mpi_singleton",
+    "exit": 0,
+    "elapsed_seconds": 0.3362915420002537,
+    "input_sha256": "35f00e63d1376365e40060ff82b7ddbcb6e712d3b44c93c7e32a2662a0fe37ed",
+    "log_sha256": "a5134a4dd1c2a41f28fe24d0e6da9842e286af0d850ac0bc66faca688d1a0703",
+    "executable_sha256": "6ae4a77516dd4dac5fb5c7b5362b61d93d6fbcf3cd4c107e7951520235879951"
+  },
+  "mpi_two_ranks": {
+    "command": [
+      "/opt/homebrew/bin/mpiexec",
+      "-n",
+      "2",
+      "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/src/athena",
+      "-i",
+      "/private/tmp/shock-mc-system-final-v2/mpi_two_ranks/input.athinput"
+    ],
+    "exit": 213,
+    "runtime_tested": false
+  },
+  "status": "passed_cpu_checks"
+}

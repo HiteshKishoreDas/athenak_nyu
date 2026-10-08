@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-rejects-stylefinal/pernode_restart/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-rejects-stylefinal/pernode_restart",
+  "exit": 1,
+  "elapsed_seconds": 0.004868874999374384,
+  "input_sha256": "df9e900d22bf80b50696b296b0d779be0bb04f4b15b9d13080e1c1e911a4ba99",
+  "log_sha256": "e99980fcfc8faf5a04fd4eba9b5bf56ea7ff0122e68c3658946a0b34f1e391d8",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "pernode_restart",
+  "expected_diagnostic": "per-node",
+  "passed": true
+}

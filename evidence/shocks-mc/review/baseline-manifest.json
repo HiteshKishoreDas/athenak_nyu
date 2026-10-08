@@ -1,0 +1,25 @@
+{
+  "base_commit": "526a187f938e38634e89a88192ebe9731c4d36bb",
+  "kokkos_commit": "08ceff92bcf3a828844480bc1e6137eb74028517",
+  "scope": "read-only baseline source and independent arithmetic; no native runtime",
+  "baseline_source_hashes": {
+    "src/athena.hpp": "58425b282cbec9e2eebb06eda8e41ad5817a1a998f2f4344c05a8937150be81d",
+    "src/particles/particles.hpp": "11868a098b81b53cfda0bb3aab835f9c6511b8c8ebacdeb52329f40415453194",
+    "src/particles/particles.cpp": "597d804ec263162c8e0bdc391034b67d6d8e462f25b1c78430df709f4a69cd44",
+    "src/particles/particles_lagrangian_mc.cpp": "2c3ce015541f81d0f12daa5176f4b86fa43061a30ceb341325610af4cec18115",
+    "src/particles/particles_tasks.cpp": "24da2b5dcef92ae6b0039382fbdeb9b9891f5b6b43c98510545d1e978ee8bbf4",
+    "src/particles/particles_pushers.cpp": "d0a7440982f9d265a897c017877e14a99497563499fd5b18ca570fc90fa6946d",
+    "src/particles/tracer_fields.cpp": "6a908c86ddd6d9832552dedbdc56eddabc5899198130c39acf89380eaa4a7a60",
+    "src/hydro/hydro_tasks.cpp": "d8bbec20a94e77adb8bd94c960af9b0604efdac70b667cd763da5cee9c8aeeb3",
+    "src/hydro/hydro_fluxes.cpp": "7f25c8e8496c4446cdff8ba6e924259251bda6e0bdea9d0e2b3f5e4dc2c7f447",
+    "src/driver/driver.cpp": "42672f011604b016ce86d946472866406120717dbb2104119399a561e11132f4",
+    "src/outputs/restart.cpp": "38baf1a637804284ba39a10a184141bb22735e856d15e312fe80428186ff51f1",
+    "src/pgen/pgen.cpp": "c5bb44e9d0b100a70c5cb03a9629dfbcfe6c789c9efda1376478d8c557c53ba7",
+    "src/outputs/prtcl_thermo_history.cpp": "7da57e53874315bafbb3d1d256557d6b1d5e6c4f17c39f66b3c8bb6dea79e00c"
+  },
+  "artifact_hashes": {
+    "arithmetic-checks.py": "89819998ac4b19cb12ac23b293ad658be6d027ce60659ccee188c57694c4285a",
+    "baseline-review.md": "70b0f3cd97ff2714b1337f0464aad7488dbe062b20adccd5fdfa97e7a8933064",
+    "arithmetic-checks.json": "cf18c6df0d5cab3b5d8c2dcabee73135cb6f36cbe6097737be9329e585a2083b"
+  }
+}

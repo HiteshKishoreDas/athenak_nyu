@@ -1,0 +1,214 @@
+{
+  "scope": "actual boundary methods, stand-in constructors/count/exit callback; MPI singleton is not inter-rank migration qualification",
+  "source_sha256": {
+    "src/bvals/bvals.hpp": "4022e5b850d3486e45632690b39aafca8c1aa5af798e10bfc47efcd14537e623",
+    "src/bvals/bvals_part.cpp": "74894470e05f39804c7a1b1c2b689ecd1acda1b164576814f8eb8d4e54e0c27e",
+    "src/shocks/encounter.hpp": "84cc51a2af2b397b9f3360d34a39bcfbf0fe61aee4c059cb745b1c076cba10f4",
+    "src/particles/particles.hpp": "e79e47d13dbadc82c6312bf19d64fa7821ae2414f70d7c962ae13810f1ce9a6c",
+    "evidence/shocks-mc/migration/boundary_fixture.cpp": "b31b9c8f4ea7473847def715263a5a7a48091a61843fb87776b7ceba9fac3c85"
+  },
+  "builds": [
+    {
+      "mpi": false,
+      "command": [
+        "/usr/bin/c++",
+        "-DKOKKOS_DEPENDENCE",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/core/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/desul/include",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/mdspan/include",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/containers/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/containers/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/algorithms/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/algorithms/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/simd/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/simd/src",
+        "-g",
+        "-std=c++17",
+        "-arch",
+        "arm64",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/evidence/shocks-mc/migration/boundary_fixture.cpp",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src/bvals/bvals_part.cpp",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src/globals.cpp",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/containers/src/libkokkoscontainers.a",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/core/src/libkokkoscore.a",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/simd/src/libkokkossimd.a",
+        "-o",
+        "/var/folders/ds/c46lsj612gv087d5trxmn98m0000gn/T/shock-mc-boundary-0g830j19/boundary-serial"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "mpi": true,
+      "command": [
+        "/opt/homebrew/bin/mpicxx",
+        "-I/var/folders/ds/c46lsj612gv087d5trxmn98m0000gn/T/shock-mc-boundary-0g830j19",
+        "-include",
+        "mpi.h",
+        "-DKOKKOS_DEPENDENCE",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/core/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/desul/include",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/mdspan/include",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/containers/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/containers/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/algorithms/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/algorithms/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/simd/src",
+        "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/simd/src",
+        "-g",
+        "-std=c++17",
+        "-arch",
+        "arm64",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/evidence/shocks-mc/migration/boundary_fixture.cpp",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src/bvals/bvals_part.cpp",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src/globals.cpp",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/containers/src/libkokkoscontainers.a",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/core/src/libkokkoscore.a",
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/kokkos/simd/src/libkokkossimd.a",
+        "-o",
+        "/var/folders/ds/c46lsj612gv087d5trxmn98m0000gn/T/shock-mc-boundary-0g830j19/boundary-mpi"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "cases": [
+    {
+      "mpi": false,
+      "mode": "periodic2d",
+      "exit": 0,
+      "output": "PASS periodic2d full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": false,
+      "mode": "periodic3d",
+      "exit": 0,
+      "output": "PASS periodic3d full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": false,
+      "mode": "outflow",
+      "exit": 0,
+      "output": "PASS outflow full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": false,
+      "mode": "image_max",
+      "exit": -6,
+      "output": "shock periodic image counter limit reached\nTraceback functionality not available\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": false,
+      "mode": "far",
+      "exit": -6,
+      "output": "shock particle moved beyond adjacent MeshBlock\nTraceback functionality not available\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": false,
+      "mode": "extent",
+      "exit": 1,
+      "output": "FATAL: particle shock-state extent mismatch\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": false,
+      "mode": "disabled",
+      "exit": 0,
+      "output": "PASS disabled full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": false,
+      "mode": "duplicate",
+      "exit": 1,
+      "output": "FATAL: duplicate/invalid shock particle removal\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "periodic2d",
+      "exit": 0,
+      "output": "PASS periodic2d full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "periodic3d",
+      "exit": 0,
+      "output": "PASS periodic3d full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "outflow",
+      "exit": 0,
+      "output": "PASS outflow full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "image_max",
+      "exit": -6,
+      "output": "shock periodic image counter limit reached\nTraceback functionality not available\n[10-18-73-154:71829] *** Process received signal ***\n[10-18-73-154:71829] Signal: Abort trap: 6 (6)\n[10-18-73-154:71829] Signal code:  (0)\n[10-18-73-154:71829] [ 0] 0   libsystem_platform.dylib            0x0000000194859764 _sigtramp + 56\n[10-18-73-154:71829] [ 1] 0   libsystem_pthread.dylib             0x000000019484f888 pthread_kill + 296\n[10-18-73-154:71829] [ 2] 0   libsystem_c.dylib                   0x0000000194754850 abort + 124\n[10-18-73-154:71829] [ 3] 0   boundary-mpi                        0x0000000104c0a28c _ZN6Kokkos4Impl18mpi_ranks_per_nodeEv + 0\n[10-18-73-154:71829] [ 4] 0   boundary-mpi                        0x0000000104b5219c _ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEC1B8ne200100EOS5_ + 0\n[10-18-73-154:71829] [ 5] 0   boundary-mpi                        0x0000000104bdd518 _ZZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvENK3$_0clEi + 2204\n[10-18-73-154:71829] [ 6] 0   boundary-mpi                        0x0000000104bdcc70 _ZZ7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEN6Kokkos6SerialERKiSF_RKT_ENKUlSF_E_clESF_ + 56\n[10-18-73-154:71829] [ 7] 0   boundary-mpi                        0x0000000104bdcc18 _ZNK6Kokkos4Impl11ParallelForIZ7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS6_11char_traitsIcEENS6_9allocatorIcEEEENS_6SerialERKiSH_RKT_EUlSH_E_NS_11RangePolicyIJEEESF_E4execIvEENS6_9enable_ifIXsr3std7is_voidISI_EE5valueEvE4typeEv + 96\n[10-18-73-154:71829] [ 8] 0   boundary-mpi                        0x0000000104bdc874 _ZNK6Kokkos4Impl11ParallelForIZ7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS6_11char_traitsIcEENS6_9allocatorIcEEEENS_6SerialERKiSH_RKT_EUlSH_E_NS_11RangePolicyIJEEESF_E7executeEv + 60\n[10-18-73-154:71829] [ 9] 0   boundary-mpi                        0x0000000104bdc654 _ZN6Kokkos12parallel_forINS_11RangePolicyIJEEEZ7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS7_11char_traitsIcEENS7_9allocatorIcEEEENS_6SerialERKiSI_RKT_EUlSI_E_vEEvSF_SL_RKT0_ + 108\n[10-18-73-154:71829] [10] 0   boundary-mpi                        0x0000000104bc4998 _Z7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEN6Kokkos6SerialERKiSF_RKT_ + 152\n[10-18-73-154:71829] [11] 0   boundary-mpi                        0x0000000104bc3ec0 _ZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEv + 1148\n[10-18-73-154:71829] [12] 0   boundary-mpi                        0x0000000104bc3584 _ZN9particles23ParticlesBoundaryValues14SetNewPrtclGIDEv + 68\n[10-18-73-154:71829] [13] 0   boundary-mpi                        0x0000000104b47488 main + 2556\n[10-18-73-154:71829] [14] 0   dyld                                0x0000000194485d54 start + 7184\n[10-18-73-154:71829] *** End of error message ***\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "far",
+      "exit": -6,
+      "output": "shock particle moved beyond adjacent MeshBlock\nTraceback functionality not available\n[10-18-73-154:71830] *** Process received signal ***\n[10-18-73-154:71830] Signal: Abort trap: 6 (6)\n[10-18-73-154:71830] Signal code:  (0)\n[10-18-73-154:71830] [ 0] 0   libsystem_platform.dylib            0x0000000194859764 _sigtramp + 56\n[10-18-73-154:71830] [ 1] 0   libsystem_pthread.dylib             0x000000019484f888 pthread_kill + 296\n[10-18-73-154:71830] [ 2] 0   libsystem_c.dylib                   0x0000000194754850 abort + 124\n[10-18-73-154:71830] [ 3] 0   boundary-mpi                        0x000000010486628c _ZN6Kokkos4Impl18mpi_ranks_per_nodeEv + 0\n[10-18-73-154:71830] [ 4] 0   boundary-mpi                        0x00000001047ae19c _ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEC1B8ne200100EOS5_ + 0\n[10-18-73-154:71830] [ 5] 0   boundary-mpi                        0x0000000104838ff4 _ZZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvENK3$_0clEi + 888\n[10-18-73-154:71830] [ 6] 0   boundary-mpi                        0x0000000104838c70 _ZZ7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEN6Kokkos6SerialERKiSF_RKT_ENKUlSF_E_clESF_ + 56\n[10-18-73-154:71830] [ 7] 0   boundary-mpi                        0x0000000104838c18 _ZNK6Kokkos4Impl11ParallelForIZ7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS6_11char_traitsIcEENS6_9allocatorIcEEEENS_6SerialERKiSH_RKT_EUlSH_E_NS_11RangePolicyIJEEESF_E4execIvEENS6_9enable_ifIXsr3std7is_voidISI_EE5valueEvE4typeEv + 96\n[10-18-73-154:71830] [ 8] 0   boundary-mpi                        0x0000000104838874 _ZNK6Kokkos4Impl11ParallelForIZ7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS6_11char_traitsIcEENS6_9allocatorIcEEEENS_6SerialERKiSH_RKT_EUlSH_E_NS_11RangePolicyIJEEESF_E7executeEv + 60\n[10-18-73-154:71830] [ 9] 0   boundary-mpi                        0x0000000104838654 _ZN6Kokkos12parallel_forINS_11RangePolicyIJEEEZ7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS7_11char_traitsIcEENS7_9allocatorIcEEEENS_6SerialERKiSI_RKT_EUlSI_E_vEEvSF_SL_RKT0_ + 108\n[10-18-73-154:71830] [10] 0   boundary-mpi                        0x0000000104820998 _Z7par_forIZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEvE3$_0EvRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEN6Kokkos6SerialERKiSF_RKT_ + 152\n[10-18-73-154:71830] [11] 0   boundary-mpi                        0x000000010481fec0 _ZN9particles23ParticlesBoundaryValues16SetShockPrtclGIDEv + 1148\n[10-18-73-154:71830] [12] 0   boundary-mpi                        0x000000010481f584 _ZN9particles23ParticlesBoundaryValues14SetNewPrtclGIDEv + 68\n[10-18-73-154:71830] [13] 0   boundary-mpi                        0x00000001047a3488 main + 2556\n[10-18-73-154:71830] [14] 0   dyld                                0x0000000194485d54 start + 7184\n[10-18-73-154:71830] *** End of error message ***\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "extent",
+      "exit": 1,
+      "output": "FATAL: particle shock-state extent mismatch\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "disabled",
+      "exit": 0,
+      "output": "PASS disabled full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "duplicate",
+      "exit": 1,
+      "output": "FATAL: duplicate/invalid shock particle removal\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "mixed",
+      "exit": 0,
+      "output": "PASS mixed full-state identity and single count call\n",
+      "expected_result_pass": true
+    },
+    {
+      "mpi": true,
+      "mode": "byte_limit",
+      "exit": 1,
+      "output": "FATAL: shock migration MPI byte count exceeds INT_MAX\n",
+      "expected_result_pass": true
+    }
+  ],
+  "all_passed": true
+}

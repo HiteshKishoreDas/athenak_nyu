@@ -13,17 +13,20 @@ Checked boxes refer to the named engineering evidence, not scientific approval.
   User accepted branch/tracer; strength/timing/recovery release thresholds pending.
 - [x] M2: native detector reused and rechecked against frozen ShockIt: 53 cases,
   exact masks, rtol=atol=1e-12; independent RH/smooth oracles separate from parity.
-- [ ] M3: final live timing/feature-off/boundary integration run recorded.
+- [x] M3: final live timing/feature-off/boundary integration run recorded.
 - [x] M4 baseline: TRC09 uniform-flow statistical checks, fixed-layout native restart.
-- [ ] M4 integrated: TRC10–11 parent/time-bin evidence, birth/exit/sampler checks.
-- [ ] M5: state invariants and stochastic translating-shock histories recorded;
+- [x] M4 integrated: TRC10–11 parent/time-bin evidence, birth/exit/sampler checks.
+- [x] M5 engineering pilot: state invariants and stochastic translating-shock histories recorded;
   one physical episode per passage remains a scientific acceptance gate.
-- [ ] M6: integrated migration, bounded drains and restart/failure-injection checks.
-- [ ] M7: final debug/release/MPI-singleton, non-interference and style evidence.
+- [x] M6 supported local scope: migration, bounded drains and all-phase replay/
+  corruption/overflow checks. Cross-rank/storage-fault qualification remains open.
+- [x] M7 supported local scope: debug/release/MPI-singleton, non-interference,
+  inherited-only style findings and ASan/UBSan encounter-unit evidence.
 - [ ] M7: true multi-rank CPU qualification; GPU/threaded/single precision qualification.
 - [ ] M8: held-out physical measurements/performance; owner tolerance/budget acceptance.
 - [ ] M8: supported-physics turbulence pilot, production-scale cluster qualification.
-- [ ] M9.1–5: reproducible docs, independent integrated review, exact-code bundle.
+- [x] M9 engineering evidence: reproducible docs, independent integrated review
+  and exact-code bundle; clean-checkout core reproduction recorded below.
 - [ ] M9.6: human review of exact code/evidence. Scientific sign-off remains pending.
 - [ ] M9.7–8: PR/release action if requested; R1 is not declared release-ready.
 - [ ] M10: separate AMR, cooling/source, MHD and relativistic gates. Excluded here.

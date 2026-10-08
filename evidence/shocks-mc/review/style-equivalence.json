@@ -1,0 +1,18 @@
+{
+  "scope": "Source-only exact prior-SHA reconstruction; no numerical changes or native runtime claimed",
+  "prior_fingerprint": "26d4b28ee7f5bc0f8b33e60a0331b243af5bf9aeb6d7e98d612a9731a2c9044f",
+  "changed_sources": {
+    "src/particles/particles.cpp": {
+      "prior_sha256": "451c34fd05324b0a1ceb7a26decda66d7be55faa234357f16af71a5bb6ecc2d3",
+      "current_sha256": "26d2ac7fa9aa0da4b554e455e51049c8d496c56f736e74fff18153d4b4711640",
+      "prior_exact_sha_reconstructed": true,
+      "proof": "Only explicit <utility> include added"
+    },
+    "src/particles/particles_lagrangian_mc.cpp": {
+      "prior_sha256": "d33d8e477a91171a84417836a4f4bb4892b0b8f9637a02e94f41f8274f21ff48",
+      "current_sha256": "11855754437242c628f306a8ab62bb2b8e5829d6df86f89073cfec9b785e67b6",
+      "prior_exact_sha_reconstructed": true,
+      "proof": "Only former 91-column identity guard wrapped across current lines384\u2013385"
+    }
+  }
+}

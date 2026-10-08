@@ -1,0 +1,20 @@
+compile Serial 0
+compile MPI 0
+Serial periodic2d True 0 PASS periodic2d full-state identity and single count call
+Serial periodic3d True 0 PASS periodic3d full-state identity and single count call
+Serial outflow True 0 PASS outflow full-state identity and single count call
+Serial image_max True -6 shock periodic image counter limit reached
+Serial far True -6 shock particle moved beyond adjacent MeshBlock
+Serial extent True 1 FATAL: particle shock-state extent mismatch
+Serial disabled True 0 PASS disabled full-state identity and single count call
+Serial duplicate True 1 FATAL: duplicate/invalid shock particle removal
+MPI periodic2d True 0 PASS periodic2d full-state identity and single count call
+MPI periodic3d True 0 PASS periodic3d full-state identity and single count call
+MPI outflow True 0 PASS outflow full-state identity and single count call
+MPI image_max True -6 shock periodic image counter limit reached
+MPI far True -6 shock particle moved beyond adjacent MeshBlock
+MPI extent True 1 FATAL: particle shock-state extent mismatch
+MPI disabled True 0 PASS disabled full-state identity and single count call
+MPI duplicate True 1 FATAL: duplicate/invalid shock particle removal
+MPI mixed True 0 PASS mixed full-state identity and single count call
+MPI byte_limit True 1 FATAL: shock migration MPI byte count exceeds INT_MAX
