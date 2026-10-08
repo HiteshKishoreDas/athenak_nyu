@@ -106,6 +106,9 @@ add_executable(
         outputs/vtk_mesh.cpp
         outputs/vtk_prtcl.cpp
 
+        material_curves/material_curves.cpp
+        material_curves/material_curves_io.cpp
+
         particles/particles.cpp
         particles/particles_lagrangian_mc.cpp
         particles/particles_pushers.cpp

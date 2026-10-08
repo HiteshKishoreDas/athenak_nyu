@@ -18,6 +18,7 @@
 #include "mesh/mesh.hpp"
 #include "outputs/outputs.hpp"
 #include "hydro/hydro.hpp"
+#include "material_curves/material_curves.hpp"
 #include "mhd/mhd.hpp"
 #include "particles/particles.hpp"
 #include "z4c/z4c.hpp"
@@ -343,6 +344,11 @@ void Driver::ExecuteTaskList(Mesh *pm, std::string tl, int stage) {
 void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool res_flag) {
   //---- Step 1.  Set conserved variables in ghost zones for all physics
   InitBoundaryValuesAndPrimitives(pmesh);
+  if (pmesh->pmb_pack->pcurves && !res_flag) {
+    auto curves = pmesh->pmb_pack->pcurves;
+    curves->Initialize();
+    curves->Snapshot(curves->basename + ".curves.initial.txt");
+  }
 
   if (!res_flag && pmesh->pmb_pack->ppart != nullptr &&
       pmesh->pmb_pack->ppart->IsLagrangianMC()) {
@@ -458,6 +464,8 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
 
       // time-integrator tasks for each stage of integrator
       for (int stage=1; stage<=(nexp_stages); ++stage) {
+        // w0 and its ghosts are still the previous fluid stage here.
+        if (pmesh->pmb_pack->pcurves) pmesh->pmb_pack->pcurves->Advance(stage);
         ExecuteTaskList(pmesh, "before_stagen", stage);
         ExecuteTaskList(pmesh, "stagen", stage);
         ExecuteTaskList(pmesh, "after_stagen", stage);
@@ -481,6 +489,16 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
         }
         lb_efficiency_ += static_cast<float>(minnmb*(global_variable::nranks))/
             static_cast<float>(pmesh->nmb_total);
+      }
+
+      // Curve checkpoints must capture the completed regrid/adaptation transaction.
+      // Keep native output ordering when curves are disabled.
+      if (pmesh->pmb_pack->pcurves) {
+        if (pmesh->adaptive) {
+          pmesh->pmr->AdaptiveMeshRefinement(this, pin);
+          pmesh->pmb_pack->pcurves->RebuildMesh();
+        }
+        pmesh->pmb_pack->pcurves->CompleteStep();
       }
 
       // Test for/make outputs
@@ -518,7 +536,9 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
       }
 
       // AMR
-      if (pmesh->adaptive) {pmesh->pmr->AdaptiveMeshRefinement(this, pin);}
+      if (pmesh->adaptive && !pmesh->pmb_pack->pcurves) {
+        pmesh->pmr->AdaptiveMeshRefinement(this, pin);
+      }
       // compute new timestep AFTER all Meshblocks refined/derefined
       pmesh->NewTimeStep(tlim);
 
@@ -529,6 +549,10 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
 
     }  // end while
   }    // end of (time_evolution != tstatic) clause
+  if (pmesh->pmb_pack->pcurves) {
+    auto curves = pmesh->pmb_pack->pcurves;
+    curves->Snapshot(curves->basename + ".curves.final.txt");
+  }
   return;
 }
 
