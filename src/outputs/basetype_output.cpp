@@ -256,19 +256,6 @@ BaseTypeOutput::BaseTypeOutput(ParameterInput *pin, Mesh *pm, OutputParameters o
       }
     }
 
-    if (pm->pmb_pack->phydro != nullptr && pm->pmb_pack->phydro->isgs >= 0) {
-      int idx = pm->pmb_pack->phydro->isgs;
-      if (variable == "hydro_u_sgs" || variable == "hydro_u") {
-        outvars.emplace_back("sgs_energy", idx, &(pm->pmb_pack->phydro->u0));
-      }
-      if (variable == "hydro_w_sgs" || variable == "hydro_w") {
-        outvars.emplace_back("sgs_specific", idx, &(pm->pmb_pack->phydro->w0));
-      }
-    } else if (variable == "hydro_u_sgs" || variable == "hydro_w_sgs") {
-      std::cerr << "SGS field output requires enabled SGS model" << std::endl;
-      std::exit(EXIT_FAILURE);
-    }
-
     // hydro passive scalars mass densities (s*d)
     if (variable.compare("hydro_u_s") == 0 ||
         variable.compare("hydro_u") == 0 ||
@@ -301,6 +288,20 @@ BaseTypeOutput::BaseTypeOutput(ParameterInput *pin, Mesh *pm, OutputParameters o
         vname.append(number);
         outvars.emplace_back(vname,n,&(pm->pmb_pack->phydro->w0));
       }
+    }
+
+    // Append SGS fields after existing hydro/scalar columns.
+    if (pm->pmb_pack->phydro != nullptr && pm->pmb_pack->phydro->isgs >= 0) {
+      int idx = pm->pmb_pack->phydro->isgs;
+      if (variable == "hydro_u_sgs" || variable == "hydro_u") {
+        outvars.emplace_back("sgs_energy", idx, &(pm->pmb_pack->phydro->u0));
+      }
+      if (variable == "hydro_w_sgs" || variable == "hydro_w") {
+        outvars.emplace_back("sgs_specific", idx, &(pm->pmb_pack->phydro->w0));
+      }
+    } else if (variable == "hydro_u_sgs" || variable == "hydro_w_sgs") {
+      std::cerr << "SGS field output requires enabled SGS model" << std::endl;
+      std::exit(EXIT_FAILURE);
     }
 
     // mhd (lab-frame) density

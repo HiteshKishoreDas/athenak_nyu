@@ -83,7 +83,7 @@ class Hydro {
   sgs::Coefficients sgs_coeff;
   bool sgs_pgen_initialization = false;
   Real sgs_seed = 0.0;    // specific energy added once, after pgen
-  DvceFaceFld5D<Real> sgs_face;  // final traction, work, limiter deficits
+  DvceFaceFld5D<Real> sgs_face;  // traction (0-2), stress/diffusion deficits (3-4)
   DvceArray5D<Real> sgs_rates;   // production, dissipation, suppressed transfer
   Real sgs_produced = 0.0, sgs_dissipated = 0.0, sgs_limited = 0.0;
   Real sgs_diff_limited = 0.0;
@@ -162,7 +162,7 @@ class Hydro {
   void SGSFluxes();
   void SGSRates();
   void SGSSources(Driver *d, int stage);
-  int SGSTrial(Driver *d, int stage);
+  int SGSTrial();
   void SGSNewTimeStep();
   void CheckSGSState();
 

@@ -126,8 +126,8 @@ Hydro::Hydro(MeshBlockPack *ppack, ParameterInput *pin) :
     int n_ccells1 = indcs.cnx1 + 2*(indcs.ng);
     int n_ccells2 = (indcs.cnx2 > 1)? (indcs.cnx2 + 2*(indcs.ng)) : 1;
     int n_ccells3 = (indcs.cnx3 > 1)? (indcs.cnx3 + 2*(indcs.ng)) : 1;
-    Kokkos::realloc(coarse_u0, nmb, nvars, n_ccells3, n_ccells2, n_ccells1);
-    Kokkos::realloc(coarse_w0, nmb, nvars, n_ccells3, n_ccells2, n_ccells1);
+    Kokkos::realloc(coarse_u0, nmb, (nhydro+nscalars), n_ccells3, n_ccells2, n_ccells1);
+    Kokkos::realloc(coarse_w0, nmb, (nhydro+nscalars), n_ccells3, n_ccells2, n_ccells1);
   }
 
   // allocate boundary buffers for conserved (cell-centered) variables
@@ -136,8 +136,8 @@ Hydro::Hydro(MeshBlockPack *ppack, ParameterInput *pin) :
 
   // Orbital advection and shearing box BCs (if requested in input file)
   if (pin->DoesBlockExist("shearing_box")) {
-    porb_u = new OrbitalAdvectionCC(ppack, pin, nvars);
-    psbox_u = new ShearingBoxCC(ppack, pin, nvars);
+    porb_u = new OrbitalAdvectionCC(ppack, pin, (nhydro+nscalars));
+    psbox_u = new ShearingBoxCC(ppack, pin, (nhydro+nscalars));
   } else {
     porb_u = nullptr;
     psbox_u = nullptr;
@@ -293,7 +293,7 @@ Hydro::Hydro(MeshBlockPack *ppack, ParameterInput *pin) :
       Kokkos::realloc(uflx.x3f, nmb, nvars, ncells3, ncells2, ncells1);
 
       if (isgs >= 0) {
-        sgs_face = DvceFaceFld5D<Real>("sgs_face", nmb, 6,
+        sgs_face = DvceFaceFld5D<Real>("sgs_face", nmb, 5,
                                      ncells3, ncells2, ncells1);
         Kokkos::realloc(sgs_rates, nmb, 4, ncells3, ncells2, ncells1);
       }

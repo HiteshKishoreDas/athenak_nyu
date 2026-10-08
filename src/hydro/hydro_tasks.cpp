@@ -94,7 +94,7 @@ TaskStatus Hydro::InitRecv(Driver *pdrive, int stage) {
   // with SMR/AMR post receives for fluxes of U
   // do not post receives for fluxes when stage < 0 (i.e. ICs)
   if (pmy_pack->pmesh->multilevel && (stage >= 0)) {
-    tstat = pbval_u->InitFluxRecv(nvars);
+    tstat = pbval_u->InitFluxRecv(nhydro+nscalars);
   }
   if (tstat != TaskStatus::complete) return tstat;
 
@@ -140,7 +140,7 @@ TaskStatus Hydro::CopyCons(Driver *pdrive, int stage) {
       int js = indcs.js, je = indcs.je;
       int ks = indcs.ks, ke = indcs.ke;
       int nmb1 = pmy_pack->nmb_thispack - 1;
-      int nvar = nvars;
+      int nvar = nhydro + nscalars;
       auto &u0 = pmy_pack->phydro->u0;
       auto &u1 = pmy_pack->phydro->u1;
       Real &delta = pdrive->delta[stage-1];
@@ -185,7 +185,7 @@ TaskStatus Hydro::Fluxes(Driver *pdrive, int stage) {
   if (isgs >= 0) {
     SGSFluxes();
     SGSRates();
-    if (SGSTrial(pdrive, stage) > 0) {
+    if (SGSTrial() > 0) {
       auto saved = recon_method;
       recon_method = ReconstructionMethod::dc;
       CalculateFluxes<Hydro_RSolver::llf>(pdrive, stage);
@@ -193,7 +193,7 @@ TaskStatus Hydro::Fluxes(Driver *pdrive, int stage) {
       SGSFluxes();
       SGSRates();
       ++sgs_fallbacks;
-      if (SGSTrial(pdrive, stage) > 0) {
+      if (SGSTrial() > 0) {
         std::cerr << "SGS donor-cell predictor inadmissible; reduce time/cfl_number"
                   << std::endl;
         std::exit(EXIT_FAILURE);

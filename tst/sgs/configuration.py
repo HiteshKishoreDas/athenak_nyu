@@ -83,6 +83,20 @@ def main():
             passed &= state['finite'] and state['time'] >= 0.001-1e-14
             if name == 'L05_zero':
                 passed &= all(row[-1] == 0 for row in state['field'].values())
+            if name == 'L05_many_scalars':
+                for choice, fields, prefix, extra in (
+                        ('hydro_u', ['dens', 'mom1', 'mom2', 'mom3', 'ener'],
+                         'r_', 'sgs_energy'),
+                        ('hydro_w', ['dens', 'velx', 'vely', 'velz', 'eint'],
+                         's_', 'sgs_specific')):
+                    expected_fields = fields+[f'{prefix}{n:02d}' for n in range(12)]+[extra]
+                    files = sorted((run/'bin').glob(f'*.{choice}.*.bin'))
+                    passed &= bool(files)
+                    for snapshot in files:
+                        with snapshot.open('rb') as output:
+                            header = next(line for line in output
+                                          if line.startswith(b'  variables:'))
+                        passed &= header.decode().split()[1:] == expected_fields
         results.append(dict(id=name, status='pass' if passed else 'fail',
                             expected=expected, returncode=process.returncode,
                             command=command,

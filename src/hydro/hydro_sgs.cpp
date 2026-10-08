@@ -18,7 +18,6 @@
 #include "driver/driver.hpp"
 #include "eos/eos.hpp"
 #include "hydro/hydro.hpp"
-#include "pgen/pgen.hpp"
 #include "srcterms/turb_driver.hpp"
 
 #if MPI_PARALLEL_ENABLED
@@ -97,6 +96,7 @@ void Hydro::ConfigureSGS(ParameterInput *pin) {
       SGSFailure(std::string("unsupported hydro option: ")+option);
     }
   }
+  // ponytail: no SGS mesh transfer; qualify AMR energy exchange before adding hooks.
   if (pmy_pack->pmesh->multilevel) SGSFailure("AMR/SMR requires separate qualification");
 #if SINGLE_PRECISION_ENABLED
   SGSFailure("single precision is not qualified");
@@ -221,8 +221,7 @@ void Hydro::SGSFluxes() {
         t(m,v,k,j,i) = theta*tau[v][dir];
         f(m,IM1+v,k,j,i) -= t(m,v,k,j,i);
       }
-      t(m,3,k,j,i) = theta*work;
-      t(m,4,k,j,i) = (1.0-theta)*fabs(production);
+      t(m,3,k,j,i) = (1.0-theta)*fabs(production);
       f(m,IEN,k,j,i) -= theta*work;
       // SGS diffusion is a represented-energy flux, not a paired E source.
       Real J = -sgs::Diffusivity(rho, K, dx, coeff)*
@@ -232,7 +231,7 @@ void Hydro::SGSFluxes() {
         Real donor = (J > 0.0) ? K_l : K_r;
         J *= fmin(1.0, donor*dx/(8.0*ndim*dt*fabs(J)));
       }
-      t(m,5,k,j,i) = fabs(raw_J-J)/dx;
+      t(m,4,k,j,i) = fabs(raw_J-J)/dx;
       f(m,idx,k,j,i) += J;
     });
   }
@@ -260,8 +259,8 @@ void Hydro::SGSRates() {
         sigma += (t(m,v,k+dk,j+dj,i+di)*(w(m,IVX+v,k+dk,j+dj,i+di)-uc) +
                   t(m,v,k,j,i)*(uc-w(m,IVX+v,k-dk,j-dj,i-di)))/(2.0*dx);
       }
-      limited += t(m,4,k,j,i) + t(m,4,k+dk,j+dj,i+di);
-      diff_limited += 0.5*(t(m,5,k,j,i) + t(m,5,k+dk,j+dj,i+di));
+      limited += t(m,3,k,j,i) + t(m,3,k+dk,j+dj,i+di);
+      diff_limited += 0.5*(t(m,4,k,j,i) + t(m,4,k+dk,j+dj,i+di));
     }
     r(m,0,k,j,i) = sigma;
     r(m,1,k,j,i) = sgs::Dissipation(w(m,IDN,k,j,i),
@@ -271,7 +270,7 @@ void Hydro::SGSRates() {
   });
 }
 
-int Hydro::SGSTrial(Driver *d, int stage) {
+int Hydro::SGSTrial() {
   auto ind = pmy_pack->pmesh->mb_indcs;
   auto u = u0;
   auto size = pmy_pack->pmb->mb_size;
