@@ -30,6 +30,8 @@ Checked boxes refer to the named engineering evidence, not scientific approval.
   and 20-process serial integration reproduction passes for42bcf12c (clean-reproduction/).
   Subsequent constructor extraction: independent exact review, three rebuilds and
   repeated core/persistence/physical checks recorded in ponytail/.
+  Three subsequent complexity reviews implemented; fresh core/restart, all18boundary
+  and13production exits, native ABI/payload and23748CSV equivalence checks in review3/.
 - [ ] M9.6: human review of exact code/evidence. Scientific sign-off remains pending.
 - [ ] M9.7–8: PR/release action if requested; R1 is not declared release-ready.
 - [ ] M10: separate AMR, cooling/source, MHD and relativistic gates. Excluded here.

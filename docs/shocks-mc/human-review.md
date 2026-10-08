@@ -1,7 +1,8 @@
 # Human scientific review — pending
 
-Review exact source commit `f0053f2e` (numerical implementation38c55570 plus
-reviewed configuration extraction) and the final source/evidence manifest.
+Review exact source commit `3de18d97` (numerical implementation38c55570 plus
+reviewed constructor extraction and three-review simplifications) and the final
+source/evidence manifest.
 No human scientific approval has been supplied. The source-only reviewer and
 all automated suites are engineering evidence, not a scientific signature.
 

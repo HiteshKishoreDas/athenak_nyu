@@ -190,3 +190,43 @@ logic is unchanged by exact source extraction review. Exact source-bound restart
 contracts intentionally require the same code fingerprint; older checkpoints
 must use their matching executable. This cleanup does not add cross-version
 checkpoint compatibility. RUSTY/Frontier and scientific release remain unqualified.
+
+
+## Three requested Ponytail reviews and implementation — 2026-10-08
+
+User requested exactly three subagents with different prompts and implementation
+of suggestions. Numerical/state, native integration, and persistence/output agents
+read ponytail-review and relevant flow, produced read-only findings, then independently
+reviewed root's sequential integration. Findings were consolidated: duplicate state
+representative derives from first; duplicated native restart structs share one same-file
+type; remove writer tautology but retain reader schedule comparison; remove only exit-index
+sort (final event sort stays); reuse existing ConfigValid and ShockError; share PutEvent;
+append nonempty contiguous sidecar state once. No framework/solver/RNG/task changes.
+
+Source commit3de18d97; final fingerprint
+3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc.
+Forty net production lines removed. Fixture now initializes four stored observations;
+all remaining state fields still checked. Compiler ABI probe: native header48bytes,
+Observation184, old/new EncounterState1000/816, Event944. All surviving field offsets
+and native header offsets match. State bytes/source contract explicitly reject older
+sidecars; actual old active checkpoint rejection passed. Public event schema stays124.
+
+Three builds and native state checks pass. Release53parity cases (unchanged1e-12),
+20integration,12reject,4replay processes pass. Both actual-method boundary builds and
+all18cases pass; actual13domain-exit records exactly match earlier evidence. All21
+physical measurement dictionaries match exactly;23748event/suspended/trace/transfer CSVs
+are byte-identical after replacing only the implementation fingerprint. Native particle
+restart tails are identical in OUTSIDE/ACTIVE/PENDING. Scientific extra episodes remain.
+
+No new style findings: source-text/category comparison has10inherited native MC warnings.
+Initial reference comparison failed because temp reference lacked CPPLINT.cfg; rerun
+with exact native configuration (same90-column policy/filters) passed. A double blank
+line introduced with the shared header was removed before final runtime suites; its
+exact reverse reconstruction matches the independent review's hash. No numeric test
+threshold, state transition or error-substring was changed. Configuration errors now
+use shared fatal prefix/MPI abort; no rejection guard was removed except a tautology.
+
+review3/ contains reviewer findings, accepted changes/hashes, exact commands/configs,
+inputs/logs, native ABI/old-layout probe and equivalence reports. Old packets retained
+with their own identities; raw grids/binaries are not committed. No new cross-rank,
+device, cluster, sustained performance or human scientific sign-off is claimed.

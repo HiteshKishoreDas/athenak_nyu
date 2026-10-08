@@ -1,7 +1,8 @@
 # Exact-source MC scientific-review measurements
 
-Current structural cleanup is `f0053f2e`, fingerprint80da; repeated suites are
-in `../ponytail/`. This packet documents pre-cleanup78e5 source and remains intact.
+Current source is `3de18d97`, fingerprint3feb; fresh suites are in `../review3/`.
+`../ponytail/` retains the previous80da constructor extraction. This packet documents
+pre-cleanup78e5 source and remains intact.
 All21physical measurement records match exactly after cleanup.
 
 `report_stylefinal.json` and `packet_stylefinal` bind production commit38c55570,

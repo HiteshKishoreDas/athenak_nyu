@@ -15,6 +15,14 @@ Independent exact-extraction review and rerun results are in
 `evidence/shocks-mc/ponytail/`. Earlier 78e5 reports/plots remain historical;
 all 21 physical measurements match exactly after cleanup, including failures.
 
+Three-review cleanup: current source `3de18d97`, fingerprint
+`3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc`.
+Forty net production lines removed: duplicate state/header/schema code and
+redundant validation/sort. Encounter state is816bytes on tested local ABI,
+down from1000; emitted124-column event schema is unchanged. Old sidecars reject
+explicitly by size/source contract. Three independent reviews and fresh checks
+are in `evidence/shocks-mc/review3/`; earlier packets keep their source identity.
+
 ## What changed and why
 
 | Change | Purpose |

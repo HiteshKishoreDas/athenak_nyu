@@ -100,3 +100,11 @@ This is same-layout checkpoint replay with explicit failures, not an all-rank at
 transaction or a claim about every filesystem/power-loss fault. Storage short-write/
 close checks were source-reviewed; actual storage-failure injection remains pending.
 RUSTY/Frontier filesystem durability and true cross-rank recovery need target tests.
+
+
+Current state stores four observations (previous/first/last/post). Event representative
+is derived from first when emitting, retaining all five public observation groups.
+Three-review source3de18d97 reduces local double EncounterState1000to816bytes;
+Event remains944bytes and native MC header48bytes, with unchanged field offsets.
+Earlier1000-byte sidecars are rejected, even for zero particles. Replay always
+requires the matching executable; no cross-version checkpoint conversion is supplied.

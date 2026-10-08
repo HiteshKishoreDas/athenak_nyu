@@ -1,13 +1,15 @@
 # Exact-code MC engineering evidence bundle
 
-Current source `f0053f2e` (numerical production `38c55570` plus constructor cleanup); base `526a187f938e38634e89a88192ebe9731c4d36bb`;
+Current source `3de18d97`; base `526a187f938e38634e89a88192ebe9731c4d36bb`;
 Kokkos `08ceff92bcf3a828844480bc1e6137eb74028517` (4.4.0).
 Current core fingerprint
-`80da5390b07a322b83f3ce829f97975c4326b3216a764d77bf530a8f355265c4`.
-`ponytail/` contains exact extraction review, three builds/state checks, repeated
-53parity/20integration/12reject/4replay suites and21physical measurements exactly
-equal to previous results. Other packets below bind pre-cleanup78e5 explicitly;
-their source/config bytes and outcomes remain historical evidence.
+`3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc`.
+`review3/` contains three independent reviews and integrated rechecks:53parity,
+20integration,12reject,4replay,18boundary cases,13production exits, actual old-layout
+rejection, native ABI/payload checks and21physical cases exactly matching prior results.
+All23748heldout CSVs match after source fingerprint substitution.40net source lines
+removed; state1000to816bytes; public124-column events unchanged. `ponytail/` is the
+previous constructor-extraction packet. Other packets below retain earlier identities.
 Scientific sign-off pending. Local commits are not remote pushes/releases.
 
 - `baseline`: frozen criteria, existing MC statistical/restart results and failures.
