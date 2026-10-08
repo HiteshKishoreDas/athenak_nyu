@@ -93,3 +93,7 @@ count = 8
 <output1>
 file_type = rst
 dt = 0.1
+
+# Required native selector for the fixture's timed refinement hook.
+<amr_criterion0>
+method = user
