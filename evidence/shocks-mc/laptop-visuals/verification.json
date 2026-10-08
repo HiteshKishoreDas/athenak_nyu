@@ -21,5 +21,53 @@
     "timing_bracket_widths"
   ],
   "first_plot_failure": "Matplotlib layout ValueError: cannot convert float NaN to integer on tiny all-zero restart axis; fixed display scaling and label transform, exact assertions unchanged",
-  "scientific_signoff": "pending"
+  "scientific_signoff": "pending",
+  "h5py_version": "3.16.0",
+  "clean_one_command_reproduction": {
+    "exit": 0,
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/laptop_visuals.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-laptop-clean-20261008",
+      "--output",
+      "/private/tmp/shock-mc-laptop-clean-plots-20261008"
+    ],
+    "plots": 28,
+    "physical_measurement_dicts_exact_equal": 21,
+    "pngs_byte_identical": [
+      "2d_dens.png",
+      "2d_pressure.png",
+      "2d_temperature.png",
+      "boost2_parents.png",
+      "boost2_strength_time.png",
+      "encounter_brackets.png",
+      "episode_counts.png",
+      "front_position.png",
+      "mach1.2_parents.png",
+      "mach1.5_parents.png",
+      "mach3_parents.png",
+      "mach5_parents.png",
+      "mach5_strength_time.png",
+      "mach_errors.png",
+      "negative_controls.png",
+      "nx256_parents.png",
+      "nx64_parents.png",
+      "output_cost.png",
+      "reflected_parents.png",
+      "restart_agreement.png",
+      "rh_profiles.png",
+      "seed11_parents.png",
+      "seed11_strength_time.png",
+      "shock_space_time.png",
+      "stationary_parents.png",
+      "timing_bracket_widths.png",
+      "uniform_transport.png"
+    ],
+    "additional_sequential_benchmark_runs": 18,
+    "runtime_not_forced_equal": true,
+    "initial_packaging_assertion": "Expected26matchingfigures; actual27 because output-cost figure also matches; corrected count, no physical/test tolerance change."
+  }
 }

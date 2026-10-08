@@ -249,3 +249,12 @@ Known Mach5/boost/M1.5 outcomes match review3; no production source edits.
 Ponytail reused test/readers/installed libraries; no new framework.
 Scientific acceptance, resident-memory measurement, sustained performance and
 RUSTY/Frontier/MPI/GPU qualification remain pending.
+
+Fresh end-to-end CLI reproduction without `--reuse` passed: 20 engineering runs,
+21 physical runs, 28 plots and 18 additional sequential benchmarks. All 21 physical
+measurement dictionaries and 27 PNGs match exactly; runtime plot has fresh measurements.
+An evidence-packaging assertion initially expected 26 matching figures; actual 27
+includes output cost. Corrected count, no numerical/test tolerance changed.
+Reproduction reports are in laptop-visuals/clean-reproduction; verification.json
+records exact commands and equality scope. Compact native 2D snapshots are explicitly
+tracked despite the repository binary-output ignore rule, so the packet is portable.

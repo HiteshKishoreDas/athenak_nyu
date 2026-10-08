@@ -21,7 +21,7 @@ reusing completed integration/qualification reports after an interrupted plottin
 attempt; additional snapshot/benchmark directories still must be absent.
 Python needs NumPy, Matplotlib and h5py (AthenaK's binary reader imports h5py).
 The command above uses the already installed ShockIt environment. Tested versions:
-Python3.14.0, NumPy2.5.0, Matplotlib3.11.0; no package installation was performed.
+Python3.14.0, NumPy2.5.0, Matplotlib3.11.0, h5py3.16.0; no package installation was performed.
 
 For another laptop/check-out, replace the Python path with an environment containing
 those packages, and build the local Serial CPU executable first:
@@ -88,3 +88,9 @@ and places labels in axis coordinates. Exact equality assertions were unchanged.
 Partial first-attempt artifacts are preserved locally under
 `/private/tmp/shock-mc-first-plot-attempt` and `first-attempt-snapshots` in the raw run root.
 Scientific sign-off and broader hardware/performance gates remain pending.
+
+The documented one-command workflow was independently run without `--reuse`
+in a fresh directory. It passed all engineering checks, completed 21 physical
+fixtures and 28 plots, and repeated 18 benchmarks. All 21 physical measurement
+dictionaries and 27 PNGs match the first gallery exactly, including output cost.
+Runtime variation was retained; reproduction reports are under `clean-reproduction/`.

@@ -5,6 +5,9 @@
   "all-plots.pdf": "ac7c058289313061fcc17fbd2e84aed985e585a1fbfcd41597e0059a82e07b32",
   "boost2_parents.png": "09ee4e141b299ae3693e5f7be642feba32273a1cb495d16213503639bacaceb2",
   "boost2_strength_time.png": "e4584320fa876cc7954713318446232e0633b42483efcbf964e06adc8bb52f0a",
+  "clean-reproduction/integration-report.json": "c0149d71bbb5b7f95be8a361d5c13df29f103973f8e446b295fbef81f5ec1e22",
+  "clean-reproduction/qualification-report.json": "f4434be0ace6b293f358bae23175a2fc480a4dd9d29c937d62661f1184f3dfa5",
+  "clean-reproduction/report.json": "26752b78ba65ad44f7cae90d40cf26cb99290430116dfa33a12f4e789bc6c55a",
   "data/boost2-selected.csv": "24e1f168c3e2a4ee90add409728f1f1530c8ce24907fc9f5113ca55c838d1baa",
   "data/front-position.csv": "5e485a8613648c089e13290b4cfc01c45b249fd122de7938942a2a4ae1f9ef61",
   "data/mach1.2-selected.csv": "c6ee0747dbbf53e83328312aa309b56eda30c966c348863e6bd31b465e29e6ee",
@@ -210,5 +213,5 @@
   "stationary_parents.png": "e0337b741c132e2daec92f5ccf889e757dc924d3698503a713f8c25970de6bdc",
   "timing_bracket_widths.png": "f79539f49adb5e8ffee29e563055a677d35bed55226ef1dba1af747d5f566bdb",
   "uniform_transport.png": "a9cbcf76b96e0265bd9b85ca25ab303025a82e0c594addbd7be9382110500331",
-  "verification.json": "7668aaf4e8ae6a3e2fcb94acb9a5d50fe10210365261aa92d6d9b86eeb49805b"
+  "verification.json": "9f9f078c0a39b69126f3684da67e63376a5940d37bf8043be866662972ada42c"
 }

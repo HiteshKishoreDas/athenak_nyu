@@ -47,7 +47,7 @@
     "Rusty or Frontier node/backend, rank/cell/particle scale and runtime/memory/I/O budget"
   ],
   "hash_scope": "Tracked source, build inputs, selected feature tests/docs/reference/evidence; excludes this manifest to avoid circular hashes. Binary identities are in run/build reports; binaries/full raw grids are not committed.",
-  "file_count": 2193,
+  "file_count": 2196,
   "files_sha256": {
     ".gitmodules": "1c32f97b6a7b34a06930640c3534af7c48fafb5a11ee60688bc4d6ce7c42a0d4",
     "CMakeLists.txt": "5f32f2f27338a0c46edba43fdec775c59150c3ee487b19a4c59951ee438ba0d8",
@@ -55,7 +55,7 @@
     "docs/shocks-mc/README.md": "c96d161a2c77f65870a35655d0b4ef7d987505a4bdbc914b2ab341e025d6f4f4",
     "docs/shocks-mc/checklist.md": "a224bb110d1eb988645433378e6edfd8e108687d555f33be0a2923597f3aee11",
     "docs/shocks-mc/human-review.md": "e290ebb31e9917ffcc414631d270842bc80b645ec4ba203cf6ac49f94db42090",
-    "docs/shocks-mc/ledger.md": "ee41dfdf44b8e4e4318a4326908a3009da3c0eee886c315c8350f7235f7c78b3",
+    "docs/shocks-mc/ledger.md": "b0ddda6abb6fe45abedf7cce50e6753ced39cefd6dce664e419e6bea06b0eda3",
     "docs/shocks-mc/schema.md": "8a457ad9372d7be27de86b4cc943a1a5cafde38e6671344d9d7f7f6fe93009fa",
     "evidence/shocks-mc/README.md": "681beee7f75b31af8926cd8ebf2899a873d39a64a8e839d7c11cfad555085298",
     "evidence/shocks-mc/baseline/README.md": "49c0fdde7d94316d6acea9134e49d23b8732079c7328ed6931f398a98be701e5",
@@ -2028,7 +2028,7 @@
     "tst/shocks/system_mc.py": "2745805a725d45dd772e281c23578aa4931bd6809272ca2adc233548a0e0d2ef",
     "vis/python/shock_history.py": "74caae7d31533a7b97a7078e963c8d17305b835b94a52ac740672761045482ad",
     "tst/shocks-mc/laptop_visuals.py": "df6da44501ac993991caacb0e766d274a5cc699e2d24a4ab1c08a49fe279ca41",
-    "docs/shocks-mc/laptop-tests.md": "2440f7bcc6204adc993d3c289e2c85cf03186219dca53c0d27a8b572ab382d1f",
+    "docs/shocks-mc/laptop-tests.md": "db10d7a8048230dc140f983ef1ae1da70207be5895a280f820064ed2775706cd",
     "evidence/shocks-mc/laptop-visuals/boost2_strength_time.png": "e4584320fa876cc7954713318446232e0633b42483efcbf964e06adc8bb52f0a",
     "evidence/shocks-mc/laptop-visuals/mach1.5_parents.png": "d340dcd5449705d394ee29fb6f2584092d079e8adf13e6c902ddefd130f8309c",
     "evidence/shocks-mc/laptop-visuals/negative_controls.png": "e55dff1210c2153df0e4ee340e366c66e11eb94263546435ede2bb9b4113db32",
@@ -2041,7 +2041,7 @@
     "evidence/shocks-mc/laptop-visuals/index.html": "362a7a1ef94c0e5460e51f5be7c66d84e686e28bc9c0a5860fbb8ba332ccf163",
     "evidence/shocks-mc/laptop-visuals/all-plots.pdf": "ac7c058289313061fcc17fbd2e84aed985e585a1fbfcd41597e0059a82e07b32",
     "evidence/shocks-mc/laptop-visuals/report.json": "2715d7fcbdf992fc3b4d506225280b23bff74cd15d6ebeab1ee192ac9f26c7c4",
-    "evidence/shocks-mc/laptop-visuals/sha256.json": "23a26ab9c3a4a125b106ce99ecdb5408b067a6e4e2452ddfca2815d631896112",
+    "evidence/shocks-mc/laptop-visuals/sha256.json": "f19752ff6bca7016bb2fc7a88e91702b6f96871324a717e9fd9d1d7b5cb3cada",
     "evidence/shocks-mc/laptop-visuals/output_cost.png": "c25692fcfea10c206e42475e5658f399da5e0229c0bff4962acb5476de7b426e",
     "evidence/shocks-mc/laptop-visuals/nx256_parents.png": "da4f097e6e195dece926ef5a6f85cf98e3069b793d01a84239d63fc8ffa99474",
     "evidence/shocks-mc/laptop-visuals/mach_errors.png": "f80b29ae9efa1d9239d5c45c30f0e6efe51afc12a087465b2c3670e6f408dd5a",
@@ -2057,7 +2057,7 @@
     "evidence/shocks-mc/laptop-visuals/mach5_strength_time.png": "693c165034c5a0a0a1a3b5a33f6a67332e78d879755088efd5579f7c6add176d",
     "evidence/shocks-mc/laptop-visuals/2d_pressure.png": "d4a5a5c0c2d61b4f669cc3f3900c87cd966c32dc954b83d67e555a352a366233",
     "evidence/shocks-mc/laptop-visuals/encounter_brackets.png": "7d83dc32bc31746873f3f45abdc8ea5e8ef26e6355fad5fc73087a57c828bcd3",
-    "evidence/shocks-mc/laptop-visuals/verification.json": "7668aaf4e8ae6a3e2fcb94acb9a5d50fe10210365261aa92d6d9b86eeb49805b",
+    "evidence/shocks-mc/laptop-visuals/verification.json": "9f9f078c0a39b69126f3684da67e63376a5940d37bf8043be866662972ada42c",
     "evidence/shocks-mc/laptop-visuals/seed11_strength_time.png": "c9f0f488d10993fe159987bf83e2bc93f009c3cab3ad25ca44402bc2ccbe2560",
     "evidence/shocks-mc/laptop-visuals/uniform_transport.png": "a9cbcf76b96e0265bd9b85ca25ab303025a82e0c594addbd7be9382110500331",
     "evidence/shocks-mc/laptop-visuals/2d_temperature.png": "016a55ed758960be4e06706465a39f0d9670e6c3ad2aaab1226d8116812c434c",
@@ -2241,7 +2241,10 @@
     "evidence/shocks-mc/laptop-visuals/data/native-2d-snapshots/shock_mc.hydro_w.00001.bin": "2d7ec8e9ffc1697fcbf9318ae558582004c838fdb13ec4485b2018a96f3f6708",
     "evidence/shocks-mc/laptop-visuals/data/native-2d-snapshots/shock_mc.hydro_w.00000.bin": "88a59af385bc03f945ba56fedbf99a691b824e4feb5f025c714d9896908bbae4",
     "evidence/shocks-mc/laptop-visuals/data/native-2d-snapshots/shock_mc.hydro_w.00008.bin": "9f7a8f8795e64cd2ec3329b05d3b83c7cb3fc3e06f5a385487041ad0f2a98b33",
-    "evidence/shocks-mc/laptop-visuals/data/native-2d-snapshots/shock_mc.hydro_w.00009.bin": "db7b76da3d148ec74c28f4dcb442f8f3ba18fc86c323d67f85ddc2876832d5ae"
+    "evidence/shocks-mc/laptop-visuals/data/native-2d-snapshots/shock_mc.hydro_w.00009.bin": "db7b76da3d148ec74c28f4dcb442f8f3ba18fc86c323d67f85ddc2876832d5ae",
+    "evidence/shocks-mc/laptop-visuals/clean-reproduction/report.json": "26752b78ba65ad44f7cae90d40cf26cb99290430116dfa33a12f4e789bc6c55a",
+    "evidence/shocks-mc/laptop-visuals/clean-reproduction/qualification-report.json": "f4434be0ace6b293f358bae23175a2fc480a4dd9d29c937d62661f1184f3dfa5",
+    "evidence/shocks-mc/laptop-visuals/clean-reproduction/integration-report.json": "c0149d71bbb5b7f95be8a361d5c13df29f103973f8e446b295fbef81f5ec1e22"
   },
   "source_reviews": {
     "original_numerical_timing_persistence": "review/integrated-manifest.json",
