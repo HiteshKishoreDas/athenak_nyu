@@ -535,6 +535,15 @@ int main(int argc, char *argv[]) {
                                                      restartfile,
                                                      restart_shard_mode);
     restartfile.Close(UsesSerialIO(restart_shard_mode));
+    if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
+      std::string shock_payload = restart_file;
+      if (restart_shard_mode == FileShardMode::per_rank) {
+        shock_payload = (restart_base_dir.empty() ? "" : restart_base_dir + "/")
+                        + ShardDirectoryName(FileShardMode::per_rank)
+                        + restart_file_name;
+      }
+      pmesh->pmb_pack->ppart->ReadShockRestart(shock_payload);
+    }
   }
   //--- Step 6. --------------------------------------------------------------------------
   // Construct Driver and Outputs. Actual outputs (including initial conditions) are made

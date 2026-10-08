@@ -23,6 +23,7 @@ enum class BoundaryFlag {undef=-1,block, reflect, inflow, outflow, diode, user, 
 #include <vector>
 
 #include "athena.hpp"
+#include "shocks/encounter.hpp"
 #include "mesh/mesh.hpp"
 #include "coordinates/coordinates.hpp"
 #include "tasklist/task_list.hpp"
@@ -253,6 +254,8 @@ class ParticlesBoundaryValues {
   int nprtcl_send, nprtcl_recv;
   DualArray1D<ParticleLocationData> sendlist;
   DualArray1D<int> send_count;
+  int nprtcl_destroy = 0;
+  DualArray1D<int> shock_destroylist, shock_destroy_count;
 
   // Data needed to count number of messages and particles to send between ranks
   int nsends; // number of MPI sends to neighboring ranks on this rank
@@ -267,6 +270,8 @@ class ParticlesBoundaryValues {
   DvceArray1D<int>  prtcl_isendbuf, prtcl_irecvbuf;
   std::vector<MPI_Request> rrecv_req, rsend_req;  // vectors of requests for Reals
   std::vector<MPI_Request> irecv_req, isend_req;  // vectors of requests for ints
+  DvceArray1D<shocks::EncounterState> shock_sendbuf, shock_recvbuf;
+  std::vector<MPI_Request> shock_recv_req, shock_send_req;
   MPI_Comm mpi_comm_part;                       // unique MPI communicators for particles
 #endif
 
@@ -280,6 +285,8 @@ class ParticlesBoundaryValues {
   TaskStatus RecvAndUnpackPrtcls();
 
  protected:
+  TaskStatus SetShockPrtclGID();
+  TaskStatus RecvAndUnpackShockPrtcls();
   particles::Particles* pmy_part;
 };
 } // namespace particles

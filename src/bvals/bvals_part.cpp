@@ -6,6 +6,9 @@
 //! \file bvals_part.cpp
 //! \brief
 
+#include <climits>
+#include <cstdint>
+#include <type_traits>
 #include <cstdlib>
 #include <iostream>
 #include <utility>
@@ -23,6 +26,30 @@
 #include "bvals.hpp"
 
 namespace particles {
+static_assert(std::is_trivially_copyable<shocks::EncounterState>::value,
+              "Encounter migration requires trivially copyable typed state");
+
+#if MPI_PARALLEL_ENABLED
+// Native bytes require the same executable and ABI on every rank.
+static int ShockMessageBytes(int count) {
+  if (count < 0 || static_cast<size_t>(count) >
+      static_cast<size_t>(INT_MAX)/sizeof(shocks::EncounterState)) {
+    std::cerr << "FATAL: shock migration MPI byte count exceeds INT_MAX" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  return static_cast<int>(count*sizeof(shocks::EncounterState));
+}
+
+static void CheckShockBuffers(int count, int nrdata, int nidata) {
+  ShockMessageBytes(count);
+  if (nrdata <= 0 || nidata <= 0 || count > INT_MAX/nrdata ||
+      count > INT_MAX/nidata) {
+    std::cerr << "FATAL: shock migration data count exceeds INT_MAX" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+}
+#endif
+
 //----------------------------------------------------------------------------------------
 //! \fn void ParticlesBoundaryValues::UpdateGID()
 //! \brief Updates GID of particles that cross boundary of their parent MeshBlock.  If
@@ -50,6 +77,7 @@ void UpdateGID(int &newgid, NeighborBlock nghbr, int myrank,
 //! \brief
 
 TaskStatus ParticlesBoundaryValues::SetNewPrtclGID() {
+  if (pmy_part->shock_enabled) return SetShockPrtclGID();
   // create local references for variables in kernel
   auto gids = pmy_part->pmy_pack->gids;
   auto &pr = pmy_part->prtcl_rdata;
@@ -191,6 +219,115 @@ TaskStatus ParticlesBoundaryValues::SetNewPrtclGID() {
   return TaskStatus::complete;
 }
 
+// Uniform-grid shock path preserves the existing disabled particle implementation.
+TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
+  const int npart = pmy_part->nprtcl_thispack;
+  if (pmy_part->shock_state.extent(0) != static_cast<size_t>(npart)) {
+    std::cerr << "FATAL: particle shock-state extent mismatch" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  auto *pack = pmy_part->pmy_pack;
+  const int gids = pack->gids, nmb = pack->nmb_thispack;
+  const bool multi_d = pack->pmesh->multi_d, three_d = pack->pmesh->three_d;
+  const auto meshsize = pack->pmesh->mesh_size;
+  Kokkos::Array<BoundaryFlag,6> bcs;
+  for (int f=0; f<6; ++f) bcs[f] = pack->pmesh->mesh_bcs[f];
+  auto pr = pmy_part->prtcl_rdata;
+  auto pi = pmy_part->prtcl_idata;
+  auto states = pmy_part->shock_state;
+  auto sizes = pack->pmb->mb_size.d_view;
+  auto levels = pack->pmb->mb_lev.d_view;
+  auto neighbors = pack->pmb->nghbr.d_view;
+  const int myrank = global_variable::my_rank;
+  Kokkos::realloc(sendlist, npart);
+  Kokkos::realloc(shock_destroylist, npart);
+  Kokkos::realloc(shock_destroy_count, 1);
+  send_count.h_view(0) = 0;
+  send_count.template modify<HostMemSpace>();
+  send_count.template sync<DevExeSpace>();
+  shock_destroy_count.h_view(0) = 0;
+  shock_destroy_count.template modify<HostMemSpace>();
+  shock_destroy_count.template sync<DevExeSpace>();
+  auto scount = send_count.d_view;
+  auto dcount = shock_destroy_count.d_view;
+  auto slist = sendlist.d_view;
+  auto dlist = shock_destroylist.d_view;
+  par_for("shock_particle_gid",DevExeSpace(),0,npart-1,
+  KOKKOS_LAMBDA(const int p) {
+    const int m = pi(PGID,p) - gids;
+    if (m < 0 || m >= nmb) Kokkos::abort("invalid shock particle MeshBlock");
+    Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
+    Real lower[3] = {meshsize.x1min, meshsize.x2min, meshsize.x3min};
+    Real upper[3] = {meshsize.x1max, meshsize.x2max, meshsize.x3max};
+    Real blo[3] = {sizes(m).x1min, sizes(m).x2min, sizes(m).x3min};
+    Real bhi[3] = {sizes(m).x1max, sizes(m).x2max, sizes(m).x3max};
+    const int ndim = three_d ? 3 : (multi_d ? 2 : 1);
+    int offset[3] = {};
+    bool destroy = false;
+    for (int d=0; d<ndim; ++d) {
+      if (!Kokkos::isfinite(x[d])) Kokkos::abort("nonfinite shock particle position");
+      const Real length = bhi[d] - blo[d];
+      if (x[d] < blo[d]-length || x[d] >= bhi[d]+length) {
+        Kokkos::abort("shock particle moved beyond adjacent MeshBlock");
+      }
+      offset[d] = x[d] < blo[d] ? -1 : (x[d] >= bhi[d] ? 1 : 0);
+      const int face = x[d] < lower[d] ? 2*d : (x[d] >= upper[d] ? 2*d+1 : -1);
+      if (face >= 0 && bcs[face] == BoundaryFlag::outflow) destroy = true;
+      if (face >= 0 && bcs[face] != BoundaryFlag::outflow &&
+          bcs[face] != BoundaryFlag::periodic) {
+        Kokkos::abort("unsupported shock particle physical boundary");
+      }
+    }
+    // Outflow has no neighbor. Emit its evidence on the host before deletion.
+    if (destroy) {
+      int n = Kokkos::atomic_fetch_add(&dcount(0),1);
+      dlist(n) = p;
+      return;
+    }
+    if (offset[0] || offset[1] || offset[2]) {
+      const int index = NeighborIndex(offset[0],offset[1],offset[2],0,0);
+      const auto neighbor = neighbors(m,index);
+      if (neighbor.gid < 0 || neighbor.lev != levels(m)) {
+        Kokkos::abort("shock particle requires a uniform adjacent neighbor");
+      }
+      UpdateGID(pi(PGID,p), neighbor, myrank, scount, slist, p);
+    }
+    for (int d=0; d<ndim; ++d) {
+      const bool low = x[d] < lower[d], high = x[d] >= upper[d];
+      if (low || high) {
+        if ((low && states(p).image[d] == INT64_MIN) ||
+            (high && states(p).image[d] == INT64_MAX)) {
+          Kokkos::abort("shock periodic image counter limit reached");
+        }
+        states(p).image[d] += low ? -1 : 1;
+        pr(2*d,p) += low ? upper[d]-lower[d] : lower[d]-upper[d];
+        if (pr(2*d,p) < lower[d] || pr(2*d,p) >= upper[d]) {
+          Kokkos::abort("shock particle periodic wrap did not enter domain");
+        }
+      }
+    }
+  });
+  send_count.template modify<DevExeSpace>();
+  send_count.template sync<HostMemSpace>();
+  shock_destroy_count.template modify<DevExeSpace>();
+  shock_destroy_count.template sync<HostMemSpace>();
+  nprtcl_send = send_count.h_view(0);
+  nprtcl_recv = 0;
+  nsends = nrecvs = 0;
+  nprtcl_destroy = shock_destroy_count.h_view(0);
+  Kokkos::resize(sendlist, nprtcl_send);
+  sendlist.template modify<DevExeSpace>();
+  sendlist.template sync<HostMemSpace>();
+  Kokkos::resize(shock_destroylist, nprtcl_destroy);
+  shock_destroylist.template modify<DevExeSpace>();
+  shock_destroylist.template sync<HostMemSpace>();
+  std::vector<int> exits;
+  for (int n=0; n<nprtcl_destroy; ++n) exits.push_back(shock_destroylist.h_view(n));
+  std::sort(exits.begin(), exits.end());
+  if (!exits.empty()) pmy_part->EmitShockExits(exits);
+  return TaskStatus::complete;
+}
+
 //----------------------------------------------------------------------------------------
 //! \fn void ParticlesBoundaryValues::CountSendsAndRecvs()
 //! \brief
@@ -235,7 +372,15 @@ TaskStatus ParticlesBoundaryValues::CountSendsAndRecvs() {
   nsends_displ.resize(global_variable::nranks);
   nsends_displ[0] = 0;
   for (int n=1; n<(global_variable::nranks); ++n) {
+    if (pmy_part->shock_enabled && (nsends_eachrank[n-1] < 0 ||
+        nsends_displ[n-1] > INT_MAX-nsends_eachrank[n-1])) {
+      MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
+    }
     nsends_displ[n] = nsends_displ[n-1] + nsends_eachrank[n-1];
+  }
+  if (pmy_part->shock_enabled && (nsends_eachrank.back() < 0 ||
+      nsends_displ.back() > INT_MAX-nsends_eachrank.back())) {
+    MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
   }
   int nsends_allranks = nsends_displ[global_variable::nranks - 1] +
                         nsends_eachrank[global_variable::nranks - 1];
@@ -252,6 +397,7 @@ TaskStatus ParticlesBoundaryValues::CountSendsAndRecvs() {
   MPI_Allgatherv(MPI_IN_PLACE, nsends_eachrank[global_variable::my_rank],
                    mpi_ituple, sends_allranks.data(), nsends_eachrank.data(),
                    nsends_displ.data(), mpi_ituple, mpi_comm_part);
+  MPI_Type_free(&mpi_ituple);
 #endif
   return TaskStatus::complete;
 }
@@ -277,7 +423,19 @@ TaskStatus ParticlesBoundaryValues::InitPrtclRecv() {
   // Figure out how many particles will be received from all ranks
   nprtcl_recv=0;
   for (int n=0; n<nrecvs; ++n) {
+    if (pmy_part->shock_enabled &&
+        (recvs_thisrank[n].nprtcls < 0 ||
+         nprtcl_recv > INT_MAX-recvs_thisrank[n].nprtcls)) {
+      std::cerr << "FATAL: shock receive count exceeds INT_MAX" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
     nprtcl_recv += recvs_thisrank[n].nprtcls;
+  }
+
+  if (pmy_part->shock_enabled) {
+    CheckShockBuffers(nprtcl_recv, pmy_part->nrdata, pmy_part->nidata);
+    Kokkos::realloc(shock_recvbuf, nprtcl_recv);
+    shock_recv_req.assign(nrecvs, MPI_REQUEST_NULL);
   }
 
   // Allocate receive buffer
@@ -326,6 +484,19 @@ TaskStatus ParticlesBoundaryValues::InitPrtclRecv() {
     data_start += data_size;
   }
 
+  if (pmy_part->shock_enabled) {
+    int particle_start = 0;
+    for (int n=0; n<nrecvs; ++n) {
+      const int count = recvs_thisrank[n].nprtcls;
+      int ierr = MPI_Irecv(shock_recvbuf.data()+particle_start,
+                           ShockMessageBytes(count), MPI_BYTE,
+                           recvs_thisrank[n].sendrank, 2, mpi_comm_part,
+                           &(shock_recv_req[n]));
+      if (ierr != MPI_SUCCESS) no_errors = false;
+      particle_start += count;
+    }
+  }
+
   // Quit if MPI error detected
   if (!(no_errors)) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
@@ -345,11 +516,22 @@ TaskStatus ParticlesBoundaryValues::PackAndSendPrtcls() {
   // Figure out how many particles will be sent from this ranks
   nprtcl_send=0;
   for (int n=0; n<nsends; ++n) {
+    if (pmy_part->shock_enabled &&
+        (sends_thisrank[n].nprtcls < 0 ||
+         nprtcl_send > INT_MAX-sends_thisrank[n].nprtcls)) {
+      std::cerr << "FATAL: shock send count exceeds INT_MAX" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
     nprtcl_send += sends_thisrank[n].nprtcls;
   }
 
   bool no_errors=true;
   if (nprtcl_send > 0) {
+    if (pmy_part->shock_enabled) {
+      CheckShockBuffers(nprtcl_send, pmy_part->nrdata, pmy_part->nidata);
+      Kokkos::realloc(shock_sendbuf, nprtcl_send);
+      shock_send_req.assign(nsends, MPI_REQUEST_NULL);
+    }
     // Allocate send buffer
     Kokkos::realloc(prtcl_rsendbuf, (pmy_part->nrdata)*nprtcl_send);
     Kokkos::realloc(prtcl_isendbuf, (pmy_part->nidata)*nprtcl_send);
@@ -363,8 +545,12 @@ TaskStatus ParticlesBoundaryValues::PackAndSendPrtcls() {
     auto &rsendbuf = prtcl_rsendbuf;
     auto &isendbuf = prtcl_isendbuf;
     auto d_sendlist = sendlist.d_view;
+    const bool shock_enabled = pmy_part->shock_enabled;
+    auto states = pmy_part->shock_state;
+    auto state_buffer = shock_sendbuf;
     par_for("ppack",DevExeSpace(),0,(nprtcl_send-1), KOKKOS_LAMBDA(const int n) {
       int p = d_sendlist(n).prtcl_indx;
+      if (shock_enabled) state_buffer(n) = states(p);
       for (int i=0; i<nidata; ++i) {
         isendbuf(nidata*n + i) = pi(i,p);
       }
@@ -416,6 +602,19 @@ TaskStatus ParticlesBoundaryValues::PackAndSendPrtcls() {
     }
   }
 
+  if (pmy_part->shock_enabled) {
+    int particle_start = 0;
+    for (int n=0; n<nsends; ++n) {
+      const int count = sends_thisrank[n].nprtcls;
+      int ierr = MPI_Isend(shock_sendbuf.data()+particle_start,
+                           ShockMessageBytes(count), MPI_BYTE,
+                           sends_thisrank[n].recvrank, 2, mpi_comm_part,
+                           &(shock_send_req[n]));
+      if (ierr != MPI_SUCCESS) no_errors = false;
+      particle_start += count;
+    }
+  }
+
   // Quit if MPI error detected
   if (!(no_errors)) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
@@ -431,6 +630,7 @@ TaskStatus ParticlesBoundaryValues::PackAndSendPrtcls() {
 //! \brief
 
 TaskStatus ParticlesBoundaryValues::RecvAndUnpackPrtcls() {
+  if (pmy_part->shock_enabled) return RecvAndUnpackShockPrtcls();
 #if MPI_PARALLEL_ENABLED
   // Sort sendlist on host by index in particle array
   namespace KE = Kokkos::Experimental;
@@ -537,6 +737,91 @@ TaskStatus ParticlesBoundaryValues::RecvAndUnpackPrtcls() {
   return TaskStatus::complete;
 }
 
+TaskStatus ParticlesBoundaryValues::RecvAndUnpackShockPrtcls() {
+#if MPI_PARALLEL_ENABLED
+  bool ready = true;
+  for (int n=0; n<nrecvs; ++n) {
+    MPI_Request *requests[3] = {&rrecv_req[n], &irecv_req[n], &shock_recv_req[n]};
+    for (int i=0; i<3; ++i) {
+      int done = 0;
+      if (MPI_Test(requests[i], &done, MPI_STATUS_IGNORE) != MPI_SUCCESS) {
+        std::cerr << "FATAL: testing shock particle receive failed" << std::endl;
+        std::exit(EXIT_FAILURE);
+      }
+      if (!done) ready = false;
+    }
+  }
+  if (!ready) return TaskStatus::incomplete;
+#endif
+  const int npart = pmy_part->nprtcl_thispack;
+  const int64_t wide_count = static_cast<int64_t>(npart) + nprtcl_recv -
+                            nprtcl_send - nprtcl_destroy;
+  if (wide_count < 0 || wide_count > INT_MAX) {
+    std::cerr << "FATAL: shock particle count exceeds supported range" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  if (npart < 0 || nprtcl_send < 0 || nprtcl_recv < 0 || nprtcl_destroy < 0 ||
+      static_cast<int64_t>(nprtcl_send)+nprtcl_destroy > npart) {
+    std::cerr << "FATAL: invalid shock particle removal count" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  const int new_npart = static_cast<int>(wide_count);
+  if (nprtcl_send || nprtcl_recv || nprtcl_destroy) {
+    std::vector<unsigned char> removed(npart, 0);
+    for (int n=0; n<nprtcl_send+nprtcl_destroy; ++n) {
+      const int p = n < nprtcl_send ? sendlist.h_view(n).prtcl_indx :
+                                    shock_destroylist.h_view(n-nprtcl_send);
+      if (p < 0 || p >= npart || removed[p]) {
+        std::cerr << "FATAL: duplicate/invalid shock particle removal" << std::endl;
+        std::exit(EXIT_FAILURE);
+      }
+      removed[p] = 1;
+    }
+    const int nsurvive = npart-nprtcl_send-nprtcl_destroy;
+    DvceArray1D<int> survivors("shock_survivors", nsurvive);
+    auto indices = Kokkos::create_mirror_view(survivors);
+    int next = 0;
+    for (int p=0; p<npart; ++p) {
+      if (!removed[p]) indices(next++) = p;
+    }
+    Kokkos::deep_copy(survivors, indices);
+    const int nrdata = pmy_part->nrdata, nidata = pmy_part->nidata;
+    DvceArray2D<Real> new_real("shock_particle_real", nrdata, new_npart);
+    DvceArray2D<int> new_int("shock_particle_int", nidata, new_npart);
+    DvceArray1D<shocks::EncounterState> new_state("shock_particle_state", new_npart);
+    auto old_real = pmy_part->prtcl_rdata;
+    auto old_int = pmy_part->prtcl_idata;
+    auto old_state = pmy_part->shock_state;
+    par_for("shock_compact",DevExeSpace(),0,nsurvive-1,
+    KOKKOS_LAMBDA(const int n) {
+      const int p = survivors(n);
+      for (int i=0; i<nrdata; ++i) new_real(i,n) = old_real(i,p);
+      for (int i=0; i<nidata; ++i) new_int(i,n) = old_int(i,p);
+      new_state(n) = old_state(p);
+    });
+#if MPI_PARALLEL_ENABLED
+    auto real_buffer = prtcl_rrecvbuf;
+    auto int_buffer = prtcl_irecvbuf;
+    auto state_buffer = shock_recvbuf;
+    par_for("shock_unpack",DevExeSpace(),0,nprtcl_recv-1,
+    KOKKOS_LAMBDA(const int n) {
+      const int p = nsurvive+n;
+      for (int i=0; i<nrdata; ++i) new_real(i,p) = real_buffer(nrdata*n+i);
+      for (int i=0; i<nidata; ++i) new_int(i,p) = int_buffer(nidata*n+i);
+      new_state(p) = state_buffer(n);
+    });
+#endif
+    Kokkos::fence();
+    pmy_part->prtcl_rdata = new_real;
+    pmy_part->prtcl_idata = new_int;
+    pmy_part->shock_state = new_state;
+    pmy_part->nprtcl_thispack = new_npart;
+  }
+  // Exactly one count collective per completed receive path on every rank.
+  pmy_part->pmy_pack->pmesh->UpdateParticleCounts();
+  return TaskStatus::complete;
+}
+
 //----------------------------------------------------------------------------------------
 //! \fn void ParticlesBoundaryValues::ClearPrtclSend()
 //! \brief
@@ -550,6 +835,10 @@ TaskStatus ParticlesBoundaryValues::ClearPrtclSend() {
     if (ierr != MPI_SUCCESS) {no_errors=false;}
     ierr = MPI_Wait(&(isend_req[n]), MPI_STATUS_IGNORE);
     if (ierr != MPI_SUCCESS) {no_errors=false;}
+    if (pmy_part->shock_enabled) {
+      ierr = MPI_Wait(&(shock_send_req[n]), MPI_STATUS_IGNORE);
+      if (ierr != MPI_SUCCESS) no_errors = false;
+    }
   }
   // Quit if MPI error detected
   if (!(no_errors)) {
@@ -559,6 +848,7 @@ TaskStatus ParticlesBoundaryValues::ClearPrtclSend() {
   }
   rsend_req.clear();
   isend_req.clear();
+  shock_send_req.clear();
 #endif
   nsends=0;
   return TaskStatus::complete;
@@ -577,6 +867,10 @@ TaskStatus ParticlesBoundaryValues::ClearPrtclRecv() {
     if (ierr != MPI_SUCCESS) {no_errors=false;}
     ierr = MPI_Wait(&(irecv_req[n]), MPI_STATUS_IGNORE);
     if (ierr != MPI_SUCCESS) {no_errors=false;}
+    if (pmy_part->shock_enabled) {
+      ierr = MPI_Wait(&(shock_recv_req[n]), MPI_STATUS_IGNORE);
+      if (ierr != MPI_SUCCESS) no_errors = false;
+    }
   }
   // Quit if MPI error detected
   if (!(no_errors)) {
@@ -586,6 +880,7 @@ TaskStatus ParticlesBoundaryValues::ClearPrtclRecv() {
   }
   rrecv_req.clear();
   irecv_req.clear();
+  shock_recv_req.clear();
 #endif
   nrecvs=0;
   return TaskStatus::complete;

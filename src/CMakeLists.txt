@@ -106,6 +106,7 @@ add_executable(
         outputs/vtk_mesh.cpp
         outputs/vtk_prtcl.cpp
 
+        particles/shock_particles.cpp
         particles/particles.cpp
         particles/particles_lagrangian_mc.cpp
         particles/particles_pushers.cpp

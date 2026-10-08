@@ -267,6 +267,10 @@ void Particles::AppendParticles(const HostArray2D<Real> &new_rdata,
   if (nnew <= 0) return;
 
   int nold = nprtcl_thispack;
+  if (nold > std::numeric_limits<int>::max()-nnew) {
+    std::cerr << "Particle append count overflow" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
   HostArray2D<Real> old_r("old_prtcl_rdata", nrdata, nold);
   HostArray2D<int> old_i("old_prtcl_idata", nidata, nold);
   if (nold > 0) {
@@ -290,6 +294,7 @@ void Particles::AppendParticles(const HostArray2D<Real> &new_rdata,
   Kokkos::realloc(prtcl_idata, nidata, nprtcl_thispack);
   Kokkos::deep_copy(prtcl_rdata, merged_r);
   Kokkos::deep_copy(prtcl_idata, merged_i);
+  ResizeShockState(nold);
 }
 
 //----------------------------------------------------------------------------------------
@@ -374,6 +379,12 @@ void Particles::SeedTracersAtTime(Real event_time, bool initial_only) {
     if (!initial_only && sched.next_time > event_time + eps) continue;
 
     while (!sched.complete && sched.next_time <= event_time + eps) {
+      if (shock_enabled && (next_tracer_tag < 0 || next_tracer_tag >
+          static_cast<std::int64_t>(std::numeric_limits<int>::max()) + 1 -
+          sched.count_per_event ||
+          sched.event_index == std::numeric_limits<int>::max())) {
+        FatalParticleInput("shock tracer identity/schedule range exhausted");
+      }
       std::vector<CandidateCell> cells;
       Real local_weight = 0.0;
 
@@ -517,6 +528,13 @@ TaskStatus Particles::PushLagrangianMC(Driver *pdriver, int stage) {
   std::int64_t rseed = random_seed;
   int nmb = pmy_pack->nmb_thispack;
 
+  const bool checked = shock_enabled;
+  const bool traced = shock_enabled && shock_trace;
+  DvceArray2D<Real> transfer;
+  if (traced) Kokkos::realloc(transfer, 17, nprtcl_thispack);
+  Kokkos::View<int, DevMemSpace> invalid_transfer;
+  if (checked) invalid_transfer =
+      Kokkos::View<int, DevMemSpace>("invalid_mc_transfer");
   par_for("lagrangian_mc_push", DevExeSpace(), 0, (nprtcl_thispack-1),
   KOKKOS_LAMBDA(const int p) {
     if (pi(PLASTMOVE,p) < 0) return;
@@ -544,7 +562,10 @@ TaskStatus Particles::PushLagrangianMC(Driver *pdriver, int stage) {
     if (ip < is || ip >= ie || jp < js || jp >= je || kp < ks || kp >= ke) return;
 
     Real mass = u1_(m,IDN,kp,jp,ip);
-    if (mass <= 0.0) return;
+    if (mass <= 0.0 || !Kokkos::isfinite(mass)) {
+      if (checked) Kokkos::atomic_inc(&invalid_transfer());
+      return;
+    }
     Real flx1_left  = fmax(-flx1_(m,kp,jp,ip)/mass, 0.0);
     Real flx1_right = fmax( flx1_(m,kp,jp,ip+1)/mass, 0.0);
     Real flx2_left  = multi_d ? fmax(-flx2_(m,kp,jp,ip)/mass, 0.0) : 0.0;
@@ -552,10 +573,45 @@ TaskStatus Particles::PushLagrangianMC(Driver *pdriver, int stage) {
     Real flx3_left  = three_d ? fmax(-flx3_(m,kp,jp,ip)/mass, 0.0) : 0.0;
     Real flx3_right = three_d ? fmax( flx3_(m,kp+1,jp,ip)/mass, 0.0) : 0.0;
 
+    if (checked) {
+      Real sum = flx1_left + flx1_right + flx2_left + flx2_right +
+                 flx3_left + flx3_right;
+      bool valid = Kokkos::isfinite(sum) && sum <= 1.0;
+      valid = valid && Kokkos::isfinite(flx1_(m,kp,jp,ip)) &&
+              Kokkos::isfinite(flx1_(m,kp,jp,ip+1));
+      if (multi_d) valid = valid && Kokkos::isfinite(flx2_(m,kp,jp,ip)) &&
+                          Kokkos::isfinite(flx2_(m,kp,jp+1,ip));
+      if (three_d) valid = valid && Kokkos::isfinite(flx3_(m,kp,jp,ip)) &&
+                          Kokkos::isfinite(flx3_(m,kp+1,jp,ip));
+      if (!valid) {
+        Kokkos::atomic_inc(&invalid_transfer());
+        return;
+      }
+    }
+
+    if (traced) {
+      transfer(0,p) = pi(PTAG,p);
+      transfer(1,p) = pi(PGID,p);
+      transfer(2,p) = ip;
+      transfer(3,p) = jp;
+      transfer(4,p) = kp;
+      transfer(5,p) = mass;
+      transfer(6,p) = flx1_left;
+      transfer(7,p) = flx1_right;
+      transfer(8,p) = flx2_left;
+      transfer(9,p) = flx2_right;
+      transfer(10,p) = flx3_left;
+      transfer(11,p) = flx3_right;
+      transfer(12,p) = pr(LMCX,p);
+      transfer(13,p) = pr(LMCY,p);
+      transfer(14,p) = pr(LMCZ,p);
+    }
+
     std::uint64_t key = static_cast<std::uint64_t>(pi(PTAG,p))*7919ULL
                       + static_cast<std::uint64_t>(ncycle)*104729ULL
                       + static_cast<std::uint64_t>(rseed);
     Real draw = HashReal(key);
+    if (traced) transfer(15,p) = draw;
 
     pi(PLASTLEVEL,p) = mblev.d_view(m);
     pi(PLASTMOVE,p) = 32*(ip % 2) + 16*(jp % 2) + 8*(kp % 2);
@@ -581,8 +637,18 @@ TaskStatus Particles::PushLagrangianMC(Driver *pdriver, int stage) {
       pr(LMCZ,p) += mbsize.d_view(m).dx3;
       pi(PLASTMOVE,p) += 6;
     }
+    if (traced) transfer(16,p) = pi(PLASTMOVE,p) % 8;
   });
 
+  if (checked) {
+    auto invalid = Kokkos::create_mirror_view_and_copy(HostMemSpace(), invalid_transfer);
+    if (invalid()) FatalParticleInput("invalid or overfull MC transfer probabilities");
+  }
+
+  if (traced) {
+    auto host = Kokkos::create_mirror_view_and_copy(HostMemSpace(), transfer);
+    WriteShockTransfers(host);
+  }
   return TaskStatus::complete;
 }
 
@@ -732,6 +798,7 @@ TaskStatus Particles::AdjustMeshRefinement(Driver *pdriver, int stage) {
 //! \fn void Particles::RemapAfterMeshRefinement
 
 void Particles::RemapAfterMeshRefinement() {
+  if (shock_enabled) FatalParticleInput("shock AMR remapping is unqualified");
   if (particle_type != ParticleType::lagrangian_mc) return;
 
   Mesh *pm = pmy_pack->pmesh;
@@ -875,8 +942,20 @@ void Particles::WriteRestartData(IOWrapper &resfile, bool single_file_per_rank) 
   header.nschedules = static_cast<int>(seed_schedules_.size());
   header.next_tag = next_tracer_tag;
 
-  resfile.Write_any_type(&header, sizeof(header), "byte", single_file_per_rank);
-  if (!header.enabled) return;
+  if (resfile.Write_any_type(&header, sizeof(header), "byte", single_file_per_rank) !=
+      sizeof(header)) FatalParticleInput("particle restart header write failed");
+  if (header.nlocal < 0 || header.nschedules < 0 ||
+      header.nlocal > std::numeric_limits<int>::max()/std::max(nrdata,nidata) ||
+      header.nschedules > std::numeric_limits<int>::max()/3 ||
+      header.nschedules != static_cast<int>(seed_schedules_.size()) ||
+      header.next_tag < 0 || header.next_tag >
+      static_cast<std::int64_t>(std::numeric_limits<int>::max())+1) {
+    FatalParticleInput("invalid particle restart count/schedule/identity range");
+  }
+  if (!header.enabled) {
+    if (shock_enabled) FatalParticleInput("shock restart requires native MC state");
+    return;
+  }
 
   std::vector<Real> sched_real(1*header.nschedules);
   std::vector<int> sched_int(3*header.nschedules);
@@ -887,9 +966,12 @@ void Particles::WriteRestartData(IOWrapper &resfile, bool single_file_per_rank) 
     sched_int[3*n+2] = seed_schedules_[n].complete ? 1 : 0;
   }
   if (header.nschedules > 0) {
-    resfile.Write_any_type(sched_real.data(), sched_real.size(), "Real",
-                           single_file_per_rank);
-    resfile.Write_any_type(sched_int.data(), sched_int.size(), "int", single_file_per_rank);
+    if (resfile.Write_any_type(sched_real.data(), sched_real.size(), "Real",
+                              single_file_per_rank) != sched_real.size() ||
+        resfile.Write_any_type(sched_int.data(), sched_int.size(), "int",
+                              single_file_per_rank) != sched_int.size()) {
+      FatalParticleInput("particle restart schedule write failed");
+    }
   }
 
   HostArray2D<Real> hr("rst_prtcl_rdata", nrdata, nprtcl_thispack);
@@ -897,8 +979,14 @@ void Particles::WriteRestartData(IOWrapper &resfile, bool single_file_per_rank) 
   if (nprtcl_thispack > 0) {
     Kokkos::deep_copy(hr, prtcl_rdata);
     Kokkos::deep_copy(hi, prtcl_idata);
-    resfile.Write_any_type(hr.data(), nrdata*nprtcl_thispack, "Real", single_file_per_rank);
-    resfile.Write_any_type(hi.data(), nidata*nprtcl_thispack, "int", single_file_per_rank);
+    if (resfile.Write_any_type(hr.data(), nrdata*nprtcl_thispack, "Real",
+                              single_file_per_rank) !=
+        static_cast<std::size_t>(nrdata*nprtcl_thispack) ||
+        resfile.Write_any_type(hi.data(), nidata*nprtcl_thispack, "int",
+                              single_file_per_rank) !=
+        static_cast<std::size_t>(nidata*nprtcl_thispack)) {
+      FatalParticleInput("particle restart array write failed");
+    }
   }
 }
 
@@ -924,7 +1012,18 @@ void Particles::ReadRestartData(IOWrapper &resfile, bool single_file_per_rank) {
   if (std::strncmp(header.magic, "ATHKPRTCLMC", 11) != 0 || header.version != 1) {
     FatalParticleInput("particle restart section has an unrecognized format");
   }
-  if (!header.enabled) return;
+  if (header.nlocal < 0 || header.nschedules < 0 ||
+      header.nlocal > std::numeric_limits<int>::max()/std::max(nrdata,nidata) ||
+      header.nschedules > std::numeric_limits<int>::max()/3 ||
+      header.nschedules != static_cast<int>(seed_schedules_.size()) ||
+      header.next_tag < 0 || header.next_tag >
+      static_cast<std::int64_t>(std::numeric_limits<int>::max())+1) {
+    FatalParticleInput("invalid particle restart count/schedule/identity range");
+  }
+  if (!header.enabled) {
+    if (shock_enabled) FatalParticleInput("shock restart requires native MC state");
+    return;
+  }
   if (header.nrdata != nrdata || header.nidata != nidata) {
     FatalParticleInput("particle restart array dimensions do not match this executable");
   }

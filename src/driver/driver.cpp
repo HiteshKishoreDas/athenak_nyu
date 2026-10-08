@@ -349,6 +349,13 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
     pmesh->pmb_pack->ppart->SeedInitialTracers();
   }
 
+  if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
+    auto pp = pmesh->pmb_pack->ppart;
+    pp->ValidateShockPhysics();
+    pp->PrepareShockStore(res_flag);
+    pp->ObserveShocks(pmesh->time, pmesh->ncycle);
+  }
+
   //---- Step 2.  Compute time step (if problem involves time evolution)
   // NOTE: For new simulations (!res_flag), the initial conditions haven't been set yet
   // by the ProblemGenerator, so we can't compute a proper timestep for MHD here.
@@ -465,6 +472,10 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
 
       // Work after time integrator indicated by "1" in stage
       ExecuteTaskList(pmesh, "after_timeintegrator", 1);
+      if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
+        pmesh->pmb_pack->ppart->ObserveShocks(pmesh->time+pmesh->dt,
+                                             pmesh->ncycle+1);
+      }
 
       // Work outside of TaskLists:
       // increment time, ncycle, etc.
@@ -538,6 +549,9 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
 //!  and printing diagnostic messages
 
 void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
+  if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
+    pmesh->pmb_pack->ppart->WriteShockSuspended();
+  }
   // cycle through output Types and load data / write files
   //  This design allows for asynchronous outputs to implemented in the future.
   Kokkos::fence();

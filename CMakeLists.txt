@@ -222,3 +222,32 @@ target_include_directories(athena PUBLIC
 configure_file(config.hpp.in config.hpp)
 
 install( TARGETS athena DESTINATION bin )
+
+option(Athena_SHOCK_TESTS "Build supplied-state shock checks" OFF)
+if(Athena_SHOCK_TESTS)
+  add_executable(shock_detector_test tst/shocks/detector_test.cpp)
+  target_include_directories(shock_detector_test PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
+  target_link_libraries(shock_detector_test PRIVATE Kokkos::kokkos)
+  add_executable(shock_encounter_test tst/shocks/encounter_test.cpp)
+  target_include_directories(shock_encounter_test PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
+  target_link_libraries(shock_encounter_test PRIVATE Kokkos::kokkos)
+  target_compile_options(shock_encounter_test PRIVATE -UNDEBUG)
+endif()
+
+set(shock_source_files src/shocks/detector.hpp src/shocks/encounter.hpp
+    src/particles/shock_particles.cpp src/particles/particles.cpp
+    src/particles/particles.hpp src/particles/particles_tasks.cpp
+    src/particles/particles_pushers.cpp src/particles/particles_lagrangian_mc.cpp
+    src/hydro/hydro_fluxes.cpp src/pgen/pgen.cpp src/bvals/bvals_part.cpp
+    src/bvals/bvals.hpp src/driver/driver.cpp src/outputs/restart.cpp
+    src/main.cpp src/mesh/mesh.cpp src/mesh/mesh.hpp src/mesh/meshblock_pack.cpp)
+set(shock_source_hashes "")
+foreach(shock_file IN LISTS shock_source_files)
+  file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/${shock_file}" shock_hash)
+  string(APPEND shock_source_hashes "${shock_file}:${shock_hash};")
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${shock_file}")
+endforeach()
+string(SHA256 SHOCK_IMPLEMENTATION_HASH "${shock_source_hashes}")
+configure_file(src/shocks/version.hpp.in shock_version.hpp @ONLY)
