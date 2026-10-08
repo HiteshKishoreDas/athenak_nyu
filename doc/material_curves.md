@@ -54,6 +54,23 @@ These evolve actual uniform HD using the built-in shock-tube generator with
 identical left/right states. The loop inserts samples on the initial analytic
 circle; its original anchors remain fixed in material identity.
 
+For a laptop-scale turbulent showcase, use the same default HD build:
+
+```sh
+/absolute/path/build-hd/src/athena \
+  -i inputs/material_curves/turbulence-2d.athinput \
+  -d /absolute/path/turbulence-results
+```
+
+This 128 × 128 periodic box uses the branch's native one-time Fourier velocity
+perturbations, then evolves unforced compressible HD to time 1.5. It seeds three
+circles and three open strings, with adaptive insertion and fluid/curve snapshots
+at matching cycle intervals. The native initializer supplies three velocity
+components on a 2D spatial grid; curves follow the in-plane velocity. This is a
+**decaying** flow, with numerical dissipation and no physical viscosity or ongoing
+forcing. It demonstrates stretching and sampling; it does not establish a
+converged turbulent spectrum. No solver or source machinery changes are needed.
+
 The AMR example uses a **prescribed** translation fixture rather than a general
 Euler solution. It is useful for inspecting scheduling/ownership/restart. On
 `multiphase_turb`, `<amr_criterion0>/method=user` explicitly selects the fixture's

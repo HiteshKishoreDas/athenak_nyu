@@ -1,0 +1,143 @@
+# Decaying 2D periodic turbulence; native one-time Fourier initialization.
+# Native initializer has three velocity components on a 2D spatial grid.
+# Material curves follow the in-plane velocity; no continuous forcing.
+<job>
+basename = turbulence
+<mesh>
+nghost = 2
+nx1 = 128
+x1min = -0.5
+x1max = 0.5
+ix1_bc = periodic
+ox1_bc = periodic
+nx2 = 128
+x2min = -0.5
+x2max = 0.5
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 1
+x3min = -0.5
+x3max = 0.5
+ix3_bc = periodic
+ox3_bc = periodic
+<meshblock>
+nx1 = 128
+nx2 = 128
+nx3 = 1
+<time>
+evolution = dynamic
+integrator = rk2
+cfl_number = 0.3
+tlim = 1.5
+nlim = -1
+ndiag = 200
+<hydro>
+eos = ideal
+reconstruct = plm
+rsolver = hllc
+gamma = 1.6666666666666667
+<problem>
+# Equal left/right states give a uniform gas before the velocity perturbation.
+pgen_name = shock_tube
+shock_dir = 1
+xshock = 0
+dl = 1
+dr = 1
+pl = 0.6
+pr = 0.6
+ul = 0
+ur = 0
+vl = 0
+vr = 0
+wl = 0
+wr = 0
+<initial_perturbations>
+variables = velocity
+velocity_rms = 0.5
+remove_velocity_mean = true
+spectral_slope = 1
+nlow = 2
+nhigh = 6
+f_solenoidal = 1
+rseed = 13579
+localization = none
+<material_curves>
+enabled = true
+ncurves = 6
+max_nodes = 50000
+spacing_cells = 0.5
+max_angle = 0.2
+chord_error = 0.0001
+adaptive = true
+output_dcycle = 20
+<output1>
+file_type = bin
+variable = hydro_w
+data_precision = real
+dcycle = 20
+<output2>
+file_type = hst
+dcycle = 20
+
+<curve1>
+id = 1
+type = circle
+count = 128
+x1 = -0.23
+x2 = -0.23
+x3 = 0
+radius = 0.14
+
+<curve2>
+id = 2
+type = circle
+count = 128
+x1 = 0.23
+x2 = -0.23
+x3 = 0
+radius = 0.14
+
+<curve3>
+id = 3
+type = circle
+count = 128
+x1 = 0
+x2 = 0.22
+x3 = 0
+radius = 0.18
+
+<curve4>
+id = 4
+type = line
+closed = false
+count = 128
+x1 = -0.4
+x2 = -0.05
+x3 = 0
+end1 = 0.4
+end2 = -0.05
+end3 = 0
+
+<curve5>
+id = 5
+type = line
+closed = false
+count = 128
+x1 = -0.4
+x2 = 0.4
+x3 = 0
+end1 = 0.4
+end2 = 0.4
+end3 = 0
+
+<curve6>
+id = 6
+type = line
+closed = false
+count = 128
+x1 = -0.4
+x2 = -0.4
+x3 = 0
+end1 = -0.4
+end2 = 0.4
+end3 = 0
