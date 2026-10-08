@@ -148,3 +148,45 @@ logs retain their exact trailing whitespace/terminal blank lines; whole-packet
 `git diff --cached --check` therefore reports these generated-artifact findings.
 Source/tests/documentation diff checks remain clean. Artifacts were not normalized,
 so their saved hashes continue to match the build inputs actually used.
+
+
+## Ponytail audit and minimal constructor cleanup — 2026-10-08
+
+User asked whether the feature minimally changes AthenaK machinery. Audited the
+full production diff and traced configuration, sampling, transfer, compaction,
+outflow and paired restart callers. Solver/flux/mesh/task graph files remain
+unchanged against526a187f. Most feature code is new standalone detector/state/
+observer code. Driver adds14lines; main9; restart23additions/2deletions. The
+largest native integration addition is295lines of guarded particle boundaries.
+Its separate enabled path handles physical outflow and typed-state compaction;
+merging it into native AMR/general transport would broaden the behavior changed.
+No framework or dependency was added, and native MC transport/RNG remain reused.
+
+Cleanup `f0053f2e`: moved the exact existing configuration body out of particles.cpp
+into private ConfigureShockTracking(pin), defined in existing shock_particles.cpp;
+removed an uncalled InitializeShockState method and its declaration. Native
+particles.cpp now adds only one call plus a blank line against the selected base.
+No numerical/state/migration/restart algorithms or interfaces changed. This is
+less intrusion in core files, not a claim of globally minimal code or better
+runtime cost. The pre-cleanup statement about unchanged source since38c55570 is
+historical; current fingerprint is80da5390b07a322b83f3ce829f97975c4326b3216a764d77bf530a8f355265c4.
+
+Independent read-only reviewer reconstructs all three old source files exactly
+by reversing extraction/include relocation/dead-method deletion. Configuration
+body SHA2564ebfaebf08f7e0e4e4f32c3a064d97bec86bc79bd61103b084e5f890bf0cd129
+is unchanged, called at the same constructor point. Typed record layout is unchanged.
+Builds Debug/Release/MPI exit0; native state tests pass on all3. Release53parity,
+20integration,12rejection and4replay checks pass. All21heldout measurements,
+including full recorded event evidence, exactly equal previous reports.
+Scientific failures and sign-off stay pending; thresholds are unchanged.
+Native style wrapper's existing --filter=-build/include_subdir reports0findings
+on the three changed files; unfiltered first invocation flags native include
+conventions. Diff check on source/docs passes. Commands/input/log/build config/
+review hashes are under evidence/shocks-mc/ponytail; no full raw grids committed.
+
+No new cross-rank, boundary-fixture, exit, wave, performance, sanitizer or clean
+archive run is claimed for80da: those prior reports retain78e5 and the affected
+logic is unchanged by exact source extraction review. Exact source-bound restart
+contracts intentionally require the same code fingerprint; older checkpoints
+must use their matching executable. This cleanup does not add cross-version
+checkpoint compatibility. RUSTY/Frontier and scientific release remain unqualified.

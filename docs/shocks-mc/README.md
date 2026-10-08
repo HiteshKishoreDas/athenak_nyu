@@ -4,6 +4,17 @@ Branch `codex/shock-multiphase`, based on `multiphase_turb` at
 `526a187f938e38634e89a88192ebe9731c4d36bb`. Engineering implementation;
 **human scientific sign-off and R1 release acceptance remain pending**.
 
+Ponytail audit: core fluid solver, fluxes, mesh and task graph remain unchanged.
+The general particle constructor adds one call to private ConfigureShockTracking;
+feature setup lives in existing shock_particles.cpp. The guarded boundary path
+and paired restart hooks are retained because histories must survive migration,
+outflow deletion and replay. No new framework/dependency/tracer is introduced.
+Structural cleanup commit `f0053f2e`; source fingerprint
+`80da5390b07a322b83f3ce829f97975c4326b3216a764d77bf530a8f355265c4`.
+Independent exact-extraction review and rerun results are in
+`evidence/shocks-mc/ponytail/`. Earlier 78e5 reports/plots remain historical;
+all 21 physical measurements match exactly after cleanup, including failures.
+
 ## What changed and why
 
 | Change | Purpose |

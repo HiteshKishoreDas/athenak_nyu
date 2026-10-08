@@ -1,9 +1,13 @@
 # Exact-code MC engineering evidence bundle
 
-Production `38c55570`; base `526a187f938e38634e89a88192ebe9731c4d36bb`;
+Current source `f0053f2e` (numerical production `38c55570` plus constructor cleanup); base `526a187f938e38634e89a88192ebe9731c4d36bb`;
 Kokkos `08ceff92bcf3a828844480bc1e6137eb74028517` (4.4.0).
-Final core fingerprint
-`78e5cb1d425daaa8ab2e06deaa40db6c8249de79cd1480c7d0b069fd1587f7c3`.
+Current core fingerprint
+`80da5390b07a322b83f3ce829f97975c4326b3216a764d77bf530a8f355265c4`.
+`ponytail/` contains exact extraction review, three builds/state checks, repeated
+53parity/20integration/12reject/4replay suites and21physical measurements exactly
+equal to previous results. Other packets below bind pre-cleanup78e5 explicitly;
+their source/config bytes and outcomes remain historical evidence.
 Scientific sign-off pending. Local commits are not remote pushes/releases.
 
 - `baseline`: frozen criteria, existing MC statistical/restart results and failures.

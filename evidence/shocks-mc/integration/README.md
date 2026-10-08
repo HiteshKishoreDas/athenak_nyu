@@ -1,5 +1,9 @@
 # Exact-source MC engineering evidence
 
+Current structural cleanup is `f0053f2e`, fingerprint80da; repeated suites are
+in `../ponytail/`. This packet documents pre-cleanup78e5 source and remains intact.
+All21physical measurement records match exactly after cleanup.
+
 Final production commit `38c55570`; compiled source fingerprint
 `78e5cb1d425daaa8ab2e06deaa40db6c8249de79cd1480c7d0b069fd1587f7c3`.
 Release executable SHA-256
