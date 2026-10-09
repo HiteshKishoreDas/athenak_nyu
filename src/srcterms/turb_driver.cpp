@@ -318,9 +318,9 @@ TurbulenceDriver::TurbulenceDriver(MeshBlockPack* pp, ParameterInput* pin)
     }
     if (kpeak <= 0.0 || tdriv_start < 0.0 || tdriv_duration < 0.0 ||
         (turb_flag != 1 && turb_flag != 2) || nhigh > 26754 ||
-        min_kx < 0 || min_ky < 0 || min_kz < 0 || max_kx < min_kx ||
-        max_ky < min_ky || max_kz < min_kz || max_kx > 26754 ||
-        max_ky > 26754 || max_kz > 26754) {
+        min_kx < -26754 || min_ky < -26754 || min_kz < -26754 ||
+        max_kx < min_kx || max_ky < min_ky || max_kz < min_kz ||
+        max_kx > 26754 || max_ky > 26754 || max_kz > 26754) {
       FatalTurbulenceError("invalid stage-consistent forcing range or duration");
     }
     integrated_work = pin->GetOrAddReal(block_name, "integrated_work", 0.0);
