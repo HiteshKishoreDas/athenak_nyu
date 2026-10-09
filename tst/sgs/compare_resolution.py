@@ -267,11 +267,13 @@ def initial_file_checks(exe, ndim=2):
 
 def run_cases(args):
     suite = ForcingVerification(args.exe, args.output)
+    cycle_cap = 20000 * max(1, args.high // 128)
     manifest_path = suite.output / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["resolution_comparison"] = dict(
         ndim=args.ndim,
         timeout_seconds=args.timeout,
+        cycle_cap=cycle_cap,
         high=args.high,
         low=args.low,
         spinup=args.spinup,
@@ -299,7 +301,7 @@ def run_cases(args):
             "turb_driving/min_kz": "0",
             "turb_driving/max_kz": "3" if args.ndim == 3 else "0",
             "turb_driving/dedt": "1.0",
-            "time/nlim": "20000",
+            "time/nlim": str(cycle_cap),
             "output1/dt": str(args.spinup / 20),
             "output4/dt": str(args.spinup),
         },
@@ -332,7 +334,7 @@ def run_cases(args):
                 "mesh/nx2": str(n),
                 "mesh/nx3": str(n) if args.ndim == 3 else "1",
                 "time/tlim": str(args.decay),
-                "time/nlim": "20000",
+                "time/nlim": str(cycle_cap),
                 "time/ndiag": "1000",
                 "sgs/enabled": str(enabled).lower(),
                 "problem/initial_state": str(inp),
@@ -852,8 +854,8 @@ def main():
     parser.add_argument("--output", type=Path)
     parser.add_argument("--ndim", type=int, default=2, choices=(2, 3))
     parser.add_argument("--timeout", type=float, default=600)
-    parser.add_argument("--high", type=int, choices=(64, 128))
-    parser.add_argument("--low", type=int, choices=(16, 32))
+    parser.add_argument("--high", type=int, choices=(64, 128, 256, 512))
+    parser.add_argument("--low", type=int, choices=(16, 32, 64, 128))
     parser.add_argument("--spinup", type=float, default=2.0)
     parser.add_argument("--decay", type=float, default=0.5)
     parser.add_argument("--plot-only", action="store_true")
@@ -863,8 +865,8 @@ def main():
     args.low = args.low or (16 if args.ndim == 3 else 32)
     if args.ndim == 3 and args.high > 64:
         parser.error("3D laptop comparison is capped at 64³")
-    if not 0 < args.timeout <= 1800:
-        parser.error("require 0 < timeout <= 1800 seconds per simulation")
+    if not 0 < args.timeout <= 3600:
+        parser.error("require 0 < timeout <= 3600 seconds per simulation")
     if args.self_test:
         self_test()
         if args.exe is not None:

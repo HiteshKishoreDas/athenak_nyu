@@ -271,7 +271,7 @@ open /tmp/sgs-3d-resolution-comparison/index.html
 ```
 
 Pilot with `--spinup .1 --decay .01` in a separate directory. 3D is capped at
-64³; the explicit `--timeout` bounds each simulation (at most 1800 seconds).
+64³; the explicit `--timeout` bounds each simulation (at most 3600 seconds).
 Existing verification runners retain their original default caps and numerical
 thresholds. Timeouts and incomplete runs stay in the result ledger.
 
@@ -288,3 +288,25 @@ A 64³ reference with a four-to-one filter ratio is not established DNS. These
 single-seed decay runs cannot attribute every difference to dimensionality or
 establish statistical convergence. To compare the same cell counts in 2D,
 run `--ndim 2 --high 64 --low 16` with the same preparation/decay times.
+
+### Larger 2D comparison
+
+The existing comparison also accepts 256²/512² reference grids and 64²/128²
+coarse grids. Require at least four reference cells per coarse cell per direction.
+The 512²/64² case uses an eight-to-one filter ratio; its 256² reference check
+uses four-to-one. Coefficients, solver, CFL, seed, forcing and preparation/decay
+intervals remain the same as the smaller comparisons.
+
+```sh
+/tmp/sgs-plot-env/bin/python -B tst/sgs/compare_resolution.py --ndim 2 \
+  --high 512 --low 64 --timeout 3600 --exe build-sgs-laptop/src/athena \
+  --output /tmp/sgs-2d-large
+open /tmp/sgs-2d-large/index.html
+```
+
+Pilot in a separate folder with `--spinup .1 --decay .01` first. The per-case
+cycle cap scales from 20000 to 40000 at 256² and 80000 at 512², and is recorded
+in the manifest and saved inputs. The optional timeout is capped at 3600 seconds;
+defaults and all numerical acceptance thresholds remain unchanged. No rebuild
+is required for this test-runner-only extension. These are resolution sensitivity
+checks, not converged DNS or an isolated test of the source of numerical losses.
