@@ -42,7 +42,10 @@ def main():
         ('C12_ghost', {'mesh/nghost': '1'}, 'ghost zones'),
         ('C13_integrator', {'time/integrator': 'rk3'}, 'rk2 integrator'),
         ('C13_solver', {'hydro/rsolver': 'hllc'}, 'llf solver'),
-        ('C13_reconstruction', {'hydro/reconstruct': 'wenoz'}, 'plm or dc'),
+        ('C13_reconstruction', {'hydro/reconstruct': 'wenoz'}, 'plm, dc or ppm4'),
+        ('C13_ppmx', {'hydro/reconstruct': 'ppmx', 'mesh/nghost': '3'},
+                     'plm, dc or ppm4'),
+        ('C13_ppm4_ghost', {'hydro/reconstruct': 'ppm4'}, 'ghost zones'),
         ('C16_fofc', {'hydro/fofc': 'true'}, 'unsupported hydro option'),
         ('C16_viscosity', {'hydro/viscosity': '0.1'}, 'unsupported hydro option'),
         ('C16_legacy_cooling', {'hydro/ism_cooling': 'true'}, 'unsupported hydro option'),
@@ -97,7 +100,8 @@ def main():
                              'r_', 'sgs_energy'),
                             ('hydro_w', ['dens', 'velx', 'vely', 'velz', 'eint'],
                              's_', 'sgs_specific')):
-                        expected_fields = fields+[f'{prefix}{n:02d}' for n in range(12)]+[extra]
+                        expected_fields = (fields+[f'{prefix}{n:02d}' for n in range(12)]
+                                           +[extra])
                         files = sorted((run/'bin').glob(f'*.{choice}.*.bin'))
                         passed &= bool(files)
                         for snapshot in files:
@@ -123,7 +127,8 @@ def main():
                                          stderr=subprocess.STDOUT, text=True, timeout=10)
             passed = process.returncode != 0 and 'must match' in log_path.read_text()
             row.update(status='pass' if passed else 'fail', returncode=process.returncode)
-    print(f'{sum(r["status"] == "pass" for r in suite.results)}/{len(suite.results)} passed')
+    passed_count = sum(r["status"] == "pass" for r in suite.results)
+    print(f'{passed_count}/{len(suite.results)} passed')
     return int(any(r['status'] != 'pass' for r in suite.results))
 
 

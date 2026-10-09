@@ -81,7 +81,10 @@ def run(args):
         end_T=args.end_T, requested_window_T=[2., 10.],
         dt_update_T=.01, snapshot_cadence_T=.1,
         timeout_seconds=args.timeout, cycle_cap=100000,
-        departures=DEPARTURES, coefficients=dict(c1=.02, c2=.7, ceps=1.5,
+        reconstruction=args.reconstruct, rsolver="llf",
+        nghost=args.nghost or (3 if args.reconstruct == "ppm4" else 2),
+        departures=[DEPARTURES[0].replace("PLM", args.reconstruct.upper()),
+                    *DEPARTURES[1:]], coefficients=dict(c1=.02, c2=.7, ceps=1.5,
                                                  ckappa=.65),
         paper='https://arxiv.org/html/1010.4492',
     )
@@ -94,6 +97,8 @@ def run(args):
             **{f'meshblock/nx{d}': str(min(args.n, 16)) for d in (1, 2, 3)},
             **{f'turb_driving/min_k{d}': '-3' for d in ('x', 'y', 'z')},
             **{f'turb_driving/max_k{d}': '3' for d in ('x', 'y', 'z')},
+            'hydro/reconstruct': args.reconstruct,
+            'mesh/nghost': str(protocol['nghost']),
             'hydro/gamma': str(GAMMA), 'problem/pressure0': str(C0**2/GAMMA),
             'problem/k0': '1e-8', 'time/nlim': '100000', 'time/ndiag': '1000',
             'turb_driving/normalization': 'accel_rms', 'turb_driving/dedt': None,
@@ -135,6 +140,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--exe', type=Path)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--nghost', type=int, choices=[2, 3])
+    parser.add_argument('--reconstruct', choices=['plm', 'ppm4'], default='plm')
     parser.add_argument('--n', type=int, choices=[16, 32, 64], default=64)
     parser.add_argument('--end-T', type=float, default=10.)
     parser.add_argument('--accel-rms', type=float, default=2.)
@@ -155,6 +162,8 @@ def main():
         parser.error('--exe is required')
     if not 0 < args.end_T <= 10 or args.timeout <= 0 or args.accel_rms <= 0:
         parser.error('require 0 < end-T <= 10, positive timeout and accel-rms')
+    if args.reconstruct == 'ppm4' and args.nghost == 2:
+        parser.error('ppm4 requires three ghost zones')
     raise SystemExit(0 if run(args) else 1)
 
 

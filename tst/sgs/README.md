@@ -171,8 +171,8 @@ energy. Existing `hydro_sgs` filtering moments retain their previous meaning.
 ## Numerical contract
 
 The supported subset is double-precision Newtonian ideal-gas HD, uniform cubic
-Cartesian cells, periodic active directions, RK2, LLF, DC or PLM, at least two
-ghost zones, and CFL in (0,0.2]. One- and two-dimensional reductions retain all
+Cartesian cells, periodic active directions, RK2, LLF, DC, PLM or monotone PPM4.
+DC/PLM need at least two ghost zones; PPM4 needs three. CFL in (0,0.2]. One- and two-dimensional reductions retain all
 three velocity components and the three-dimensional stress trace.
 
 Face gradients use adjacent differences in the normal direction and averaged
@@ -370,3 +370,23 @@ These affect comparisons in V units even after Mach calibration. The paper's
 compression-corrected heating fraction is unavailable without an applied resolved
 pressure-work ledger. No high-resolution filtered CDF or resolution-scaling claim
 comes from this single 64³ case. Table 4 is a reference, not a tuned pass threshold.
+
+## Controlled reconstruction comparison
+
+`paper_test.py --reconstruct ppm4` uses the native monotone PPM reconstruction
+with LLF and the same SGS flux/source machinery. It requires three ghost zones;
+PLM defaults and coefficients are unchanged. PPMX, WENOZ and HLLC remain rejected.
+Run the bounded deterministic check before turbulent comparisons:
+
+```sh
+python3 -B tst/sgs/verify_ppm.py --exe build-sgs-laptop/src/athena \
+  --output /tmp/sgs-ppm-check
+python3 -B tst/sgs/paper_test.py --exe build-sgs-laptop/src/athena \
+  --output /tmp/sgs-paper-ppm64 --n 64 --end-T 4 --accel-rms 3 \
+  --reconstruct ppm4 --timeout 1800
+```
+
+The 4T run is a cost/admissibility pilot with a short 2T–4T averaging window.
+A 10T run is needed for the full paper sampling interval. A single seed does
+not measure ensemble uncertainty. Reconstruction comparisons hold forcing and
+closure coefficients fixed; they do not calibrate the paper's forcing units.

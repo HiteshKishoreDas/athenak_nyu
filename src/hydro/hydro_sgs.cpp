@@ -111,7 +111,9 @@ void Hydro::ConfigureSGS(ParameterInput *pin) {
     SGSFailure("requires dynamic evolution, rk2 integrator and llf solver");
   }
   std::string recon = pin->GetOrAddString("hydro", "reconstruct", "plm");
-  if (recon != "plm" && recon != "dc") SGSFailure("requires plm or dc reconstruction");
+  if (recon != "plm" && recon != "dc" && recon != "ppm4") {
+    SGSFailure("requires plm, dc or ppm4 reconstruction");
+  }
   auto *pm = pmy_pack->pmesh;
   int ndim = 1 + static_cast<int>(pm->multi_d) + static_cast<int>(pm->three_d);
   if (pm->mb_indcs.ng < 2) SGSFailure("requires at least two ghost zones");
