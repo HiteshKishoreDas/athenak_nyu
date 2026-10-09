@@ -310,3 +310,63 @@ in the manifest and saved inputs. The optional timeout is capped at 3600 seconds
 defaults and all numerical acceptance thresholds remain unchanged. No rebuild
 is required for this test-runner-only extension. These are resolution sensitivity
 checks, not converged DNS or an isolated test of the source of numerical losses.
+
+### Driven 3D paper test
+
+`paper_test.py` attempts the solenoidal Section 4/Table 4 experiment of
+[Schmidt & Federrath (2011)](https://arxiv.org/html/1010.4492): uniform periodic
+64³ box, gamma=1.001, continuous OU driving, fixed published SGS coefficients,
+box side 2L=1, V=1 and T=L/V=0.5. The native forcing uses signed modes in all
+three directions, n=1–3 with peak 2. Only forcing amplitude is calibrated;
+closure coefficients stay fixed. A tiny positive k0=1e-8 avoids an absorbing
+zero-SGS state. The assumed V/c0=5.5 is explicit because Table 4 does not state
+this ratio for its pure-solenoidal case.
+
+Pilot before the 10T run. A 32³ pilot estimates cost/stability, but lies below
+the paper's lowest meaningful resolution. Use fresh output directories:
+
+```sh
+python3 -B tst/sgs/verify_signed_forcing.py --exe /tmp/sgs-build/src/athena \
+  --output /tmp/sgs-signed-check
+/tmp/sgs-plot-env/bin/python -B tst/sgs/paper_test.py --self-test
+/tmp/sgs-plot-env/bin/python -B tst/sgs/paper_plots.py --self-test
+/tmp/sgs-plot-env/bin/python -B tst/sgs/paper_test.py \
+  --exe /tmp/sgs-build/src/athena --output /tmp/sgs-paper-pilot \
+  --n 32 --end-T 4 --accel-rms 2 --timeout 600
+/tmp/sgs-plot-env/bin/python -B tst/sgs/paper_test.py \
+  --exe /tmp/sgs-build/src/athena --output /tmp/sgs-paper-64 \
+  --n 64 --end-T 10 --accel-rms 3 --timeout 7200
+open /tmp/sgs-paper-64/report.pdf
+```
+
+The full run has a 100000-cycle cap and a 7200-second simulation cap. Set
+`OMP_NUM_THREADS=8 OMP_PROC_BIND=false` with an OpenMP build; a serial run
+may cost substantially more. The independent native reader remains rank 1,
+double precision, unrefined HD. NumPy and Matplotlib are needed for plots.
+Checkpoint validation streams through all snapshots; only first/final states
+are retained, keeping the 81-window-snapshot case bounded in memory.
+
+The report compares volume RMS resolved/SGS Mach, normalized mean K, and both
+volume-mean specific dissipation and density-weighted dissipation. Rates from
+applied counters remain separate from checkpoint closure estimates. Statistics
+use actual timestamps and time-weighted averages over 2T–10T, temporal scatter,
+eight 1T block means, early/late means and trends. Scatter is not an uncertainty
+of the mean. Completing the window does not establish stationarity.
+
+Every input, raw checkpoint, history, log, result, protocol and source/executable
+fingerprint is retained. `diagnostics.json` stores compact cell-derived statistics;
+`statistics.json` records the definitions, sampling window and numeric results.
+The five-page 18-panel PDF also has `page1.png`…`page5.png` previews. Regenerate:
+
+```sh
+/tmp/sgs-plot-env/bin/python -B tst/sgs/paper_test.py --plot-only \
+  --output /tmp/sgs-paper-64
+```
+
+This is an approximate reproduction: AthenaK RK2/LLF/PLM differs from Enzo 1.5,
+instantaneous acceleration RMS normalization differs from modal OU amplitude,
+and equivalence of the native shell-compensated spectral envelope is unproven.
+These affect comparisons in V units even after Mach calibration. The paper's
+compression-corrected heating fraction is unavailable without an applied resolved
+pressure-work ledger. No high-resolution filtered CDF or resolution-scaling claim
+comes from this single 64³ case. Table 4 is a reference, not a tuned pass threshold.

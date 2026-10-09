@@ -16,7 +16,8 @@ import verify
 
 class ForcingVerification(verify.Verification):
     def run_forcing(self, name, enabled, sol_fraction, seed=42, tlim=1., rst=None,
-                    oracle=False, nscalars=2, ndim=3, overrides=None, timeout=60):
+                    oracle=False, nscalars=2, ndim=3, overrides=None, timeout=60,
+                    retain_snapshots=True):
         config = verify.parameters((verify.SOURCE/'inputs/hydro/sgs_verify.athinput').read_text())
         config.update({'job/basename':name, 'problem/mode':'uniform',
             'problem/velocity':'0', 'problem/k0':'1e-6', 'problem/pressure0':'1',
@@ -36,7 +37,11 @@ class ForcingVerification(verify.Verification):
         for d in (1,2,3):
             config[f'mesh/nx{d}'] = '16' if d <= ndim else '1'
             config[f'meshblock/nx{d}'] = '8' if d <= ndim else '1'
-        config.update(overrides or {})
+        for key, value in (overrides or {}).items():
+            if value is None:
+                config.pop(key, None)
+            else:
+                config[key] = value
         wd = self.output/name
         wd.mkdir()
         inp = wd/'input.athinput'
@@ -58,17 +63,27 @@ class ForcingVerification(verify.Verification):
             row['returncode'] = proc.returncode
             if proc.returncode:
                 raise RuntimeError(f'execution returned {proc.returncode}')
-            snapshots = [verify.restart(p) for p in sorted((wd/'rst').glob('*.rst'))]
-            first, last = snapshots[0], snapshots[-1]
+            snapshots = []
+            first = last = None
+            for path in sorted((wd/'rst').glob('*.rst')):
+                snap = verify.restart(path)
+                if (not snap['finite'] or snap['min_density'] <= 0 or
+                        snap['min_thermal'] <= 0 or
+                        (snap['min_sgs'] is not None and snap['min_sgs'] < 0)):
+                    raise RuntimeError('inadmissible stored reservoir')
+                if first is None:
+                    first = snap
+                last = snap
+                if retain_snapshots:
+                    snapshots.append(snap)
+            if first is None:
+                raise RuntimeError('no native checkpoints')
+            if not retain_snapshots:
+                snapshots = [first, last]
             hist = verify.history(wd/f'{name}.hydro.hst')
             row.update(actual_time=last['time'], cycles=last['cycle'])
             if verify.scaled_diff(last['time'],tlim) > 1e-12:
                 raise RuntimeError('did not complete tlim within resource cap')
-            if any(not snap['finite'] or snap['min_density'] <= 0 or
-                   snap['min_thermal'] <= 0 or
-                   (snap['min_sgs'] is not None and snap['min_sgs'] < 0)
-                   for snap in snapshots):
-                raise RuntimeError('inadmissible stored reservoir')
             row['checks'] = [dict(id='forcing.admissibility', passed=True)]
             initial, final = hist[0], hist[-1]
             work = final['force-work']-initial['force-work']
