@@ -390,3 +390,21 @@ The 4T run is a cost/admissibility pilot with a short 2T–4T averaging window.
 A 10T run is needed for the full paper sampling interval. A single seed does
 not measure ensemble uncertainty. Reconstruction comparisons hold forcing and
 closure coefficients fixed; they do not calibrate the paper's forcing units.
+
+## Native production amplitude check
+
+```sh
+python3 -B tst/sgs/verify_production.py --exe build-sgs-laptop/src/athena \
+  --output /tmp/sgs-production-check
+```
+
+Eight one-step 16³/32³ cyclic-shear cases compare the actual applied production
+and dissipation counters with independent closed Fourier expressions. Both PLM
+and PPM4 retain the default mixed closure coefficients. Density and specific SGS
+energy vary between cases; three ghost zones are used for both reconstructions.
+The rate tolerance is frozen at 2e-5 before execution, allowing O(dt) stage
+changes over dt=1e-7. Exactly one RK2 step and zero limiting/fallback are required.
+This closes the gap between kernel formula checks and native source amplitudes.
+It does not test general C2 production, transverse-gradient accuracy or diffusion:
+initial A A^T is diagonal, divergence is zero and K/rho is uniform. The separate
+longitudinal mixed wave check covers an isolated C2 acoustic branch.
