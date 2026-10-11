@@ -83,10 +83,10 @@ class Hydro {
   sgs::Coefficients sgs_coeff;
   bool sgs_pgen_initialization = false;
   Real sgs_seed = 0.0;    // specific energy added once, after pgen
-  DvceFaceFld5D<Real> sgs_face;  // traction (0-2), stress/diffusion deficits (3-4)
-  DvceArray5D<Real> sgs_rates;   // production, dissipation, suppressed transfer
+  DvceFaceFld5D<Real> sgs_face;  // traction (0-2), deficits (3-4), thermal pressure (5)
+  DvceArray5D<Real> sgs_rates;   // production, dissipation, deficits, pressure work
   Real sgs_produced = 0.0, sgs_dissipated = 0.0, sgs_limited = 0.0;
-  Real sgs_diff_limited = 0.0;
+  Real sgs_diff_limited = 0.0, sgs_pressure_work = 0.0;
   int sgs_fallbacks = 0;
   DvceArray5D<Real> u0;   // conserved variables
   DvceArray5D<Real> w0;   // primitive variables

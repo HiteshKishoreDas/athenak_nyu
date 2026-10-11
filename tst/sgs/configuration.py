@@ -56,7 +56,7 @@ def main():
         ('C16_frame_tracking', {'frame_tracking/enabled': 'true'}, 'unsupported'),
         ('C16_user_source', {'problem/user_source': 'true'}, 'user source'),
         ('R17_cfl', {'time/cfl_number': '0.3'}, 'cfl_number'),
-        ('C16_history_capacity', {'hydro/nscalars': '25'}, 'Hydro history exceeds'),
+        ('C16_history_capacity', {'hydro/nscalars': '26'}, 'Hydro history exceeds'),
         ('L05_many_scalars', {'hydro/nscalars': '12'}, None),
         ('L05_zero', {'problem/k0': '0'}, None),
         ('L06_velocity_moments', {'output2/variable': 'hydro_v_moments'}, None),

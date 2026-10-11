@@ -137,7 +137,8 @@ def history(path):
     names = re.findall(r'\[\d+\]=([^\s]+)', lines[1])
     canonical = ('represented-E', 'sgs-production-integral',
                  'sgs-dissipation-integral', 'sgs-stress-limited-integral',
-                 'sgs-fallback-stages', 'sgs-diffusion-limited-integral')
+                 'sgs-fallback-stages', 'sgs-diffusion-limited-integral',
+                 'sgs-pressure-work-integral')
     names = [next((full for full in canonical if full[:10] == name), name)
              for name in names]
     return [dict(zip(names, map(float, line.split())))
@@ -306,7 +307,7 @@ class Verification:
             if test_id in ('I13','I22'):
                 for label in ('sgs-production-integral', 'sgs-dissipation-integral',
                               'sgs-stress-limited-integral', 'sgs-diffusion-limited-integral',
-                              'sgs-fallback-stages'):
+                              'sgs-fallback-stages', 'sgs-pressure-work-integral'):
                     self.check(row, test_id+'.'+label, scaled_diff(
                         self.states[left][3][-1][label], self.states[right][3][-1][label]),
                         threshold, 'restart must retain integrated diagnostics')

@@ -47,6 +47,9 @@ void Hydro::CalculateFluxes(Driver *pdriver, int stage) {
   int nmb1 = pmy_pack->nmb_thispack - 1;
   const auto recon_method_ = recon_method;
   const int isgs_ = isgs;
+  auto pressure1 = sgs_face.x1f;
+  auto pressure2 = sgs_face.x2f;
+  auto pressure3 = sgs_face.x3f;
   bool extrema = false;
   if (recon_method == ReconstructionMethod::ppmx) {
     extrema = true;
@@ -112,6 +115,12 @@ void Hydro::CalculateFluxes(Driver *pdriver, int stage) {
       Advect(member, eos, indcs, size, coord, m, k, j, il, iu, IVX, wl, wr, flx1);
     } else if constexpr (rsolver_method_ == Hydro_RSolver::llf) {
       LLF(member, eos, indcs, size, coord, m, k, j, il, iu, IVX, wl, wr, flx1, isgs_);
+      if (isgs_ >= 0) {
+        par_for_inner(member, il, iu, [&](const int i) {
+          pressure1(m,5,k,j,i) = 0.5*(eos.IdealGasPressure(wl(IEN,i)) +
+                                            eos.IdealGasPressure(wr(IEN,i)));
+        });
+      }
     } else if constexpr (rsolver_method_ == Hydro_RSolver::hlle) {
       HLLE(member, eos, indcs, size, coord, m, k, j, il, iu, IVX, wl, wr, flx1);
     } else if constexpr (rsolver_method_ == Hydro_RSolver::hllc) {
@@ -212,6 +221,12 @@ void Hydro::CalculateFluxes(Driver *pdriver, int stage) {
           } else if constexpr (rsolver_method_ == Hydro_RSolver::llf) {
             LLF(member, eos, indcs, size, coord, m, k, j, il, iu, IVY,
                 wl, wr, flx2, isgs_);
+            if (isgs_ >= 0) {
+              par_for_inner(member, il, iu, [&](const int i) {
+                pressure2(m,5,k,j,i) = 0.5*(eos.IdealGasPressure(wl(IEN,i)) +
+                                                  eos.IdealGasPressure(wr(IEN,i)));
+              });
+            }
           } else if constexpr (rsolver_method_ == Hydro_RSolver::hlle) {
             HLLE(member, eos, indcs, size, coord, m, k, j, il, iu, IVY, wl, wr, flx2);
           } else if constexpr (rsolver_method_ == Hydro_RSolver::hllc) {
@@ -308,6 +323,12 @@ void Hydro::CalculateFluxes(Driver *pdriver, int stage) {
           } else if constexpr (rsolver_method_ == Hydro_RSolver::llf) {
             LLF(member, eos, indcs, size, coord, m, k, j, il, iu, IVZ,
                 wl, wr, flx3, isgs_);
+            if (isgs_ >= 0) {
+              par_for_inner(member, il, iu, [&](const int i) {
+                pressure3(m,5,k,j,i) = 0.5*(eos.IdealGasPressure(wl(IEN,i)) +
+                                                  eos.IdealGasPressure(wr(IEN,i)));
+              });
+            }
           } else if constexpr (rsolver_method_ == Hydro_RSolver::hlle) {
             HLLE(member, eos, indcs, size, coord, m, k, j, il, iu, IVZ, wl, wr, flx3);
           } else if constexpr (rsolver_method_ == Hydro_RSolver::hllc) {

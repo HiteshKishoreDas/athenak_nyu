@@ -128,7 +128,9 @@ def summarize(data):
             "scatter": "time-weighted temporal standard deviation, not SEM",
             "blocks": "eight 1T block means; independence is not assumed",
             "interpolation": "linear between stored diagnostic samples",
-            "heating": "corrected heating unavailable; pressure-work absent",
+            "heating": ("pressure-work recorded; see heating_plots.py for fractions"
+                        if all("sgs-pressure-work-integral" in h for h in history)
+                        else "corrected heating unavailable; pressure-work absent"),
         },
         paper_table4=PAPER.get(float(p.get("sol_fraction", 1.0)), {}).get(p["n"]),
     )

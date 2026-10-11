@@ -408,3 +408,36 @@ This closes the gap between kernel formula checks and native source amplitudes.
 It does not test general C2 production, transverse-gradient accuracy or diffusion:
 initial A A^T is diagonal, divergence is zero and K/rho is uniform. The separate
 longitudinal mixed wave check covers an isolated C2 acoustic branch.
+
+## Compression-corrected heating budget
+
+The SGS history now records `sgs-pressure-work-integral`, the cumulative signed
+thermal pressure work from the actual reconstructed LLF momentum flux. The SGS
+stress, source exchanges and fluid update are unchanged. The history/reduction
+capacity grows from 32 to 33 to preserve the forced twelve-scalar case.
+
+```sh
+OMP_NUM_THREADS=4 OMP_PROC_BIND=false python3 -B tst/sgs/verify_heating.py \
+  --exe build-sgs-laptop/src/athena --output /tmp/sgs-heating-controls
+/tmp/sgs-plot-env/bin/python -B tst/sgs/heating_plots.py --self-test
+/tmp/sgs-plot-env/bin/python -B tst/sgs/heating_plots.py \
+  --runs /tmp/sgs-paper-plm /tmp/sgs-paper-ppm \
+  --output /tmp/sgs-heating-report --start-T 2 --end-T 4
+```
+
+Build the existing `sgs_verify` problem. `verify_heating.py` tests independent
+compression/expansion and DC-shear residual amplitudes, temporal convergence and
+restart. Add `--baseline-exe` to check exact field passivity against the previous
+binary. Fractions are ratios of integrated increments over the selected window:
+SGS share = D/(delta U-C), numerical share = (delta U-C-D)/(delta U-C).
+C is resolved thermal-pressure work and D is applied SGS dissipation. The residual
+includes spatial and RK effects and shock-associated heating; it is not LLF-only.
+Signed residuals are retained. Nonpositive corrected-heating intervals have no
+reported fraction. The report uses actual native checkpoint configuration and
+linear endpoint clipping of the history, and does not certify stationarity.
+
+`paper_test.py --cfl .05` enables a timestep sensitivity lane. Test continuations
+may explicitly override `time/cfl_number`; other physics restart guards remain.
+Older checkpoints start the new pressure counter at zero at restart time. Use
+fresh output directories, matching counter/inventory increments, and an averaging
+window covered by the new ledger. Do not append the new schema to an old history.

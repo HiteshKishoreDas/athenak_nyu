@@ -50,6 +50,8 @@ class ForcingVerification(verify.Verification):
         if rst:
             cmd = [str(self.exe), '-r', str(rst), f'job/basename={name}',
                    f'time/tlim={tlim}']
+            if overrides and 'time/cfl_number' in overrides:
+                cmd.append(f"time/cfl_number={config['time/cfl_number']}")
         row = dict(name=name, enabled=enabled, sol_fraction=sol_fraction,
                    seed=seed, command=cmd, input_sha256=verify.sha(inp), status='running',
                    timeout_seconds=timeout)

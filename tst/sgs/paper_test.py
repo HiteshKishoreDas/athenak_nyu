@@ -23,7 +23,7 @@ DEPARTURES = [
     'Assumed V/c0=5.5: Table 4 does not explicitly give this for solenoidal forcing',
     'Tiny positive SGS seed k0=1e-8 to avoid the discrete zero-K absorbing state',
     'One seed, no high-resolution filtered reference or convergence claim',
-    'No resolved pressure-work ledger; corrected heating fraction unavailable',
+    'Discrete pressure-work ledger; residual combines spatial and RK effects',
 ]
 
 
@@ -81,7 +81,7 @@ def run(args):
         end_T=args.end_T, requested_window_T=[2., 10.],
         dt_update_T=.01, snapshot_cadence_T=.1,
         timeout_seconds=args.timeout, cycle_cap=100000,
-        reconstruction=args.reconstruct, rsolver="llf",
+        reconstruction=args.reconstruct, rsolver="llf", cfl=args.cfl,
         nghost=args.nghost or (3 if args.reconstruct == "ppm4" else 2),
         departures=[DEPARTURES[0].replace("PLM", args.reconstruct.upper()),
                     *DEPARTURES[1:]], coefficients=dict(c1=.02, c2=.7, ceps=1.5,
@@ -97,7 +97,7 @@ def run(args):
             **{f'meshblock/nx{d}': str(min(args.n, 16)) for d in (1, 2, 3)},
             **{f'turb_driving/min_k{d}': '-3' for d in ('x', 'y', 'z')},
             **{f'turb_driving/max_k{d}': '3' for d in ('x', 'y', 'z')},
-            'hydro/reconstruct': args.reconstruct,
+            'hydro/reconstruct': args.reconstruct, 'time/cfl_number': str(args.cfl),
             'mesh/nghost': str(protocol['nghost']),
             'hydro/gamma': str(GAMMA), 'problem/pressure0': str(C0**2/GAMMA),
             'problem/k0': '1e-8', 'time/nlim': '100000', 'time/ndiag': '1000',
@@ -144,6 +144,7 @@ def main():
     parser.add_argument('--reconstruct', choices=['plm', 'ppm4'], default='plm')
     parser.add_argument('--n', type=int, choices=[16, 32, 64], default=64)
     parser.add_argument('--end-T', type=float, default=10.)
+    parser.add_argument('--cfl', type=float, default=.1)
     parser.add_argument('--accel-rms', type=float, default=2.)
     parser.add_argument('--timeout', type=float, default=7200.)
     parser.add_argument('--self-test', action='store_true')
@@ -160,8 +161,9 @@ def main():
         return
     if args.exe is None:
         parser.error('--exe is required')
-    if not 0 < args.end_T <= 10 or args.timeout <= 0 or args.accel_rms <= 0:
-        parser.error('require 0 < end-T <= 10, positive timeout and accel-rms')
+    if (not 0 < args.end_T <= 10 or args.timeout <= 0 or args.accel_rms <= 0
+            or not 0 < args.cfl <= .2):
+        parser.error('require 0 < end-T <= 10, positive timeout/accel-rms, 0<cfl<=.2')
     if args.reconstruct == 'ppm4' and args.nghost == 2:
         parser.error('ppm4 requires three ghost zones')
     raise SystemExit(0 if run(args) else 1)

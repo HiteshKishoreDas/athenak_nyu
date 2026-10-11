@@ -150,6 +150,7 @@ void Hydro::ConfigureSGS(ParameterInput *pin) {
   sgs_dissipated = pin->GetOrAddReal("sgs", "integrated_dissipation", 0.0);
   sgs_limited = pin->GetOrAddReal("sgs", "integrated_limited", 0.0);
   sgs_diff_limited = pin->GetOrAddReal("sgs", "integrated_diffusion_limited", 0.0);
+  sgs_pressure_work = pin->GetOrAddReal("sgs", "integrated_pressure_work", 0.0);
   sgs_fallbacks = pin->GetOrAddInteger("sgs", "fallbacks", 0);
   if (global_variable::my_rank == 0) {
     std::cout << "SGS schmidt_federrath: K slot=" << isgs << ", seed k=" << sgs_seed
@@ -251,7 +252,7 @@ void Hydro::SGSRates() {
   par_for("sgs_rates", DevExeSpace(), 0, pmy_pack->nmb_thispack-1,
           ind.ks, ind.ke, ind.js, ind.je, ind.is, ind.ie,
   KOKKOS_LAMBDA(int m, int k, int j, int i) {
-    Real sigma = 0.0, limited = 0.0, diff_limited = 0.0;
+    Real sigma = 0.0, limited = 0.0, diff_limited = 0.0, pressure_work = 0.0;
     Real dx = size.d_view(m).dx1;
     for (int dir=0; dir<ndim; ++dir) {
       auto t = (dir == 0) ? t1 : ((dir == 1) ? t2 : t3);
@@ -261,6 +262,12 @@ void Hydro::SGSRates() {
         sigma += (t(m,v,k+dk,j+dj,i+di)*(w(m,IVX+v,k+dk,j+dj,i+di)-uc) +
                   t(m,v,k,j,i)*(uc-w(m,IVX+v,k-dk,j-dj,i-di)))/(2.0*dx);
       }
+      // Compatible thermal pressure work, using the actual Euler flux pressure.
+      // Periodic sum = -sum_faces P_face*(v_right-v_left)*face_area.
+      Real vc = w(m,IVX+dir,k,j,i);
+      pressure_work -= (t(m,5,k+dk,j+dj,i+di)*
+                        (w(m,IVX+dir,k+dk,j+dj,i+di)-vc) +
+                        t(m,5,k,j,i)*(vc-w(m,IVX+dir,k-dk,j-dj,i-di)))/(2.0*dx);
       limited += t(m,3,k,j,i) + t(m,3,k+dk,j+dj,i+di);
       diff_limited += 0.5*(t(m,4,k,j,i) + t(m,4,k+dk,j+dj,i+di));
     }
@@ -269,6 +276,7 @@ void Hydro::SGSRates() {
                     w(m,IDN,k,j,i)*w(m,idx,k,j,i), dx, coeff);
     r(m,2,k,j,i) = limited;
     r(m,3,k,j,i) = diff_limited;
+    r(m,4,k,j,i) = pressure_work;
   });
 }
 
@@ -333,23 +341,26 @@ void Hydro::SGSSources(Driver *d, int stage) {
     u(m,idx,k,j,i) += exchange;
     u(m,IEN,k,j,i) -= exchange;
   });
-  Real prod=0.0, diss=0.0, limited=0.0, diff_limited=0.0;
+  Real prod=0.0, diss=0.0, limited=0.0, diff_limited=0.0, pressure_work=0.0;
   Kokkos::parallel_reduce("sgs_budget", Kokkos::MDRangePolicy<Kokkos::Rank<4>>(
       {0,ind.ks,ind.js,ind.is}, {pmy_pack->nmb_thispack,ind.ke+1,ind.je+1,ind.ie+1}),
-  KOKKOS_LAMBDA(int m, int k, int j, int i, Real &p, Real &e, Real &l, Real &jl) {
+  KOKKOS_LAMBDA(int m, int k, int j, int i,
+                Real &p, Real &e, Real &l, Real &jl, Real &pw) {
     Real vol = size.d_view(m).dx1*size.d_view(m).dx2*size.d_view(m).dx3;
     p += vol*r(m,0,k,j,i);
     e += vol*r(m,1,k,j,i);
     l += vol*r(m,2,k,j,i);
     jl += vol*r(m,3,k,j,i);
-  }, prod, diss, limited, diff_limited);
+    pw += vol*r(m,4,k,j,i);
+  }, prod, diss, limited, diff_limited, pressure_work);
 #if MPI_PARALLEL_ENABLED
-  Real budget[4] = {prod, diss, limited, diff_limited}, total[4];
-  MPI_Allreduce(budget, total, 4, MPI_ATHENA_REAL, MPI_SUM, MPI_COMM_WORLD);
+  Real budget[5] = {prod, diss, limited, diff_limited, pressure_work}, total[5];
+  MPI_Allreduce(budget, total, 5, MPI_ATHENA_REAL, MPI_SUM, MPI_COMM_WORLD);
   prod = total[0];
   diss = total[1];
   limited = total[2];
   diff_limited = total[3];
+  pressure_work = total[4];
 #endif
   // Final-solution quadrature weights differ from stage update coefficients.
   Real weight = d->SourceTermHistoryWeight(stage)*pmy_pack->pmesh->dt;
@@ -357,6 +368,7 @@ void Hydro::SGSSources(Driver *d, int stage) {
   sgs_dissipated += weight*diss;
   sgs_limited += weight*limited;
   sgs_diff_limited += weight*diff_limited;
+  sgs_pressure_work += weight*pressure_work;
 }
 
 void Hydro::CheckSGSState() {

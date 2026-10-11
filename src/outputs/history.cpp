@@ -128,12 +128,12 @@ void HistoryOutput::LoadHydroHistoryData(HistoryData *pdata, Mesh *pm) {
     const char *labels[] = {"sgs-E", "represented-E", "thermal-E",
         "sgs-production-integral", "sgs-dissipation-integral",
         "sgs-stress-limited-integral", "sgs-fallback-stages",
-        "sgs-diffusion-limited-integral"};
-    if (pdata->nhist+8 > NHISTORY_VARIABLES) {
+        "sgs-diffusion-limited-integral", "sgs-pressure-work-integral"};
+    if (pdata->nhist+9 > NHISTORY_VARIABLES) {
       std::cerr << "SGS history exceeds NHISTORY_VARIABLES" << std::endl;
       std::exit(EXIT_FAILURE);
     }
-    for (int n=0; n<8; ++n) pdata->label[pdata->nhist++] = labels[n];
+    for (int n=0; n<9; ++n) pdata->label[pdata->nhist++] = labels[n];
   }
   auto *turb = pm->pmb_pack->pturb;
   const bool stage_forcing = turb != nullptr && turb->stage_consistent;
@@ -228,6 +228,7 @@ void HistoryOutput::LoadHydroHistoryData(HistoryData *pdata, Mesh *pm) {
     pdata->hdata[sgs_index+5] = h->sgs_limited/ranks;
     pdata->hdata[sgs_index+6] = h->sgs_fallbacks/ranks;
     pdata->hdata[sgs_index+7] = h->sgs_diff_limited/ranks;
+    pdata->hdata[sgs_index+8] = h->sgs_pressure_work/ranks;
   }
   if (stage_forcing) {
     Real ranks = global_variable::nranks;

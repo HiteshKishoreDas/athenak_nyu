@@ -293,9 +293,9 @@ Hydro::Hydro(MeshBlockPack *ppack, ParameterInput *pin) :
       Kokkos::realloc(uflx.x3f, nmb, nvars, ncells3, ncells2, ncells1);
 
       if (isgs >= 0) {
-        sgs_face = DvceFaceFld5D<Real>("sgs_face", nmb, 5,
+        sgs_face = DvceFaceFld5D<Real>("sgs_face", nmb, 6,
                                      ncells3, ncells2, ncells1);
-        Kokkos::realloc(sgs_rates, nmb, 4, ncells3, ncells2, ncells1);
+        Kokkos::realloc(sgs_rates, nmb, 5, ncells3, ncells2, ncells1);
       }
 
       // allocate array of flags used with FOFC

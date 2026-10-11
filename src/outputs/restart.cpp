@@ -234,6 +234,7 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
     pin->SetRealPrecise("sgs", "integrated_dissipation", phydro->sgs_dissipated);
     pin->SetRealPrecise("sgs", "integrated_limited", phydro->sgs_limited);
     pin->SetRealPrecise("sgs", "integrated_diffusion_limited", phydro->sgs_diff_limited);
+    pin->SetRealPrecise("sgs", "integrated_pressure_work", phydro->sgs_pressure_work);
     pin->SetInteger("sgs", "fallbacks", phydro->sgs_fallbacks);
   }
   if (pturb != nullptr && pturb->stage_consistent) {
