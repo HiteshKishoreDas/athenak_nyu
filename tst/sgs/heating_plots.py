@@ -59,7 +59,12 @@ def self_check():
     assert np.isclose(result['numerical'], .5)
     assert np.isclose(result['sgs_fraction'], 2/3)
     assert result['forcing_budget_residual'] == result['sgs_budget_residual'] == 0
-    print('Signed heating budget and clipped endpoints: PASS')
+    for rate in (-.5, -1.):
+        for row in rows:
+            row['thermal-E'] = 100+rate*row['time']
+        _, _, result = budget(rows, .25, .75)
+        assert result['sgs_fraction'] is result['numerical_fraction'] is None
+    print('Signed heating budget, clipped endpoints and invalid fractions: PASS')
 
 
 def main():
@@ -115,8 +120,10 @@ def main():
         axes[2, 0].plot(t/turnover, series['production'], color=color)
         axes[2, 0].plot(t/turnover, series['sgs'], '--', color=color)
     x = np.arange(len(summaries))
-    fractions = [row['sgs_fraction'] for row in summaries]
-    numerical = [row['numerical_fraction'] for row in summaries]
+    fractions = [np.nan if row['sgs_fraction'] is None else row['sgs_fraction']
+                 for row in summaries]
+    numerical = [np.nan if row['numerical_fraction'] is None
+                 else row['numerical_fraction'] for row in summaries]
     axes[2, 1].bar(x-.18, fractions, width=.36, label='SGS')
     axes[2, 1].bar(x+.18, numerical, width=.36, label='Numerical residual')
     axes[2, 1].set_xticks(x, [row['label'] for row in summaries], rotation=20)
