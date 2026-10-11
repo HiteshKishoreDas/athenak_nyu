@@ -498,3 +498,30 @@ Native instantaneous forcing normalization and radial weighting differ from
 published modal forcing descriptions. Original 2011 input provenance and the
 Gaussian width convention have not been recovered; do not tune amplitudes or
 SGS coefficients to disguise those gaps.
+
+## Native nonlinear/mixed production amplitude
+
+Reuse the `sgs_verify` binary and installed NumPy environment:
+
+```sh
+OMP_NUM_THREADS=2 python3 -B tst/sgs/verify_mixed_production.py --self-test
+OMP_NUM_THREADS=2 python3 -B tst/sgs/verify_mixed_production.py \
+  --exe build-sgs-laptop/src/athena --output /tmp/sgs-mixed-production
+```
+
+The 16³/32³ PLM/PPM4 checks use the existing 3D initial-state loader. Four full
+velocity-gradient tensors exercise compression, expansion, trace-free strain
+and both signs of C2 transfer. Affine periodic seams are excluded from the local
+oracle; only the central core is compared with the analytic equation. Identical
+initial states with C2=0/.7 isolate its deviatoric production. Full local K rates
+also include conservative advection, C1 and dissipation at the published defaults.
+
+A separate smooth periodic rank-one gradient with modulated K has an exact
+shared-face global production sum, including all three velocity-work components.
+It checks native counters, independently read K inventories, paired resolved
+energy and kinetic stress work. This term-isolation fixture sets C1, dissipation
+and diffusion to zero; it does not change their defaults or the turbulent runs.
+Every case must complete one RK2 step dt=1e-7 without limiting or fallback.
+The rate tolerance 2e-5 is frozen before execution, matching the earlier C1 test.
+Results, protocols, all inputs and failed attempts are retained. Passing checks
+native amplitudes and exchange, not filtered turbulent closure accuracy.
