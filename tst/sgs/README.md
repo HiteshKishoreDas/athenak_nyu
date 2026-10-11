@@ -366,9 +366,9 @@ The five-page 18-panel PDF also has `page1.png`…`page5.png` previews. Regenera
 This is an approximate reproduction: AthenaK RK2/LLF/PLM differs from Enzo 1.5,
 instantaneous acceleration RMS normalization differs from modal OU amplitude,
 and equivalence of the native shell-compensated spectral envelope is unproven.
-These affect comparisons in V units even after Mach calibration. The paper's
-compression-corrected heating fraction is unavailable without an applied resolved
-pressure-work ledger. No high-resolution filtered CDF or resolution-scaling claim
+These affect comparisons in V units even after Mach calibration. Earlier frozen paper reports lack an applied resolved pressure-work ledger, so
+their compression-corrected heating fraction is unavailable. New builds provide
+the ledger and separate heating report described below. No high-resolution filtered CDF or resolution-scaling claim
 comes from this single 64³ case. Table 4 is a reference, not a tuned pass threshold.
 
 ## Controlled reconstruction comparison
@@ -441,3 +441,7 @@ may explicitly override `time/cfl_number`; other physics restart guards remain.
 Older checkpoints start the new pressure counter at zero at restart time. Use
 fresh output directories, matching counter/inventory increments, and an averaging
 window covered by the new ledger. Do not append the new schema to an old history.
+
+Restart tests save the exact checkpoint inventory and counter origin in
+`history-origin.json`, covering the gap before the first scheduled history output.
+The heating report includes that point when the requested window needs it.

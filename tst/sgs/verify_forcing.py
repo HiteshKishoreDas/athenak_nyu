@@ -101,6 +101,18 @@ class ForcingVerification(verify.Verification):
                 work0 = float(original['config']['turb_driving/integrated_work'])
                 expected_delta = final['force-work']-work0
                 first = original
+                if enabled:
+                    cfg = original['config']
+                    origin = {'time': original['time'], 'thermal-E': original['thermal'],
+                              'sgs-E': original['totals'][-1],
+                              'represented-E': sum(original['totals'][v] for v in (4, -1)),
+                              'force-work': float(cfg['turb_driving/integrated_work'])}
+                    for label, parameter in (
+                            ('sgs-production-integral', 'integrated_production'),
+                            ('sgs-dissipation-integral', 'integrated_dissipation'),
+                            ('sgs-pressure-work-integral', 'integrated_pressure_work')):
+                        origin[label] = float(cfg.get('sgs/'+parameter, '0'))
+                    (wd/'history-origin.json').write_text(json.dumps(origin, indent=2))
             self.check(row,'P24.actual_work',verify.scaled_diff(E1-E0,expected_delta),
                        verify.LIMITS['represented_energy_scaled_absolute'],
                        'represented inventory change equals actually applied forcing work')

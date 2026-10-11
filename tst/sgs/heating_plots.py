@@ -83,6 +83,13 @@ def main():
         if len(paths) != 1:
             raise ValueError(f'need exactly one native hydro history in {run}')
         hist = history(paths[0])
+        origin = paths[0].parent/'history-origin.json'
+        if origin.exists():
+            row = json.loads(origin.read_text())
+            if row['time'] > hist[0]['time']:
+                raise ValueError('restart origin is later than first stored history')
+            if row['time'] < hist[0]['time']:
+                hist.insert(0, row)
         checkpoints = sorted((paths[0].parent/'rst').glob('*.rst'))
         with checkpoints[0].open('rb') as handle:
             header = handle.read(1024*1024)
