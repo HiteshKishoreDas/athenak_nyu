@@ -75,12 +75,13 @@ def self_check():
 def run(args):
     started = time.monotonic()
     suite = ForcingVerification(args.exe, args.output)
+    case = 'solenoidal' if args.sol_fraction == 1. else 'compressive'
     protocol = dict(
         L=L, V=V, T=T, gamma=GAMMA, c0=C0, n=args.n,
-        amplitude=args.accel_rms, sol_fraction=1., seed=42,
+        amplitude=args.accel_rms, sol_fraction=args.sol_fraction, seed=args.seed,
         end_T=args.end_T, requested_window_T=[2., 10.],
         dt_update_T=.01, snapshot_cadence_T=.1,
-        timeout_seconds=args.timeout, cycle_cap=100000,
+        timeout_seconds=args.timeout, cycle_cap=args.nlim,
         reconstruction=args.reconstruct, rsolver="llf", cfl=args.cfl,
         nghost=args.nghost or (3 if args.reconstruct == "ppm4" else 2),
         departures=[DEPARTURES[0].replace("PLM", args.reconstruct.upper()),
@@ -90,7 +91,8 @@ def run(args):
     )
     (suite.output/'protocol.json').write_text(json.dumps(protocol, indent=2) + '\n')
     row = suite.run_forcing(
-        'solenoidal', True, 1., tlim=args.end_T*T, timeout=args.timeout,
+        case, True, args.sol_fraction, seed=args.seed,
+        tlim=args.end_T*T, timeout=args.timeout,
         retain_snapshots=False,
         overrides={
             **{f'mesh/nx{d}': str(args.n) for d in (1, 2, 3)},
@@ -100,7 +102,7 @@ def run(args):
             'hydro/reconstruct': args.reconstruct, 'time/cfl_number': str(args.cfl),
             'mesh/nghost': str(protocol['nghost']),
             'hydro/gamma': str(GAMMA), 'problem/pressure0': str(C0**2/GAMMA),
-            'problem/k0': '1e-8', 'time/nlim': '100000', 'time/ndiag': '1000',
+            'problem/k0': '1e-8', 'time/nlim': str(args.nlim), 'time/ndiag': '1000',
             'turb_driving/normalization': 'accel_rms', 'turb_driving/dedt': None,
             'turb_driving/accel_rms': str(args.accel_rms),
             'turb_driving/tcorr': str(T), 'turb_driving/dt_update': str(.01*T),
@@ -110,7 +112,7 @@ def run(args):
     )
     suite.states.clear()
     samples, final = [], {}
-    for path in sorted((suite.output/'solenoidal/rst').glob('*.rst')):
+    for path in sorted((suite.output/case/'rst').glob('*.rst')):
         state = verify.restart(path)
         data = np.array(list(state['field'].values()))
         sample, sgs_mach = cell_diagnostics(data, GAMMA, 1/args.n)
@@ -121,7 +123,7 @@ def run(args):
         del state
     if samples:
         final = dict(density=data[:, 0].tolist(), sgs_mach=sgs_mach.tolist())
-    hpath = suite.output/'solenoidal/solenoidal.hydro.hst'
+    hpath = suite.output/case/f'{case}.hydro.hst'
     diagnostics = dict(protocol=protocol, samples=samples, final=final,
                        history=verify.history(hpath) if hpath.exists() else [],
                        numerical_status=row['status'])
@@ -142,7 +144,10 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--nghost', type=int, choices=[2, 3])
     parser.add_argument('--reconstruct', choices=['plm', 'ppm4'], default='plm')
-    parser.add_argument('--n', type=int, choices=[16, 32, 64], default=64)
+    parser.add_argument('--n', type=int, choices=[16, 32, 64, 128, 256], default=64)
+    parser.add_argument('--nlim', type=int, default=100000)
+    parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--sol-fraction', type=float, choices=[0., 1.], default=1.)
     parser.add_argument('--end-T', type=float, default=10.)
     parser.add_argument('--cfl', type=float, default=.1)
     parser.add_argument('--accel-rms', type=float, default=2.)
@@ -162,8 +167,8 @@ def main():
     if args.exe is None:
         parser.error('--exe is required')
     if (not 0 < args.end_T <= 10 or args.timeout <= 0 or args.accel_rms <= 0
-            or not 0 < args.cfl <= .2):
-        parser.error('require 0 < end-T <= 10, positive timeout/accel-rms, 0<cfl<=.2')
+            or not 0 < args.cfl <= .2 or args.nlim <= 0):
+        parser.error('require 0<end-T<=10, positive timeout/accel-rms/nlim, 0<cfl<=.2')
     if args.reconstruct == 'ppm4' and args.nghost == 2:
         parser.error('ppm4 requires three ghost zones')
     raise SystemExit(0 if run(args) else 1)

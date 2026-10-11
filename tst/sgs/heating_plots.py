@@ -142,7 +142,9 @@ def main():
         ax.set_ylabel('Fraction' if index in (2, 5) else 'Energy (code units)')
     axes[0, 0].legend(fontsize=8)
     axes[2, 1].legend(fontsize=8)
-    fig.suptitle('Compression-corrected heating budget — short-window pilots\n'
+    window_label = ('2T–10T averages' if args.start_T == 2 and args.end_T == 10
+                    else 'short-window pilots')
+    fig.suptitle('Compression-corrected heating budget — '+window_label+'\n'
                  'Numerical residual includes spatial/RK effects; signed values retained',
                  fontsize=13)
     fig.savefig(args.output/'heating-comparison.png', dpi=170)
@@ -150,7 +152,7 @@ def main():
     plt.close(fig)
     report = dict(window_T=[args.start_T, args.end_T], cases=summaries,
                   definitions=__doc__, reference='https://arxiv.org/html/1010.4492#S4.SS2',
-                  caveats=['Short window, one seed; no stationarity certificate',
+                  caveats=['One seed per case; stationarity requires separate trend assessment',
                            'Pressure work uses the discrete reconstructed momentum flux',
                            'Residual includes spatial/RK and shock-associated heating',
                            'Forcing equivalence to paper remains unproven',

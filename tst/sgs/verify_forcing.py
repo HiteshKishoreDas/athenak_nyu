@@ -42,6 +42,7 @@ class ForcingVerification(verify.Verification):
                 config.pop(key, None)
             else:
                 config[key] = value
+        config['job/basename'] = name
         wd = self.output/name
         wd.mkdir()
         inp = wd/'input.athinput'

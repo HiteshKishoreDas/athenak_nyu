@@ -445,3 +445,56 @@ window covered by the new ledger. Do not append the new schema to an old history
 Restart tests save the exact checkpoint inventory and counter origin in
 `history-origin.json`, covering the gap before the first scheduled history output.
 The heating report includes that point when the requested window needs it.
+
+## Full 2T–10T statistics and restart segments
+
+`paper_test.py` accepts `--seed`, pure `--sol-fraction 0` (compressive) or `1`
+(solenoidal), grids through 256³, and an explicit `--nlim` cycle cap. The default
+physics and existing numerical acceptance limits remain unchanged. Each run
+records its protocol before execution; a timeout or cycle-cap stop is a failure.
+Larger grids require substantially more time, memory and checkpoint storage.
+The local 128³ startup pilot took 528 seconds for only 0.2T on two threads;
+startup extrapolation already exceeds seven hours for 10T and understates the
+cost of developed turbulence. A 256³ full checkpoint is about 2.79 GB.
+
+For a fresh 64³ run, use the existing plotting environment and serial-double
+`sgs_verify` build. These arguments preserve the audited forcing rather than
+claiming its equivalence to the paper:
+
+```sh
+OMP_NUM_THREADS=4 OMP_PROC_BIND=false /tmp/sgs-plot-env/bin/python -B \
+  tst/sgs/paper_test.py --exe /tmp/sgs-build/src/athena \
+  --output /tmp/sgs-paper-64-seed43 --n 64 --seed 43 \
+  --reconstruct ppm4 --nghost 3 --accel-rms 3 --end-T 10 --timeout 9000
+```
+
+`stitch_report.py` is confined to joining one verified diagnostic prefix and one
+restart continuation. It requires the prefix's successful numerical record,
+its exact field/forcing passivity record, and a successful continuation. It checks
+the native checkpoint inventories, cumulative counters, diagnostic boundary,
+and stable physics parameters. Counters are never reset or rebased. Original
+files are untouched. The output includes combined diagnostics, five PDF/PNG
+pages, time-weighted statistics, eight 1T blocks, early/late comparisons,
+stationarity screening against a supplied frozen JSON protocol, and hashes.
+
+```sh
+/tmp/sgs-plot-env/bin/python -B tst/sgs/test_stitch_report.py
+/tmp/sgs-plot-env/bin/python -B tst/sgs/stitch_report.py \
+  --prefix-diagnostics /path/to/verified-prefix/diagnostics.json \
+  --prefix-run /path/to/pressure-ledger-prefix \
+  --continuation /path/to/completed-continuation \
+  --checkpoint /path/to/pinned-4T.rst \
+  --screen /path/to/stationarity-protocol.json --output /tmp/sgs-full-report
+/tmp/sgs-plot-env/bin/python -B tst/sgs/heating_plots.py \
+  --runs /tmp/sgs-full-report --start-T 2 --end-T 10 \
+  --output /tmp/sgs-full-heating
+```
+
+Full window coverage does not imply stationarity or paper reproduction. Temporal
+standard deviations and adjacent 1T blocks are descriptive; they are not errors
+on the mean. Independent seeds, 64³/128³/256³ resolution statistics and an
+adequately resolved Gaussian-filtered reference remain separate requirements.
+Native instantaneous forcing normalization and radial weighting differ from
+published modal forcing descriptions. Original 2011 input provenance and the
+Gaussian width convention have not been recovered; do not tune amplitudes or
+SGS coefficients to disguise those gaps.
