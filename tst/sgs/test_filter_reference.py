@@ -10,7 +10,8 @@ import numpy as np
 
 from filter_reference import (box_filter, compare_closure, favre_reference,
                               error_metrics, mixed_stress, synthetic_metrics,
-                              velocity_gradient, production_metrics)
+                              velocity_gradient, production_metrics, gaussian_filter,
+                              gaussian_kernel)
 
 TOL = 1e-12
 
@@ -24,6 +25,40 @@ class FilterReferenceTests(unittest.TestCase):
         values[0, 0, 0] = 0
         self.assertGreaterEqual(box_filter(values, 3).min(), 0)
         self.assertLessEqual(box_filter(values, 3).max(), 3.25)
+
+    def test_gaussian_positive_kernel_and_discrete_Fourier_response(self):
+        n = 16
+        phase = 2 * np.pi * np.arange(n) / n
+        values = np.broadcast_to(np.cos(phase)[:, None, None], (n, n, n))
+        for width in (4, 8, 16):
+            weights = gaussian_kernel(n, width)
+            self.assertTrue(np.all(weights >= 0))
+            self.assertAlmostEqual(float(weights.sum()), 1, delta=TOL)
+            gain = np.sum(weights * np.cos(phase))
+            np.testing.assert_allclose(gaussian_filter(values, width), gain * values,
+                                       atol=TOL, rtol=0)
+            np.testing.assert_allclose(gaussian_filter(np.ones_like(values), width),
+                                       1, atol=TOL, rtol=0)
+
+    def test_gaussian_density_weighted_covariance_and_boost(self):
+        n, width = 8, 4
+        phase = 2 * np.pi * np.arange(n) / n
+        x, y, z = np.meshgrid(phase, phase, phase, indexing="ij")
+        rho = 1 + 0.2 * np.cos(x) * np.cos(y)
+        velocity = np.stack((np.sin(y), np.cos(z), np.sin(x)), axis=-1)
+        ref = favre_reference(rho, velocity, width, 1/n, filter_kind="gaussian")
+        w = gaussian_kernel(n, width)
+        mass = w[:, None, None] * w[None, :, None] * w[None, None, :] * rho
+        # At periodic origin, even Gaussian weights permit direct unshifted sum.
+        mean = np.sum(mass[..., None] * velocity, axis=(0, 1, 2)) / mass.sum()
+        fluctuation = velocity - mean
+        covariance = -np.einsum("xyz,xyzi,xyzj->ij", mass, fluctuation, fluctuation)
+        np.testing.assert_allclose(ref["tau"][0, 0, 0], covariance, atol=TOL, rtol=0)
+        boosted = favre_reference(rho, velocity + [2, -1, 0.5], width, 1/n,
+                                  filter_kind="gaussian")
+        np.testing.assert_allclose(ref["tau"], boosted["tau"], atol=TOL, rtol=0)
+        np.testing.assert_allclose(ref["K"], boosted["K"], atol=TOL, rtol=0)
+        self.assertGreaterEqual(float(ref["K"].min()), 0)
 
     def test_density_weighted_hand_case(self):
         # Equal-volume cells: rho=(1,3), ux=(1,3). rhobar=2, uFavre=2.5,

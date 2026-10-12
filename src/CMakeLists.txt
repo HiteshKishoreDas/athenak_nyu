@@ -210,4 +210,8 @@ if(BUILD_TESTING AND NOT Athena_SINGLE_PRECISION)
       ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR})
   target_link_libraries(sgs_closure_oracle PRIVATE Kokkos::kokkos)
   add_test(NAME sgs_closure_oracle COMMAND sgs_closure_oracle)
+  add_executable(sgs_filtered_stress ../tst/sgs/filtered_stress.cpp)
+  target_include_directories(sgs_filtered_stress PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+  target_link_libraries(sgs_filtered_stress PRIVATE Kokkos::kokkos)
 endif()

@@ -36,6 +36,37 @@ def box_filter(values, width):
     return result
 
 
+def gaussian_kernel(n, width):
+    """Positive periodic Gaussian; Delta_G = sqrt(12)*sigma in fine cells.
+
+    This explicit second-moment convention is not certified paper-identical.
+    Narrow sampled kernels differ from their continuous Fourier response.
+    """
+    if (not isinstance(n, (int, np.integer)) or n < 2
+            or not np.isfinite(width) or not 0 < width <= n):
+        raise ValueError("require n>=2 and 0<width<=n")
+    sigma = width / np.sqrt(12)
+    distance = (np.arange(n) + n // 2) % n - n // 2
+    images = int(np.ceil(8 * sigma / n)) + 1
+    weights = sum(np.exp(-0.5 * ((distance + image * n) / sigma)**2)
+                  for image in range(-images, images + 1))
+    return weights / weights.sum()
+
+
+def gaussian_filter(values, width):
+    """Same normalized positive separable convolution for every moment."""
+    values = np.asarray(values, dtype=np.float64)
+    if (values.ndim < 3 or len(set(values.shape[:3])) != 1
+            or not np.isfinite(values).all()):
+        raise ValueError("finite cubic spatial field required")
+    response = np.fft.fft(gaussian_kernel(values.shape[0], width)).real
+    transfer = (response[:, None, None] * response[None, :, None]
+                * response[None, None, :])
+    transfer = transfer.reshape(transfer.shape + (1,) * (values.ndim - 3))
+    transformed = np.fft.fftn(values, axes=(0, 1, 2)) * transfer
+    return np.fft.ifftn(transformed, axes=(0, 1, 2)).real
+
+
 def velocity_gradient(velocity, dx):
     """A[...,i,j] = derivative_j velocity_i using periodic centered differences."""
     if not np.isfinite(dx) or dx <= 0:
@@ -47,7 +78,7 @@ def velocity_gradient(velocity, dx):
     return a
 
 
-def favre_reference(rho, velocity, width, dx):
+def favre_reference(rho, velocity, width, dx, filter_kind="box"):
     """Return filtered rho/u, exact tau/K and discrete exact production.
 
     Density is strictly positive; Favre division uses no denominator epsilon.
@@ -61,12 +92,16 @@ def favre_reference(rho, velocity, width, dx):
     if (not np.isfinite(rho).all() or not np.isfinite(velocity).all()
             or np.any(rho <= 0)):
         raise ValueError("require finite velocity and finite strictly positive rho")
-    rhobar = box_filter(rho, width)
-    utilde = box_filter(rho[..., None] * velocity, width) / rhobar[..., None]
+    filters = {"box": box_filter, "gaussian": gaussian_filter}
+    if filter_kind not in filters:
+        raise ValueError("filter_kind must be box or gaussian")
+    spatial_filter = filters[filter_kind]
+    rhobar = spatial_filter(rho, width)
+    utilde = spatial_filter(rho[..., None] * velocity, width) / rhobar[..., None]
     tau = np.empty(rho.shape + (3, 3), dtype=np.float64)
     for i in range(3):
         for j in range(i, 3):
-            moment = box_filter(rho * velocity[..., i] * velocity[..., j], width)
+            moment = spatial_filter(rho * velocity[..., i] * velocity[..., j], width)
             tau[..., i, j] = rhobar * utilde[..., i] * utilde[..., j] - moment
             tau[..., j, i] = tau[..., i, j]
     K = -0.5 * np.trace(tau, axis1=-2, axis2=-1)

@@ -525,3 +525,46 @@ Every case must complete one RK2 step dt=1e-7 without limiting or fallback.
 The rate tolerance 2e-5 is frozen before execution, matching the earlier C1 test.
 Results, protocols, all inputs and failed attempts are retained. Passing checks
 native amplitudes and exchange, not filtered turbulent closure accuracy.
+
+
+### Paper Section 3 filtered-snapshot test
+
+`verify_filtered_snapshot.py` applies Gaussian and box Favre filters to supplied
+periodic unit-cube SGS-off native 3D checkpoints. It computes exact filtered
+stress, covariance energy and signed production, then supplies that exact energy
+to the actual C++ `sgs::Stress` kernel through `sgs_filtered_stress`. Coefficients
+remain C1=.02/C2=.7. No forcing parameter enters the snapshot comparison.
+This tests the production closure, not SGS reservoir evolution or face fluxes.
+
+Build only the test utility with an existing double-precision CPU build:
+
+```sh
+cmake -S . -B /tmp/sgs-build -DBUILD_TESTING=ON
+cmake --build /tmp/sgs-build --target sgs_filtered_stress -j2
+python3 -B tst/sgs/test_filter_reference.py
+python3 -B tst/sgs/verify_filtered_snapshot.py --self-test \
+  --kernel /tmp/sgs-build/src/sgs_filtered_stress
+python3 -B tst/sgs/verify_filtered_snapshot.py \
+  --kernel /tmp/sgs-build/src/sgs_filtered_stress \
+  --snapshots /absolute/reference.00008.rst /absolute/reference.00040.rst \
+  --output /tmp/sgs-new-snapshot-comparison
+```
+
+Use the NumPy/Matplotlib environment above instead of `python3` if necessary.
+The output directory must be new. The report contains JSON metrics, source/input
+hashes and fourteen plot panels (PNG/PDF). All metrics cover full volumes; displayed
+field maps are central-z slices. Gaussian width uses Delta_G=sqrt(12)*sigma,
+an explicit second-moment convention, not a certified paper-identical filter.
+Physical widths are box/16, box/8 and box/4; sampling remains on the fine grid.
+A 64³ input thus has Gaussian widths 4/8/16 fine cells. The smallest width at 32³
+has only 2 fine cells and is explicitly flagged as undersampled. Do not interpret
+its exceptionally high correlation as evidence of reference convergence.
+
+Checks cover independent direct centered covariance, mass/momentum preservation,
+kinetic-energy decomposition, covariance positivity, native/Python stress,
+trace/symmetry, Galilean invariance and spectral-derivative sensitivity. Reported
+physical metrics include full/trace-free stress and production errors, signed
+correlation, mean amplitude bias, sign errors, forward/backscatter and density
+subsets. Arithmetic checks have frozen tolerances; physical bias is reported
+without a tuned pass threshold. Neither limited-grid inputs nor correlation
+alone establish a resolved reference or evolved SGS-energy accuracy.
