@@ -126,7 +126,7 @@ def run(args):
     def check(row, key, value, limit, description):
         return suite.check(row, key, float(value), limit, description)
 
-    fine = initial(args.high, args.seed)
+    fine = initial(args.high, args.seed)[..., :5 + args.nscalars].copy()
     T = 1 / 18
     protocol = dict(
         high=args.high,
@@ -141,6 +141,9 @@ def run(args):
         snapshot_dt_T=0.5,
         history_dt_T=0.1,
         cfl=args.cfl,
+        block_max=args.block,
+        nscalars=args.nscalars,
+        checkpoint_dt_T=1 if args.high >= 256 else None,
         threads=int(os.environ.get("OMP_NUM_THREADS", "1")),
         reference_convergence_screen=0.1,
         interpretation_window_T=[1, args.end_T],
@@ -179,8 +182,9 @@ def run(args):
                 "job/basename": name,
                 "mesh/nghost": "3",
                 **{f"mesh/nx{d}": str(n) for d in (1, 2, 3)},
-                **{f"meshblock/nx{d}": str(min(n, 16)) for d in (1, 2, 3)},
+                **{f"meshblock/nx{d}": str(min(n, args.block)) for d in (1, 2, 3)},
                 "hydro/gamma": str(GAMMA),
+                "hydro/nscalars": str(args.nscalars),
                 "hydro/reconstruct": "ppm4",
                 "time/cfl_number": str(args.cfl),
                 "time/tlim": str(args.end_T * T),
@@ -193,7 +197,8 @@ def run(args):
                 "output2/dt": str(0.5 * T),
                 "output2/data_precision": "real",
                 "output3/dt": "-1",
-                "output4/dt": "-1",
+                # Checkpoint the long256³ campaign; smaller pilots keep their IO low.
+                "output4/dt": str(T) if args.high >= 256 else "-1",
             }
         )
         inp = wd / "input.athinput"
@@ -573,6 +578,8 @@ def main():
     p.add_argument("--exe", type=Path)
     p.add_argument("--output", type=Path)
     p.add_argument("--high", type=int, choices=[32, 64, 128, 256], default=128)
+    p.add_argument("--block", type=int, choices=[16, 32, 64], default=16)
+    p.add_argument("--nscalars", type=int, choices=[0, 2], default=2)
     p.add_argument("--low", type=int, nargs=2, default=[8, 16])
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--end-T", type=float, default=10)

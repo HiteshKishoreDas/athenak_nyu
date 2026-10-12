@@ -596,7 +596,12 @@ python3 -B tst/sgs/decay_turbulence.py --output /tmp/sgs-decay-new --plot-only
 ```
 
 The output directory must be new. For a short execution pilot use `--high 32`, `--low 4 8 --end-T 2 --timeout 120`. Largest supported
-reference256³; pilot cost/memory before increasing it. Runs keep inputs, logs,
+reference256³; use `--block 32` to reduce ghost-cell memory and pilot cost/memory
+before increasing it. `--block` defaults to16 and also accepts32 or64; each
+coarse lane uses at most its own grid size. `--nscalars 0` omits the two
+ordinary passive tracers to reduce memory and runtime; the default remains2.
+SGS is still a separate evolved variable. A pilot should establish physical-field
+equivalence before using execution optimizations in a new campaign. Runs keep inputs, logs,
 native-double binary fields, native checkpoints when written, histories,
 source/input hashes, checks and failure records. Five PDF pages and PNG figures
 show energy/ratios, total kinetic decay, sound-speed drift, conservation, applied
@@ -612,3 +617,17 @@ performed. The8³ scale has better reference separation but poorly resolves the
 energy-containing modes; a single seed and a passing two-grid screen do not
 establish universal closure accuracy or a proven DNS. Heating residuals include
 numerical/spatial/RK effects after subtracting thermal pressure work and SGS heat.
+
+For the measured24GB laptop setup, the256³ campaign can use64-cell blocks and
+omit unused passive tracers. It writes checkpoints every1T for recovery. The
+scientific comparison retains the same IC seed, EOS, CFL, solver and SGS coefficients:
+
+```sh
+OMP_NUM_THREADS=8 OMP_PROC_BIND=false python3 -B tst/sgs/decay_turbulence.py \
+  --exe /absolute/build/src/athena --output /tmp/sgs-decay256-new \
+  --high 256 --low 8 16 --block 64 --nscalars 0 --end-T 10 --timeout 7200
+```
+
+A64³ pilot confirms bitwise identical physical fields with/without the ordinary
+passives and across16/32/64-cell blocks. This is an execution optimization;
+reference convergence remains a measured scientific outcome.
