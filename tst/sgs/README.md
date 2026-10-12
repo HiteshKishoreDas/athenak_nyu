@@ -631,3 +631,43 @@ OMP_NUM_THREADS=8 OMP_PROC_BIND=false python3 -B tst/sgs/decay_turbulence.py \
 A64³ pilot confirms bitwise identical physical fields with/without the ordinary
 passives and across16/32/64-cell blocks. This is an execution optimization;
 reference convergence remains a measured scientific outcome.
+
+
+To compare that completed256³ campaign with64³/128³ SGS, reuse its native
+references instead of rerunning256³. Use matching seed, EOS, CFL, block, thread,
+passive-scalar and time parameters. Reuse checks protocol, native source/executable,
+inputs, initial-state and field hashes, and history equality; it recomputes Favre
+filters and numerical checks. The matching128³ SGS-off reference also serves as
+the128³ control. Original output directories must remain intact.
+
+```sh
+OMP_NUM_THREADS=8 OMP_PROC_BIND=false python3 -B tst/sgs/decay_turbulence.py \
+  --exe /absolute/build/src/athena --output /tmp/sgs-decay64-128-new \
+  --reference-output /tmp/sgs-decay256-new --high 256 --low 64 128 \
+  --block 64 --nscalars 0 --end-T 10 --timeout 7200
+```
+
+The256³ reference has only4/2 cells per64³/128³ coarse cell. At128³ the
+128³ SGS-off control cannot independently qualify unresolved K at its own grid
+scale: the second-reference convergence screen is unavailable, not passed or
+failed. A finer reference pair is needed for accuracy qualification.
+
+A small native check exercises reuse and that same-grid reporting case:
+
+```sh
+OMP_NUM_THREADS=2 OMP_PROC_BIND=false python3 -B tst/sgs/decay_turbulence.py \
+  --exe /absolute/build/src/athena --output /tmp/sgs-reuse-check-reference \
+  --high 32 --low 4 8 --block 16 --nscalars 0 --end-T 1.1 --timeout 120
+OMP_NUM_THREADS=2 OMP_PROC_BIND=false python3 -B tst/sgs/decay_turbulence.py \
+  --exe /absolute/build/src/athena --output /tmp/sgs-reuse-check-coarse \
+  --reference-output /tmp/sgs-reuse-check-reference --high 32 --low 8 16 \
+  --block 16 --nscalars 0 --end-T 1.1 --timeout 120
+python3 - <<'PY_CHECK'
+import json
+from pathlib import Path
+s = json.loads(Path('/tmp/sgs-reuse-check-coarse/summary.json').read_text())
+assert s['failed_checks'] == 0
+assert sum(r['reused_from'] is not None for r in s['runs'].values()) == 3
+assert s['scores']['16']['reference_screen_pass'] is None
+PY_CHECK
+```

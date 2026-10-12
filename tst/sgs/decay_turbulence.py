@@ -126,7 +126,7 @@ def run(args):
     def check(row, key, value, limit, description):
         return suite.check(row, key, float(value), limit, description)
 
-    fine = initial(args.high, args.seed)[..., :5 + args.nscalars].copy()
+    fine = initial(args.high, args.seed)[..., : 5 + args.nscalars].copy()
     T = 1 / 18
     protocol = dict(
         high=args.high,
@@ -165,15 +165,71 @@ def run(args):
     manifest = json.loads((suite.output / "manifest.json").read_text())
     manifest["decay_harness_sha256"] = verify.sha(__file__)
     (suite.output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    cases = [("reference", args.high, False), ("reference_check", args.high // 2, False)]
+    reused = {}
+    if args.reference_output:
+        source = args.reference_output.resolve()
+        old_protocol = json.loads((source / "protocol.json").read_text())
+        for key in protocol.keys() - {"low", "departures", "timeout_seconds"}:
+            if old_protocol.get(key) != protocol[key]:
+                raise ValueError(f"reference protocol mismatch: {key}")
+        old_manifest = json.loads((source / "manifest.json").read_text())
+        for key in ("executable_sha256", "source_sha256"):
+            if old_manifest[key] != manifest[key]:
+                raise ValueError(f"reference provenance mismatch: {key}")
+        old_rows = {
+            r["name"]: r for r in json.loads((source / "results.json").read_text())
+        }
+        aliases = {"reference": "reference", "reference_check": "reference_check"}
+        if args.high // 2 in args.low:
+            aliases[f"n{args.high // 2}_off"] = "reference_check"
+        template = verify.parameters(
+            (verify.SOURCE / "inputs/hydro/sgs_verify.athinput").read_text()
+        )
+        for name, original in aliases.items():
+            row = old_rows[original]
+            wd = source / original
+            if row["status"] != "pass" or not all(c["passed"] for c in row["checks"]):
+                raise ValueError(f"reference not passed: {original}")
+            for filename, key in (
+                ("input.athinput", "input_sha256"),
+                ("initial.dat", "initial_sha256"),
+            ):
+                if verify.sha(wd / filename) != row[key]:
+                    raise ValueError(f"reference file changed: {wd / filename}")
+            config = verify.parameters((wd / "input.athinput").read_text())
+            if any(
+                config.get(k) != v
+                for k, v in template.items()
+                if k.startswith("sgs/") and k != "sgs/enabled"
+            ):
+                raise ValueError(
+                    "reference SGS coefficients/settings differ from current template"
+                )
+            reused[name] = row
+        protocol["reference_output"] = str(source)
+        (suite.output / "protocol.json").write_text(
+            json.dumps(protocol, indent=2) + "\n"
+        )
+    cases = [
+        ("reference", args.high, False),
+        ("reference_check", args.high // 2, False),
+    ]
     cases += [
         (f"n{n}_{lane}", n, lane == "on") for n in args.low for lane in ("off", "on")
     ]
     for name, n, enabled in cases:
-        wd = suite.output / name
-        wd.mkdir()
+        original = reused.get(name)
+        wd = (
+            args.reference_output.resolve() / original["name"]
+            if original
+            else suite.output / name
+        )
+        if not original:
+            wd.mkdir()
         data, K = restrict(fine, n)
-        expected = write_state(wd / "initial.dat", data, K, enabled)
+        expected = (
+            None if original else write_state(wd / "initial.dat", data, K, enabled)
+        )
         config = verify.parameters(
             (verify.SOURCE / "inputs/hydro/sgs_verify.athinput").read_text()
         )
@@ -202,8 +258,13 @@ def run(args):
             }
         )
         inp = wd / "input.athinput"
-        inp.write_text(verify.input_text(config))
-        command = [str(args.exe.resolve()), "-i", str(inp)]
+        if not original:
+            inp.write_text(verify.input_text(config))
+        command = (
+            original["command"]
+            if original
+            else [str(args.exe.resolve()), "-i", str(inp)]
+        )
         row = dict(
             name=name,
             n=n,
@@ -213,27 +274,43 @@ def run(args):
             input_sha256=verify.sha(inp),
             initial_sha256=verify.sha(wd / "initial.dat"),
         )
+        if original:
+            row.update(
+                reused_from=str(wd), original_wall_seconds=original["wall_seconds"]
+            )
         suite.results.append(row)
         suite.save()
         started = time.monotonic()
         try:
-            with (wd / "run.log").open("w") as log:
-                subprocess.run(
-                    command,
-                    cwd=wd,
-                    stdout=log,
-                    stderr=subprocess.STDOUT,
-                    check=True,
-                    timeout=args.timeout,
-                )
-            hist = verify.history(wd / f"{name}.hydro.hst")
+            if not original:
+                with (wd / "run.log").open("w") as log:
+                    subprocess.run(
+                        command,
+                        cwd=wd,
+                        stdout=log,
+                        stderr=subprocess.STDOUT,
+                        check=True,
+                        timeout=args.timeout,
+                    )
+            hist = verify.history(
+                wd / f"{original['name'] if original else name}.hydro.hst"
+            )
+            if original and hist != original["history"]:
+                raise ValueError("reference history changed")
             samples = []
             paths = sorted((wd / "bin").glob("*.bin"))
+            if original and [str(p) for p in paths] != [
+                s["path"] for s in original["samples"]
+            ]:
+                raise ValueError("reference snapshot list changed")
             for index, path in enumerate(paths):
+                digest = verify.sha(path)
+                if original and digest != original["samples"][index]["sha256"]:
+                    raise ValueError(f"reference snapshot changed: {path}")
                 t, loaded = dense(path)
                 values = inventory(loaded)
                 values.update(
-                    time=t, binary_header_time=t, path=str(path), sha256=verify.sha(path)
+                    time=t, binary_header_time=t, path=str(path), sha256=digest
                 )
                 if index == len(paths) - 1:
                     check(
@@ -245,9 +322,11 @@ def run(args):
                     )
                     values["time"] = hist[-1]["time"]
                 if index == 0:
-                    target = np.concatenate((expected[..., :5], expected[..., -1:]), -1)
-                    if not enabled:
-                        target = target[..., :5]
+                    target = (
+                        np.concatenate((expected[..., :5], expected[..., -1:]), -1)
+                        if enabled
+                        else data[..., :5]
+                    )
                     check(
                         row,
                         "initial_roundtrip",
@@ -371,29 +450,47 @@ def report(output):
         check = series("reference_check", f"K_ref_n{n}")
         model = series(f"n{n}_on", "K")
         mask = times >= 1
-        sensitivity = abs(ref - check) / np.maximum(ref, check)
+        finer_check = protocol["reference_check"] > n
+        sensitivity = abs(ref - check) / np.maximum(ref, check) if finer_check else None
         scores[str(n)] = dict(
             integrated_K_ratio_1_to_end=float(
                 np.trapezoid(model[mask], times[mask])
                 / np.trapezoid(ref[mask], times[mask])
             ),
             final_K_ratio=float(model[-1] / ref[-1]),
-            maximum_reference_sensitivity_1_to_end=float(sensitivity[mask].max()),
-            reference_screen_pass=bool(sensitivity[mask].max() <= 0.1),
+            maximum_reference_sensitivity_1_to_end=float(sensitivity[mask].max())
+            if finer_check
+            else None,
+            reference_screen_pass=bool(sensitivity[mask].max() <= 0.1)
+            if finer_check
+            else None,
+            reference_check_finer_than_coarse=finer_check,
         )
         for curve, label in [
             (ref, f"filtered {protocol['high']}³ reference"),
-            (check, f"filtered {protocol['reference_check']}³ reference"),
+            *(
+                [(check, f"filtered {protocol['reference_check']}³ reference")]
+                if finer_check
+                else []
+            ),
             (model, "evolved SGS"),
         ]:
             axes[0, i].plot(times, curve, label=label)
         axes[0, i].set(title=f"{n}³ SGS energy density", ylabel="Volume mean K")
         axes[1, i].plot(times, model / ref, label="SGS / high reference")
-        axes[1, i].plot(
-            times,
-            check / ref,
-            label=f"filtered {protocol['reference_check']}³ / {protocol['high']}³",
-        )
+        if finer_check:
+            axes[1, i].plot(
+                times,
+                check / ref,
+                label=f"filtered {protocol['reference_check']}³ / {protocol['high']}³",
+            )
+        else:
+            axes[1, i].text(
+                0.04,
+                0.08,
+                "No independent finer reference pair",
+                transform=axes[1, i].transAxes,
+            )
         axes[1, i].axhline(1, color="black", linestyle="--")
         axes[1, i].set(ylabel="Energy ratio", title="Initial equality is imposed")
     for ax in axes.flat:
@@ -545,6 +642,8 @@ def report(output):
             name: dict(
                 status=r["status"],
                 wall_seconds=r["wall_seconds"],
+                reused_from=r.get("reused_from"),
+                original_wall_seconds=r.get("original_wall_seconds"),
                 final=r["samples"][-1],
                 final_counters={
                     key: value
@@ -576,6 +675,11 @@ def self_test():
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--exe", type=Path)
+    p.add_argument(
+        "--reference-output",
+        type=Path,
+        help="reuse passed matching references; verify hashes and recompute filters",
+    )
     p.add_argument("--output", type=Path)
     p.add_argument("--high", type=int, choices=[32, 64, 128, 256], default=128)
     p.add_argument("--block", type=int, choices=[16, 32, 64], default=16)
