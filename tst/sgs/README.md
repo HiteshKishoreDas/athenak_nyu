@@ -568,3 +568,47 @@ correlation, mean amplitude bias, sign errors, forward/backscatter and density
 subsets. Arithmetic checks have frozen tolerances; physical bias is reported
 without a tuned pass threshold. Neither limited-grid inputs nor correlation
 alone establish a resolved reference or evolved SGS-energy accuracy.
+
+
+### Unforced supersonic decay: evolved SGS energy
+
+`decay_turbulence.py` runs six matched 3D lanes without a forcing block: 128³ and
+64³ SGS-off numerical references, plus 8³/16³ SGS-on/off comparisons. Initial
+rho=1 and cs=1; fixed-seed Fourier modes1–4 contain 2/3 solenoidal kinetic energy,
+with initial RMS Mach9. Conservative block averages initialize all coarse lanes.
+Removed kinetic variance initializes SGS K on, or becomes heat off; represented
+energy is identical. Exact initial K agreement is imposed, not a prediction.
+
+This follows the filtered-reference decay method of [Semenov2025](https://arxiv.org/pdf/2410.23339v3),
+with declared departures: local undeveloped initial flow instead of imported
+Kritsuk data, gamma1.001 ideal-gas approximation instead of exact isothermality,
+smaller references, and AthenaK RK2/LLF/PPM4. SGS coefficients remain unchanged.
+T=box/(2*initial velocity RMS)=1/18. Assess1–10T separately from the startup.
+
+Use the existing NumPy/Matplotlib environment and native `sgs_verify` binary:
+
+```sh
+python3 -B tst/sgs/decay_turbulence.py --self-test
+OMP_NUM_THREADS=2 OMP_PROC_BIND=false python3 -B tst/sgs/decay_turbulence.py \
+  --exe /absolute/build-sgs-laptop/src/athena --output /tmp/sgs-decay-new \
+  --high 128 --low 8 16 --end-T 10 --timeout 3600
+python3 -B tst/sgs/decay_turbulence.py --output /tmp/sgs-decay-new --plot-only
+```
+
+The output directory must be new. For a short execution pilot use `--high 32`, `--low 4 8 --end-T 2 --timeout 120`. Largest supported
+reference256³; pilot cost/memory before increasing it. Runs keep inputs, logs,
+native-double binary fields, native checkpoints when written, histories,
+source/input hashes, checks and failure records. Five PDF pages and PNG figures
+show energy/ratios, total kinetic decay, sound-speed drift, conservation, applied
+source/heating budgets, density-conditioned SGS velocities, spectra and slices.
+Native binary time headers have six significant digits; final completion uses
+full-precision history time, with a separate binary-time consistency check.
+
+`summary.json` reports time-integrated K ratios and reference sensitivity at the
+same physical filter. The predeclared10% maximum reference-sensitivity screen
+covers1T to end; it is a resolution screen, not a model-accuracy acceptance test.
+A failed screen prevents a firm quantitative SGS-energy verdict. No retuning is
+performed. The8³ scale has better reference separation but poorly resolves the
+energy-containing modes; a single seed and a passing two-grid screen do not
+establish universal closure accuracy or a proven DNS. Heating residuals include
+numerical/spatial/RK effects after subtracting thermal pressure work and SGS heat.
