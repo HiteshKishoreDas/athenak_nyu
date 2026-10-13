@@ -1,7 +1,7 @@
-# Experimental native-forced Mach3 Fourier box, no cooling.
+# Native-forced Mach3 Fourier box, no cooling.
 # Both shock_tube states are equal: uniform rho/P before existing Fourier velocity initializer.
 <job>
-basename = shock_turb_decay
+basename = shock_turb_forced
 <mesh>
 nghost = 4
 nx1 = 32
@@ -51,7 +51,6 @@ slab_min = .45
 slab_max = .75
 weight = mass
 <shock_tracking>
-experimental_forcing = true
 enabled = true
 lineage = exploratory-forced-m3-32
 width = 4

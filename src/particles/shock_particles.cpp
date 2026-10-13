@@ -161,11 +161,6 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
         ShockError("Shock MC restart does not support per-node files");
       }
     }
-    if (pmy_pack->pturb &&
-        !pin->GetOrAddBoolean("shock_tracking", "experimental_forcing", false)) {
-      ShockError("forcing requires experimental_forcing=true; "
-                 "native RK2 forcing heat bias is not scientifically qualified");
-    }
     std::set<int> schedule_ids;
     for (const auto &seed : seed_schedules_) {
       if (!schedule_ids.insert(seed.id).second) {
@@ -283,7 +278,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
         }
       }
       std::sort(forcing.begin(),forcing.end());
-      contract << " experimental-turb-driver-config-v1 " << forcing.size();
+      contract << " turb-driver-config-v1 " << forcing.size();
       for (const auto &entry : forcing) {
         contract << ' ' << entry.first.size() << ':' << entry.first
                  << ' ' << entry.second.size() << ':' << entry.second;
@@ -322,17 +317,15 @@ void Particles::ValidateShockPhysics() {
        !coord->is_general_relativistic && !coord->is_dynamical_relativistic;
   if (pmy_pack->pturb) {
     const auto t = pmy_pack->pturb->RestartMetadata();
-    ok = ok && pm->three_d && t.turb_flag == 2 && t.driving_type == 0 &&
-         t.normalization == static_cast<int>(TurbNormalization::accel_rms) &&
-         t.localization == static_cast<int>(TurbLocalization::none) &&
-         t.tile_nx == 1 && t.tile_ny == 1 && t.tile_nz == 1 && t.tdriv_start == 0;
-    for (auto bc : pm->mesh_bcs) ok = ok && bc == BoundaryFlag::periodic;
-    for (Real value : {t.tcorr, t.dt_update, t.accel_rms, t.sol_fraction,
-                       t.kpeak, t.npeak, t.expo, t.exp_prp, t.exp_prl}) {
+    // Native forcing validates its modes/normalization; tracking adds only the
+    // finite-value requirement needed for trustworthy observations and replay.
+    for (Real value : {t.tcorr, t.dt_update, t.dedt, t.accel_rms, t.sol_fraction,
+                       t.kpeak, t.npeak, t.expo, t.exp_prp, t.exp_prl,
+                       t.tdriv_duration, t.tdriv_start,
+                       t.sigma_x1, t.sigma_x2, t.sigma_x3,
+                       t.center_x1, t.center_x2, t.center_x3}) {
       ok = ok && std::isfinite(value);
     }
-    ok = ok && t.accel_rms >= 0 && t.tcorr >= 0 && t.dt_update > 0 &&
-         t.sol_fraction >= 0 && t.sol_fraction <= 1;
   }
   if (h) {
     auto s = h->psrc;
@@ -351,8 +344,7 @@ void Particles::ValidateShockPhysics() {
   if (shock_enabled) ok = ok && shocks::ConfigValid(shock_config);
   if (!ok) ShockError("requires uniform 2D/3D Newtonian ideal Cartesian hydro, "
                       "periodic/outflow boundaries, no other sources/transport, one pack; "
-                      "forcing requires periodic 3D continuous untiled/unlocalized "
-                      "accel_rms driving starting at zero");
+                      "native forcing parameters must be finite");
 }
 
 void Particles::ResizeShockState(int nold) {
