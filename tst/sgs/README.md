@@ -140,6 +140,25 @@ scalar densities, then K. E excludes K. SGS-off files must give K=0. Shapes,
 finite values, positive density/thermal energy and nonnegative K are checked.
 This input path is confined to `sgs_verify.cpp`; solver/restart machinery is unchanged.
 
+## Equation fidelity audit
+
+The [2026-10-13 audit](FIDELITY_AUDIT.md) maps the model equations to code,
+records the tested RK2 energy exchange, and identifies numerical differences
+from the original implementation. No native equation or coefficient changes
+were needed. Agreement with the published forced-turbulence results remains
+unestablished.
+
+The additional density-varying diffusion check verifies that transport acts on
+specific energy K/rho, including zero diffusion when K/rho is constant:
+
+```sh
+python3 -B tst/sgs/verify_specific_diffusion.py \
+  --exe /tmp/sgs-build/src/athena --output /tmp/sgs-specific-diffusion-new
+```
+
+It requires NumPy and a fresh output directory. It compares diffusion-on/off
+initial rates using the same Euler and isotropic SGS-pressure terms.
+
 ## Model and state
 
 The baseline is Schmidt & Federrath (2011), Eqs. (7)–(14):
