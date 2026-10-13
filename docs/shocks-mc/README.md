@@ -50,7 +50,7 @@ CPU Serial, double precision; RK2; Newtonian ideal-gas Cartesian hydro; uniform
 primitive ghosts. Local 2D and thin3D cases are measured. True multi-rank runtime
 qualification remains pending despite an MPI build and singleton checks.
 
-AMR, MHD, relativistic/radiation physics, cooling/sources, diffusion, general forcing,
+AMR, MHD, relativistic/radiation physics, cooling/other sources, diffusion,
 frame tracking, shearing/orbital operators, FOFC, RK3/RK4, threaded/GPU/single
 precision and per-node restart are excluded/rejected. Rank/partition changes are
 not supported for restart. Material loops/strings are excluded.
@@ -186,11 +186,11 @@ This bounded pilot is measured, with7.02percent joint numerical sensitivity.
 It does not qualify driven turbulence, cluster performance or physical shock counts.
 Old reports/PDFs retain their exact prior source identities; human review stays pending.
 
-## Forcing compatibility checks - 2026-10-13
+## Earlier opt-in forcing checks - 2026-10-13 (historical)
 
-Current corea03d621b/fingerprint93a861ab4638613fb94f475caeb5527e971bfdb1fc43b15baeee479a89997bc7.
+Historical corea03d621b/fingerprint93a861ab4638613fb94f475caeb5527e971bfdb1fc43b15baeee479a89997bc7.
 Native forcing ordering/non-interference/sampling/replay checks pass for the local
-experimental subset. Forcing stays blocked by default: explicit
+experimental subset. This earlier implementation blocked forcing by default: explicit
 `shock_tracking/experimental_forcing=true` permits only continuous zero-start
 periodic3D untiled/unlocalized `normalization=accel_rms` driving. Static forcing
 settings/seed and coupled stage/RNG sources are bound to the restart contract.
@@ -203,3 +203,17 @@ their matching old executable.
 Forcing thermodynamic/scientific qualification remains open; do not interpret the
 engineering checks as physical strength accuracy. See forcing-checks.md and
 evidence/shocks-mc/forcing-checks-20261013/ for exact evidence and rerun commands.
+
+
+## Forcing enabled - 2026-10-13
+
+Current source `ad4225ed`, fingerprint
+`f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b`.
+Native forcing now works with ordinary shock tracking; no experimental opt-in.
+Both accel_rms and edot pass exact local on/off and native restart checks. Seven
+short forcing variants pass compatibility tests; native fluid/driver/MC machinery
+is reused unchanged. See [forcing-checks.md](forcing-checks.md) and the exact-code
+packet `evidence/shocks-mc/forcing-enabled-20261013/`. The known native RK2
+thermal bias is documented separately and does not block forcing. Scientific
+strength calibration and RUSTY/Frontier/MPI/GPU qualification remain pending.
+The new source/evidence commits are local, not pushed.

@@ -50,8 +50,9 @@ See ledger.md for commands/results/failures and README.md for supported behavior
 - [x] Requested plot-local explanations: setup, reading guide, measured result and
   limits on each of28plot pages;36pages rendered and reviewed; methods in appendix.
 
-- [x] EXT06 limited experimental forcing engineering checks:15processes, zero shear
-  events,896synchronized samples, exact on/off fields/particles, full native replay
-  and configuration rejects; default-false opt-in.
+- [x] EXT06 ordinary native forcing allowed without opt-in:30processes, accel_rms
+  and edot on/off and exact native replay, zero shear events,896 synchronized
+  samples, seven forcing variants, exact activation/cutoff and physical exit oracles.
+  Existing runtime/physics constraints remain; known native RK2 source bias documented.
 - [ ] EXT06 physical forcing qualification: native RK2 gas-energy oracle FAILS;
   resolve/qualify source work, then scientific strength/recovery/calibration gate.

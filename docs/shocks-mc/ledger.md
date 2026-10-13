@@ -366,3 +366,50 @@ fixture editor repeated new headers allowed stale dt override (fixed grouping pl
 focused selftest); restart needs retained absolute history path (rejection correct).
 No numerical tolerance loosened. Exact logs/configs/reviews/reports/native fixtures
 and reproduction instructions are in evidence/shocks-mc/forcing-checks-20261013/.
+
+
+## Native forcing allowed at user request - 2026-10-13
+
+User makes supersonic forced turbulence a central use case and explicitly rejects
+an extra experimental-forcing opt-in. Sourcead4225ed/fingerprintf6195ada removes
+that flag and forcing-only mode restrictions. Native parameter/mode validation is
+reused; shock validation retains finite forcing metadata and existing physics/
+runtime constraints. Full sorted static forcing settings/seed still bind replay;
+OU/modal RNG progress remains native. No source energy update, mass flux, task
+graph, event/particle-state layout or boundary change. Runtime use is allowed;
+scientific exact-code sign-off remains pending, not an additional opt-in gate.
+
+Fresh Release build/state/offline pass. Forcing30processes:26success/4expected
+rejects. Both normalizations exact saved fluid/force/particle on/off; gen30 native
+replay all events/final censored views/49152(accel_rms) and53248(edot) expected
+resumed rows and final fluid/OUforce exact. Changed seed/acceleration and nonfinite
+correlation time/dedt reject.896completed-step samples exact time/x/rho/P(error0).
+Seven short variants: tiling/localization/delayed/finite-duration/outflow/Cartesian
+2D/native planar. Five delayed-start and seven post-cutoff steps have zero force
+at actual full-double step-start times; nonzero forces separately exercised.
+Variant-specific replay/physical envelope calibration is not claimed.
+
+Initial whole-particle outflow on/off assertion failed: enabled existing code
+correctly deletes at physical outflow, disabled legacy code wraps. An independently
+reviewed realized-hop oracle accounts for exactly IDs3/77/109 across all16transfer
+generations, no resurrection, all surviving particle values exact; fluid/force
+remain exact. No production behavior altered to obtain a pass. Two other failing
+preflights retained: padded-rank glob found no transfer files; driving_type1/kz0
+created no valid native modes. Use actual rank0 filenames/numeric generation order,
+complete-generation/integer-direction assertions, Cartesian2D driving_type0/kz0,
+and separate native-planar driving_type1/kz1. No tolerance loosened.
+
+53parity(exact masks/rtol=atol1e-12),20unforced integration and21heldout physical
+runs pass; all21physical measurements identical to preceding code. Final numerical
+and integration reviews verify frozen source/results; persistence reviewer verifies
+unchanged production restart contract and replay helpers. Suggestions implemented.
+Native thermal oracle stillFAILS(1.318359375e-4mean excess,3rho|a|²dt²/8), documented
+without blocking forcing. InitialMach3/32^3/4096/t.2:accel7063complete/556open;
+halfCFL7744/520; edot10:7357/479, final rmsMach1.800. No stationary ensemble,
+true shock catalogue, calibrated strengths or cluster/backend claim.
+
+Commands, exact committed source/input/executable hashes, regressions, failing
+fixtures/logs, independently timed source controls, exit evidence, event/checkpoint
+archives and plot-local explanations are in forcing-enabled-20261013/. Raw final
+runs:/private/tmp/shock-forcing-enabled-qualified-20261013. Next gates: physical
+source-work/strength qualification, human review and RUSTY/Frontier runtime budget.

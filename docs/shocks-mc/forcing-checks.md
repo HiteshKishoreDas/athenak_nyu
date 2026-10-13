@@ -1,69 +1,113 @@
-# Native forcing compatibility checks
+# Forced turbulence with particle shock encounters
 
-Engineering integration checks pass for the explicitly experimental subset.
-**The independent forcing thermodynamics oracle fails. Scientific qualification
-and use of strengths as calibrated physical measurements remain pending.**
+Native forcing is allowed with ordinary `shock_tracking/enabled=true`; no extra
+opt-in is required. Both `normalization=accel_rms` and `normalization=edot` use
+AthenaK's existing driver, tasks, density fluxes and native OU/RNG restart. The
+change removes shock-specific forcing policy guards, retaining finite-parameter
+checks, the full static forcing restart binding and existing hydro/runtime guards.
+No solver, source energy update, particle transport or event layout changed.
 
-The new shock_tracking/experimental_forcing flag defaults false. Explicit true
-permits native continuous(turb_flag2), zero-start, untiled/unlocalized, periodic3D
-accel_rms driving with Serial CPU/double/RK2 ideal hydro and existing MC tracers.
-Edot, tiling, localized forcing, outflow driving and other physics are rejected.
-No solver, forcing energy update, density flux, task graph, event schema or particle
-state layout was changed. Only qualification guards/static restart binding and
-fingerprint coverage changed in production code.
+Source commit `ad4225edea78d255b67df97fe8f593c0c268fa1e`; compiled fingerprint
+`f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b`.
+The executable was built from these exact source contents before that commit;
+verification.json checks every reported source against the committed code.
+Branch `codex/shock-multiphase` derives from `multiphase_turb`. These changes are
+local; the last push was at4aebdafb. The earlier opt-in packet remains historical
+at `evidence/shocks-mc/forcing-checks-20261013/`.
 
-## What passed
+## What actually passed
 
-15processes:8normal successes and7expected rejects. Smooth single-mode transverse
-forcing emitted zero complete/partial/suspended shock episodes.896forced samples
-(128tracers×7generations) match full-double native thermo time/position/density
-exactly, and completed native primitive density/pressure; pressure error is0at the
-predeclared1e-12 check. Binary time metadata is explicitly only6significant digits,
-so its formatted value is checked separately instead of inventing exact precision.
-Tracking on/off saved double fluid fields, rendered force and particle records
-match exactly. All4096particles survive. Native restart from generation30 preserves
-all49152expected resumed rows, canonical committed events, all556terminal censored
-records, and final fluid/OU force arrays exactly. Altered seed/acceleration reject;
-failed paths preserve committed history. Native OU/modal RNG state is reused.
-Static parameter value text is deliberately strict: even1versus1.0 or an unused
-parameter change rejects restart. New source fingerprints reject old-source sidecars.
+30 local Serial CPU/double processes:26 successes and4 expected rejections.
+EXT06/CFG01/SYS02: saved fluid, rendered force and all native particle records
+match exactly with tracking on/off for both normalizations in the periodic box.
+RST01/RST07: generation30 continuation reproduces all events and terminal
+censored views, final fluid/OU forcing, and every expected resumed particle row:
+49152 for accel_rms and53248 for edot. All4096 IDs survive both periodic cases.
+Changed seed/acceleration restart configurations and nonfinite tcorr/dedt reject.
+No missing rows or inconvenient events are discarded to obtain these results.
 
-Fresh Release build/state/offline checks,53ShockIt parity fixtures (exact masks,
-rtol=atol=1e-12),20unforced integration processes and21held-out physical fixtures
-passed. All21measurement dictionaries exactly match the preceding packet. Three
-independent read-only reviews cover timing, persistence and evidence interpretation.
-No new Debug/MPI/GPU/cluster result or human scientific approval is claimed.
+INT06/INT08:896 observations match the completed native fluid generation and
+full-double thermo time/position/density exactly, pressure error0 at the unchanged
+1e-12 check. Native binary time is checked at its actual six-digit representation.
+PHY09: smooth transverse forced shear emits0 complete/partial/suspended episodes.
+Fresh state/offline checks,53 exact-mask ShockIt parity fixtures at rtol=atol=1e-12,
+20 unforced integration processes and21 held-out physical runs pass. All21
+physical measurement dictionaries equal the preceding source's results.
 
-## What failed physically
+Seven short variants also pass exact saved fluid/force on/off comparisons: tiling,
+localization, delayed start, finite-duration drive, physical outflow, Cartesian2D
+kz0 forcing and native planar driving. Periodic variants preserve all128 IDs and
+particle records exactly. Five pre-start and seven post-cutoff steps have exactly
+zero force, checked against actual step-start times, with nonzero force elsewhere.
+Other variants establish compatibility/non-interference, not independently correct
+forcing envelopes/spectra. Variant-specific restart and full physical calibration
+are not established by these short checks.
 
-A homogeneous gas with divergence-free transverse acceleration has no compressive
-work and should retain its internal energy. In the first active native RK2 step,
-at rms acceleration1 and dt=.01875, mean gas energy instead grows by
-0.00013183593749990785. Momentum is exact. Pointwise excess matches
-3rho|a|²dt²/8 with maximum error2.36e-16. This comes from native quadratic kick
-energy inside the two RK stages; the source implementation is unchanged here.
-The gas-energy physical oracle explicitly remains FAILED. The first full timestep
-has zero OU force, so the oracle uses the second full timestep/first active kick.
-This is a concrete source bias, not a shock-detector or clock mismatch. Zero
-false detections does not establish thermodynamic neutrality. The next physical
-gate is to resolve/qualify native RK2 forcing work before trusting shock strengths.
+Outflow is an explicit existing exception to whole-particle on/off equivalence:
+the legacy disabled boundary path wraps particles, while tracking deletes physical
+outflow and retains encounter censoring. An independent source-position plus
+realized-cell-hop oracle accounts for exactly IDs3,77,109 across all16 transfer
+generations, with no resurrection. All surviving native records and fluid/force
+arrays match exactly. No boundary machinery was changed in this allowance.
 
-## Driven demonstration
+## Read the plots beside their limits
 
-32^3periodic cells,4096MC particles, gamma1.4, initial rms Mach3, forcing rms10,
-OU tcorr.1/update.01/modes1..3/seed2718, PLM/HLLC, code tlim.2; no cooling.
-CFL.30:7063completed/0partial/556suspended episodes; CFL.15:7744/0/520.
-Completed count changes+9.64percent. CFL changes fluid integration, random draws
-and detector sampling jointly; this is not isolated cadence or convergence evidence.
-Final rms local Mach1.706/1.707; total energies7.01337/7.01053. Driven total energy
-contains physical forcing work and its native numerical bias; conservative shock
-heating and force bias must not be equated. This is a short realization, not steady
-supersonic turbulence or a truth shock catalogue. Fixed-endpoint strengths remain
-uncertified and open episodes remain right-censored.
+![Forcing evolution and encounter estimates](../../evidence/shocks-mc/forcing-enabled-20261013/driven_checks.png)
 
-## Reproduce
+Left: the32^3 periodic unit cube starts at rms Mach3 and is forced to t=.2 with
+4096 mass-seeded MC particles, gamma1.4, RK2/PLM/HLLC. Accel_rms10 at CFL.30
+and.15 ends at rms local Mach1.706/1.707; edot10 at CFL.30 ends at1.800. This
+is a short, still evolving realization. Forcing is nonzero, but a stationary
+supersonic-turbulence ensemble has not been established.
 
-From /Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu:
+Middle: total box energy evolves under native forcing. Edot10 is the driver
+input target, not an independently calibrated energy-injection claim. Total-energy
+growth includes actual forcing work and native numerical source bias; conservative
+shock heating is not the same as this bias. Periodic mass is conserved to1e-12.
+
+Right: empirical first-inside pressure-Mach estimates for emitted encounters.
+Accel_rms:7063 complete/0 partial/556 open at CFL.30;7744/0/520 at CFL.15.
+Edot:7357 complete/0 partial/479 open. Open records are right-censored, and the
+curve shows completed events only. The9.64% accel_rms count sensitivity jointly
+changes fluid integration, RNG draws and detector sampling; it is not an isolated
+cadence/convergence test. Fixed spatial endpoints are not plateau-certified
+physical strengths, and numerical encounters are not a calibrated shock catalogue.
+
+## Known native source limitation
+
+The independent thermodynamic oracle remains FAILED: divergence-free transverse
+forcing should preserve gas internal energy in the continuum, but the first active
+native RK2 step produces mean excess1.318359375e-4 at acceleration rms1 and
+dt=.01875. The pointwise excess matches3rho|a|²dt²/8 with error2.36e-16;
+momentum is exact. The native driver was left unchanged. The initial OU step is
+zero-force, so this check uses the second full step/first active kick. Zero detected
+shocks does not imply thermodynamic neutrality. This documented limitation does
+not impose a runtime opt-in; human physical strength/energy calibration remains
+pending. No scientific sign-off, MPI/GPU/AMR or RUSTY/Frontier performance is claimed.
+
+## Use and reproduce
+
+The input `inputs/tests/shock_mc_forced.athinput` is an ordinary forced box with
+tracking enabled and no experimental_forcing parameter. Use a fresh run directory:
+
+```sh
+mkdir /tmp/forced-box-new
+cd /tmp/forced-box-new
+/ABS/WORKTREE/build-release/src/athena \
+  -i /ABS/WORKTREE/inputs/tests/shock_mc_forced.athinput
+```
+
+For energy-injection normalization, replace `normalization=accel_rms` and
+`accel_rms=10` in its turb_driving block with `normalization=edot` and `dedt=10`.
+Keep the other forcing settings. The native driver rejects supplying both amplitudes.
+Choose a unique lineage/directory for independent runs; keep the entire committed
+history directory with its native restart and matching shock sidecar for continuation.
+The full resolved static forcing parameters and seed bind restart; changing them
+(including equivalent numeric spellings) is a strict mismatch. Native modal/RNG
+progress is saved once in the fluid restart. Old-source sidecars need their matching
+old executable. The current allowance does not change this persistence contract.
+
+From the feature worktree:
 
 ```sh
 cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release -DAthena_SHOCK_TESTS=ON
@@ -75,10 +119,18 @@ MPLCONFIGDIR=/tmp/shock-turb-mpl \
   --output /tmp/shock-forcing-plots-new
 ```
 
-Use new work/output directories. Each process is capped at180s. report.json records
-exact commands/inputs/logs/source/executable hashes, successes, expected rejects
-and the explicitly failing physical oracle. Plot driven_checks.png shows fluid
-Mach/total-energy evolution and uncalibrated first-inside strength distributions.
-Native timing/shear fixtures and checkpoint/event histories are in the two ZIPs;
-preflight/ preserves failed fixture/parser assumptions and their corrections.
-Full raw final runs remain/private/tmp/shock-forcing-checks-final-20261013.
+Both directories must be new; each simulation is capped at180s. NumPy and
+Matplotlib use the existing local environment. report.json records every exact
+command/input/log/source/executable hash, counts and assertions. Rebuild with
+Serial/double/MPI-off for the measured local configuration; other runtime modes
+retain their separate qualification requirements. Forced uniform2D/3D ideal hydro
+is permitted under the existing constraints; valid native forcing combinations
+beyond the enumerated tests are allowed but not individually measured here.
+
+The packet contains input/logs, selected native heat/timing/window/exit fixtures,
+paired checkpoint/events, raw-file hashes, all regression reports and three
+independent reviews. Preflights are retained: whole-particle outflow equivalence
+was an invalid oracle for the preexisting boundary difference; a padded-rank glob
+missed transfer files; driving_type1 with kz0 excluded all native modes. Corrected
+fixtures preserve exact checks and tolerances. Full raw final runs remain at
+/private/tmp/shock-forcing-enabled-qualified-20261013.

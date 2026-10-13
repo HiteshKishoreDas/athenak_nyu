@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 268, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 223, in main
+    assert_on_off(variant_on,variant_off)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 157, in assert_on_off
+    assert thermo(on)==thermo(off)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
