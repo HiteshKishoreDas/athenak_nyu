@@ -1,0 +1,9 @@
+# Direct removed-velocity versus evolved SGS energy comparison
+
+No new simulations. Uses archived 256³ SGS-off reference and corresponding 64³/128³ SGS-on snapshots near 1T, 4T and 10T. All nine input hashes match the archived campaign. Actual snapshot times are recorded in metrics.json; maximum reference/model mismatch is approximately 0.001003T.
+
+For each reference cell, subtract its coarse-cell Favre velocity from the fine-grid velocity. Density-weighted averaging of squared residuals produces K_removed = 1/2 average(rho |u_fine-u_Favre|²). The identity fine kinetic energy minus restricted resolved kinetic energy independently checks this computation. Sigma_removed = sqrt(2 K_removed/rho_filtered). The corresponding SGS-on field produces sigma_model = sqrt(2 K_model/rho_model). These are three-dimensional RMS speeds, not reconstructed vectors; a scalar SGS energy cannot specify fluctuation directions.
+
+Each figure shows the same central coarse-cell plane in the two RMS fields with matched velocity colour scales. The scatter compares K_removed with K_model for all same-position coarse cells, using no mean normalization or density binning. Red diagonal is exact energy equality. Reported correlation is Pearson correlation of energy densities; log-energy correlation is additionally saved in metrics.json. At initialization energy matching was imposed, so initialization is not counted as evidence.
+
+Limits: independently evolved coarse and reference flows diverge, especially late; pointwise agreement combines closure and trajectory differences. The 256³ reference unresolved energy is not converged at these filter scales. Actual output times differ slightly at 1T and 4T; no interpolation was used for spatial fields. At 10T the reference is mildly subsonic. Do not interpret late correlation as an isolated closure failure or final agreement as validation through the whole decay.

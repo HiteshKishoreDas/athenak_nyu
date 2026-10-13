@@ -142,6 +142,10 @@ This input path is confined to `sgs_verify.cpp`; solver/restart machinery is unc
 
 ## Equation fidelity audit
 
+The branch also includes [all archived SGS check reports](../../docs/sgs/checks/README.md),
+including the decay, spatial, forcing, CFL and spectral comparisons.
+
+
 The [2026-10-13 audit](FIDELITY_AUDIT.md) maps the model equations to code,
 records the tested RK2 energy exchange, and identifies numerical differences
 from the original implementation. No native equation or coefficient changes
