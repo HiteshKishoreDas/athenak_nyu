@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-forcing-regression-20261013/multiblock/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-forcing-regression-20261013/multiblock",
+  "exit": 0,
+  "elapsed_seconds": 0.6705132920178585,
+  "input_sha256": "ab2c962a865bcdf5c57c2fe41d70536d9a1627e0be32b5bb3092f77349922bcc",
+  "log_sha256": "b451cee46404b6dc0702a71fb2d6416edc1bb3d8349f5813329330415d2ff8ec",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "multiblock",
+  "expected_error": null,
+  "passed": true
+}

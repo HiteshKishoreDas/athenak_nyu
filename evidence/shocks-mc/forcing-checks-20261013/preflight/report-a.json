@@ -1,0 +1,25 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "9bc9b5e4536fe1d4f95502bd33b20230defdf497749ec4fa2ff0c6bfdfcd629a",
+  "compiled_source_fingerprint": "854a8ac86f781811fca5c4de291b3301562c7450f56d31719655cd049df1f194",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "status": "in_progress",
+  "runs": [
+    {
+      "name": "shear_one_step",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-forcing-checks-20261013/shear_one_step/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.3453210419975221,
+      "expected_error": null,
+      "log_sha256": "5146501bf056807ff4c8fa6d7cbf5b4ee354eedcd3e1122ddddd2939555e74cf",
+      "input_sha256": "0c104d2bd2a16f2a2a5b496ebd59b48517aac93ee13eda7d273656a710ee6a57"
+    }
+  ],
+  "checks": [],
+  "scientific_signoff": "pending",
+  "scope": "Serial/double RK2 uniform periodic3D hydro, native continuous untiled/unlocalized accel_rms forcing."
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-forcing-regression-20261013/uniform_off/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-forcing-regression-20261013/uniform_off",
+  "exit": 0,
+  "elapsed_seconds": 0.040332292031962425,
+  "input_sha256": "46f877544217917bc3cfb229c373c231d61d320b1e08ed271c6daa41c343a321",
+  "log_sha256": "9b8c0fb3e4bece9c4c83d2f668a6c9622ea0362dc8d79acd11d2eb83e821d5ef",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "uniform_off",
+  "expected_error": null,
+  "passed": true
+}

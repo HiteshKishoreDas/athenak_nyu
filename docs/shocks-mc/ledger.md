@@ -334,3 +334,35 @@ selected native/event ZIP, raw hashes, inputs/logs and reproduction instructions
 in turbulence-pilot-20261013/. Raw fixed runs remain/private/tmp/shock-turb-fixed-20261013.
 No stationary ensemble, perfect shock truth, convergence, physical waiting-time law,
 GPU/MPI/cluster/forcing qualification or scientific sign-off claimed.
+
+## Requested native-forcing compatibility checks - 2026-10-13
+
+Fingerprint93a861ab4638613fb94f475caeb5527e971bfdb1fc43b15baeee479a89997bc7.
+Existing task order: forcing after RKUpdate and before source/ghost/C2P each stage,
+then MC/migration/births and one completed-step detector sample. No ordering change.
+Native OU/RNG state reused. Bind sorted length-prefixed resolved forcing settings
+(including seed) into existing shock contract; fingerprint now includes turb driver,
+RNG and hydro tasks/update. Default-false experimental_forcing opt-in permits only
+periodic3D continuous zero-start untiled/unlocalized accel_rms. Other sources remain
+blocked. No forcing solver/energy update/density-flux/state-layout/schema change.
+
+Final forcing suite:15processes,8normal successes/7expected rejects. Shear emits0;
+896samples exactly match native time/x/rho/P; on/off fluid/force/particles exact;
+all4096IDs survive; checkpointgen30 preserves49152expected rows, all event content,
+556terminal censored views and final fluid/OUforce. Changed seed/acceleration reject.
+Three independent reviews recorded; integration review tightened no-loss/censored
+assertions, all pass in fresh final run. Fresh Release/unit/offline,53parity/
+20integration/21physical runs pass; all21physical dictionaries match prior source.
+
+Physical shear internal-energy oracle FAILS: native first active forced step adds
+mean1.318359375e-4gas energy at dt.01875/a_rms1. Matches3rho|a|²dt²/8to2.36e-16,
+momentum exact. Native driver unchanged; forcing thermodynamic/scientific gate stays
+open. Driven32^3/4096/tlim.2:7063complete/556open versus7744/520at halfCFL,
++9.64percent joint sensitivity. Source-biased strengths are not certified physics.
+
+Preserved preflights: identical final binary generations need strict equality
+deduplication; OU first step is unforced; native binary time has6digit metadata;
+fixture editor repeated new headers allowed stale dt override (fixed grouping plus
+focused selftest); restart needs retained absolute history path (rejection correct).
+No numerical tolerance loosened. Exact logs/configs/reviews/reports/native fixtures
+and reproduction instructions are in evidence/shocks-mc/forcing-checks-20261013/.

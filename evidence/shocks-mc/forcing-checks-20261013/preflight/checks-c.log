@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 214, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 137, in main
+    assert o['time']==times[g]==vv['fluid',g]['time'] and tuple(o['x'])==n['x']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

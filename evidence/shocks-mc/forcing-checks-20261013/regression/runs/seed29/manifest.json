@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-forcing-heldout-20261013/seed29/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-forcing-heldout-20261013/seed29",
+  "exit": 0,
+  "elapsed_seconds": 0.6751663750037551,
+  "input_sha256": "9bcd2678419fd1dfffffea71909a8e0078105cea3aff6514db9d82fab41c2c04",
+  "log_sha256": "8891f600587bd80cba583987ff2f7b69aeef77f2e13ba548f51c996e1cb55bca",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "seed29"
+}

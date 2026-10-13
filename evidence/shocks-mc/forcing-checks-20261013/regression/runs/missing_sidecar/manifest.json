@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-r",
+    "/private/tmp/shock-forcing-regression-20261013/missing_sidecar_artifacts/rst/shock_mc.00001.rst",
+    "output1/dt=-1",
+    "shock_tracking/directory=/private/tmp/shock-forcing-regression-20261013/missing_sidecar_artifacts/shock_events"
+  ],
+  "directory": "/private/tmp/shock-forcing-regression-20261013/missing_sidecar",
+  "exit": 1,
+  "elapsed_seconds": 0.006400958984158933,
+  "input_sha256": "327c761d108391365398db04a16f5c647cc524fde73059fce4241e2ce3020fc7",
+  "log_sha256": "812527761450ba667a01aef81abcb54c68a078bda1018e0226ba504dbbcfaa1a",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "missing_sidecar",
+  "expected_error": "sidecar",
+  "passed": true
+}

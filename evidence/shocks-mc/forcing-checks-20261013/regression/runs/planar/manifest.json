@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-forcing-regression-20261013/planar/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-forcing-regression-20261013/planar",
+  "exit": 0,
+  "elapsed_seconds": 0.6779167500208132,
+  "input_sha256": "4f7231f3a8eb9264e6f0c917fa77b32f2382a7824a25a326e2d88fc36ccfabcc",
+  "log_sha256": "5cd6b9b7b525b7f81264e031827d757efad850c7a2714c8dd3205d1613c36e50",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "planar",
+  "expected_error": null,
+  "passed": true
+}

@@ -16,6 +16,12 @@ def rejected(path):
 
 
 def main():
+    # New sections remain safely editable: no repeated header/overriding old value.
+    text = edit_input("<job>\nbasename = fixture\n", {
+        "output4/file_type": "rst", "output4/dt": -1})
+    text = edit_input(text, {"output4/dt": 1})
+    assert text.count("<output4>") == 1 and "dt = 1" in text and "dt = -1" not in text
+
     text='<mesh>\nnx1 = 64\n<time>\ntlim = .25\n'
     changed=edit_input(text,{'mesh/nx1':128,'mesh/nx2':4,'output1/dt':1})
     assert 'nx1 = 128' in changed and 'nx2 = 4' in changed and '<output1>\ndt = 1' in changed

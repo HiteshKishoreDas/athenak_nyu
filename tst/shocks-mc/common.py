@@ -36,9 +36,12 @@ def edit_input(text, changes):
         for key in list(remaining):
             if key.startswith(block + '/'):
                 lines.append(key.split('/', 1)[1] + ' = ' + str(remaining.pop(key)))
+    sections = {}
     for key, value in remaining.items():
         section, parameter = key.split('/', 1)
-        lines += ['<' + section + '>', parameter + ' = ' + str(value)]
+        sections.setdefault(section, []).append(parameter + ' = ' + str(value))
+    for section, parameters in sections.items():
+        lines += ['<' + section + '>'] + parameters
     return '\n'.join(lines) + '\n'
 
 

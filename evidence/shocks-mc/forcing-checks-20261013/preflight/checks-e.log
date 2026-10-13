@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 217, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 164, in main
+    resumed=run('resumed',restart=cp,overrides=('time/nlim=-1','output4/dt=-1','job/basename=forced_resumed'))
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 101, in run
+    assert code==0 if expected is None else isinstance(code,int) and code!=0 and expected in log,row
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'name': 'resumed', 'command': ['/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena', '-r', '/private/tmp/shock-forcing-checks-e-20261013/checkpoint/rst/shock_turb_decay.00001.rst', 'time/nlim=-1', 'output4/dt=-1', 'job/basename=forced_resumed'], 'exit': 1, 'seconds': 0.04494883300503716, 'expected_error': None, 'log_sha256': '9f69e30096f263beeca3245c6339186ff9f1880d47eb4a05df69d6ef29396008'}

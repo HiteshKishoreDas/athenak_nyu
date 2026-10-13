@@ -242,7 +242,9 @@ set(shock_source_files src/shocks/detector.hpp src/shocks/encounter.hpp
     src/particles/particles_pushers.cpp src/particles/particles_lagrangian_mc.cpp
     src/hydro/hydro_fluxes.cpp src/pgen/pgen.cpp src/bvals/bvals_part.cpp
     src/bvals/bvals.hpp src/driver/driver.cpp src/outputs/restart.cpp
-    src/main.cpp src/mesh/mesh.cpp src/mesh/mesh.hpp src/mesh/meshblock_pack.cpp)
+    src/main.cpp src/mesh/mesh.cpp src/mesh/mesh.hpp src/mesh/meshblock_pack.cpp
+    src/srcterms/turb_driver.cpp src/srcterms/turb_driver.hpp
+    src/utils/random.hpp src/hydro/hydro_tasks.cpp src/hydro/hydro_update.cpp)
 set(shock_source_hashes "")
 foreach(shock_file IN LISTS shock_source_files)
   file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/${shock_file}" shock_hash)
