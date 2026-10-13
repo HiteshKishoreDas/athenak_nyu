@@ -1,0 +1,6 @@
+[  7%] Built target kokkossimd
+[ 76%] Built target kokkoscore
+[ 84%] Built target kokkoscontainers
+[ 92%] Building CXX object CMakeFiles/shock_encounter_test.dir/tst/shocks/encounter_test.cpp.o
+[100%] Linking CXX executable shock_encounter_test
+[100%] Built target shock_encounter_test

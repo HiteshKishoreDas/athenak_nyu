@@ -287,3 +287,25 @@ Poppler rendered all36pages at85dpi; all four contact sheets and full pages
 2/12/19/27/28/30 reviewed. Text extraction verifies all four explanation headings
 on every plot page and no out-of-page glyphs. Report/gallery bytes agree.
 No simulations rerun, no production changes or scientific/hardware gate promotion.
+
+## Turbulence pilot exposed stale suspended exit evidence - 2026-10-13
+
+Old source4aebdafb/3feb3b ran a32^3 periodic decaying Mach3 box (4096MC
+tracers, gamma1.4, RK2/PLM/HLLC, tlim.2, mixed Fourier velocity modes1..3).
+Strict suspended reader rejected reversed exit brackets:34of540terminal rows
+retained a prior outside post after pending-exit reentry. Complete7123events
+remained readable. Preserve failing input/log/chunks in turbulence-pilot-20261013/
+regression/failing-old-source.zip; no reader validation relaxed or rows discarded.
+A focused regression failed before correction (exit134, !s.post.valid) and passes
+after one-line UpdateEncounter correction: accepting a valid inside sample clears
+the canceled post observation. Subsequent outside samples establish new exit evidence.
+
+Core fingerprint1ac1558c43b9ef5c4b338afe57f4c91995f9aa239d66d0a1a4ca876a89a237d5.
+Release rebuild, encounter unit, offline reader/fixture checks,53parity cases
+(exact masks; rtol=atol=1e-12),20engineering integration processes and4replay runs
+passed. All21held-out physical measurement dictionaries exactly match prior packet.
+Independent numerical timing and persistence reviewers reproduced34bad rows and
+reviewed the minimal fix; no further findings. Their reviews are not scientific approval.
+Fresh commands/source/build/log hashes and reports are in the regression directory.
+Older-source sidecars require the older executable by fingerprint contract. No new
+MPI/GPU/forcing/AMR/cooling support or scientific sign-off.

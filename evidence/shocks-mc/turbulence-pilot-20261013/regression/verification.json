@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-13",
+  "source_parent_commit": "4aebdafb8e37ad13eaa371ee1bf7a8b799f15e47",
+  "old_core_fingerprint": "3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc",
+  "fixed_core_fingerprint": "1ac1558c43b9ef5c4b338afe57f4c91995f9aa239d66d0a1a4ca876a89a237d5",
+  "failing_fixture": {
+    "suspended_rows": 540,
+    "reversed_exit_rows": 34,
+    "particle_ids": [
+      144,
+      234,
+      256,
+      372,
+      409,
+      540,
+      832,
+      857,
+      955,
+      1020,
+      1027,
+      1062,
+      1073,
+      1210,
+      1216,
+      1234,
+      1589,
+      1692,
+      1776,
+      1843,
+      2346,
+      2584,
+      2598,
+      2824,
+      2946,
+      2947,
+      3111,
+      3168,
+      3406,
+      3572,
+      3671,
+      3679,
+      3897,
+      3960
+    ],
+    "reader_error": "Reversed exit bracket"
+  },
+  "focused_regression": {
+    "before_exit": 134,
+    "before": "assert !s.post.valid fails at encounter_test.cpp:64",
+    "after": "passed"
+  },
+  "fresh_checks": {
+    "integration_processes": 20,
+    "integration_status": "passed_supported_engineering_checks",
+    "parity_cases": 53,
+    "rtol": 1e-12,
+    "atol": 1e-12,
+    "heldout_physical_runs": 21,
+    "all_physical_measurement_dicts_exact_equal_to_prior_packet": true,
+    "restart_replay_status": "passed_immutable_pair_and_canonical_replay"
+  },
+  "commands": [
+    "cmake --build build-release --target shock_encounter_test -j8",
+    "build-release/shock_encounter_test",
+    "cmake --build build-release -j8",
+    "python tst/shocks-mc/integration.py --executable build-release/src/athena --workdir /private/tmp/shock-turb-regression-integration-20261013 --report /private/tmp/shock-turb-checks-20261013/integration-report.json",
+    "python tst/shocks-mc/qualification.py --executable build-release/src/athena --workdir /private/tmp/shock-turb-regression-physical-20261013 --report /private/tmp/shock-turb-checks-20261013/qualification-report.json",
+    "python tst/shocks/parity.py build-release/shock_detector_test --reference evidence/shocks/reference --report /private/tmp/shock-turb-checks-20261013/parity-report.json",
+    "python tst/shocks-mc/replay.py --executable build-release/src/athena --workdir /private/tmp/shock-turb-regression-replay-20261013 --report /private/tmp/shock-turb-checks-20261013/replay-report.json",
+    "python tst/shocks-mc/selftest.py"
+  ],
+  "python": "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+  "source_files_sha256": {
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "tst/shocks/encounter_test.cpp": "9af1a430ba2a8ea9c69762ab37f32ff3c2e1bcdba0622be07e673d44c0d78f84",
+    "src/srcterms/initial_perturbations.cpp": "a040fb9ffc2e363b36a0ba985fc6347d862d2cde7e64601fc2ef2475b77d1fdb"
+  },
+  "scientific_signoff": "pending",
+  "restart_compatibility": "Core fingerprint changed; older source checkpoints intentionally require older executable."
+}

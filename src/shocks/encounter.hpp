@@ -116,6 +116,7 @@ bool UpdateEncounter(EncounterState &s, const Observation &o, Event &e) {
     s.phase = active;
     s.clean = 0;
     s.last = o;
+    s.post = Observation{};  // A new inside sample cancels the prior exit bracket.
     return false;
   }
   if (s.phase == outside) {

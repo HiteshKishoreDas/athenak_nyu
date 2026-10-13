@@ -60,6 +60,11 @@ int main(int argc, char **argv) {
     assert(!shocks::UpdateEncounter(s,Observe(10,false),e));
     assert(!shocks::UpdateEncounter(s,Observe(11,true),e));
     assert(s.flags & shocks::merged_flicker);
+    // EVT03/05: reentry cancels the old exit bracket, including terminal views.
+    assert(!s.post.valid);
+    shocks::FillEvent(s,e,shocks::right_censored);
+    assert(e.status==shocks::partial && !e.post.valid);
+    assert(e.last.generation==11 && (e.flags & shocks::merged_flicker));
     assert(!shocks::UpdateEncounter(s,Observe(12,false,false),e));
     assert(s.phase==shocks::active && (s.flags & shocks::invalid_observation));
     assert(!shocks::UpdateEncounter(s,Observe(13,false),e));
