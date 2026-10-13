@@ -309,3 +309,28 @@ reviewed the minimal fix; no further findings. Their reviews are not scientific 
 Fresh commands/source/build/log hashes and reports are in the regression directory.
 Older-source sidecars require the older executable by fingerprint contract. No new
 MPI/GPU/forcing/AMR/cooling support or scientific sign-off.
+
+## Requested quick supersonic box - 2026-10-13
+
+Core099109b6/fingerprint1ac1558c. Portable input and runner reuse existing uniform
+shock_tube states plus one-time Fourier initializer, native binary/thermo readers,
+strict event reader and existing installed plotting libraries. No driven-forcing
+guard removed.32^3 cells,4096mass-seeded MC tracers, initial rms Mach3,
+gamma1.4, periodic unit cube, RK2/PLM/HLLC, modes1..3, seeds24680/11/903,
+width4/minMach1.1/capacity8192/tracefalse, tlim.2. Defaults are experimental.
+Fresh baseline/off/half-CFL processes completed2.354/1.000/3.896s; these timings
+include output/startup and do not constitute a sustained production benchmark.
+Baseline141steps:7123complete/0partial/540suspended,3661unique completed IDs,
+mean1.739episodes per all4096particles. Half-CFL281steps:7623/0/530,3672unique
+completed IDs, mean1.861. Count sensitivity+7.02percent. AllIDs survive, strict
+archive reader round-trip passes and sample/event counters agree. No invalid
+observations, duplicate identities or sequence gaps. First-inside Mach/flags/censored
+records are kept, not discarded. Final rms local Mach1.650/1.651; periodic mass
+and total-energy errors <=2.22e-16 at the predeclared1e-12 check. Tracking on/off
+all saved double volumes and native particle observations match exactly.
+Five plots visually reviewed; fixed initial pressure roundoff display using shared
+physical color scales, with no data/tolerance change. report.json/episodes.csv,
+selected native/event ZIP, raw hashes, inputs/logs and reproduction instructions are
+in turbulence-pilot-20261013/. Raw fixed runs remain/private/tmp/shock-turb-fixed-20261013.
+No stationary ensemble, perfect shock truth, convergence, physical waiting-time law,
+GPU/MPI/cluster/forcing qualification or scientific sign-off claimed.

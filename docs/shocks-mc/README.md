@@ -15,7 +15,7 @@ Independent exact-extraction review and rerun results are in
 `evidence/shocks-mc/ponytail/`. Earlier 78e5 reports/plots remain historical;
 all 21 physical measurements match exactly after cleanup, including failures.
 
-Three-review cleanup: current source `3de18d97`, fingerprint
+Three-review cleanup evidence: source `3de18d97`, fingerprint
 `3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc`.
 Forty net production lines removed: duplicate state/header/schema code and
 redundant validation/sort. Encounter state is816bytes on tested local ABI,
@@ -165,7 +165,7 @@ Small local medians do not establish a production overhead budget.
 
 See checklist.md, ledger.md and the independent review/evidence packet under
 `evidence/shocks-mc/`. Physical reentries, weak-shock misses/bias and censored
-outcomes must remain visible during scientific review. No merge/push/release occurred.
+outcomes must remain visible during scientific review. Feature branch was pushed at4aebdafb. The following local pilot correction is not yet pushed; no merge/release occurred.
 
 ## Laptop plots
 
@@ -173,3 +173,15 @@ See [laptop-tests.md](laptop-tests.md) for a one-command local runner, measured
 costs and figure interpretation. The fresh28plot gallery and complete PDF are in
 `evidence/shocks-mc/laptop-visuals/`; engineering passes and physical limits
 are shown together. Core production source remains3de18d97/3feb3b.
+
+## Decaying turbulence pilot - 2026-10-13
+
+Current core correction099109b6/fingerprint1ac1558c clears stale exit evidence
+after accepted reentry. Fresh native state/parity/integration/replay and held-out
+checks passed; prior checkpoints require their matching old-source executable.
+See evidence/shocks-mc/turbulence-pilot-20261013/README.md for the reproducible
+32^3 periodic Mach3 decay with4096tracers, five plots and all event statistics.
+Completed7123/open540episodes at CFL.30; completed7623/open530at CFL.15.
+This bounded pilot is measured, with7.02percent joint numerical sensitivity.
+It does not qualify driven turbulence, cluster performance or physical shock counts.
+Old reports/PDFs retain their exact prior source identities; human review stays pending.

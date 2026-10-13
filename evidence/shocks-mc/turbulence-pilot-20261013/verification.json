@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-13",
+  "production_commit": "099109b66e6f502563c2169001a0eadac91d53ae",
+  "core_source_fingerprint": "1ac1558c43b9ef5c4b338afe57f4c91995f9aa239d66d0a1a4ca876a89a237d5",
+  "simulation_runs": 3,
+  "all_exit_zero": true,
+  "plots": 5,
+  "plots_visually_reviewed": true,
+  "archive_strict_reader_roundtrip": true,
+  "episode_rows": 15816,
+  "no_duplicate_episode_identities": true,
+  "independent_checks": [
+    "initial rho=1/P=1/gamma/Mach3 at1e-12",
+    "positive finite density/pressure on all native volume snapshots",
+    "periodic mass/total energy conservation at1e-12",
+    "all4096IDs survive all saved particle generations",
+    "source generation/sample/canonical event counters agree",
+    "feature-on/off saved fluid/particle records exactly equal"
+  ],
+  "scientific_signoff": "pending",
+  "raw_local_root": "/private/tmp/shock-turb-fixed-20261013",
+  "command": "MPLCONFIGDIR=/private/tmp/shock-turb-mpl /Users/hitesh/hitesh/git/shockit/.venv/bin/python tst/shocks-mc/turbulence_pilot.py --executable build-release/src/athena --workdir /private/tmp/shock-turb-fixed-20261013 --output /private/tmp/shock-turb-fixed-plots-20261013",
+  "plot_regeneration_command": "Same runner, --reuse, --output /private/tmp/shock-turb-deliverable-20261013",
+  "artifact_scope": "All canonical event/suspended chunks and inputs/logs; four baseline volumes and half-CFL endpoint volumes. Full local raw data are SHA256 inventoried separately.",
+  "observed_authoring_corrections": [
+    "Initial preflight used default float32 volume output; actual measured cases requested data_precision=real.",
+    "Shared field color scales replace per-panel autoscaling so initial pressure roundoff cannot appear as physical structure. No numerical tolerance changed."
+  ]
+}

@@ -24,7 +24,9 @@ Checked boxes refer to the named engineering evidence, not scientific approval.
   inherited-only style findings and ASan/UBSan encounter-unit evidence.
 - [ ] M7: true multi-rank CPU qualification; GPU/threaded/single precision qualification.
 - [ ] M8: held-out physical measurements/performance; owner tolerance/budget acceptance.
-- [ ] M8: supported-physics turbulence pilot, production-scale cluster qualification.
+- [x] M8.5/PHY16 bounded pilot:32^3 periodic Mach3 decay,4096MC particles,
+  CFL.30/.15 statistics, exact non-interference and conserved fields measured.
+- [ ] M8: turbulence scientific acceptance and production-scale cluster qualification.
 - [x] M9 engineering evidence: reproducible docs, independent integrated review
   and exact-code bundle; clean archived full Release build plus state, 53-case parity
   and 20-process serial integration reproduction passes for42bcf12c (clean-reproduction/).
