@@ -50,7 +50,7 @@ CPU Serial, double precision; RK2; Newtonian ideal-gas Cartesian hydro; uniform
 primitive ghosts. Local 2D and thin3D cases are measured. True multi-rank runtime
 qualification remains pending despite an MPI build and singleton checks.
 
-AMR, MHD, relativistic/radiation physics, cooling/sources, diffusion, forcing,
+AMR, MHD, relativistic/radiation physics, cooling/sources, diffusion, general forcing,
 frame tracking, shearing/orbital operators, FOFC, RK3/RK4, threaded/GPU/single
 precision and per-node restart are excluded/rejected. Rank/partition changes are
 not supported for restart. Material loops/strings are excluded.
@@ -176,7 +176,7 @@ are shown together. Core production source remains3de18d97/3feb3b.
 
 ## Decaying turbulence pilot - 2026-10-13
 
-Current core correction099109b6/fingerprint1ac1558c clears stale exit evidence
+Reentry correction source099109b6/fingerprint1ac1558c clears stale exit evidence
 after accepted reentry. Fresh native state/parity/integration/replay and held-out
 checks passed; prior checkpoints require their matching old-source executable.
 See evidence/shocks-mc/turbulence-pilot-20261013/README.md for the reproducible
@@ -185,3 +185,21 @@ Completed7123/open540episodes at CFL.30; completed7623/open530at CFL.15.
 This bounded pilot is measured, with7.02percent joint numerical sensitivity.
 It does not qualify driven turbulence, cluster performance or physical shock counts.
 Old reports/PDFs retain their exact prior source identities; human review stays pending.
+
+## Forcing compatibility checks - 2026-10-13
+
+Current corea03d621b/fingerprint93a861ab4638613fb94f475caeb5527e971bfdb1fc43b15baeee479a89997bc7.
+Native forcing ordering/non-interference/sampling/replay checks pass for the local
+experimental subset. Forcing stays blocked by default: explicit
+`shock_tracking/experimental_forcing=true` permits only continuous zero-start
+periodic3D untiled/unlocalized `normalization=accel_rms` driving. Static forcing
+settings/seed and coupled stage/RNG sources are bound to the restart contract.
+No duplicate dynamic state or event-schema change. Equivalent numeric spellings
+or unused parameter edits conservatively reject restart. Old-source sidecars need
+their matching old executable.
+
+**Independent gas-energy oracle fails:** native RK2 forcing adds excess
+3rho|a|²dt²/8in the shear fixture. Its energy update was left unchanged.
+Forcing thermodynamic/scientific qualification remains open; do not interpret the
+engineering checks as physical strength accuracy. See forcing-checks.md and
+evidence/shocks-mc/forcing-checks-20261013/ for exact evidence and rerun commands.

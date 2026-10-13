@@ -38,5 +38,6 @@
     "Restart from another directory requires retained absolute history path. Missing-history rejection was correct."
   ],
   "numerical_tolerances_changed": false,
-  "scientific_signoff": "pending"
+  "scientific_signoff": "pending",
+  "production_commit": "a03d621bef92fec80d90d5b0bce53973176c98f7"
 }

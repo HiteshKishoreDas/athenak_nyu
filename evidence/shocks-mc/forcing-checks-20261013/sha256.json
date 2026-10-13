@@ -22,6 +22,7 @@
   "preflight/report-d.json": "579864fb88ed86220db004d5fbb192aa36ca471a98ef3b144c16385e011044cb",
   "preflight/report-e.json": "fd43025e7301d5a2466aff7e0531744cbede5bb46b20c151933ecd7ff861233f",
   "preflight/report-f.json": "a6488ca5196df25fcd67556e35f8c3770dd82fc5821c718fd66b32ebc831d9a6",
+  "previous-manifest.json": "70d2c10d275df326f8166c1e453b5f610e3f1c98411040b856c2cad30887d7c5",
   "regression/fixtures/NUM01_constant.txt": "0b645a7f1c43e0d596ac8effda7d6a62666b59a168b296cb30e34c4e64009ec2",
   "regression/fixtures/NUM02_04_linear_inactive_z.txt": "89295164caa4bb6318b0cf351b59b2dd9ec37492b10ba581724ef31e4312ceb4",
   "regression/fixtures/NUM03_04_noncubic_smooth.txt": "941d8104564ab87305d1d82c278ac2baabc4d93b27da3f60a6518e4ff0c3f4ee",
@@ -224,5 +225,5 @@
   "runs/timing/input.athinput": "f75f78c2cf863685033a482970d92cdac29d0a86032a9b61720b73489d1ed11b",
   "runs/timing/run.log": "94871584901cc4f3efdebca8152ff06d526143d52a3cc353c62808e0b852ba96",
   "timing-and-heat-fixtures.zip": "5b032d0d0da4ad5d1f76defb97971a3b3ce00e0ab131fa4c5e88b72d3ab02815",
-  "verification.json": "481cfcae53abcb31e1717997621645d0d9a70c9db0425e71aab9ddd33726b5ba"
+  "verification.json": "5e05d8f97ed352e6ed4b777b407e49b9f4695870cef278b7ad81fbbcf8f55f97"
 }
