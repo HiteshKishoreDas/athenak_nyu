@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Unforced 3D Mach-9 decay with matched Favre-filtered SGS on/off runs.
+"""Unforced 3D decay with matched Favre-filtered SGS on/off runs.
 
-Local low-mode random initial conditions, not the imported Kritsuk dataset.
+Local low-mode random ICs or a supplied native SGS-off turbulence snapshot.
+No imported Kritsuk dataset is bundled.
 gamma=1.001 approximates isothermality. References are numerical, not proven DNS.
 Reuse the existing native initializer, block filter, binary reader and ledgers.
 """
@@ -120,14 +121,54 @@ def inventory(data):
     )
 
 
+def normalize_snapshot(data, mach, nscalars):
+    """Reset cs=1, mean rho=1 and bulk velocity=0; prescribe global Mach.
+
+    Preserve snapshot density structure and velocity phases. Resetting thermal
+    energy/rescaling velocity is an IC operation, not part of native evolution.
+    """
+    if (data.shape[-1] != 5 or not np.isfinite(data).all()
+            or data[..., 0].min() <= 0 or not np.isfinite(mach) or mach <= 0):
+        raise ValueError('require an admissible SGS-off snapshot and positive finite Mach')
+    inventory(data)  # Reject invalid reservoirs before resetting thermal energy.
+    rho = data[..., 0] / data[..., 0].mean()
+    velocity = data[..., 1:4] / data[..., :1]
+    velocity -= np.mean(rho[..., None]*velocity, axis=(0, 1, 2))/rho.mean()
+    # Semenov Fig. 4: global Mach = sqrt(2 <kinetic energy> / <rho>) at cs=1.
+    rms = np.sqrt(np.mean(rho*np.sum(velocity**2, axis=-1))/rho.mean())
+    if not np.isfinite(rms) or rms <= 0:
+        raise ValueError('snapshot has no velocity fluctuations')
+    velocity *= mach/rms
+    fine = np.empty(data.shape[:-1] + (5+nscalars,))
+    fine[..., 0] = rho
+    fine[..., 1:4] = rho[..., None]*velocity
+    fine[..., 4] = rho/(GAMMA*(GAMMA-1)) + .5*rho*np.sum(velocity**2, axis=-1)
+    if nscalars:
+        fine[..., 5:7] = rho[..., None]*[.2, .25]
+    return fine
+
+
 def run(args):
     suite = verify.Verification(args.exe, args.output)
 
     def check(row, key, value, limit, description):
         return suite.check(row, key, float(value), limit, description)
 
-    fine = initial(args.high, args.seed)[..., : 5 + args.nscalars].copy()
-    T = 1 / 18
+    snapshot = getattr(args, 'initial_snapshot', None)
+    mach = getattr(args, 'mach', 9.)
+    if snapshot:
+        source_time, loaded = dense(snapshot)
+        source_inventory = inventory(loaded)
+        if loaded.shape[-1] != 5 or loaded.shape[0] < args.high:
+            raise ValueError('require an SGS-off snapshot at least as fine as high')
+        coarse, _ = restrict(loaded, args.high)
+        fine = normalize_snapshot(coarse, mach, args.nscalars)
+    else:
+        fine = initial(args.high, args.seed)[..., : 5 + args.nscalars].copy()
+        # Scaling the default IC changes only velocity and kinetic energy.
+        if mach != 9:
+            fine = normalize_snapshot(fine[..., :5], mach, args.nscalars)
+    T = 1 / (2*mach)
     protocol = dict(
         high=args.high,
         reference_check=args.high // 2,
@@ -135,7 +176,7 @@ def run(args):
         seed=args.seed,
         gamma=GAMMA,
         cs0=1,
-        Mach0=9,
+        Mach0=mach,
         T=T,
         end_T=args.end_T,
         snapshot_dt_T=0.5,
@@ -161,6 +202,18 @@ def run(args):
         timeout_seconds=args.timeout,
         maximum_cycles=50000,
     )
+    if snapshot:
+        protocol.update(initial_conditions='supplied evolved native SGS-off snapshot; '
+                        'conservative restriction then normalized mean density, '
+                        'bulk velocity, mass-weighted global Mach and cs=1', seed=None,
+                        initial_snapshot=str(snapshot.resolve()),
+                        initial_snapshot_sha256=verify.sha(snapshot),
+                        initial_snapshot_time=source_time,
+                        initial_snapshot_inventory=source_inventory,
+                        initial_volume_rms_Mach=float(np.sqrt(np.mean(np.sum(
+                            (fine[..., 1:4]/fine[..., :1])**2, axis=-1)))),
+                        initial_mass_weighted_Mach=inventory(fine[..., :5])['mass_weighted_Mach'])
+        protocol['departures'][0] = 'locally generated evolved snapshot, not Kritsuk data'
     (suite.output / "protocol.json").write_text(json.dumps(protocol, indent=2) + "\n")
     manifest = json.loads((suite.output / "manifest.json").read_text())
     manifest["decay_harness_sha256"] = verify.sha(__file__)
@@ -498,7 +551,7 @@ def report(output):
         ax.axvspan(0, 1, color="grey", alpha=0.15)
         ax.legend(fontsize=8)
     fig.suptitle(
-        f"Unforced Mach-9 decay — {protocol['high']}³ / {protocol['reference_check']}³ references",
+        f"Unforced Mach-{protocol['Mach0']:g} decay — {protocol['high']}³ / {protocol['reference_check']}³ references",
         fontsize=14,
     )
     save("energy-comparison", fig)
@@ -669,6 +722,27 @@ def self_test():
     coarse, K = restrict(fine, 8)
     assert K.min() >= 0
     assert abs(inventory(coarse[..., :5])["kinetic"] + K.mean() - 40.5) < 1e-12
+    normalized = normalize_snapshot(fine[..., :5], 8.6, 2)
+    assert abs(inventory(normalized[..., :5])['mass_weighted_Mach']-8.6) < 1e-12
+    shifted = fine[..., :5].copy()
+    shifted[..., 1:4] += shifted[..., :1]*[2., -1., .5]
+    assert np.max(abs(normalize_snapshot(shifted, 8.6, 2)-normalized)) < 1e-12
+    assert np.max(abs(normalized[..., 5:7]/normalized[..., :1]-[.2, .25])) < 1e-14
+    nonuniform = fine[..., :5].copy()
+    nonuniform[..., 0] = .5 + np.arange(16)[None, None, :]/8
+    normalized = normalize_snapshot(nonuniform, 8.6, 0)
+    state = inventory(normalized)
+    assert abs(state['mass_weighted_Mach']-8.6) < 1e-12
+    assert abs(state['mass']-1) < 1e-14
+    assert max(abs(v) for v in state['momentum']) < 1e-14
+    for invalid in [np.concatenate((fine[..., :5], fine[..., :1]), axis=-1),
+                    fine[..., :5]*0]:
+        try:
+            normalize_snapshot(invalid, 8.6, 0)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('invalid input accepted')
     print("Mach-9 normalization, zero momentum and Favre energy checks pass")
 
 
@@ -686,6 +760,9 @@ def main():
     p.add_argument("--nscalars", type=int, choices=[0, 2], default=2)
     p.add_argument("--low", type=int, nargs=2, default=[8, 16])
     p.add_argument("--seed", type=int, default=42)
+    p.add_argument('--initial-snapshot', type=Path,
+                   help='native SGS-off hydro_u snapshot; reset cs=1 and normalize RMS Mach')
+    p.add_argument('--mach', type=float, default=9., help='initial mass-weighted global Mach')
     p.add_argument("--end-T", type=float, default=10)
     p.add_argument("--cfl", type=float, default=0.2)
     p.add_argument("--timeout", type=float, default=3600)
@@ -703,6 +780,7 @@ def main():
         or not 1 < args.end_T <= 10
         or not 0 < args.cfl <= 0.2
         or args.timeout <= 0
+        or not np.isfinite(args.mach) or args.mach <= 0
     ):
         p.error(
             "require two distinct coarse divisors >=4 of high/2, 1<end-T<=10, 0<cfl<=.2"

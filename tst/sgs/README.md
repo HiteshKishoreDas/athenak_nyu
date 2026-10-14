@@ -6,6 +6,11 @@ record lists executed instances, failed attempts and remaining coverage.
 
 ## Build and run
 
+The [2026-10-14 Semenov comparison](../../docs/sgs/checks/semenov-comparison-2026-10-14.md)
+adds an evolved-snapshot decay test and isolates the difference between SGS
+energy and entropy transport at shocks. Its engineering checks do not establish
+reference convergence or turbulent-statistics reproduction.
+
 Use a unique build directory and output directory. CMake includes the independent
 closure oracle when `BUILD_TESTING=ON` and double precision is enabled.
 
@@ -36,6 +41,39 @@ The box input is a short energy-evolving example, not a stationary turbulence
 validation campaign. `verify_forcing.py` provides capped pilots and measured-work checks.
 `filter_reference.py` and `test_filter_reference.py` require NumPy; their synthetic
 tests validate the analysis machinery, not the physical closure.
+
+## Evolved 3D snapshot and compression controls
+
+`decay_turbulence.py --initial-snapshot` accepts an existing uniform, cubic,
+SGS-off native `hydro_u` binary snapshot at least as fine as `--high`. It
+conservatively restricts the snapshot, normalizes mean density to 1, removes bulk
+momentum, sets global Mach to `--mach`, and resets the thermal sound speed to 1.
+Global Mach uses mass-weighted kinetic energy, as in Semenov's Figure 4. Velocity
+phases and density structure are retained; this operation does not establish a
+statistically stationary initial state. The original random-IC default remains.
+Input hashes and both Mach definitions are recorded in `protocol.json`.
+
+```sh
+python3 -B tst/sgs/decay_turbulence.py --self-test
+OMP_NUM_THREADS=8 python3 -B tst/sgs/decay_turbulence.py \
+  --exe /tmp/sgs-build/src/athena --output /tmp/sgs-evolved-new \
+  --initial-snapshot /absolute/path/to/developed.hydro_u.bin \
+  --high 128 --low 16 32 --nscalars 0 --block 32 --mach 8.6 --end-T 10
+python3 -B tst/sgs/verify_adiabatic_sgs.py \
+  --exe /tmp/sgs-build/src/athena --output /tmp/sgs-adiabatic-new
+python3 -B tst/sgs/plot_adiabatic_sgs.py --input /tmp/sgs-adiabatic-new
+```
+
+The decay runner produces five PNG figures and a PDF. The compression diagnostic
+runs 43 bounded native controls: 1D periodic shock pairs, smooth compression,
+and uniform decay. It sets C1=C2=Ceps=Ckappa=0 only for the compression controls,
+leaving isotropic SGS pressure active; uniform decay retains baseline coefficients.
+Constant initial `K/rho^(5/3)` supplies an independent adiabatic expectation. A
+uniform advected ordinary scalar supplies an entropy-transport proxy on the same
+native flow. This does not run ART or reproduce its cosmic-ray shock tube.
+Measured entropy errors are recorded separately from execution, conservation,
+passive-scalar and limiter checks. NumPy/Matplotlib are already required by the
+decay plotting tools; the compression runner itself uses the standard library.
 
 ## Laptop 2D visual report
 

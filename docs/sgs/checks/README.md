@@ -8,6 +8,7 @@ Plots, raw simulation outputs, JSON results and source archives remain at their 
 
 ## Recent checks
 
+- [Evolved-snapshot Semenov comparison and shock compression controls](semenov-comparison-2026-10-14.md)
 - [32³ unforced decay](artifacts/sgs-unforced-decay/decay-sgs32/README.md)
 - [64³ and 128³ unforced decay](wiki/evidence/2026-10-12-sgs64-128-decay/README.md)
 - [Removed velocity versus corresponding SGS energy](artifacts/sgs-unforced-decay/removed-velocity-comparison-2026-10-13/README.md)

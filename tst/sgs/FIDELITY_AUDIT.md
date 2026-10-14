@@ -105,3 +105,13 @@ python3 -B tst/sgs/verify_specific_diffusion.py --exe /tmp/sgs-build/src/athena 
 The mixed-production and specific-diffusion runners need NumPy. Plotting is not required for these checks. Detailed inputs, outputs, fingerprints, logs and machine-readable results are retained in `sgs-fidelity-audit-2026-10-13` under the current task's artifact directory.
 
 The supported implementation passes this equation-fidelity audit against the cited authors' manuscript. No native correction is warranted by the evidence found here. Reproducing the paper's forced-box statistics remains a separate, unfinished claim; recent unforced decay disagreement is retained as additional validation evidence.
+
+## Subsequent numerical evidence: 2026-10-14
+
+The [Semenov comparison and native compression controls](../../docs/sgs/checks/semenov-comparison-2026-10-14.md)
+find that pressure-only SGS energy transport does not preserve adiabatic entropy
+across shocks, while smooth-flow errors decrease with refinement. This is a
+numerical qualification gap beyond the equation and initial-rate checks above.
+The measured effect increases K in those isolated shock controls and therefore
+does not establish an explanation for the earlier mean-energy deficit. The
+native solver and baseline coefficients remain unchanged.
