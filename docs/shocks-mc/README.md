@@ -217,3 +217,15 @@ packet `evidence/shocks-mc/forcing-enabled-20261013/`. The known native RK2
 thermal bias is documented separately and does not block forcing. Scientific
 strength calibration and RUSTY/Frontier/MPI/GPU qualification remain pending.
 The new source/evidence commits are local, not pushed.
+
+
+## Forced supersonic paper showcase - 2026-10-13
+
+See `evidence/shocks-mc/supersonic-showcase-20261013/`:12-page PDF with adjacent
+explanations,10figure families(PDF/SVG/PNG), episode/evolution CSV and selected
+flow/mask arrays. Baseline64³/8192particles/initialMach5/nativeedot50/t.3 yields
+57013complete+1212open, finalrmsMach1.316. Five simulation comparisons, including
+a matched physical detector-span32³case, pass data/identity/non-interference checks.
+The portable input and `tst/shocks-mc/supersonic_showcase.py` reproduce the packet.
+No production machinery changed. These are evolving numerical encounters, with
+source thermodynamic bias and physical/statistical/hardware gates still pending.

@@ -1,0 +1,51 @@
+{
+  "readonly": true,
+  "scientific_signoff": "pending",
+  "production_core_unchanged": true,
+  "numerical_review": {
+    "outcome": "Bounds/censoring, unique identities, generation clocks, periodic mask reconstruction and matched span are sound. No physical-truth or convergence claim.",
+    "implemented": "Add matched-span32\u00b3width2 case; distinguish event flags from surviving suppressed-entry counters near quality plots. All episode data retained."
+  },
+  "integration_review": {
+    "outcome": "Independent CSV and raw-native QA passed.",
+    "independently_recomputed_counts": {
+      "baseline": [
+        57013,
+        1212,
+        48825
+      ],
+      "half_cfl": [
+        60813,
+        1169,
+        52624
+      ],
+      "coarse32": [
+        35045,
+        1198,
+        26893
+      ],
+      "coarse32_matched": [
+        44472,
+        1529,
+        36283
+      ]
+    },
+    "count_columns": [
+      "complete",
+      "open",
+      "adjacent_uncensored_completed_pairs"
+    ],
+    "native_binary_comparisons": {
+      "baseline_tracking_off": 54,
+      "coarse_width4_width2": 27
+    },
+    "exact_whole_native_thermo_bytes": true,
+    "all_three_native_mask_coordinate_arrays_exact": true,
+    "implemented": "Remove unused counter/reimport, correct inputMach5 comment, clarify suppressed-reentry counter. Later color/caption presentation fixes leave every measurement dictionary/mask unchanged."
+  },
+  "root_visual_qa": {
+    "rendered_pages": 12,
+    "passed": true,
+    "implemented": "Use identical case colors for kinetic/thermal energy; inspect all final rendered pages and full-resolution figure labels."
+  }
+}

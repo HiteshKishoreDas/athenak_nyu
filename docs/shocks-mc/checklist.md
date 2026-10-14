@@ -56,3 +56,10 @@ See ledger.md for commands/results/failures and README.md for supported behavior
   Existing runtime/physics constraints remain; known native RK2 source bias documented.
 - [ ] EXT06 physical forcing qualification: native RK2 gas-energy oracle FAILS;
   resolve/qualify source work, then scientific strength/recovery/calibration gate.
+
+- [x] Requested paper-style supersonic showcase:5actual runs,64³/8192baseline,
+  10vector figure families and12-page plot-local report. Strict history/counter/
+  population identities; exact saved fluid/particle non-interference; native mask
+  snapshot reconstruction; brackets/censoring and matched-span sensitivity retained.
+- [ ] Paper physical acceptance remains separate: native source-work accuracy,
+  independent physical shock calibration, ensembles/resolution/HPC and human approval.

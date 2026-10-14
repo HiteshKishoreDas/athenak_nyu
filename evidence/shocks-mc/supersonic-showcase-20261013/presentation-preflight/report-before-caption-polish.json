@@ -1,0 +1,1240 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+  "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "scope": "Evolving, continuously forced adiabatic supersonic demonstration; not stationary turbulence or calibrated physical shock census.",
+  "scientific_signoff": "pending",
+  "feature_source_commit": "ad4225edea78d255b67df97fe8f593c0c268fa1e",
+  "execution": {
+    "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+    "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+    "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+    "source_commit": "5701ea74faed93c2faeb2c655a38ff4713537911",
+    "runs": [
+      {
+        "name": "baseline",
+        "command": [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/private/tmp/supersonic-showcase-20261013/baseline/input.athinput"
+        ],
+        "exit": 0,
+        "wall_seconds": 95.34299562498927,
+        "input_sha256": "bdc605f118d15eb67cf9b1c8cc985c00b7c5c225477f18ef2c1b8fd77a965b4d",
+        "log_sha256": "c51dab9bb04a5f17e53febe33a88771dc92970c500f36eec553ab4e32bc5a2a8"
+      },
+      {
+        "name": "tracking_off",
+        "command": [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/private/tmp/supersonic-showcase-20261013/tracking_off/input.athinput"
+        ],
+        "exit": 0,
+        "wall_seconds": 62.317325167008676,
+        "input_sha256": "eefcd2ebe3ace6905d640ea2c7ef723e962144da9ae99926b280070259ab2b29",
+        "log_sha256": "94bf85869d07d628f786c098f699bda8c58ff86e0b6c5d3e49e0c04f8a849cc4"
+      },
+      {
+        "name": "half_cfl",
+        "command": [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/private/tmp/supersonic-showcase-20261013/half_cfl/input.athinput"
+        ],
+        "exit": 0,
+        "wall_seconds": 186.3981507080025,
+        "input_sha256": "f4e81ba61a2ce57764b6bbe28cdf829f292b2342a23a5c99af6cb56bd321bc32",
+        "log_sha256": "18d850a01e27ca27d97154eb2394233fd053ca4bea4acdc336e2dce469b82482"
+      },
+      {
+        "name": "coarse32",
+        "command": [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/private/tmp/supersonic-showcase-20261013/coarse32/input.athinput"
+        ],
+        "exit": 0,
+        "wall_seconds": 6.722592290956527,
+        "input_sha256": "851e0a53de50676130b864106b51e09a4080de0798f1954b84ce81313cea3793",
+        "log_sha256": "eb72d11cf8ca9eacc6dbbdf67c5fdde12d45054de4b252d16fb5dc46ef051ecd"
+      },
+      {
+        "name": "coarse32_matched",
+        "command": [
+          "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+          "-i",
+          "/private/tmp/supersonic-showcase-20261013/coarse32_matched/input.athinput"
+        ],
+        "exit": 0,
+        "wall_seconds": 7.299789957993198,
+        "input_sha256": "86c05e0fa68b69ce3cc0eccfaae1614b540c5cc9f732d59fe79996ce1c872c73",
+        "log_sha256": "988899ab445658118590058fd2eaa291462546e2ef485d10faf35f154c25ecc3"
+      }
+    ],
+    "status": "simulations_completed"
+  },
+  "configuration": {
+    "baseline_cells": 64,
+    "particles": 8192,
+    "initial_rms_mach": 5,
+    "gamma": 1.4,
+    "dedt": 50,
+    "tlim": 0.3,
+    "forcing_seed": 2718,
+    "initial_velocity_seed": 24680,
+    "particle_seed": 11,
+    "width_cells": 4,
+    "min_mach": 1.1,
+    "tcorr": 0.1,
+    "dt_update": 0.01,
+    "npeak": 2,
+    "sol_fraction": 0.5
+  },
+  "non_interference": "Entire native thermo bytes and all saved double primitive/conserved/force fields exact, baseline tracking-on/off. Same coarse32 flow/particle bytes with widths4/2.",
+  "limitations": [
+    "Native RK2 forcing thermodynamic oracle fails; driver unchanged.",
+    "No stationary ensemble, physical shock truth or individual material crossing times.",
+    "All episodes carry no_plateau and cadence_limited; merged spans can contain brief outside intervals.",
+    "CFL changes fluid evolution, MC random draws and observation cadence jointly.",
+    "32\u00b3 width4 changes physical detector half-span; width2 matches64\u00b3 width4 half-span but still couples mesh/MC/fluid effects.",
+    "No independent random-seed ensemble, HPC/MPI/GPU or accepted physical convergence tolerance."
+  ],
+  "cases": {
+    "baseline": {
+      "particles": 8192,
+      "completed": 57013,
+      "partial": 0,
+      "open": 1212,
+      "unique_event_identities": true,
+      "contiguous_sequences": true,
+      "all_particle_ids_preserved": true,
+      "emitted_per_particle": 6.9595947265625,
+      "recorded_starts_per_particle": 7.1075439453125,
+      "particles_with_emitted_events": 8188,
+      "zero_emitted_particles": 4,
+      "completed_count_histogram": {
+        "0": 4,
+        "1": 31,
+        "2": 118,
+        "3": 391,
+        "4": 741,
+        "5": 1100,
+        "6": 1312,
+        "7": 1319,
+        "8": 1152,
+        "9": 813,
+        "10": 520,
+        "11": 330,
+        "12": 193,
+        "13": 88,
+        "14": 48,
+        "15": 14,
+        "16": 11,
+        "17": 4,
+        "18": 2,
+        "19": 1
+      },
+      "flags": {
+        "left_censored": 0,
+        "invalid_observation": 0,
+        "merged_flicker": 5703,
+        "no_plateau": 58225,
+        "cadence_limited": 58225,
+        "temperature_invalid": 0,
+        "right_censored": 1212,
+        "domain_exit": 0,
+        "direction_ambiguous": 1520,
+        "downstream_reentry": 0
+      },
+      "mach_pressure_quantiles": [
+        1.1387812390781282,
+        1.5986533298218448,
+        2.838457511547153
+      ],
+      "finite_pressure_estimates": 57013,
+      "finite_temperature_estimates": 57013,
+      "completed_duration_bounds": 57013,
+      "adjacent_complete_waiting_bounds": 48825,
+      "max_mass_error": 1.1102230246251565e-16,
+      "counters": {
+        "sampled": 6578176,
+        "invalid": 0,
+        "complete": 57013,
+        "partial": 0,
+        "suspended": 1212,
+        "suppressed_reentries_surviving": 75455,
+        "event_highwater": 154,
+        "diagnostic_seconds_this_process": 33.02444
+      },
+      "field_evolution": [
+        {
+          "time": 0.0,
+          "cycle": 0,
+          "mass": 1.0,
+          "mach_volume": 5.000000000000018,
+          "mach_mass": 5.000000000000018,
+          "supersonic_volume_fraction": 0.9898490905761719,
+          "supersonic_mass_fraction": 0.9898490905761719,
+          "kinetic": 12.500000000000082,
+          "gas_energy": 1.7857142857142856
+        },
+        {
+          "time": 0.018944380566759074,
+          "cycle": 50,
+          "mass": 1.0,
+          "mach_volume": 5.284293170671937,
+          "mach_mass": 4.9685291809403624,
+          "supersonic_volume_fraction": 0.9952239990234375,
+          "supersonic_mass_fraction": 0.9932188176967078,
+          "kinetic": 13.145599145914595,
+          "gas_energy": 2.0833418216773345
+        },
+        {
+          "time": 0.038870038104780576,
+          "cycle": 100,
+          "mass": 1.0,
+          "mach_volume": 5.660488246526404,
+          "mach_mass": 4.014527182412416,
+          "supersonic_volume_fraction": 0.9874649047851562,
+          "supersonic_mass_fraction": 0.9527275401199122,
+          "kinetic": 11.35180044504449,
+          "gas_energy": 4.873293299061244
+        },
+        {
+          "time": 0.06027594230776504,
+          "cycle": 150,
+          "mass": 1.0,
+          "mach_volume": 5.224153496241247,
+          "mach_mass": 3.024835184186404,
+          "supersonic_volume_fraction": 0.9524688720703125,
+          "supersonic_mass_fraction": 0.8672115044370283,
+          "kinetic": 9.603754018933715,
+          "gas_energy": 7.691336027743067
+        },
+        {
+          "time": 0.08142584427442186,
+          "cycle": 200,
+          "mass": 1.0,
+          "mach_volume": 4.086558275091189,
+          "mach_mass": 2.4192066414575604,
+          "supersonic_volume_fraction": 0.908966064453125,
+          "supersonic_mass_fraction": 0.8390211072699149,
+          "kinetic": 9.070072086600875,
+          "gas_energy": 9.284046918234159
+        },
+        {
+          "time": 0.10035664098880251,
+          "cycle": 250,
+          "mass": 1.0,
+          "mach_volume": 3.0161283309708717,
+          "mach_mass": 2.1254840343347294,
+          "supersonic_volume_fraction": 0.8825836181640625,
+          "supersonic_mass_fraction": 0.8274509973445562,
+          "kinetic": 9.082982716727109,
+          "gas_energy": 10.219236362305463
+        },
+        {
+          "time": 0.11684081408804341,
+          "cycle": 300,
+          "mass": 1.0,
+          "mach_volume": 2.424815000798528,
+          "mach_mass": 1.944326852489372,
+          "supersonic_volume_fraction": 0.8619422912597656,
+          "supersonic_mass_fraction": 0.8126421870795304,
+          "kinetic": 9.055381753200514,
+          "gas_energy": 11.071217582364234
+        },
+        {
+          "time": 0.1322847791524123,
+          "cycle": 350,
+          "mass": 1.0,
+          "mach_volume": 2.1037660162906247,
+          "mach_mass": 1.8118179749012697,
+          "supersonic_volume_fraction": 0.8410377502441406,
+          "supersonic_mass_fraction": 0.7838972971404485,
+          "kinetic": 8.806685824782544,
+          "gas_energy": 12.09220785649942
+        },
+        {
+          "time": 0.14889085238526897,
+          "cycle": 400,
+          "mass": 0.9999999999999999,
+          "mach_volume": 1.8968622772983639,
+          "mach_mass": 1.6843279131300153,
+          "supersonic_volume_fraction": 0.7994842529296875,
+          "supersonic_mass_fraction": 0.7348032650584283,
+          "kinetic": 8.476658240631735,
+          "gas_energy": 13.253199229767311
+        },
+        {
+          "time": 0.16593321805918362,
+          "cycle": 450,
+          "mass": 1.0,
+          "mach_volume": 1.750892632837525,
+          "mach_mass": 1.5721924126446956,
+          "supersonic_volume_fraction": 0.7732810974121094,
+          "supersonic_mass_fraction": 0.7080040752800508,
+          "kinetic": 8.248919251445134,
+          "gas_energy": 14.333425079395406
+        },
+        {
+          "time": 0.18460992884021465,
+          "cycle": 500,
+          "mass": 1.0,
+          "mach_volume": 1.6560857969369267,
+          "mach_mass": 1.485054672318772,
+          "supersonic_volume_fraction": 0.7379264831542969,
+          "supersonic_mass_fraction": 0.6710154281659081,
+          "kinetic": 8.120688176638224,
+          "gas_energy": 15.396060996058111
+        },
+        {
+          "time": 0.2040172786406365,
+          "cycle": 550,
+          "mass": 1.0,
+          "mach_volume": 1.5728275879413938,
+          "mach_mass": 1.4212753802735896,
+          "supersonic_volume_fraction": 0.7008285522460938,
+          "supersonic_mass_fraction": 0.6406599198338833,
+          "kinetic": 8.081960863505323,
+          "gas_energy": 16.405836339850147
+        },
+        {
+          "time": 0.2242211338173224,
+          "cycle": 600,
+          "mass": 1.0,
+          "mach_volume": 1.5305264876288265,
+          "mach_mass": 1.381332315505256,
+          "supersonic_volume_fraction": 0.6835403442382812,
+          "supersonic_mass_fraction": 0.6026417611387254,
+          "kinetic": 8.081124176951334,
+          "gas_energy": 17.417940106134957
+        },
+        {
+          "time": 0.2431393850288154,
+          "cycle": 650,
+          "mass": 1.0,
+          "mach_volume": 1.5035572960785437,
+          "mach_mass": 1.3309616928560792,
+          "supersonic_volume_fraction": 0.665496826171875,
+          "supersonic_mass_fraction": 0.5719593578653546,
+          "kinetic": 7.951182864026347,
+          "gas_energy": 18.49384642440799
+        },
+        {
+          "time": 0.2610096858203779,
+          "cycle": 700,
+          "mass": 1.0,
+          "mach_volume": 1.4428202045400644,
+          "mach_mass": 1.2763185118383353,
+          "supersonic_volume_fraction": 0.6391220092773438,
+          "supersonic_mass_fraction": 0.5549769923670116,
+          "kinetic": 7.739166964023308,
+          "gas_energy": 19.599123931063783
+        },
+        {
+          "time": 0.27947905757296077,
+          "cycle": 750,
+          "mass": 1.0,
+          "mach_volume": 1.3815250402273047,
+          "mach_mass": 1.2269169124904318,
+          "supersonic_volume_fraction": 0.6272506713867188,
+          "supersonic_mass_fraction": 0.5365571180321771,
+          "kinetic": 7.598664754613112,
+          "gas_energy": 20.66295093683228
+        },
+        {
+          "time": 0.2993491097253056,
+          "cycle": 800,
+          "mass": 1.0,
+          "mach_volume": 1.3178550477154225,
+          "mach_mass": 1.19461054171417,
+          "supersonic_volume_fraction": 0.6175270080566406,
+          "supersonic_mass_fraction": 0.5404027982893506,
+          "kinetic": 7.7244698288755185,
+          "gas_energy": 21.531108396645376
+        },
+        {
+          "time": 0.3,
+          "cycle": 802,
+          "mass": 0.9999999999999999,
+          "mach_volume": 1.3159848190247474,
+          "mach_mass": 1.1940194403541047,
+          "supersonic_volume_fraction": 0.6170425415039062,
+          "supersonic_mass_fraction": 0.5406318906005574,
+          "kinetic": 7.732648586084336,
+          "gas_energy": 21.555469825294548
+        }
+      ]
+    },
+    "half_cfl": {
+      "particles": 8192,
+      "completed": 60813,
+      "partial": 0,
+      "open": 1169,
+      "unique_event_identities": true,
+      "contiguous_sequences": true,
+      "all_particle_ids_preserved": true,
+      "emitted_per_particle": 7.4234619140625,
+      "recorded_starts_per_particle": 7.566162109375,
+      "particles_with_emitted_events": 8189,
+      "zero_emitted_particles": 3,
+      "completed_count_histogram": {
+        "0": 3,
+        "1": 20,
+        "2": 99,
+        "3": 322,
+        "4": 630,
+        "5": 910,
+        "6": 1189,
+        "7": 1254,
+        "8": 1181,
+        "9": 917,
+        "10": 635,
+        "11": 420,
+        "12": 292,
+        "13": 160,
+        "14": 71,
+        "15": 50,
+        "16": 24,
+        "17": 9,
+        "18": 4,
+        "19": 1,
+        "20": 1
+      },
+      "flags": {
+        "left_censored": 0,
+        "invalid_observation": 0,
+        "merged_flicker": 3296,
+        "no_plateau": 61982,
+        "cadence_limited": 61982,
+        "temperature_invalid": 0,
+        "right_censored": 1169,
+        "domain_exit": 0,
+        "direction_ambiguous": 1265,
+        "downstream_reentry": 0
+      },
+      "mach_pressure_quantiles": [
+        1.1375389277640096,
+        1.5977876242647928,
+        2.8404581876200763
+      ],
+      "finite_pressure_estimates": 60813,
+      "finite_temperature_estimates": 60813,
+      "completed_duration_bounds": 60813,
+      "adjacent_complete_waiting_bounds": 52624,
+      "max_mass_error": 1.1102230246251565e-16,
+      "counters": {
+        "sampled": 13139968,
+        "invalid": 0,
+        "complete": 60813,
+        "partial": 0,
+        "suspended": 1169,
+        "suppressed_reentries_surviving": 84032,
+        "event_highwater": 88,
+        "diagnostic_seconds_this_process": 63.95778
+      },
+      "field_evolution": [
+        {
+          "time": 0.0,
+          "cycle": 0,
+          "mass": 1.0,
+          "mach_volume": 5.000000000000018,
+          "mach_mass": 5.000000000000018,
+          "supersonic_volume_fraction": 0.9898490905761719,
+          "supersonic_mass_fraction": 0.9898490905761719,
+          "kinetic": 12.500000000000082,
+          "gas_energy": 1.7857142857142856
+        },
+        {
+          "time": 0.009365368084765721,
+          "cycle": 50,
+          "mass": 1.0,
+          "mach_volume": 5.093602980116934,
+          "mach_mass": 5.041272172400636,
+          "supersonic_volume_fraction": 0.9943618774414062,
+          "supersonic_mass_fraction": 0.9943144292458277,
+          "kinetic": 12.917808658713582,
+          "gas_energy": 1.8332291152116993
+        },
+        {
+          "time": 0.018945538311463193,
+          "cycle": 100,
+          "mass": 0.9999999999999999,
+          "mach_volume": 5.299190972798968,
+          "mach_mass": 4.981158505965546,
+          "supersonic_volume_fraction": 0.9952583312988281,
+          "supersonic_mass_fraction": 0.9931913160449718,
+          "kinetic": 13.15397442870776,
+          "gas_energy": 2.0770615305818794
+        },
+        {
+          "time": 0.028776292360698875,
+          "cycle": 150,
+          "mass": 1.0,
+          "mach_volume": 5.569795852503656,
+          "mach_mass": 4.601197022603667,
+          "supersonic_volume_fraction": 0.9935073852539062,
+          "supersonic_mass_fraction": 0.9731324121679614,
+          "kinetic": 12.459957414453003,
+          "gas_energy": 3.2626908879894803
+        },
+        {
+          "time": 0.03882438409187678,
+          "cycle": 200,
+          "mass": 1.0,
+          "mach_volume": 5.687821037085588,
+          "mach_mass": 4.0303383522342004,
+          "supersonic_volume_fraction": 0.9875831604003906,
+          "supersonic_mass_fraction": 0.9529545544753747,
+          "kinetic": 11.364542046331474,
+          "gas_energy": 4.860360254537581
+        },
+        {
+          "time": 0.04939853868868651,
+          "cycle": 250,
+          "mass": 1.0,
+          "mach_volume": 5.592150318101434,
+          "mach_mass": 3.491712204248976,
+          "supersonic_volume_fraction": 0.9726448059082031,
+          "supersonic_mass_fraction": 0.9090014949888713,
+          "kinetic": 10.452681497609822,
+          "gas_energy": 6.300737652937935
+        },
+        {
+          "time": 0.0602336972284688,
+          "cycle": 300,
+          "mass": 1.0,
+          "mach_volume": 5.262186147465797,
+          "mach_mass": 3.0366941625559907,
+          "supersonic_volume_fraction": 0.9527435302734375,
+          "supersonic_mass_fraction": 0.8675472044124235,
+          "kinetic": 9.615132909675234,
+          "gas_energy": 7.680105185879424
+        },
+        {
+          "time": 0.07080678091842531,
+          "cycle": 350,
+          "mass": 1.0,
+          "mach_volume": 4.733543719282474,
+          "mach_mass": 2.6901813499338867,
+          "supersonic_volume_fraction": 0.9310989379882812,
+          "supersonic_mass_fraction": 0.8521985459719087,
+          "kinetic": 9.204212978291853,
+          "gas_energy": 8.62002934209896
+        },
+        {
+          "time": 0.08135406749746711,
+          "cycle": 400,
+          "mass": 0.9999999999999999,
+          "mach_volume": 4.131321478342394,
+          "mach_mass": 2.428315475177191,
+          "supersonic_volume_fraction": 0.9094734191894531,
+          "supersonic_mass_fraction": 0.8396097457920609,
+          "kinetic": 9.080524095177426,
+          "gas_energy": 9.271475926598397
+        },
+        {
+          "time": 0.09115215025380932,
+          "cycle": 450,
+          "mass": 1.0,
+          "mach_volume": 3.53621782431209,
+          "mach_mass": 2.254132803289072,
+          "supersonic_volume_fraction": 0.8964881896972656,
+          "supersonic_mass_fraction": 0.8347311065141342,
+          "kinetic": 9.087839520298392,
+          "gas_energy": 9.754526963690882
+        },
+        {
+          "time": 0.10026303608934163,
+          "cycle": 500,
+          "mass": 1.0,
+          "mach_volume": 3.048484019507717,
+          "mach_mass": 2.1314971458041967,
+          "supersonic_volume_fraction": 0.8830413818359375,
+          "supersonic_mass_fraction": 0.8281441318247593,
+          "kinetic": 9.094627407804362,
+          "gas_energy": 10.203591919255972
+        },
+        {
+          "time": 0.10875586992184619,
+          "cycle": 550,
+          "mass": 1.0,
+          "mach_volume": 2.7532528248293806,
+          "mach_mass": 2.031798535526898,
+          "supersonic_volume_fraction": 0.869842529296875,
+          "supersonic_mass_fraction": 0.8223943977882587,
+          "kinetic": 9.107748472516825,
+          "gas_energy": 10.615246471049876
+        },
+        {
+          "time": 0.1168004140862963,
+          "cycle": 600,
+          "mass": 1.0,
+          "mach_volume": 2.436642104489469,
+          "mach_mass": 1.9475496446697564,
+          "supersonic_volume_fraction": 0.8625144958496094,
+          "supersonic_mass_fraction": 0.8133336106620859,
+          "kinetic": 9.066605344866076,
+          "gas_energy": 11.058568614379986
+        },
+        {
+          "time": 0.12424474352252488,
+          "cycle": 650,
+          "mass": 1.0,
+          "mach_volume": 2.1960199011327153,
+          "mach_mass": 1.8793917796530981,
+          "supersonic_volume_fraction": 0.8556175231933594,
+          "supersonic_mass_fraction": 0.8008278747833684,
+          "kinetic": 8.95510527541661,
+          "gas_energy": 11.542266926295092
+        },
+        {
+          "time": 0.13236451523241052,
+          "cycle": 700,
+          "mass": 1.0,
+          "mach_volume": 2.105298635285259,
+          "mach_mass": 1.8134268015513932,
+          "supersonic_volume_fraction": 0.8412857055664062,
+          "supersonic_mass_fraction": 0.7839722962568062,
+          "kinetic": 8.81374802530308,
+          "gas_energy": 12.089686799785852
+        },
+        {
+          "time": 0.14098907045107378,
+          "cycle": 750,
+          "mass": 1.0,
+          "mach_volume": 1.9969170147233481,
+          "mach_mass": 1.7431685790967362,
+          "supersonic_volume_fraction": 0.8198928833007812,
+          "supersonic_mass_fraction": 0.7582447978810334,
+          "kinetic": 8.62758825632805,
+          "gas_energy": 12.707240235151586
+        },
+        {
+          "time": 0.14898141019238118,
+          "cycle": 800,
+          "mass": 1.0,
+          "mach_volume": 1.8980801420473696,
+          "mach_mass": 1.6856295697039547,
+          "supersonic_volume_fraction": 0.7995185852050781,
+          "supersonic_mass_fraction": 0.734851150706711,
+          "kinetic": 8.483613806330236,
+          "gas_energy": 13.250992750820954
+        },
+        {
+          "time": 0.157729460482436,
+          "cycle": 850,
+          "mass": 1.0,
+          "mach_volume": 1.813460684368821,
+          "mach_mass": 1.624468471973854,
+          "supersonic_volume_fraction": 0.784942626953125,
+          "supersonic_mass_fraction": 0.7205393667415425,
+          "kinetic": 8.34003274516043,
+          "gas_energy": 13.832086027802184
+        },
+        {
+          "time": 0.16606156818150752,
+          "cycle": 900,
+          "mass": 1.0,
+          "mach_volume": 1.7519553271846846,
+          "mach_mass": 1.5729652004506014,
+          "supersonic_volume_fraction": 0.7730598449707031,
+          "supersonic_mass_fraction": 0.7079220910504507,
+          "kinetic": 8.255537869924543,
+          "gas_energy": 14.333260436072731
+        },
+        {
+          "time": 0.17526917738883172,
+          "cycle": 950,
+          "mass": 1.0,
+          "mach_volume": 1.702674724110969,
+          "mach_mass": 1.5283308734129677,
+          "supersonic_volume_fraction": 0.7575035095214844,
+          "supersonic_mass_fraction": 0.6876217105519558,
+          "kinetic": 8.193138851573227,
+          "gas_energy": 14.856151765920911
+        },
+        {
+          "time": 0.18475913502431535,
+          "cycle": 1000,
+          "mass": 1.0,
+          "mach_volume": 1.6569154223761864,
+          "mach_mass": 1.48574320247275,
+          "supersonic_volume_fraction": 0.7378692626953125,
+          "supersonic_mass_fraction": 0.6711109512230071,
+          "kinetic": 8.127045133597843,
+          "gas_energy": 15.396909510532282
+        },
+        {
+          "time": 0.19451388347661236,
+          "cycle": 1050,
+          "mass": 1.0,
+          "mach_volume": 1.6100572047659547,
+          "mach_mass": 1.4478769318828766,
+          "supersonic_volume_fraction": 0.718536376953125,
+          "supersonic_mass_fraction": 0.656247471832548,
+          "kinetic": 8.087024203906283,
+          "gas_energy": 15.924816422583064
+        },
+        {
+          "time": 0.2041452082488972,
+          "cycle": 1100,
+          "mass": 1.0,
+          "mach_volume": 1.5737206206876073,
+          "mach_mass": 1.4224188555181994,
+          "supersonic_volume_fraction": 0.7008285522460938,
+          "supersonic_mass_fraction": 0.640893497617683,
+          "kinetic": 8.090311861622997,
+          "gas_energy": 16.403290158967124
+        },
+        {
+          "time": 0.21409596762413374,
+          "cycle": 1150,
+          "mass": 1.0,
+          "mach_volume": 1.546867163146353,
+          "mach_mass": 1.402409182591496,
+          "supersonic_volume_fraction": 0.6882896423339844,
+          "supersonic_mass_fraction": 0.6195875265743889,
+          "kinetic": 8.093618362610428,
+          "gas_energy": 16.897806610087894
+        },
+        {
+          "time": 0.22432831109489926,
+          "cycle": 1200,
+          "mass": 0.9999999999999999,
+          "mach_volume": 1.5326388506331576,
+          "mach_mass": 1.3825889519800485,
+          "supersonic_volume_fraction": 0.6844024658203125,
+          "supersonic_mass_fraction": 0.6032858393337345,
+          "kinetic": 8.089654078446337,
+          "gas_energy": 17.41364174451843
+        },
+        {
+          "time": 0.234015686902872,
+          "cycle": 1250,
+          "mass": 1.0,
+          "mach_volume": 1.5251831168184904,
+          "mach_mass": 1.3588686236841987,
+          "supersonic_volume_fraction": 0.6803245544433594,
+          "supersonic_mass_fraction": 0.589423478669278,
+          "kinetic": 8.039043019008155,
+          "gas_energy": 17.948692631077343
+        },
+        {
+          "time": 0.24319941827922073,
+          "cycle": 1300,
+          "mass": 1.0,
+          "mach_volume": 1.5053751533138398,
+          "mach_mass": 1.3319947908491687,
+          "supersonic_volume_fraction": 0.6661949157714844,
+          "supersonic_mass_fraction": 0.5728676693795416,
+          "kinetic": 7.959002974268598,
+          "gas_energy": 18.487860577550386
+        },
+        {
+          "time": 0.25213823926518214,
+          "cycle": 1350,
+          "mass": 1.0,
+          "mach_volume": 1.4762411163552511,
+          "mach_mass": 1.3033242684222532,
+          "supersonic_volume_fraction": 0.6483840942382812,
+          "supersonic_mass_fraction": 0.5588709443838716,
+          "kinetic": 7.85072758749249,
+          "gas_energy": 19.043005189708467
+        },
+        {
+          "time": 0.26106128864887784,
+          "cycle": 1400,
+          "mass": 1.0,
+          "mach_volume": 1.4438934421748704,
+          "mach_mass": 1.2772783010634556,
+          "supersonic_volume_fraction": 0.6389617919921875,
+          "supersonic_mass_fraction": 0.5555191079938693,
+          "kinetic": 7.745340198635655,
+          "gas_energy": 19.594484656943955
+        },
+        {
+          "time": 0.27017585583841036,
+          "cycle": 1450,
+          "mass": 1.0,
+          "mach_volume": 1.4134727665596134,
+          "mach_mass": 1.253150946219196,
+          "supersonic_volume_fraction": 0.6318893432617188,
+          "supersonic_mass_fraction": 0.5491853522089287,
+          "kinetic": 7.661635796659617,
+          "gas_energy": 20.133859743132355
+        },
+        {
+          "time": 0.2795445318055925,
+          "cycle": 1500,
+          "mass": 1.0,
+          "mach_volume": 1.382421239873724,
+          "mach_mass": 1.228136212042798,
+          "supersonic_volume_fraction": 0.6280136108398438,
+          "supersonic_mass_fraction": 0.5379489741116739,
+          "kinetic": 7.611156981666654,
+          "gas_energy": 20.652748751175327
+        },
+        {
+          "time": 0.28925496115483396,
+          "cycle": 1550,
+          "mass": 1.0,
+          "mach_volume": 1.3509596354205269,
+          "mach_mass": 1.2088311790505637,
+          "supersonic_volume_fraction": 0.6258964538574219,
+          "supersonic_mass_fraction": 0.5385801734905509,
+          "kinetic": 7.639772209780716,
+          "gas_energy": 21.10976015588962
+        },
+        {
+          "time": 0.2994124516599844,
+          "cycle": 1600,
+          "mass": 1.0,
+          "mach_volume": 1.3185368469962901,
+          "mach_mass": 1.196173583886413,
+          "supersonic_volume_fraction": 0.6194953918457031,
+          "supersonic_mass_fraction": 0.5424069827655772,
+          "kinetic": 7.7424356523776545,
+          "gas_energy": 21.515107233327242
+        },
+        {
+          "time": 0.3,
+          "cycle": 1603,
+          "mass": 1.0,
+          "mach_volume": 1.3168564013773398,
+          "mach_mass": 1.1956489513130903,
+          "supersonic_volume_fraction": 0.6188125610351562,
+          "supersonic_mass_fraction": 0.5423751471489588,
+          "kinetic": 7.749939032430195,
+          "gas_energy": 21.536978476476488
+        }
+      ]
+    },
+    "coarse32": {
+      "particles": 8192,
+      "completed": 35045,
+      "partial": 0,
+      "open": 1198,
+      "unique_event_identities": true,
+      "contiguous_sequences": true,
+      "all_particle_ids_preserved": true,
+      "emitted_per_particle": 4.2779541015625,
+      "recorded_starts_per_particle": 4.4241943359375,
+      "particles_with_emitted_events": 8152,
+      "zero_emitted_particles": 40,
+      "completed_count_histogram": {
+        "0": 40,
+        "1": 306,
+        "2": 918,
+        "3": 1629,
+        "4": 1853,
+        "5": 1557,
+        "6": 1005,
+        "7": 488,
+        "8": 254,
+        "9": 95,
+        "10": 34,
+        "11": 10,
+        "12": 3
+      },
+      "flags": {
+        "left_censored": 0,
+        "invalid_observation": 0,
+        "merged_flicker": 3815,
+        "no_plateau": 36243,
+        "cadence_limited": 36243,
+        "temperature_invalid": 0,
+        "right_censored": 1198,
+        "domain_exit": 0,
+        "direction_ambiguous": 1462,
+        "downstream_reentry": 0
+      },
+      "mach_pressure_quantiles": [
+        1.1313829274181586,
+        1.620894032973025,
+        2.8986975226372933
+      ],
+      "finite_pressure_estimates": 35045,
+      "finite_temperature_estimates": 35045,
+      "completed_duration_bounds": 35045,
+      "adjacent_complete_waiting_bounds": 26893,
+      "max_mass_error": 0.0,
+      "counters": {
+        "sampled": 2940928,
+        "invalid": 0,
+        "complete": 35045,
+        "partial": 0,
+        "suspended": 1198,
+        "suppressed_reentries_surviving": 52212,
+        "event_highwater": 222,
+        "diagnostic_seconds_this_process": 3.017783
+      },
+      "field_evolution": [
+        {
+          "time": 0.0,
+          "cycle": 0,
+          "mass": 1.0,
+          "mach_volume": 4.999999999999993,
+          "mach_mass": 4.999999999999993,
+          "supersonic_volume_fraction": 0.989776611328125,
+          "supersonic_mass_fraction": 0.989776611328125,
+          "kinetic": 12.499999999999961,
+          "gas_energy": 1.7857142857142856
+        },
+        {
+          "time": 0.03989675466690843,
+          "cycle": 50,
+          "mass": 1.0,
+          "mach_volume": 5.275577937010066,
+          "mach_mass": 3.6695636349483927,
+          "supersonic_volume_fraction": 0.980499267578125,
+          "supersonic_mass_fraction": 0.9352258811801558,
+          "kinetic": 10.778210858642147,
+          "gas_energy": 5.494012330033677
+        },
+        {
+          "time": 0.0862194160766037,
+          "cycle": 100,
+          "mass": 1.0,
+          "mach_volume": 3.5033345435506105,
+          "mach_mass": 2.096652869623736,
+          "supersonic_volume_fraction": 0.88177490234375,
+          "supersonic_mass_fraction": 0.7931558309577429,
+          "kinetic": 8.309123547757373,
+          "gas_energy": 10.283484438172012
+        },
+        {
+          "time": 0.1268260323278645,
+          "cycle": 150,
+          "mass": 1.0,
+          "mach_volume": 1.9671156156670049,
+          "mach_mass": 1.699878867805727,
+          "supersonic_volume_fraction": 0.818115234375,
+          "supersonic_mass_fraction": 0.754615960373559,
+          "kinetic": 8.184314345000438,
+          "gas_energy": 12.441723770312016
+        },
+        {
+          "time": 0.16814631854440748,
+          "cycle": 200,
+          "mass": 1.0,
+          "mach_volume": 1.5840083468007027,
+          "mach_mass": 1.441665757845424,
+          "supersonic_volume_fraction": 0.728485107421875,
+          "supersonic_mass_fraction": 0.6562184260692268,
+          "kinetic": 7.539479731610833,
+          "gas_energy": 15.156490583741766
+        },
+        {
+          "time": 0.21312414191696152,
+          "cycle": 250,
+          "mass": 1.0,
+          "mach_volume": 1.4366453644537927,
+          "mach_mass": 1.3000567723844376,
+          "supersonic_volume_fraction": 0.63897705078125,
+          "supersonic_mass_fraction": 0.5631004300812728,
+          "kinetic": 7.346105225772511,
+          "gas_energy": 17.60176751044844
+        },
+        {
+          "time": 0.2541522803119071,
+          "cycle": 300,
+          "mass": 1.0,
+          "mach_volume": 1.3501128696953548,
+          "mach_mass": 1.1874468240355425,
+          "supersonic_volume_fraction": 0.596099853515625,
+          "supersonic_mass_fraction": 0.4891026422742138,
+          "kinetic": 6.930627011877185,
+          "gas_energy": 20.069816397684715
+        },
+        {
+          "time": 0.29384078432338495,
+          "cycle": 350,
+          "mass": 1.0,
+          "mach_volume": 1.2769960005216765,
+          "mach_mass": 1.1071679153788885,
+          "supersonic_volume_fraction": 0.555694580078125,
+          "supersonic_mass_fraction": 0.4468931681673113,
+          "kinetic": 6.696665783716771,
+          "gas_energy": 22.288455092836323
+        },
+        {
+          "time": 0.3,
+          "cycle": 358,
+          "mass": 1.0,
+          "mach_volume": 1.2633854676687257,
+          "mach_mass": 1.103541017901066,
+          "supersonic_volume_fraction": 0.55438232421875,
+          "supersonic_mass_fraction": 0.4559829786808615,
+          "kinetic": 6.7881952540390476,
+          "gas_energy": 22.50525848395833
+        }
+      ]
+    },
+    "coarse32_matched": {
+      "particles": 8192,
+      "completed": 44472,
+      "partial": 0,
+      "open": 1529,
+      "unique_event_identities": true,
+      "contiguous_sequences": true,
+      "all_particle_ids_preserved": true,
+      "emitted_per_particle": 5.4287109375,
+      "recorded_starts_per_particle": 5.6153564453125,
+      "particles_with_emitted_events": 8189,
+      "zero_emitted_particles": 3,
+      "completed_count_histogram": {
+        "0": 3,
+        "1": 47,
+        "2": 261,
+        "3": 775,
+        "4": 1450,
+        "5": 1929,
+        "6": 1661,
+        "7": 1026,
+        "8": 598,
+        "9": 289,
+        "10": 106,
+        "11": 32,
+        "12": 11,
+        "13": 2,
+        "14": 1,
+        "16": 1
+      },
+      "flags": {
+        "left_censored": 0,
+        "invalid_observation": 0,
+        "merged_flicker": 5129,
+        "no_plateau": 46001,
+        "cadence_limited": 46001,
+        "temperature_invalid": 0,
+        "right_censored": 1529,
+        "domain_exit": 0,
+        "direction_ambiguous": 2233,
+        "downstream_reentry": 0
+      },
+      "mach_pressure_quantiles": [
+        1.1239704209527144,
+        1.6107776211532068,
+        2.924959176057247
+      ],
+      "finite_pressure_estimates": 44472,
+      "finite_temperature_estimates": 44472,
+      "completed_duration_bounds": 44472,
+      "adjacent_complete_waiting_bounds": 36283,
+      "max_mass_error": 0.0,
+      "counters": {
+        "sampled": 2940928,
+        "invalid": 0,
+        "complete": 44472,
+        "partial": 0,
+        "suspended": 1529,
+        "suppressed_reentries_surviving": 41716,
+        "event_highwater": 250,
+        "diagnostic_seconds_this_process": 3.406843
+      },
+      "field_evolution": [
+        {
+          "time": 0.0,
+          "cycle": 0,
+          "mass": 1.0,
+          "mach_volume": 4.999999999999993,
+          "mach_mass": 4.999999999999993,
+          "supersonic_volume_fraction": 0.989776611328125,
+          "supersonic_mass_fraction": 0.989776611328125,
+          "kinetic": 12.499999999999961,
+          "gas_energy": 1.7857142857142856
+        },
+        {
+          "time": 0.03989675466690843,
+          "cycle": 50,
+          "mass": 1.0,
+          "mach_volume": 5.275577937010066,
+          "mach_mass": 3.6695636349483927,
+          "supersonic_volume_fraction": 0.980499267578125,
+          "supersonic_mass_fraction": 0.9352258811801558,
+          "kinetic": 10.778210858642147,
+          "gas_energy": 5.494012330033677
+        },
+        {
+          "time": 0.0862194160766037,
+          "cycle": 100,
+          "mass": 1.0,
+          "mach_volume": 3.5033345435506105,
+          "mach_mass": 2.096652869623736,
+          "supersonic_volume_fraction": 0.88177490234375,
+          "supersonic_mass_fraction": 0.7931558309577429,
+          "kinetic": 8.309123547757373,
+          "gas_energy": 10.283484438172012
+        },
+        {
+          "time": 0.1268260323278645,
+          "cycle": 150,
+          "mass": 1.0,
+          "mach_volume": 1.9671156156670049,
+          "mach_mass": 1.699878867805727,
+          "supersonic_volume_fraction": 0.818115234375,
+          "supersonic_mass_fraction": 0.754615960373559,
+          "kinetic": 8.184314345000438,
+          "gas_energy": 12.441723770312016
+        },
+        {
+          "time": 0.16814631854440748,
+          "cycle": 200,
+          "mass": 1.0,
+          "mach_volume": 1.5840083468007027,
+          "mach_mass": 1.441665757845424,
+          "supersonic_volume_fraction": 0.728485107421875,
+          "supersonic_mass_fraction": 0.6562184260692268,
+          "kinetic": 7.539479731610833,
+          "gas_energy": 15.156490583741766
+        },
+        {
+          "time": 0.21312414191696152,
+          "cycle": 250,
+          "mass": 1.0,
+          "mach_volume": 1.4366453644537927,
+          "mach_mass": 1.3000567723844376,
+          "supersonic_volume_fraction": 0.63897705078125,
+          "supersonic_mass_fraction": 0.5631004300812728,
+          "kinetic": 7.346105225772511,
+          "gas_energy": 17.60176751044844
+        },
+        {
+          "time": 0.2541522803119071,
+          "cycle": 300,
+          "mass": 1.0,
+          "mach_volume": 1.3501128696953548,
+          "mach_mass": 1.1874468240355425,
+          "supersonic_volume_fraction": 0.596099853515625,
+          "supersonic_mass_fraction": 0.4891026422742138,
+          "kinetic": 6.930627011877185,
+          "gas_energy": 20.069816397684715
+        },
+        {
+          "time": 0.29384078432338495,
+          "cycle": 350,
+          "mass": 1.0,
+          "mach_volume": 1.2769960005216765,
+          "mach_mass": 1.1071679153788885,
+          "supersonic_volume_fraction": 0.555694580078125,
+          "supersonic_mass_fraction": 0.4468931681673113,
+          "kinetic": 6.696665783716771,
+          "gas_energy": 22.288455092836323
+        },
+        {
+          "time": 0.3,
+          "cycle": 358,
+          "mass": 1.0,
+          "mach_volume": 1.2633854676687257,
+          "mach_mass": 1.103541017901066,
+          "supersonic_volume_fraction": 0.55438232421875,
+          "supersonic_mass_fraction": 0.4559829786808615,
+          "kinetic": 6.7881952540390476,
+          "gas_energy": 22.50525848395833
+        }
+      ]
+    }
+  },
+  "snapshot_detectors": [
+    {
+      "generation": 150,
+      "fixture_sha256": "f6c71c459d5e474a1788c8b7b2482a236aa0ea2e3f807c729f0a29f68e8716d4",
+      "native_csv_sha256": "0e601cc589ed397f7b1b109744ca37d69e893a54372305889857eede9e849083",
+      "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+      "valid_cells": 262144,
+      "inside_cells": 29183,
+      "width_cells": 4,
+      "boundary": "native fixture uses true periodic neighbors",
+      "snapshot_recomputation": true
+    },
+    {
+      "generation": 400,
+      "fixture_sha256": "303d9a90386b81386d72795165d4afc3448d7dc041bab4498f1de70aaffe9903",
+      "native_csv_sha256": "ad5690fdbd27c80698848f7e0b7939322730b7df599f00c25504fd5bdbfbc27a",
+      "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+      "valid_cells": 262144,
+      "inside_cells": 46119,
+      "width_cells": 4,
+      "boundary": "native fixture uses true periodic neighbors",
+      "snapshot_recomputation": true
+    },
+    {
+      "generation": 802,
+      "fixture_sha256": "8080a176e1de8d3b516687611d9f7ce72bec5d9d3d95418e8e53e4bb0ed68c85",
+      "native_csv_sha256": "32b17d3238e8bedd280ae7eae9ad3ba25c1e91aafd0d9f1338f0a56b9e209e58",
+      "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+      "valid_cells": 262144,
+      "inside_cells": 51957,
+      "width_cells": 4,
+      "boundary": "native fixture uses true periodic neighbors",
+      "snapshot_recomputation": true
+    }
+  ],
+  "figures": [
+    {
+      "name": "01_flow",
+      "title": "Forced supersonic flow and shock regions",
+      "caption": "Actual z=0.5078125 slices of the64\u00b3 baseline. Colors show log10 density (top) and local speed/sound speed (bottom); each row uses shared color limits. Cyan outlines are the unreduced native detector region recomputed from the exact saved primitive state, with true periodic neighbors, width4 and minMach1.1. The three generations are the available saved states nearest t=.05,.15,.30. Local flow Mach is distinct from detector shock-Mach estimates. Masks demonstrate implemented numerical membership, not a certified physical shock catalogue."
+    },
+    {
+      "name": "02_particles",
+      "title": "Particle histories over the final flow",
+      "caption": "Only the 123 actual particles whose final parent lies in the plotted z-cell are shown, avoiding a projection of unrelated depths. Left: final density and per-particle accumulated completed-episode count. Right: recomputed native region and the same particles. Counts include their whole recorded history and are not instantaneous shock membership. All8192particle IDs survive; cell-center MC samples are not smooth material trajectories."
+    },
+    {
+      "name": "03_evolution",
+      "title": "Supersonic evolution and heating",
+      "caption": "Volume rms local Mach is sqrt(mean(|v|\u00b2/(gamma P/rho))); supersonic volume fraction counts cells with local Mach>1. Energy panel: solid kinetic, dashed gas internal energy, using the same case colors. Continuous edot50forcing is present, but adiabatic shock/source heating increases sound speed. All saved baseline rms Mach values exceed1; this is an evolving forced realization, not a stationary turbulence ensemble. Total energy includes actual forcing work and the independently measured inherited RK2 source bias; edot is an input normalization target, not a validated physical injection rate."
+    },
+    {
+      "name": "04_counts",
+      "title": "How often particles meet detected regions",
+      "caption": "The count distribution includes all8192particles, including zero-encounter particles. Cumulative/rate panels count each canonical committed or terminal-open identity once at its first-inside observation; left-censored records, if present, are listed separately in the flags table. Rate bins have width.025code time. These are sampled numerical episode recording rates, not exact physical shock-crossing rates; correlated particles and merged flicker prevent a naive independent-event error model. The coarse matched-span case uses width2 at32\u00b3."
+    },
+    {
+      "name": "05_strength",
+      "title": "Recorded strength evidence",
+      "caption": "Left: finite first-inside pressure-Mach estimates for completed episodes, normalized per case. Right: baseline pressure/temperature estimators for 57013jointly finite events; 0events without both finite estimators remain in counts/CSV and validity flags. The diagonal is estimator agreement, not an independent physical truth test. Fixed endpoints at\u00b1width along the dominant normal axis have no certified plateaus. Either estimator can accept membership; a pressure estimate below1.1is therefore possible even with minMach1.1."
+    },
+    {
+      "name": "06_brackets",
+      "title": "Episode spans retain their timing brackets",
+      "caption": "For uncensored completed episodes, entry lies in[pre,first]and exit in[last,post]. The allowed elapsed-span bounds are[last-first,post-pre]; both endpoint CDFs are shown without inventing midpoints or exact crossing times. Right: widths of the underlying entry/exit observation brackets. Merged flicker can span brief outside intervals, so elapsed span is not continuous residence time. Cadence limitation and stochastic cell hopping remain explicit; these curves are not physical timing-error distributions."
+    },
+    {
+      "name": "07_recurrence",
+      "title": "Recurrence and right censoring",
+      "caption": "Left: 48825pairs of consecutive uncensored completed sequences for the same particle. Gap bounds are[max(0,next.pre-previous.post),max(0,next.first-previous.last)]. A zero lower bound means overlapping evidence brackets, not a known zero waiting time. Right: 1212terminal-open identities retained separately, with observed inside-span lower bounds; no finite completed duration is assigned. No stationary waiting-time law, survival fit or independent-episode assumption is claimed."
+    },
+    {
+      "name": "08_quality",
+      "title": "Validity flags and censored outcomes",
+      "caption": "Every flag is shown, including universal no_plateau/cadence_limited; overlapping flags do not form a probability partition. Direction ambiguity, temperature invalidity, suppressed reentry and merged flicker remain evidence, not filtered failures. Open terminal views retain canonical identity and can resume after restart; they are not counted as a second completed event. Complete means the numerical tracker obtained its closure evidence, not human certification of a physical passage."
+    },
+    {
+      "name": "09_histories",
+      "title": "Individual particle records without invented trajectories",
+      "caption": "Particles are selected deterministically at count ranks0,25,50,75,90and100percent of the full population, breaking ties by ID; their IDs/counts are printed. Blue segments are first-to-last inside evidence; orange marks entry/exit timing brackets. Red triangles identify open terminal episodes. The lower panel shows actual sampled native density histories; connecting samples is a visual guide, not a continuous material path. Count selection is illustrative rather than an unbiased ensemble sample."
+    },
+    {
+      "name": "10_sensitivity",
+      "title": "Timestep, grid and detector-support sensitivity",
+      "caption": "64\u00b3CFL/2 changes fluid integration, MC draws and observation cadence together.32\u00b3width4 also doubles the detector physical half-span;32\u00b3width2 matches the64\u00b3width4 half-span(1/16of box length). The two32\u00b3runs have byte-identical native particle histories and exact saved fluid/forcing arrays, isolating their detector-width difference. Grid comparisons still mix fluid resolution, stochastic transport and detection. These are measured sensitivities, not convergence acceptance or independent uncertainty estimates. No tolerances were tuned to reduce differences."
+    }
+  ],
+  "status": "showcase_completed_scientific_review_pending",
+  "source_sha256": {
+    "tst/shocks-mc/supersonic_showcase.py": "ee43803cfbb299fb3147f7d567886bdc5aecce6c6375a87ec9cccecb6fe369d2",
+    "inputs/tests/shock_mc_showcase.athinput": "f58f4583e0fff118e9e3f0432654ede66f721ecde9ccd43ce0823bf00503060d",
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/particles/shock_particles.cpp": "718bc86a7350efd4e20e99702c4bd47d6678baa908821575123d6a8d04687ee5",
+    "src/srcterms/turb_driver.cpp": "8a2e0ef47a0fbc611a528e8e9de414b7b23c87df04c64402943a0d4ca6265659",
+    "tst/shocks/detector_test.cpp": "e7a163ceb6320a50dbd59dcbdb803a7d8a4ae224f0d41bfc9e5d1e1c008771b1"
+  }
+}

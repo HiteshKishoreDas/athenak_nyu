@@ -413,3 +413,39 @@ fixtures/logs, independently timed source controls, exit evidence, event/checkpo
 archives and plot-local explanations are in forcing-enabled-20261013/. Raw final
 runs:/private/tmp/shock-forcing-enabled-qualified-20261013. Next gates: physical
 source-work/strength qualification, human review and RUSTY/Frontier runtime budget.
+
+
+## Requested forced supersonic paper showcase - 2026-10-13
+
+Coread4225ed/fingerprintf6195adunchanged. Input/analysis/PDFtoolsbac7241d.
+Five actual localSerial/double runs:64³/8192/initialMach5/edot50/t.3 baseline
+57013complete/0partial/1212open; halfCFL60813/0/1169; coarse32width4 35045/0/1198;
+coarse32width2 44472/0/1529; tracking-off64. Baseline finalrmsMach1.315985 and
+61.7043%locallysupersonic volume. All saved baseline rmsMach>1; adiabatic flow is
+evolving, not steady turbulence. Native input normalization is not physical power
+qualification. AllIDs survive, invalid0, uniquecontiguous sequences/counters agree;
+mass error<=1e-12. Full nativeTHPbytes and54baseline/off +27coarsewidth4/2 saved
+primitive/conserved/force volumes match exactly. No production changes or numerical
+tolerance adjustments. Baseline/off95.343/62.317s single runs with output/startup;
+not a replicated or HPC overhead benchmark.
+
+Existing periodic native detector fixture reconstructs262144valid cells in each
+snapshotgen150/400/802, inside29183/46119/51957. Raw xyz/zyx ordering and every
+plotted mask coordinate independently checked. Full-double thermo clocks bind
+generations; binary time has6digit metadata. Strict CSV independent recomputation
+confirms counts, strengthquantiles, all8192denominators and adjacent completed
+waitingpairs48825/52624/26893/36283. Bracket endpoints remain bounds, not exact
+material times; merged flicker may contain outside intervals. Allcensored/flags
+retained; baselineevent downstream_reentryflag0 is distinguished from75455surviving
+suppressed-entry attempts. All episodes have no_plateau/cadence_limited.
+
+Ten figure families(PDF/SVG/250dpiPNG),12-page report with explanations directly
+below plots, full episode/evolution CSV, selected primitive/mask NPZ, runconfigs/logs
+and rawhashes retained. Independent reviews integrated missing matchedphysicalspan
+comparison, unused read/counter deletion, inputMachcomment correction, eventflag/
+statecounter clarification. Root visualQA fixed energy case colors and prose; every
+measurement dictionary/native mask remained exactly unchanged. All12final pages
+rendered/reviewed, vector plot pages preserved. No stationary distribution, physical
+census, convergence/error model, energy-source accuracy, GPU/MPI or science signoff.
+Next: human exact-code review; native source-work and independent physical/ensemble/
+resolution/hardware gates for paper production conclusions. No new push.
