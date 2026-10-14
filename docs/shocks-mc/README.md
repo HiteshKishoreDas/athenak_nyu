@@ -229,3 +229,34 @@ a matched physical detector-span32³case, pass data/identity/non-interference ch
 The portable input and `tst/shocks-mc/supersonic_showcase.py` reproduce the packet.
 No production machinery changed. These are evolving numerical encounters, with
 source thermodynamic bias and physical/statistical/hardware gates still pending.
+
+
+## Higher-resolution longer forced box - 2026-10-14
+
+`inputs/tests/shock_mc_highres_long.athinput` uses128^3 cells,8,192MC tracers,
+initial Mach5, native continuous edot50 forcing and end time1.0. Width8/nghost8
+preserve the earlier64^3 width4 physical detector half-span1/16box.
+`shock_tracking/trace=true` explicitly writes every particle's raw inside flag,
+encounter phase and observations each timestep. This can produce tens of GiB;
+use a fresh output directory with adequate space. Native paired checkpoints
+are scheduled every0.25code time. No production code changed for this run.
+
+From an empty directory, run the same qualified executable with an absolute
+path to this input and `shock_tracking/directory=/absolute/new/shock_events`.
+The input's `job/basename` may be changed to label a fresh run. The volume
+outputs use `dt=0.1` and omit `dcycle`: merely specifying a negative `dcycle`
+still overrides native timed output. A two-step native smoke check confirms
+initial/cycle1/cycle2 output for the corrected input.
+
+The requested actual long run is in progress at
+`/private/tmp/shock-highres128-long-20261014`; its frozen input retains the
+initial `dcycle=-1` cadence mistake. Simulation/particle trace/checkpoints are
+unaffected. Intermediate flow maps are recovered from paired checkpoints
+with the same native executable and zero evolved steps in isolated output
+directories. `highres_long_analysis.py` streams strict event chunks, uses full
+precision trace clocks, verifies all particle samples against saved grids,
+and produces seven figure families. The common-window comparison counts
+first-inside starts through the smaller observed endpoint, never later
+closure counts. The figure captions retain physical and HPC limitations.
+Scientific approval and the inherited native RK2 source thermal failure
+remain separate. Results will be recorded after the run finishes.
