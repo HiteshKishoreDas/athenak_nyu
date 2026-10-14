@@ -449,3 +449,61 @@ rendered/reviewed, vector plot pages preserved. No stationary distribution, phys
 census, convergence/error model, energy-source accuracy, GPU/MPI or science signoff.
 Next: human exact-code review; native source-work and independent physical/ensemble/
 resolution/hardware gates for paper production conclusions. No new push.
+
+
+## Requested higher-resolution longer run - 2026-10-14 (in progress)
+
+Native core remains ad4225ed, fingerprintf6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b.
+The frozen launcher starts128^3/8192/initialMach5/edot50/tlim1/width8/nghost8,
+with full traces and paired restarts every0.25. Width8 preserves the64^3 width4
+physical detector half-span1/16box. No production machinery or thresholds changed.
+Raw run:/private/tmp/shock-highres128-long-20261014; execution.json records actual
+command, sourceHEAD3e6ce69a, executableSHA4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806
+and inputSHA3448bdf0cc213dbad811af5ec5aa1c6f42e5db659691f33cdc9a712595be86a0.
+
+NUM08 width8 exact mask parity passes1536-cell RH fixture(48inside) and1309-cell
+noncubic seeded fixture(28inside), with unchanged rtol=atol1e-12 for evidence.
+NUM10 independent forward planar RH oracle returns pressure/temperature Mach3
+at1e-12. Exact eight frozen dirty ShockIt source hashes and configs are retained
+in/private/tmp/shock-highres128-width8-20261014. This is numerical/fixture
+qualification; no turbulence physical truth tolerance is asserted.
+
+Original input mistakenly retained dcycle=-1 for timed volume outputs: native
+outputs.cpp gives key presence priority and suppresses intermediate grids. This
+is an output-cadence configuration failure, not a fluid/particle evolution failure.
+The original input is preserved. Corrected portable input omits those keys;
+two-step native smoke writes0/1/2. Initial field arrays and16,384 thermo samples
+at0/2 match the original run prefix (rho/time/positions exact,P1e-12). The
+first smoke attempt failed before evolution because CLI nlim cannot be overridden
+unless the key exists; the frozen successful variant explicitly includes it.
+One helper attempt used the system Python lacking NumPy; no test executed, and
+the installed ShockIt scientific environment was used for the successful check.
+
+Intermediate grid maps are recovered from actual paired checkpoints with the
+same executable and zero evolved steps, using isolated copied event prefixes.
+Generation1443/t0.25012120158057216 has55,204complete/795open/0partial,
+volume rmsMach1.53458 and68.3072percent locally supersonic volume.
+Generation2869/t0.5000860254640649 has144,534complete/1,034open/0partial,
+volume rmsMach1.10964 and46.9101percent locally supersonic volume.
+All8192 thermo samples in each recovered snapshot match original full traces;
+plotted native z64 masks/strengths/normals/endpoints match live samples at1e-12.
+Only the central plane of z55..73 reconstruction is claimed: real +/-8 endpoints
+and +/-1 gradients cannot see artificial z wrapping.
+
+Independent five-step persistence replay from quarter checkpoint exits0in9.5955s.
+Every canonical chunk0..1448(1,449) and manifest is byte-identical to uninterrupted
+main; strict parsing finds55,436 unique committed identities. Five traces
+1444..1448 contain40,960 exact rows/all8192IDs; restored1443 is not reobserved.
+821 terminal censored records match final active/pending traces and are disjoint
+from canonical identities. Their exact view cannot be compared with a nonexistent
+uninterrupted1448terminal view. Source/pair/exe/script/log/verification hashes are
+in/private/tmp/shock-highres128-quarter-replay-20261014. Same-partition CPU only.
+
+Independent numerical and integration reviewers resolved an unequal-window
+quarter-preview comparison: both cases now filter through min(.3,observed_end).
+Exports are frozen to analyzed generation; collector progress is labelled separately.
+Selected/frame clocks, duplicate IDs, raw geometry, executable/input/recovery
+provenance and cached masks/fixtures are checked explicitly. Unused overwritten
+list/import removed; no framework added. Final128^3/t1.0 gate remains pending.
+Native RK2 thermal oracle still fails; ensemble/stationarity/physical calibration,
+MPI/GPU/RUSTY/Frontier budgets and human scientific sign-off remain open.

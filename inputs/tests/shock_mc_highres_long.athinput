@@ -57,7 +57,7 @@ width = 8
 min_mach = 1.1
 event_capacity = 32768
 trace = true
-directory = /private/tmp/shock-highres128-long-20261014/shock_events
+directory = shock_events
 <problem>
 pgen_name = shock_tube
 shock_dir = 1

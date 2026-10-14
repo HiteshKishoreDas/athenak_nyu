@@ -14,12 +14,12 @@ from shock_history import manifests,read_chunk,read_suspended,parse_observation
 from bin_convert import read_binary
 from turbulence_pilot import FLAGS
 N=8192;GAMMA=1.4;IDS=[4575,0,2487,4551]
-execution=json.loads((run/'execution.json').read_text());progress=json.loads((a.trace/'progress.json').read_text())
+execution=json.loads((run/'execution.json').read_text());assert execution['executable_sha256']==sha(Path(execution['executable'])) and execution['input_sha256']==sha(run/'input.athinput');progress=json.loads((a.trace/'progress.json').read_text())
 g=a.generation if a.generation is not None else progress['last_generation']
-assert g<=progress['last_generation']
+assert 0<=g<=progress['last_generation']
 final=a.generation is None
 if final:assert execution['status']=='completed' and execution['exit']==0 and progress['status']=='completed' and progress['last_time']==1
-metadata=manifests(run/'shock_events');assert list(metadata)==[0];lineage,contract=metadata[0]
+metadata=manifests(run/'shock_events');assert list(metadata)==[0];lineage,contract=metadata[0];assert execution['compiled_source_fingerprint'] in contract
 # Stream events, keeping bounded summaries rather than nested observations for every event.
 last=[-1]*N;counts=[0]*N;flags=Counter();status=Counter();starts=[];mp=[];mt=[];bounds=[];entry=[];exitw=[];selected={pid:[] for pid in IDS}
 keys=['outcome','particle_id','sequence','flags','emission_generation','pre_time','first_inside','last_inside','post_time','pressure_mach','temperature_mach']
@@ -45,14 +45,15 @@ trace_rows={pid:[] for pid in IDS}
 with (a.trace/'selected-traces.csv').open() as f:
  for row in csv.DictReader(f):
   if int(row['generation'])<=g:trace_rows[int(row['particle_id'])].append(row)
-assert all(len(rows)==g+1 for rows in trace_rows.values())
+assert all([int(row['generation']) for row in rows]==list(range(g+1)) for rows in trace_rows.values())
 end_time=float(trace_rows[IDS[0]][-1]['time'])
 frames=[]
 with (a.trace/'frames.jsonl').open() as f:
  for line in f:
   row=json.loads(line)
   if row['generation']<=g:frames.append(row)
-assert len(frames)==g+1 and frames[-1]['time']==end_time
+assert [row['generation'] for row in frames]==list(range(g+1)) and frames[-1]['time']==end_time
+assert all(all(float(row['time'])==frames[cycle]['time'] for cycle,row in enumerate(rows)) for rows in trace_rows.values())
 logs=(run if final else view)/'run.log';log=logs.read_text();matches=re.findall(r'^Shock rank=0 (.+)$',log,re.M);assert len(matches)==1
 counters={k:float(v) if 'seconds' in k else int(v) for k,v in re.findall(r'(\w+)=([^ ]+)',matches[0])}
 assert counters['sampled']==N*(g+1) and counters['invalid']==0
@@ -73,11 +74,15 @@ for path in paths:
  actual={}
  with (run/'shock_events'/f'trace{cycle}.rank0.csv').open() as stream:
   for row in csv.reader(stream):
-   pid=int(row[0]);o=parse_observation(row[4:]);i,j,k=np.floor(np.array(o['x'])*128).astype(int)
+   assert len(row)==28;pid=int(row[0]);assert 0<=pid<N and pid not in actual
+   o=parse_observation(row[4:]);assert o['generation']==cycle and o['time']==t and all(0<=x<1 for x in o['x'])
+   i,j,k=np.floor(np.array(o['x'])*128).astype(int)
    assert o['rho']==rho[k,j,i] and abs(o['pressure']-pressure[k,j,i])<=1e-12*max(1,o['pressure'])
    actual[pid]=o
  assert set(actual)==set(range(N))
  if path.parent.parent!=run:
+  recovery=json.loads((path.parent.parent/'recovery.json').read_text());assert recovery['evolved_steps']==0 and recovery['exit']==0 and recovery['generation']==cycle and recovery['time']==t and recovery['executable_sha256']==execution['executable_sha256'] and recovery['compiled_source_fingerprint']==execution['compiled_source_fingerprint']
+  assert recovery['checkpoint_sha256']==sha(recovery['checkpoint']) and recovery['sidecar_sha256']==sha(recovery['checkpoint']+'.shock.rank0')
   thp=list((path.parent.parent/'prtcl_thermo_history').glob('*.thp'));assert len(thp)==1
   obs,clocks=read_thermo(thp[0],allow_identical_replay=True);assert clocks=={cycle:t} and len(obs)==N
   for pid,o in actual.items():
@@ -86,8 +91,8 @@ for path in paths:
  # Native detector on a crop with enough real support for this plane only.
  # Central z=64 uses gradients +/-1 and endpoint samples +/-8: z55..73 suffices.
  fixture=out/f'slice-fixture-{cycle}.txt';native_csv=out/f'slice-detector-{cycle}.csv';cache=out/f'slice-{cycle}.npz'
- if cache.exists() and 'rho_up' in np.load(cache):
-  mask=dict(np.load(cache));record=json.loads((out/f'slice-{cycle}.json').read_text());assert record['fluid_sha256']==sha(path) and record['detector_executable_sha256']==sha(root/'build-release/shock_detector_test')
+ if cache.exists() and 'mask_npz_sha256' in json.loads((out/f'slice-{cycle}.json').read_text()):
+  mask=dict(np.load(cache));record=json.loads((out/f'slice-{cycle}.json').read_text());assert record['fluid_sha256']==sha(path) and record['detector_executable_sha256']==sha(root/'build-release/shock_detector_test') and record['mask_npz_sha256']==sha(cache) and record['fixture_sha256']==sha(fixture) and record['native_csv_sha256']==sha(native_csv)
  else:
   arrays=[f[k][55:74].transpose(2,1,0).ravel() for k in ('dens','velx','vely','velz','eint')]
   header='128 128 19\n1.4 1.1 1000 1e-30 0 8 0 0 '+ ' '.join([format(1/128,'.17g')]*3)
@@ -97,7 +102,7 @@ for path in paths:
   needed=['valid','inside','mach_pressure','mach_temperature','rho_up','rho_down','pressure_up','pressure_down','temperature_up','temperature_down']+[s for s in names if s.startswith('normal')]
   data=np.loadtxt(native_csv,delimiter=',',comments='#',usecols=[names.index(k) for k in needed]);mask={k:data[:,n].reshape(128,128,19)[:,:,9].T for n,k in enumerate(needed)}
   assert np.all(mask['valid']==1);np.savez_compressed(cache,**mask)
-  record={'generation':cycle,'time':t,'fluid_sha256':sha(path),'fixture_sha256':sha(fixture),'native_csv_sha256':sha(native_csv),'detector_executable_sha256':sha(root/'build-release/shock_detector_test'),'scope':'Only z=64 plane: crop z55..73 includes actual +/-8 endpoints and +/-1 gradients. Full x/y periodic neighbors; artificial z wrap cannot affect central plane. No whole-volume mask assertion.'}
+  record={'generation':cycle,'time':t,'fluid_sha256':sha(path),'mask_npz_sha256':sha(cache),'fixture_sha256':sha(fixture),'native_csv_sha256':sha(native_csv),'detector_executable_sha256':sha(root/'build-release/shock_detector_test'),'scope':'Only z=64 plane: crop z55..73 includes actual +/-8 endpoints and +/-1 gradients. Full x/y periodic neighbors; artificial z wrap cannot affect central plane. No whole-volume mask assertion.'}
   (out/f'slice-{cycle}.json').write_text(json.dumps(record,indent=2)+'\n')
  checks=0
  for o in actual.values():
@@ -113,7 +118,7 @@ for path in paths:
  record['actual_trace_particles_checked']=checks;(out/f'slice-{cycle}.json').write_text(json.dumps(record,indent=2)+'\n');mask_records.append(record)
  snapshots[cycle]={'fields':f,'mach':mach,'mask':mask,'stats':stats};del actual;gc.collect()
 assert 0 in snapshots and abs(snapshots[0]['stats']['mach_volume']-5)<=1e-12
-report={'status':'completed_scientific_review_pending' if final else 'checkpoint_preview_run_still_running','through_generation':g,'end_time':end_time,'particles':N,'configuration':execution['configuration'],'execution':execution,'trace_validation':progress,'counters':counters,'outcomes':dict(status),'starts_per_particle':len(starts)/N,'complete_per_particle':status['complete']/N,'completed_count_histogram':dict(sorted(Counter(counts).items())),'flags':dict(flags),'mask_slice_validation':mask_records,'field_evolution':[snapshots[k]['stats'] for k in sorted(snapshots)],'scientific_signoff':'pending','limitations':['Adiabatic evolving forced realization; no stationarity or physical shock calibration.','Inherited native RK2 forcing thermal oracle fails; forcing source unchanged.','Endpoint no_plateau/cadence flags retained. MC cell hops are not continuous material trajectories.','Width8 at128 matches width4 at64 physical half-span1/16; resolution/CFL/MC dynamics still coupled.','Current run dcycle=-1 presence suppresses intermediate volume outputs; zero-step native checkpoint recovery supplies quarter-time maps. Corrected future input removes dcycle keys.','Local Serial double CPU run, no new MPI/GPU/Rusty/Frontier qualification.'],'figures':[],'source_sha256':{str(Path(__file__).name):sha(__file__),'input.athinput':sha(run/'input.athinput')}}
+report={'status':'completed_scientific_review_pending' if final else 'checkpoint_preview_run_still_running','through_generation':g,'end_time':end_time,'particles':N,'configuration':execution['configuration'],'execution':execution,'trace_validation':{'collector_progress':progress,'analyzed_generation':g,'analyzed_observations':N*(g+1)},'counters':counters,'outcomes':dict(status),'starts_per_particle':len(starts)/N,'complete_per_particle':status['complete']/N,'completed_count_histogram':dict(sorted(Counter(counts).items())),'flags':dict(flags),'mask_slice_validation':mask_records,'field_evolution':[snapshots[k]['stats'] for k in sorted(snapshots)],'scientific_signoff':'pending','limitations':['Adiabatic evolving forced realization; no stationarity or physical shock calibration.','Inherited native RK2 forcing thermal oracle fails; forcing source unchanged.','Endpoint no_plateau/cadence flags retained. MC cell hops are not continuous material trajectories.','Width8 at128 matches width4 at64 physical half-span1/16; resolution/CFL/MC dynamics still coupled.','Current run dcycle=-1 presence suppresses intermediate volume outputs; zero-step native checkpoint recovery supplies quarter-time maps. Corrected future input removes dcycle keys.','Local Serial double CPU run, no new MPI/GPU/Rusty/Frontier qualification.'],'figures':[],'source_sha256':{str(Path(__file__).name):sha(__file__),'input.athinput':sha(run/'input.athinput')}}
 with (out/'evolution.csv').open('w',newline='') as f:
  w=csv.DictWriter(f,fieldnames=list(report['field_evolution'][0]));w.writeheader();w.writerows(report['field_evolution'])
 (out/'frames.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in frames))
@@ -147,7 +152,7 @@ ax[0].set_xlabel('Complete episodes per particle');ax[0].set_ylabel('Fraction of
 save(fig,'03_encounters','Accumulated particle encounter statistics','All8192 IDs are included, including zero-complete particles. Starts count every committed or terminal-open identity once at its first-inside sample. Partial/open outcomes are retained separately. Rate bins cover the stated time window; these are numerical recording rates, not exact physical shock crossing rates or independent Poisson trials.')
 fig,ax=plt.subplots(2,2,figsize=(10,6));times=np.array([d['time'] for d in frames]);ax[0,0].plot(times,[d['inside']/N for d in frames],label='Raw inside mask');ax[0,0].plot(times,[(d['phase_active']+d['phase_pending'])/N for d in frames],label='Active + pending episode');ax[0,0].legend(fontsize=8);ax[0,0].set_ylabel('Fraction of particles');ax[0,0].set_xlabel('Code time');ax[0,1].barh(list(FLAGS),[flags[k]/len(starts) for k in FLAGS]);ax[0,1].set_xlabel('Fraction with flag; overlaps allowed')
 finite=np.isfinite(mp);cdf(ax[1,0],np.array(mp)[finite],'Pressure Mach');valid=np.isfinite(mp)&np.isfinite(mt);hh=ax[1,1].hexbin(np.array(mp)[valid],np.array(mt)[valid],gridsize=35,bins='log',mincnt=1);fig.colorbar(hh,ax=ax[1,1],label='Complete episodes per bin');ax[1,0].set_ylabel('Completed-event CDF');ax[1,0].set_xlabel('First-inside pressure Mach');ax[1,1].set_xlabel('Pressure Mach');ax[1,1].set_ylabel('Temperature Mach')
-save(fig,'04_membership_strength','Shock flags, episode state and strength evidence','The full per-step trace explicitly saves each raw inside flag. Raw membership and encounter phase differ: a pending exit can be outside while the episode remains open, and a suppressed downstream reentry can be inside while its phase is outside. Both are plotted from recorded states. All validity bits are retained. Finite first-inside strength estimates compare two native estimators; their agreement is not a physical calibration. Either estimator can accept membership, so a pressure estimate belowmin_mach1.1 can remain present.')
+save(fig,'04_membership_strength','Shock flags, episode state and strength evidence','The full per-step trace explicitly saves each raw inside flag. Raw membership and encounter phase differ: a pending exit can be outside while the episode remains open, and a suppressed downstream reentry can be inside while its phase is outside. Both are plotted from recorded states. Suppressed reentry attempts are a separate native counter, not extra event identities. All validity bits are retained. Finite first-inside strength estimates compare two native estimators; their agreement is not a physical calibration. Either estimator can accept membership, so a pressure estimate belowmin_mach1.1 can remain present.')
 fig,ax=plt.subplots(3,1,figsize=(10,7),sharex=True)
 for row,pid in enumerate(IDS):
  for e in selected[pid]:

@@ -63,3 +63,11 @@ See ledger.md for commands/results/failures and README.md for supported behavior
   snapshot reconstruction; brackets/censoring and matched-span sensitivity retained.
 - [ ] Paper physical acceptance remains separate: native source-work accuracy,
   independent physical shock calibration, ensembles/resolution/HPC and human approval.
+
+- [x] Larger-run preflight: width8 NUM08 exact frozen ShockIt parity and NUM10
+  independent Mach3 planar jump; same 1e-12 strength tolerance. Portable128^3
+  input output-cadence smoke passes initial/cycle1/cycle2.
+- [x] Larger-run checkpoint replay: five evolved steps,40,960 exact particle
+  trace rows,1,449 exact canonical chunks; censored identities retained separately.
+- [ ] Requested128^3/t1.0 run: native run and full per-step trace validation
+  ongoing; final counters/plots/exact evidence will be checked after completion.
