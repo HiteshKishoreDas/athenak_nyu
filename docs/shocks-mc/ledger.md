@@ -507,3 +507,13 @@ provenance and cached masks/fixtures are checked explicitly. Unused overwritten
 list/import removed; no framework added. Final128^3/t1.0 gate remains pending.
 Native RK2 thermal oracle still fails; ensemble/stationarity/physical calibration,
 MPI/GPU/RUSTY/Frontier budgets and human scientific sign-off remain open.
+
+Three-quarter checkpoint4408/t0.7501261927930813:252,294complete/1,093open,
+volume rmsMach0.894419,29.0970percent supersonic volume. Adiabatic heating
+makes late flow globally subsonic by this stated metric, while local supersonic
+regions persist. Runtime has no cooling/thermostat; sustained supersonic physics
+requires its own separate qualification. Four compact native128x128flow slices
+plus baseline64first-inside times now accompany the figures; baselineCSVhash
+is verified against its earlier packet. Plot rows use shared full-data limits
+without clipping tails. A second helper QA attempt used systemPython without
+NumPy; it failed before checking data and was rerun in the correct environment.

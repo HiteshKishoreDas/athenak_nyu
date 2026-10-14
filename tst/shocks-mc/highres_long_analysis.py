@@ -116,6 +116,7 @@ for path in paths:
     for dim,key in enumerate(('rho','pressure','temperature')):assert np.isclose(o[side][dim],mask[key+'_'+suffix][j,i],rtol=1e-12,atol=1e-12)
    checks+=1
  record['actual_trace_particles_checked']=checks;(out/f'slice-{cycle}.json').write_text(json.dumps(record,indent=2)+'\n');mask_records.append(record)
+ np.savez_compressed(out/f'flow-slice-{cycle}.npz',**{key:value[64] for key,value in f.items()},mach_local=mach[64],x=(np.arange(128)+.5)/128,y=(np.arange(128)+.5)/128,z=64.5/128,time=t,generation=np.uint64(cycle))
  snapshots[cycle]={'fields':f,'mach':mach,'mask':mask,'stats':stats};del actual;gc.collect()
 assert 0 in snapshots and abs(snapshots[0]['stats']['mach_volume']-5)<=1e-12
 report={'status':'completed_scientific_review_pending' if final else 'checkpoint_preview_run_still_running','through_generation':g,'end_time':end_time,'particles':N,'configuration':execution['configuration'],'execution':execution,'trace_validation':{'collector_progress':progress,'analyzed_generation':g,'analyzed_observations':N*(g+1)},'counters':counters,'outcomes':dict(status),'starts_per_particle':len(starts)/N,'complete_per_particle':status['complete']/N,'completed_count_histogram':dict(sorted(Counter(counts).items())),'flags':dict(flags),'mask_slice_validation':mask_records,'field_evolution':[snapshots[k]['stats'] for k in sorted(snapshots)],'scientific_signoff':'pending','limitations':['Adiabatic evolving forced realization; no stationarity or physical shock calibration.','Inherited native RK2 forcing thermal oracle fails; forcing source unchanged.','Endpoint no_plateau/cadence flags retained. MC cell hops are not continuous material trajectories.','Width8 at128 matches width4 at64 physical half-span1/16; resolution/CFL/MC dynamics still coupled.','Current run dcycle=-1 presence suppresses intermediate volume outputs; zero-step native checkpoint recovery supplies quarter-time maps. Corrected future input removes dcycle keys.','Local Serial double CPU run, no new MPI/GPU/Rusty/Frontier qualification.'],'figures':[],'source_sha256':{str(Path(__file__).name):sha(__file__),'input.athinput':sha(run/'input.athinput')}}
@@ -133,15 +134,16 @@ def save(fig,name,title,caption):
 def cdf(ax,x,label):
  x=np.sort(np.asarray(x));assert len(x);ax.step(x,np.arange(1,len(x)+1)/len(x),where='post',label=label)
 selected_snaps=[snapshots[k] for k in sorted(snapshots) if k>0]
+density_min=min(float(np.log10(s['fields']['dens'][64]).min()) for s in selected_snaps);density_max=max(float(np.log10(s['fields']['dens'][64]).max()) for s in selected_snaps);mach_max=max(float(s['mach'][64].max()) for s in selected_snaps)
 fig,axes=plt.subplots(2,len(selected_snaps),figsize=(max(6,3*len(selected_snaps)),5.4),squeeze=False)
 for col,s in enumerate(selected_snaps):
  for row,values in enumerate((np.log10(s['fields']['dens'][64]),s['mach'][64])):
-  im=axes[row,col].imshow(values,origin='lower',extent=(0,1,0,1),cmap='magma' if row==0 else 'viridis',vmin=-1 if row==0 else 0,vmax=1 if row==0 else max(5,float(values.max())))
+  im=axes[row,col].imshow(values,origin='lower',extent=(0,1,0,1),cmap='magma' if row==0 else 'viridis',vmin=density_min if row==0 else 0,vmax=density_max if row==0 else mach_max)
   mask=s['mask']['inside']
   if mask.min()!=mask.max():axes[row,col].contour((np.arange(128)+.5)/128,(np.arange(128)+.5)/128,mask,levels=[.5],colors='cyan',linewidths=.45)
   axes[row,col].set_title(f't={s["stats"]["time"]:.4f}');axes[row,col].set_xlabel('x / box length');fig.colorbar(im,ax=axes[row,col],label='log10 density' if row==0 else 'Local flow Mach',shrink=.8)
 axes[0,0].set_ylabel('y / box length');axes[1,0].set_ylabel('y / box length')
-save(fig,'01_flow','128-cubed flow and detected regions','Actual z=64 cell-center slices (z=0.50390625). Top: log10 density; bottom: local speed/sound speed. Cyan outlines use the native unreduced width8 detector. The central crop has full real support; masks and finite/NaN strength values agree with actual live particle samples on this plane at rtol=atol=1e-12. Checkpoint maps were recovered with the same binary and zero evolved steps. These detector masks are numerical evidence, not independently certified physical shock surfaces.')
+save(fig,'01_flow','128-cubed flow and detected regions','Actual z=64 cell-center slices (z=0.50390625). Top: log10 density; bottom: local speed/sound speed. Each row uses shared color limits spanning all plotted data, with no clipped tails. Cyan outlines use the native unreduced width8 detector. The central crop has full real support; masks and finite/NaN strength values agree with actual live particle samples on this plane at rtol=atol=1e-12. Checkpoint maps were recovered with the same binary and zero evolved steps. These detector masks are numerical evidence, not independently certified physical shock surfaces.')
 fig,ax=plt.subplots(1,3,figsize=(10,3.4));evo=report['field_evolution'];ts=[d['time'] for d in evo]
 ax[0].plot(ts,[d['mach_volume'] for d in evo],'o-',label='Volume rms local Mach');ax[0].axhline(1,color='k',ls=':');ax[0].legend(fontsize=7);ax[1].plot(ts,[d['supersonic_volume_fraction'] for d in evo],'o-',label='Volume fraction');ax[1].plot(ts,[d['supersonic_mass_fraction'] for d in evo],'s-',label='Mass fraction');ax[1].legend(fontsize=7);ax[2].plot(ts,[d['kinetic'] for d in evo],'o-',label='Kinetic');ax[2].plot(ts,[d['gas_energy'] for d in evo],'s-',label='Internal');ax[2].legend(fontsize=7)
 for x in ax:x.set_xlabel('Code time')
@@ -166,17 +168,19 @@ save(fig,'05_particle_histories','Actual per-step particle flags and encounter h
 fig,ax=plt.subplots(1,2,figsize=(10,3.8));bd=np.array(bounds);cdf(ax[0],bd[:,0],'Lower span bound');cdf(ax[0],bd[:,1],'Upper span bound');cdf(ax[1],entry,'Entry bracket');cdf(ax[1],exitw,'Exit bracket')
 for x in ax:x.set_xlabel('Code time');x.set_ylabel('Completed-event CDF');x.legend()
 save(fig,'06_timing','Timing bounds from observed samples','For complete episodes the entry bracket is[pre,first], exit bracket[last,post], and elapsed-span interval[last-first,post-pre]. No midpoint is assigned. Merged flicker may include brief outside intervals, so this span is not continuous inside residence time. Terminal-open records receive no artificial completed duration.')
+assert sha(a.baseline/'episodes.csv')==json.loads((a.baseline/'sha256.json').read_text())['episodes.csv']
 old=[]
 with (a.baseline/'episodes.csv').open() as f:
  for row in csv.DictReader(f):
   if row['case']=='baseline':old.append(float(row['first_inside']))
 common_end=min(.3,end_time);new=np.array(starts);new=new[new<=common_end];old=np.array(old);old=old[old<=common_end]
+np.savetxt(out/'baseline64-starts.csv',np.sort(old),fmt='%.17g',header='first_inside',comments='')
 fig,ax=plt.subplots(1,2,figsize=(10,3.6))
 for data,label in ((old,'64³, width4'),(new,'128³, width8')):
  data=np.sort(data);ax[0].step(data,np.arange(1,len(data)+1)/N,where='post',label=label);bins=np.linspace(0,common_end,13);h,_=np.histogram(data,bins);ax[1].stairs(h/(N*np.diff(bins)),bins,label=label)
 for x in ax:x.set_xlabel('First-inside recording time');x.legend()
 ax[0].set_ylabel('Cumulative recorded starts per particle');ax[1].set_ylabel('Starts / particle / code time')
-report['common_window_comparison']={'time':common_end,'baseline64_starts':len(old),'highres128_starts':len(new),'physical_half_span':1/16,'claim':'Sensitivity only; not a convergence gate. Closure counts are not compared across unequal endpoints.'}
+report['common_window_comparison']={'time':common_end,'baseline64_starts':len(old),'highres128_starts':len(new),'physical_half_span':1/16,'baseline_episode_sha256':sha(a.baseline/'episodes.csv'),'claim':'Sensitivity only; not a convergence gate. Closure counts are not compared across unequal endpoints.'}
 save(fig,'07_resolution','Matched detector span in the common time window','Both cases use8192 particles, CFL.30 and the same seeds/forcing inputs. Width8 at128³ matches width4 at64³ physical half-span1/16box. Only first-inside starts through the common observed endpoint are compared, including unique terminal-open identities; unequal later closure times do not bias this measure. Resolution still changes fluid evolution, MC random draws and observation cadence together. This is measured sensitivity, with no claimed converged tolerance or independent ensemble error bar.')
 report['pressure_mach_quantiles']=np.quantile(np.array(mp)[np.isfinite(mp)],[.1,.5,.9]).tolist()
 (out/'report.json').write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
