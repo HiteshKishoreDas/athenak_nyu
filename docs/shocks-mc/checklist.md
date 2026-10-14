@@ -69,5 +69,10 @@ See ledger.md for commands/results/failures and README.md for supported behavior
   input output-cadence smoke passes initial/cycle1/cycle2.
 - [x] Larger-run checkpoint replay: five evolved steps,40,960 exact particle
   trace rows,1,449 exact canonical chunks; censored identities retained separately.
-- [ ] Requested128^3/t1.0 run: native run and full per-step trace validation
-  ongoing; final counters/plots/exact evidence will be checked after completion.
+- [x] Requested128^3/t1.0 run: native exit0/generation6033; all49,430,528
+  observations/all8192IDs per6034frames, invalid0;367,074complete/0partial/999open.
+  Exact80-step native replay crosses forcing update;655,360trace rows/all1524
+  chunks match. Independent final CSV/conserved-field audit and8-page visual QA pass.
+- [ ] Larger-run physical acceptance: final rmsMach0.808576 from adiabatic heating;
+  evolving flow, no plateau or stationary Mach5 claim. Source-work/calibration/
+  ensembles/hardware/human gates remain open.

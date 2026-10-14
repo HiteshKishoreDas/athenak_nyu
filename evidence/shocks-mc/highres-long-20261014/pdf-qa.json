@@ -1,0 +1,12 @@
+{
+  "pages": 8,
+  "vector_figures": 7,
+  "all_pages_rendered_and_visually_reviewed": true,
+  "all_pages_text_present": true,
+  "cover_title_bottom": 107.75799999999998,
+  "cover_table_header_top": 146.75900000000001,
+  "no_overlap": true,
+  "pdf_sha256": "2e8c7e6920356ddcbe5eb560241e0b20e5398045365941325c487eadb950b581",
+  "renderer": "pdftoppm100dpi",
+  "scientific_signoff": "pending"
+}

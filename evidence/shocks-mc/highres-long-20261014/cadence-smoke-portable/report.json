@@ -1,0 +1,29 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+  "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "test": "Corrected input native timed-output smoke, two evolved steps only",
+  "exit": 0,
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-highres128-cadence-smoke-portable-20261014/input.athinput",
+    "time/tlim=.0004",
+    "output3/dt=.0001",
+    "output6/dt=.0001",
+    "output4/dt=-1",
+    "output5/dt=-1",
+    "shock_tracking/trace=false",
+    "shock_tracking/directory=/private/tmp/shock-highres128-cadence-smoke-portable-20261014/shock_events"
+  ],
+  "input_sha256": "52c190a3254c35fb138017ad6ffcdc3fe76bb86043a97e44842f16e3261df8c4",
+  "cycles": [
+    0,
+    1,
+    2,
+    2
+  ],
+  "seconds": 6.350406874960754,
+  "log_sha256": "3f7c2e28623c227838452125048464638fb258c7b70dd7cb72fe23c0c2839c91"
+}

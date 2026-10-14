@@ -517,3 +517,78 @@ plus baseline64first-inside times now accompany the figures; baselineCSVhash
 is verified against its earlier packet. Plot rows use shared full-data limits
 without clipping tails. A second helper QA attempt used systemPython without
 NumPy; it failed before checking data and was rerun in the correct environment.
+
+
+## Requested higher-resolution longer run completed - 2026-10-14
+
+Native exit0 at t1.0/generation6033. Actual local wall126.456889minutes;
+Serial CPU/double/RK2/PLM/HLLC/CFL.30,128^3 cells,8192MC particles,
+initialrmsMach5,continuous nativeedot50,gamma1.4,width8/nghost8.
+Coread4225ed/fingerprintf6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b
+unchanged; exact binarySHA4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806.
+Current input/analysis commitsfeb86365/0a7c9099/60c25ccd; production diff against
+ad4225ed is empty. Executed-launcher.py/execution.json retain exact command,
+source archive/config/build-cache/input hashes; original execution inputSHA
+3448bdf0cc213dbad811af5ec5aa1c6f42e5db659691f33cdc9a712595be86a0.
+Corrected portable inputSHA52c190a3254c35fb138017ad6ffcdc3fe76bb86043a97e44842f16e3261df8c4.
+
+Final complete367074/partial0/open999;44.808837890625complete per particle.
+Trace validator streams49,430,528observations, exactly8192uniquealive IDs in
+6034contiguous frames including initial, invalid0, synchronized full-double
+clocks. Canonical identities/contiguous episode sequences/counters/brackets
+and terminal censored disjointness pass. Every episode carries no_plateau and
+cadence_limited;25955merged_flicker/3426direction_ambiguous/999right_censored.
+Native suppressed_reentries_surviving405806 is a separate attempt counter,
+not a counted episode flag. Bounded event highwater99(capacity32768).
+Diagnostic seconds2407.654 are a runtime counter, not isolated overhead evidence.
+
+Final primitive route:mass1,volume rmsMach0.8085756437487729,massweighted
+rmsMach0.7805464059823329,supersonicvolume0.20398950576782227,
+supersonicmass0.17492460336076696,meanKE9.167226429643268,
+meaninternal55.124192344940816. Independently using conserved rho/momentum/
+energy reproduces final mass/Mach/supersonicvolume/energies with zero difference,
+unchanged1e-12 floats and exact fraction criterion. Periodic saved mass error
+<=1.11e-16 (unchanged acceptance1e-12). Adiabatic heating makes late rmsMach<1;
+local supersonic regions persist. This is evolving forced flow, not a stationary
+Mach5 ensemble. Existing source thermal oracle remains FAILED.
+
+Independent80-step restart replay:quarter1443 ->1523/t0.2644309932851887,
+130.48s native, covers original scheduled forcing update at0.26(dt_update.01).
+All1524canonical chunks+manifest byte-identical to uninterrupted run;59413
+uniquecommitted identities,655360continued trace rows/all8192IDs per step
+byte-identical; restored1443 not sampled twice.849terminal censored records
+match active/pending flags/identities and are disjoint from canonical events.
+No nonexistent original1523terminal view is claimed byte-equivalent. ReportSHA
+2ab3a9b0db743854f016aa19a771505ec832081c11420bf81a9a3c1ba893dbf1.
+This and preceding5step replay are local samebinary/samepartition engineering.
+
+Final independent CSV audit reconstructs complete/open totals,8192population,
+unique contiguous IDs/sequences,bounds/flags/histograms/strength quantiles and
+common-window first-inside counts. At t<=.3,old64case58225starts vs128case71419;
+matching physical detector span, a measured numerical sensitivity, not convergence.
+Independent scriptSHA73b6b52028b0a3c9774aae2a392b28f819de13b6210571f2b5a5a5bfd6f3bc8c;
+reportSHAc9959485d131a3d251966ed77a069575cd31308753bb38580e8483a104e9c0cb.
+Actual command from feature root:
+`PYTHONDONTWRITEBYTECODE=1 /Users/hitesh/hitesh/git/shockit/.venv/bin/python /private/tmp/highres128-final-independent-check.py`;
+2.85s replay produced byte-identical original report. Script/log/source hashes
+are retained. Numerical/integration/persistence independent reviews and applied
+suggestions are in independent-reviews.json; no scientific approval inferred.
+
+Exact raw archives were moved to durable artifact directory
+`/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/raw`; original/private/tmp paths are symlinks preserving metadata.
+All18126primary raw-file hashes retained; full trace collection never truncated.
+Exact executable/buildcache/detector and AthenaK/Kokkos sources archived beside
+raw under runtime; compact111-file packet in evidence/shocks-mc/highres-long-20261014.
+All7figure families(PNG/SVG/vectorPDF),redrawable CSV/NPZ and8page mergedPDF
+with adjacent explanations are retained. Each page parsed/rendered with
+pdftoppm100dpi and visually reviewed, no clipping/overlap; ZIP CRC passes.
+PDFSHA2e8c7e6920356ddcbe5eb560241e0b20e5398045365941325c487eadb950b581.
+Packet README documents exact fresh-run/analysis/native replay instructions.
+
+Acceptance:requested local larger/longer engineering run and evidence COMPLETE.
+Failures retained:original outputcadence,nlim-before-key helper,systemPython missing
+NumPy; corrected fixtures rerun with unchanged tolerance/source and no evolution
+fabricated. Physical timing/strength/plateau truth,stationary ensemble/errorbudget,
+native RK2 source-work,MPI/GPU/RUSTY/Frontier budget/hardware and human exact-code
+signoff remain pending. Next gate:human inspection of this exact-code evidence
+and independent physical/source qualification. No push/merge/release this turn.

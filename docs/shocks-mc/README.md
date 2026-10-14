@@ -248,15 +248,34 @@ outputs use `dt=0.1` and omit `dcycle`: merely specifying a negative `dcycle`
 still overrides native timed output. A two-step native smoke check confirms
 initial/cycle1/cycle2 output for the corrected input.
 
-The requested actual long run is in progress at
-`/private/tmp/shock-highres128-long-20261014`; its frozen input retains the
-initial `dcycle=-1` cadence mistake. Simulation/particle trace/checkpoints are
-unaffected. Intermediate flow maps are recovered from paired checkpoints
-with the same native executable and zero evolved steps in isolated output
-directories. `highres_long_analysis.py` streams strict event chunks, uses full
-precision trace clocks, verifies all particle samples against saved grids,
-and produces seven figure families. The common-window comparison counts
-first-inside starts through the smaller observed endpoint, never later
-closure counts. The figure captions retain physical and HPC limitations.
-Scientific approval and the inherited native RK2 source thermal failure
-remain separate. Results will be recorded after the run finishes.
+The actual requested run completed at time1.0/generation6033 in126.457minutes
+on the local Serial CPU:367,074complete,0partial,999open episodes. All8192IDs
+are present in every one of6034frames:49,430,528observations, invalid0.
+Independent full-trace validation, strict canonical identity/counter/bracket
+checks and final CSV/conserved-field audit passed. Five- and80-step native
+same-partition quarter-checkpoint replays match all continued traces/events
+byte for byte; the longer replay crosses a scheduled forcing update.
+
+The final volume rms localMach is0.808576;20.399percent of the volume remains
+locally supersonic. Adiabatic heating lowers Mach over this longer interval.
+This run does not establish stationary Mach5 turbulence or physical shock
+counts. No plateau is certified; all episodes retain no_plateau/cadence_limited
+flags. The inherited native RK2 source thermal oracle still fails. Physical
+calibration, human scientific approval and cluster/GPU qualification remain open.
+
+The original executed input retains a dcycle=-1 cadence mistake: native key
+presence suppresses intermediate volume outputs. Simulation, every-step trace
+and checkpoints are unaffected. Actual quarter-time fields are recovered from
+paired native checkpoints with the same executable and zero evolved steps.
+The corrected portable input omits dcycle; a two-step native output smoke and
+exact original-prefix checks pass. No exact crossing times are invented.
+
+See [the final evidence packet](../../evidence/shocks-mc/highres-long-20261014/README.md)
+for exact source/configuration, commands, failures, reviews and checks. Its
+8-page PDF places explanations beside all7figure families. Compact episode/
+evolution/selected-trace CSVs and native flow/mask slices permit independent
+inspection. The full26GiB native history/checkpoint archive is retained at
+`/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/raw`; exact runtime/source archives are under `runtime` beside it.
+A scientific Python with the already installed NumPy/Matplotlib runs
+`tst/shocks-mc/highres_long_analysis.py`; the packet documents the arguments.
+New source/evidence commits remain local, not pushed.

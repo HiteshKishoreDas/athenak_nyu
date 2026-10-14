@@ -1,0 +1,29 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+  "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "source_commit": "3e6ce69ad11182a14c5a90d8fa2e7f34e2b3f83e",
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-highres128-long-20261014/input.athinput"
+  ],
+  "input_sha256": "3448bdf0cc213dbad811af5ec5aa1c6f42e5db659691f33cdc9a712595be86a0",
+  "configuration": {
+    "cells": 128,
+    "particles": 8192,
+    "tlim": 1.0,
+    "width": 8,
+    "nghost": 8,
+    "trace": true,
+    "gamma": 1.4,
+    "dedt": 50,
+    "initial_mach": 5
+  },
+  "status": "completed",
+  "started_unix": 1791958213.865487,
+  "exit": 0,
+  "wall_seconds": 7587.413352167001,
+  "log_sha256": "a05f0a8110bbf64edb8b0ba6256cca385375ab28e3f54436493b95810a21a08b"
+}
