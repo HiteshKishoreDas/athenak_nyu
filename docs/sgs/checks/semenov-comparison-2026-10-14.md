@@ -124,3 +124,21 @@ Raw evidence, source fingerprints, protocols, histories, initial states and plot
 Use the existing CPU-double `PROBLEM=sgs_verify` build and NumPy/Matplotlib environment. Output directories must be new. The [test README](/Users/hitesh/.codex/worktrees/multiphase-sgs/athenak_nyu/tst/sgs/README.md) documents the build and runner commands. `decay_turbulence.py --initial-snapshot` accepts a native SGS-off snapshot and records its origin, hash and normalization. `verify_adiabatic_sgs.py` runs the compression/decay controls; `plot_adiabatic_sgs.py` renders their saved JSON without launching simulations.
 
 [All plot gallery](/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbe-7042-7051-b251-90b2d08343eb/sgs-semenov-comparison-2026-10-14/index.html) · [Main five-page decay PDF](/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbe-7042-7051-b251-90b2d08343eb/sgs-semenov-comparison-2026-10-14/decay-mass-rms/report.pdf) · [Larger filtering-scale PDF](/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbe-7042-7051-b251-90b2d08343eb/sgs-semenov-comparison-2026-10-14/decay-bandwidth/report.pdf)
+
+
+## Explanation follow-up: 2026-10-16
+
+Read the saved experiment report to explain the test; no simulations were rerun and no solver or coefficient changes were made.
+
+The question is whether independently evolved coarse SGS energy tracks the kinetic energy removed by filtering a finer simulation. The reference is a numerical estimate, not certified truth. With a volume average over one coarse cell, the measured unresolved kinetic-energy density is
+
+\[
+K_{\mathrm{ref}}=\frac12\overline{\rho |\mathbf u|^2}
+-\frac{|\overline{\rho\mathbf u}|^2}{2\bar\rho}.
+\]
+
+Coarse SGS-on runs receive this exact variance only at initialization; subsequent reference snapshots are used for comparison, never fed back into the coarse run. SGS-off retains the initially removed variance as heat, so both lanes start with matched density, momentum and represented energy. Initial equality is imposed, not a prediction. This is an evolution test, not a test of recovering an unknown initial SGS reservoir from coarse velocities alone.
+
+The parent evolved field was restricted and rescaled to mass-weighted global Mach \(8.6\), with initial sound speed \(1\). The time convention is \(T=L/(2u_{\mathrm{rms,mass},0})\); all lanes evolve without forcing to \(10T\), with averages over \(1T\)–\(10T\). Rescaling a lower-Mach decay field does not establish a stationary, developed Mach-\(8.6\) state. Reference sensitivity of \(22\%\)–\(58\%\), the smaller grids and the near-isothermal EOS prevent a claim of paper reproduction. Improvements in resolved-energy partition are provisional comparisons to this reference, not proof of correct unresolved energy or its spatial distribution.
+
+The separate pressure-only shock controls test adiabatic compression; uniform-decay controls test decay integration. Neither is an ART simulation. Their measured errors do not establish the cause of the turbulent-box deficit.
