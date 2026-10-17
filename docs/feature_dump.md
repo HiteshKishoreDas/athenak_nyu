@@ -20,3 +20,12 @@
 - Existing numerical evidence: [material curves](../doc/material_curves.md) and
   [qualification record](../doc/material-curves-evidence/README.md).
   No new build, simulation, GPU qualification, push or PR performed in this merge.
+
+## 2026-10-17 — publication
+
+- User authorized publishing `feature_dump` to `origin`.
+- Integration/documentation tip before publication: `430c21e9`.
+- Publish with `git push --set-upstream origin feature_dump`;
+  verify the remote branch SHA against local `HEAD` afterward.
+- Normal branch push; preserve `codex/multiphase-material-curves` unchanged.
+- Existing 10 reader tests passed during integration; publication adds no code changes.
