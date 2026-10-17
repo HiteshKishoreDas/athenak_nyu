@@ -1,0 +1,14 @@
+{
+  "merge_commit": "0b063c85e9f3f7f0857647ce944cc0b686b2f362",
+  "parents": [
+    "cea1dafcf6830bfecba3e2aea5622b5c943a761c",
+    "2450e1c21b0a97c0f1635da75a20701c7e0852a4"
+  ],
+  "main_checkout": "/Users/hitesh/hitesh/git/athenak_nyu",
+  "target_branch": "feature_dump",
+  "source_branch": "codex/shock-multiphase",
+  "source_branch_unchanged": true,
+  "all_tested_source_hashes_match_main_checkout": true,
+  "push_performed": false,
+  "scientific_signoff": "pending"
+}
