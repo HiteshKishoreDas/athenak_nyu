@@ -1,0 +1,14 @@
+{
+  "name": "native_control_lagrangian_mc",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_lagrangian_mc/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "e6ad493231b1d37eda1b20b114ea6f141c4ad7975143b7dac076c321fc65aebe",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_lagrangian_mc",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

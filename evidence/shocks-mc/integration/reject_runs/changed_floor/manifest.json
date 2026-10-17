@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-r",
+    "/private/tmp/shock-mc-rejects-stylefinal/bound_seed/rst/shock_mc.00001.rst",
+    "output1/dt=-1",
+    "hydro/dfloor=.1"
+  ],
+  "directory": "/private/tmp/shock-mc-rejects-stylefinal/changed_floor",
+  "exit": 1,
+  "elapsed_seconds": 0.004835499999899184,
+  "input_sha256": "cce3739bfdba096bab3877faee843e2e7f146d2af8be3103eea818e9f18f0f55",
+  "log_sha256": "e1f49ea6299dd147581436b02815ac0d06d98d8949c7372888980509bbcdf798",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "changed_floor",
+  "expected_diagnostic": "contract changed",
+  "passed": true
+}

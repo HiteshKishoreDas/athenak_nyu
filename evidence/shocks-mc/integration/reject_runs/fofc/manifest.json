@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-rejects-stylefinal/fofc/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-rejects-stylefinal/fofc",
+  "exit": 1,
+  "elapsed_seconds": 0.004556458001388819,
+  "input_sha256": "c0354037195ce4657bcf4aa8f89e9e4606e4e8947d27dc04ef56e5cfb90b9252",
+  "log_sha256": "2d4388dd3243bc984d9bb61a9d7762a44707e02dad475b0027c2df25f07409b7",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "fofc",
+  "expected_diagnostic": "requires uniform",
+  "passed": true
+}

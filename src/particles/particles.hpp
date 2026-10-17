@@ -20,6 +20,8 @@
 #include "tasklist/task_list.hpp"
 #include "bvals/bvals.hpp"
 #include "particles/tracer_fields.hpp"
+#include "shocks/detector.hpp"
+#include "shocks/encounter.hpp"
 
 // forward declarations
 class IOWrapper;
@@ -101,6 +103,33 @@ class Particles {
   std::int64_t random_seed = 0;
   std::int64_t next_tracer_tag = 0;
 
+  bool shock_enabled = false;
+  shocks::DetectorConfig shock_config;
+  DvceArray4D<shocks::Signal> shock_signal;
+  DvceArray1D<shocks::EncounterState> shock_state;
+  DvceArray1D<shocks::Event> shock_events;
+  int shock_capacity = 0;
+  std::string shock_lineage, shock_directory, shock_contract;
+  uint64_t shock_generation = UINT64_MAX;
+  Real shock_time = -1;
+  uint64_t shock_sampled = 0, shock_invalid = 0, shock_complete = 0, shock_partial = 0;
+  int shock_highwater = 0;
+  Real shock_seconds = 0;
+  uint64_t shock_history_digest = UINT64_C(14695981039346656037);
+  void PreflightShockRestart(const std::string &fname);
+  bool shock_trace = false;
+  std::vector<shocks::Event> shock_pending_exits;
+  void EmitShockExits(const std::vector<int> &indices);
+  void PrepareShockStore(bool restarting);
+  void DrainShockEvents(const std::vector<shocks::Event> &events, uint64_t generation);
+  void ObserveShocks(Real time, uint64_t generation);
+  void ResizeShockState(int nold);
+  void WriteShockTransfers(const HostArray2D<Real> &evidence);
+  void WriteShockRestart(const std::string &fname);
+  void ReadShockRestart(const std::string &fname);
+  void WriteShockSuspended();
+  void ValidateShockPhysics();
+
   ParticlesPusher pusher;
 
   // Boundary communication buffers and functions for particles
@@ -134,6 +163,7 @@ class Particles {
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles
   std::vector<TracerSeedSchedule> seed_schedules_;
 
+  void ConfigureShockTracking(ParameterInput *pin);
   void ParseTracerSeedSchedules(ParameterInput *pin);
   void SeedTracersAtTime(Real event_time, bool initial_only);
   void AppendParticles(const HostArray2D<Real> &new_rdata,

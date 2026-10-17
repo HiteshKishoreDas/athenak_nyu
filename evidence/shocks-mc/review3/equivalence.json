@@ -1,0 +1,152 @@
+{
+  "source_fingerprint": "3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc",
+  "physical_measurements_exactly_equal": true,
+  "physical_cases": 21,
+  "csv_comparison": [
+    {
+      "label": "seed11",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "seed29",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "seed47",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "seed83",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "seed127",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "seed211",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "seed307",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "seed401",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "mach1.2",
+      "csv_files_compared": 1215,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "mach1.5",
+      "csv_files_compared": 948,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "mach3",
+      "csv_files_compared": 1359,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "mach5",
+      "csv_files_compared": 2115,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "gamma53",
+      "csv_files_compared": 1083,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "stationary",
+      "csv_files_compared": 1140,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "boost2",
+      "csv_files_compared": 1020,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "reflected",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "nx64",
+      "csv_files_compared": 492,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "nx256",
+      "csv_files_compared": 1956,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "cfl0.15",
+      "csv_files_compared": 1956,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "cfl0.45",
+      "csv_files_compared": 654,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    },
+    {
+      "label": "planar3d",
+      "csv_files_compared": 981,
+      "all_csv_equal_after_source_fingerprint_substitution": true
+    }
+  ],
+  "csv_total": 23748,
+  "csv_normalization": "Only substitute old implementation fingerprint with new; all remaining event/suspended/trace/transfer CSV bytes unchanged.",
+  "native_particle_restart_payload_comparison": [
+    {
+      "phase": "outside",
+      "native_particle_tail_bytes": 9796,
+      "native_particle_tail_sha256": "b5565205590b1bb5bd0accd8151f61c199c1ae94decd346810ae9c1294498f87",
+      "exactly_equal": true
+    },
+    {
+      "phase": "active",
+      "native_particle_tail_bytes": 9796,
+      "native_particle_tail_sha256": "521732877fd2e370f6d4be77cb4dd8e4751a3494ea90fabd77d2fea73b869593",
+      "exactly_equal": true
+    },
+    {
+      "phase": "pending",
+      "native_particle_tail_bytes": 9796,
+      "native_particle_tail_sha256": "a72dec0f57858b9d2ae22c7dc8bb349e6831dde4b41c926b164b52c0612904a1",
+      "exactly_equal": true
+    }
+  ],
+  "style": {
+    "command": [
+      "python3",
+      "tst/scripts/style/cpplint.py",
+      "--filter=-build/include_subdir",
+      "src/particles/shock_particles.cpp",
+      "src/shocks/encounter.hpp",
+      "src/particles/particles_lagrangian_mc.cpp",
+      "src/bvals/bvals_part.cpp"
+    ],
+    "CPPLINT_cfg_sha256": "25aea092157d362894835d990df302e8c407a30b1d228a30e297cc8e3d4dead4",
+    "baseline_unique_findings": 10,
+    "final_unique_findings": 10,
+    "introduced_findings": [],
+    "whole_linter_exit": 1,
+    "reason": "10 inherited native MC findings; all source-text/category equivalent.",
+    "initial_comparison_failure": "Temp reference initially lacked repository CPPLINT.cfg; copied exact native config and repeated comparison, without editing tolerances/filters."
+  }
+}

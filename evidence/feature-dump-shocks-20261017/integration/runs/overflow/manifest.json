@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/overflow/input.athinput"
+  ],
+  "directory": "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/overflow",
+  "exit": 1,
+  "elapsed_seconds": 2.849712667055428,
+  "input_sha256": "7ebc0891107d21d8a8724fd070ee7aed2121df38791bbf966cb27ccd5f56e184",
+  "log_sha256": "a82306df78507ecaaec2621c288b0d790baca663f42a85eefe3d453a192ad20a",
+  "executable_sha256": "bd2038a751e42335e1ef3e860d827fd060c4e272cf42a2f78374665f43de2769",
+  "label": "overflow",
+  "expected_error": "event buffer overflow",
+  "passed": true
+}

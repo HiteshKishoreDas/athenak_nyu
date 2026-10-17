@@ -1,0 +1,122 @@
+{
+  "status": "passed_same_partition_five_step_replay",
+  "scope": "Five-step same-partition Serial CPU/double replay of the existing128^3 native-forced run; no HPC/scientific qualification.",
+  "source_run": "/private/tmp/shock-highres128-long-20261014",
+  "checkpoint_generation": 1443,
+  "end_generation": 1448,
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-r",
+    "/private/tmp/shock-highres128-long-20261014/rst/shock_highres128_long.00001.rst",
+    "time/nlim=1448",
+    "shock_tracking/directory=/private/tmp/shock-highres128-quarter-replay-20261014/shock_events",
+    "shock_tracking/trace=true",
+    "output4/dt=-1",
+    "job/basename=replay128"
+  ],
+  "checks": [
+    "Original native checkpoint/sidecar/executable/source fingerprint match the isolated quarter recovery metadata.",
+    "All1449immutable canonical generations and rank manifest strictly parsed; events unique.",
+    "All canonical chunks0..1448equal uninterrupted bytes.",
+    "All five evolved trace generations equal uninterrupted bytes; exactly8192particle IDs each.",
+    "Terminal censored identities/status/flags agree with active/pending final state trace and remain separate."
+  ],
+  "scientific_signoff": "pending",
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+  "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "source_input_sha256": "3448bdf0cc213dbad811af5ec5aa1c6f42e5db659691f33cdc9a712595be86a0",
+  "checkpoint": "/private/tmp/shock-highres128-long-20261014/rst/shock_highres128_long.00001.rst",
+  "checkpoint_sha256": "e07a965bae5e3b0beaf5f2dd8a7e35bb6bf4398282ea76411e32d83569858879",
+  "sidecar_sha256": "6fe1071a100d311b0e96bbfe1598c14d2aa09ee6c2ebd1f3f159a84e393c0778",
+  "source_sha256": {
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/particles/shock_particles.cpp": "718bc86a7350efd4e20e99702c4bd47d6678baa908821575123d6a8d04687ee5",
+    "src/particles/particles.cpp": "81c2ff5477c0032f488f8b07c70f20b04f0cde1c1375663de8cef0e85606355a",
+    "src/particles/particles.hpp": "3cf1be87ede5b7d007065ad396a2faed5fba70be0f66da938aeb27153ff70b4f",
+    "src/particles/particles_tasks.cpp": "24da2b5dcef92ae6b0039382fbdeb9b9891f5b6b43c98510545d1e978ee8bbf4",
+    "src/particles/particles_pushers.cpp": "d0a7440982f9d265a897c017877e14a99497563499fd5b18ca570fc90fa6946d",
+    "src/particles/particles_lagrangian_mc.cpp": "3e496ee50042e2b2eb759b77494f7e23c101b82eb07a7fd601d1bff508f88775",
+    "src/hydro/hydro_fluxes.cpp": "7f25c8e8496c4446cdff8ba6e924259251bda6e0bdea9d0e2b3f5e4dc2c7f447",
+    "src/pgen/pgen.cpp": "c5bb44e9d0b100a70c5cb03a9629dfbcfe6c789c9efda1376478d8c557c53ba7",
+    "src/bvals/bvals_part.cpp": "0d8a2db955e335c670c2cf68b6caf358505fe94b0490cb7f633f8b50cd5d678b",
+    "src/bvals/bvals.hpp": "4022e5b850d3486e45632690b39aafca8c1aa5af798e10bfc47efcd14537e623",
+    "src/driver/driver.cpp": "fcb9edf5c0cff0336e3d0445a6532514cd8cc3b5607f7944cfc1e87e420e219e",
+    "src/outputs/restart.cpp": "32e4f935cc8af72c3b91b7fc11bac62ae9b9326a84b617795fb685ff985fd048",
+    "src/main.cpp": "1d4aadd6f61c634a0bb8ec3dc2927d2916c0f0bf2b0777d37c3c2f02d58ee0d7",
+    "src/mesh/mesh.cpp": "c7e6712f95a5875a17b711a0ce8f6b837d824c4a76a836fd5e1897708c9d9900",
+    "src/mesh/mesh.hpp": "309f3d9b4daa6f0613b132d092cb70b3f2048910f9e5cc3d4d193d36e82c6e57",
+    "src/mesh/meshblock_pack.cpp": "70573e1fa8c414c3881013fff5bced63b0c105596a8ed851495dc4aaa536a237",
+    "src/srcterms/turb_driver.cpp": "8a2e0ef47a0fbc611a528e8e9de414b7b23c87df04c64402943a0d4ca6265659",
+    "src/srcterms/turb_driver.hpp": "f8e9337923f11c46b5a009d7cf64219a7622a8346c02606b59031b028057ee4f",
+    "src/utils/random.hpp": "6ef51642d6285f7e2d51a0649a424cf21328e9855b608882851ac56edec1ad2a",
+    "src/hydro/hydro_tasks.cpp": "d8bbec20a94e77adb8bd94c960af9b0604efdac70b667cd763da5cee9c8aeeb3",
+    "src/hydro/hydro_update.cpp": "c13aa050f3043e09440c3cd36bf567f2c0fc8620ad819bf5da93ad8b18ba1098"
+  },
+  "helper_sha256": {
+    "tst/shocks-mc/common.py": "7493ba7843ffc6ef6323eb1eb018d4f68f312368417b38e379a7ff93f24e6c6e",
+    "vis/python/shock_history.py": "74caae7d31533a7b97a7078e963c8d17305b835b94a52ac740672761045482ad"
+  },
+  "script_sha256": "cf0e3376105e534702d2e686610565bdf58b5e58e7401233cca3ae2909322461",
+  "copied_prefix_files": 1445,
+  "quarter_censored_view": {
+    "generation": 1443,
+    "records": 795,
+    "identity_count": 795,
+    "separate_from_canonical_events": true
+  },
+  "exit": 0,
+  "elapsed_seconds": 9.595513792010024,
+  "log_sha256": "dbcd2f6658df5c0f4230721679b6e30c3781af621cb3f5f14f8d659d22e5aa8c",
+  "event_chunks": {
+    "all_prefix_and_continuation_byte_identical": true,
+    "generations": [
+      0,
+      1448
+    ],
+    "canonical_event_count": 55436,
+    "unique_identities": 55436,
+    "continuation_sha256": {
+      "cycle1443.rank0.csv": "ca390d3f8b750ee97ad0597f6e012319ed86477fa91014df7184f68efd93dc72",
+      "cycle1444.rank0.csv": "c425fb130ced8091aec24ab5ee64412ab5bc5d1f06b8835720876231cdf2dfe3",
+      "cycle1445.rank0.csv": "5fe738a8911a5fd083c97c387d803760d2774486e07f62cacacc698c6939b315",
+      "cycle1446.rank0.csv": "7b9486f5c65e89e1fd62414e57664c9df2f2ab0ca29e370f6acdb4e278bf1f69",
+      "cycle1447.rank0.csv": "1f6730a73bd455406b8a7dd6a2d1ec6f3ba19dbe3df645f6a4e16d5c6526822b",
+      "cycle1448.rank0.csv": "cee8ce01ad48373a90dc96037a6504089b6098cda334031a64a40190cfe43b6c"
+    }
+  },
+  "particle_traces": {
+    "byte_identical": true,
+    "generation_range": [
+      1444,
+      1448
+    ],
+    "rows_per_generation": {
+      "1444": 8192,
+      "1445": 8192,
+      "1446": 8192,
+      "1447": 8192,
+      "1448": 8192
+    },
+    "sha256": {
+      "trace1444.rank0.csv": "dc0570422eb882c42d787147ef6124a44df5688428b109eaaa9057c1f5b8efae",
+      "trace1445.rank0.csv": "e0468452ae6dca9253457119bec1cefbb280b66892835612529d5bd6f586abc6",
+      "trace1446.rank0.csv": "f7ae346bcfd76393b0975dac0dbdf97fc33485e2e0976ed70657d7dc816eb017",
+      "trace1447.rank0.csv": "7decc7ed60f3264a17d735712a3cd4616a6d22c5299ea3a2cf08e6b86107a337",
+      "trace1448.rank0.csv": "fa87f7e12660d3c5f295ec16536f40494b9f94462cb9a6b95a76470ed8ea550a"
+    },
+    "checkpoint_generation_reobserved": false,
+    "note": "ObserveShocks skips restored generation1443; comparisons cover exactly the five evolved generations1444..1448."
+  },
+  "terminal_censored_view": {
+    "generation": 1448,
+    "records": 821,
+    "unique_identities": 821,
+    "exact_identity_flags_match_terminal_trace": true,
+    "separate_from_canonical_events": true,
+    "compared_to_uninterrupted_terminal_view": false,
+    "note": "The uninterrupted run continues and has no terminal view at1448; validate resumed censoring independently against its byte-identical final trace, without counting views as completed events."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "strain_time_0",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/strain_time_0/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "e6530b87893d738026d05be81480d1247b6f27e7899430801e3f64807396dcc6",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/strain_time_0",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

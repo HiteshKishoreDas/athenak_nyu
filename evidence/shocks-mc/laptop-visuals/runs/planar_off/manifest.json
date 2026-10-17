@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-laptop-20261008/integration/planar_off/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-laptop-20261008/integration/planar_off",
+  "exit": 0,
+  "elapsed_seconds": 0.07664454200130422,
+  "input_sha256": "232c4dfde7a75b9f571ae7c257a36addcbd734721cca535af039369eebdf9b28",
+  "log_sha256": "e11acb6e68044dd0775c03ed422344b5bfe4a7dad0966762731c5cafe41bdf42",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "planar_off",
+  "expected_error": null,
+  "passed": true
+}

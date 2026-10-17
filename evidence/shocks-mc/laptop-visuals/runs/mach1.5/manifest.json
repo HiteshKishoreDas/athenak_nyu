@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-laptop-20261008/qualification/mach1.5/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-laptop-20261008/qualification/mach1.5",
+  "exit": 0,
+  "elapsed_seconds": 0.669694582999,
+  "input_sha256": "a3e0b487db3b1fcbabcb9dfc555a26bbe8f858e72a7a15c0181d36aa26748ae3",
+  "log_sha256": "b3fd8f9ccf08fa4d395313786f948c58aa38f86608b5ddefb0a809c07e9b543a",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "mach1.5"
+}

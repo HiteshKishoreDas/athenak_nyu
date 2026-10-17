@@ -1,0 +1,14 @@
+{
+  "name": "unsupported_reflecting",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-regression/unsupported_reflecting/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "94d69e6541ae1125c78ccaf19cb0e02d58530a1b2ac9968d6e26af5850031b9f",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-regression/unsupported_reflecting",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

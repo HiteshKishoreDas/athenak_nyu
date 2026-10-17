@@ -1,0 +1,14 @@
+{
+  "name": "target_unsupported_rk3",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_rk3/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "48ab6cca3fc562eafe2caac37d7f70d45b85343b577c97af44aee910e3249f66",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_rk3",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

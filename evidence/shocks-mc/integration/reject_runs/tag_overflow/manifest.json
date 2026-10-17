@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-rejects-stylefinal/tag_overflow/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-rejects-stylefinal/tag_overflow",
+  "exit": 1,
+  "elapsed_seconds": 0.00483712499953981,
+  "input_sha256": "984e3341047d7b2868f07f26870d78239f9beefac34049a8820bc01430d6094d",
+  "log_sha256": "4302f8b1c2e42d6d38bddbe5cd9e424120f3bd7127d0c5ad908108964962c259",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "tag_overflow",
+  "expected_diagnostic": "identity/schedule range exhausted",
+  "passed": true
+}

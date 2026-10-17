@@ -1,0 +1,40 @@
+{
+  "branch_base": "526a187f",
+  "kokkos_revision": "08ceff92",
+  "scope": "Newtonian ideal-gas Cartesian hydro, uniform 2D mesh, existing lagrangian_mc mass-flux tracer; AMR/additional physics excluded",
+  "accepted_engineering_criteria": {
+    "uniform_particles": "all exact IDs retained; each resolved positive-axis periodic hop is zero or exactly one cell",
+    "uniform_moments": "fixed-seed ensemble mean and unbiased variance each within six predeclared standard errors of independent Bernoulli physical-flux oracle",
+    "fixed_seed_noninterference": "on/off thermo observations and selected fluid conserved-variable output exactly identical at same partition",
+    "restart": "exact same-partition particle observations, schedule-derived IDs and canonical event identity/content continuation; no repartition assertion",
+    "migration": "local four-block case retains all IDs and exercises GID changes; no identical initial seed draw assignment required across different partitions",
+    "event_structure": "strict schema/count/END and unique (lineage, particleID, sequence); no duplicate generation sampling; complete suspended/censored evidence",
+    "negative_uniform": "zero shock events",
+    "zero_particles": "success with empty outputs, no inferred events",
+    "overflow": "burst above finite capacity rejects explicitly without silent dropped events",
+    "checkpoint_integrity": "missing/corrupt/future sidecar and corrupt committed history reject; paired output preflight preserves existing bytes"
+  },
+  "experimental_defaults": {"width": 4, "min_mach": 1.1, "exit_outside_observations": 2, "physical_strength_timing_tolerances": "unset; owner human review pending"},
+  "uniform_oracle": {
+    "seeds": [11, 29, 47, 83, 127, 211, 307, 401],
+    "seed_schedule_seed": 903,
+    "particles_per_seed": 4096,
+    "mesh": [64, 4, 1],
+    "rho": 1, "pressure": 1, "gamma": 1.4, "velocity": [1, 0, 0],
+    "seed_slab": [0.9, 0.99], "tlim": 0.25, "cfl": 0.3,
+    "probability": "p_n = u*dt_n/dx; use recorded generation times, not copied RNG code",
+    "mean": "sum p_n", "variance": "sum p_n(1-p_n)",
+    "fourth_central_moment": "3 variance^2 + sum p_n(1-p_n)(1-6p_n(1-p_n))",
+    "limits": "fixed hash draws are tested as an independent Bernoulli ensemble; no deterministic physical path, no GPU or multirank claim"
+  },
+  "planar_shock": {
+    "forward_RH": {"mach": 2, "gamma": 1.4, "front0": 0.3, "speed": 0.5, "upstream_rho": 1, "upstream_pressure": 1, "downstream_side": "left"},
+    "seeding": "128 mass-weighted tracers in upstream slab .45-.75; initial inside and delayed birth separate fixtures",
+    "measurements": "empirical full-region recovery, unique particles, completed/partial/suspended counts, reentry episodes, endpoint normal/strength evidence; no forced one event for every ideal deterministic crossing",
+    "physical_approval": "pending owner criteria for stochastic recovery and scientific strength/timing interpretation"
+  },
+  "phase_checkpoints": "select actual observed OUTSIDE/ACTIVE/PENDING generations; inability to populate any phase remains an explicit failed fixture",
+  "runtime_budget": {"per_run_seconds": 30, "suite_seconds": 300},
+  "deployment": "Rusty node and Frontier backend/scale/performance budgets unset; both unqualified",
+  "status": "criteria frozen before any MC runtime outcomes"
+}

@@ -1,0 +1,298 @@
+{
+  "schema": "athenak-material-curves-production-v1",
+  "implementation_execution": true,
+  "analysis_replay": false,
+  "suite": "unsupported",
+  "allow_unqualified_accelerator": false,
+  "tests": [
+    {
+      "name": "native_control_standalone_cooling",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_standalone_cooling/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "14915adc4501f9738febc07ed3828c11764750e25bc7a801fdf48a048e62fd28",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_standalone_cooling",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_standalone_cooling",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_standalone_cooling/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "cd7b8851b85acb100a49b796125806958828f2374e9bfd1f9e133b4ac8fca0e5",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_standalone_cooling",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: cooling source stages are unqualified",
+      "case": "R03",
+      "status": "pass"
+    },
+    {
+      "name": "native_control_frame_tracking",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_frame_tracking/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "1bafb76b9d68946ab2c6e9b1ee34fe3770c20665c408d37e6fdbb9910ba8ee68",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_frame_tracking",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_frame_tracking",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_frame_tracking/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "37a427a3e55ef2f04b41bb9b0e94773811faf46f882f9c8acf6a1b13700ad525",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_frame_tracking",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: frame tracking is unqualified",
+      "case": "R03",
+      "status": "pass"
+    },
+    {
+      "name": "native_control_orbital_shearing_objects",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_orbital_shearing_objects/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "582e7fafaf581a6585fff7cdf03d5ec65a3a8591d6b53194d974a950ee7a3ade",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_orbital_shearing_objects",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_orbital_shearing_objects",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_orbital_shearing_objects/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "fade473f0c71c9a5496fd84f02fa7941be13049fcc770bca586a57ac50a41bfa",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_orbital_shearing_objects",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: shearing/orbital advection stages are unqualified",
+      "case": "R03",
+      "status": "pass"
+    },
+    {
+      "name": "native_control_forcing",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_forcing/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "1ebcc9b65c8dc5eb15bfbbf00f0ad6c046fc561be00c82476841a0dafbdf416d",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_forcing",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_forcing",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_forcing/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "b7433d0b727cb953f843f0d552c5b2f151a1cc8979df0489cc81c8eb7edabcc3",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_forcing",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: requires passive Newtonian single-fluid HD without particles/forcing",
+      "case": "R03",
+      "status": "pass"
+    },
+    {
+      "name": "native_control_lagrangian_mc",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_lagrangian_mc/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "e6ad493231b1d37eda1b20b114ea6f141c4ad7975143b7dac076c321fc65aebe",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_lagrangian_mc",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_lagrangian_mc",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_lagrangian_mc/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "87487c8eb96e3d477145357d705a0ec1bc50d5b2bacfd2d611793558f8011ba3",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_lagrangian_mc",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: requires passive Newtonian single-fluid HD without particles/forcing",
+      "case": "R03",
+      "status": "pass"
+    },
+    {
+      "name": "native_control_rk3",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_rk3/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "48318fb9d5e3482359b630917b9da7514c4203e2cd62c7e960192120f9f0d566",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_rk3",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_rk3",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_rk3/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "48ab6cca3fc562eafe2caac37d7f70d45b85343b577c97af44aee910e3249f66",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_rk3",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: only dynamic HD with RK2 is supported",
+      "case": "R03",
+      "status": "pass"
+    },
+    {
+      "name": "native_control_kinematic",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_kinematic/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "a79ce54835d73897a22abfb099eb423f76fbd5d551572f0001b17e37b73a8152",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_kinematic",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_kinematic",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_kinematic/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "9fb7b82bbdd0d99953d7da0f1bd96e9d3cedb096e1f875df15125605b25eaf1a",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_kinematic",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: only dynamic HD with RK2 is supported",
+      "case": "R03",
+      "status": "pass"
+    },
+    {
+      "name": "native_control_restart_per_rank",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_restart_per_rank/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "80707866b9f9e902b7f5053eb311926347a75607e0417726ac295487f920e128",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_restart_per_rank",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_restart_per_rank",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_restart_per_rank/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "e12d46319f822620ce61918bc29827391f7957532551932acf3ce9d3afdaeeb7",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_restart_per_rank",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: curves require shared fluid checkpoints",
+      "case": "R03",
+      "status": "pass"
+    },
+    {
+      "name": "native_control_restart_per_node",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_restart_per_node/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "b2fff9c9d23641cd656bea4776f823edcb96336368aa5adc41cab8223c147250",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_restart_per_node",
+      "returncode": 0,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "status": "pass"
+    },
+    {
+      "name": "target_unsupported_restart_per_node",
+      "command": [
+        "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_restart_per_node/input.athinput"
+      ],
+      "ranks": 1,
+      "input_sha256": "0c41116f954353e186ac6b0053e2ca1e2e4116840d3df1d869ff1c78bc6ff39f",
+      "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_restart_per_node",
+      "returncode": 1,
+      "replay": false,
+      "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93",
+      "expected_rejection": "FATAL ERROR: material curves: curves require shared fluid checkpoints",
+      "case": "R03",
+      "status": "pass"
+    }
+  ],
+  "status": "pass"
+}

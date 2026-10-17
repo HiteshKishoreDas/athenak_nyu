@@ -1,0 +1,25 @@
+{
+  "numerical": {
+    "central_plane_crop_support": "Only z64 real gradientneighbors\u00b11/endpoints\u00b18 withinz55..73; artificialwrapcannotaffectcentralplane.",
+    "implemented": [
+      "Filter both resolution datasets through min(.3,observed_end).",
+      "Freeze exports to analyzedgeneration.",
+      "Delete overwrittenlist and unusedimport."
+    ]
+  },
+  "integration": {
+    "implemented": [
+      "Explicit selected/frame generation and exactclock checks.",
+      "Reject duplicate/raw malformed traces before grid indexing.",
+      "Verify binary/input/recovery pair/zero-step identity and cache/fixture hashes.",
+      "Label collectorprogress separately from analyzedhorizon."
+    ],
+    "final_independent_check": "independent-final-check.json"
+  },
+  "persistence": {
+    "five_step": "quarter-replay/report.json",
+    "eighty_step_across_forcing_update": "quarter-replay80/report.json",
+    "scope": "samepartition CPU only"
+  },
+  "scientific_signoff": "pending"
+}

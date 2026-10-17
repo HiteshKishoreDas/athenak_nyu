@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/contact/input.athinput"
+  ],
+  "directory": "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/contact",
+  "exit": 0,
+  "elapsed_seconds": 0.34767820790875703,
+  "input_sha256": "7ab99304907ee9e7e66fa94907293eb5f95e833494b5848201a87395b4d29cef",
+  "log_sha256": "3159a94c603fec036696bdf8ba0ce2924092f6b3773f5f256535c05c765bc85c",
+  "executable_sha256": "bd2038a751e42335e1ef3e860d827fd060c4e272cf42a2f78374665f43de2769",
+  "label": "contact",
+  "expected_error": null,
+  "passed": true
+}

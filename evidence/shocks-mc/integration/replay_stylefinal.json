@@ -1,0 +1,130 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "compiled_source_fingerprint": "78e5cb1d425daaa8ab2e06deaa40db6c8249de79cd1480c7d0b069fd1587f7c3",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "runs": [
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-replay-stylefinal/seed/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-replay-stylefinal/seed",
+      "exit": 0,
+      "elapsed_seconds": 0.0100618750002468,
+      "input_sha256": "99130d43dd95bf68018e08a2ff571fad72fafd5b5af66bb38aa0ad4f68c9d8d1",
+      "log_sha256": "f9d5d2bf411d38cffa307ca2884a0b43a1e3ec0cdd33c7d4521207b23ee9ffa5",
+      "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+      "label": "seed",
+      "checkpoint_and_manifest_sha256": {
+        "rst/shock_mc.00000.rst.shock.rank0": "d4da22ca26d148840458a7f6ad70f992e387fd9d10df43fbcb469ac8daff0e67",
+        "rst/shock_mc.00002.rst": "fa631a02199d7a54bdce05c60a58fd83dde9d7f9f4102ed26a6ba54cc9c99cae",
+        "rst/shock_mc.00000.rst": "7214b040b8751d952c4f2713297f220f6e824b60d858ffae74b3c662d1db0204",
+        "rst/shock_mc.00001.rst": "a46b25fa1731737dcb680c17c30cf31302b7c4076a01f093944529d5d5b21f1f",
+        "rst/shock_mc.00001.rst.shock.rank0": "dd248ce6e59aabc038d06ccf30025dbd29756e279920f5ccd366540947c7505e",
+        "rst/mc_replayed.00002.rst": "9d037123c276c2195fdd79a24c827bcc1dc6add759e0b9f99a295ec334eb0402",
+        "rst/shock_mc.00002.rst.shock.rank0": "10f1d0f2f9f6730ae405c08348e24c07b8ea5d4447469fe113950195bfc820b6",
+        "rst/mc_replayed.00002.rst.shock.rank0": "6aaa358b583184363453bd260780a924937997d216d6453295831c25325a35ac",
+        "shock_events/manifest.rank0": "b08d4d6a228a4b70ca947be607fd5c569f30f8f7255850e815da9713bc0a65c1"
+      }
+    },
+    {
+      "label": "later_checkpoint",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-replay-stylefinal/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.5520365000011225,
+      "log_sha256": "3139bfbf18640be5beb92d0f156464eaab77f5bf87eca3b19dc97357c261f633",
+      "directory": "/private/tmp/shock-mc-replay-stylefinal/seed",
+      "checkpoint_and_manifest_sha256": {
+        "rst/shock_mc.00000.rst.shock.rank0": "d4da22ca26d148840458a7f6ad70f992e387fd9d10df43fbcb469ac8daff0e67",
+        "rst/shock_mc.00002.rst": "fa631a02199d7a54bdce05c60a58fd83dde9d7f9f4102ed26a6ba54cc9c99cae",
+        "rst/shock_mc.00000.rst": "7214b040b8751d952c4f2713297f220f6e824b60d858ffae74b3c662d1db0204",
+        "rst/shock_mc.00001.rst": "a46b25fa1731737dcb680c17c30cf31302b7c4076a01f093944529d5d5b21f1f",
+        "rst/shock_mc.00001.rst.shock.rank0": "dd248ce6e59aabc038d06ccf30025dbd29756e279920f5ccd366540947c7505e",
+        "rst/mc_replayed.00002.rst": "9d037123c276c2195fdd79a24c827bcc1dc6add759e0b9f99a295ec334eb0402",
+        "rst/shock_mc.00002.rst.shock.rank0": "10f1d0f2f9f6730ae405c08348e24c07b8ea5d4447469fe113950195bfc820b6",
+        "rst/mc_replayed.00002.rst.shock.rank0": "6aaa358b583184363453bd260780a924937997d216d6453295831c25325a35ac",
+        "shock_events/manifest.rank0": "b08d4d6a228a4b70ca947be607fd5c569f30f8f7255850e815da9713bc0a65c1"
+      }
+    },
+    {
+      "label": "old_checkpoint_collision",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-replay-stylefinal/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.2938819999999396,
+      "log_sha256": "5495864e1d6db27f15c7045b98dd3b7417c9598e370c95f19d21f392dcdbaeca",
+      "directory": "/private/tmp/shock-mc-replay-stylefinal/seed",
+      "checkpoint_and_manifest_sha256": {
+        "rst/shock_mc.00000.rst.shock.rank0": "d4da22ca26d148840458a7f6ad70f992e387fd9d10df43fbcb469ac8daff0e67",
+        "rst/shock_mc.00002.rst": "fa631a02199d7a54bdce05c60a58fd83dde9d7f9f4102ed26a6ba54cc9c99cae",
+        "rst/shock_mc.00000.rst": "7214b040b8751d952c4f2713297f220f6e824b60d858ffae74b3c662d1db0204",
+        "rst/shock_mc.00001.rst": "a46b25fa1731737dcb680c17c30cf31302b7c4076a01f093944529d5d5b21f1f",
+        "rst/shock_mc.00001.rst.shock.rank0": "dd248ce6e59aabc038d06ccf30025dbd29756e279920f5ccd366540947c7505e",
+        "rst/mc_replayed.00002.rst": "9d037123c276c2195fdd79a24c827bcc1dc6add759e0b9f99a295ec334eb0402",
+        "rst/shock_mc.00002.rst.shock.rank0": "10f1d0f2f9f6730ae405c08348e24c07b8ea5d4447469fe113950195bfc820b6",
+        "rst/mc_replayed.00002.rst.shock.rank0": "6aaa358b583184363453bd260780a924937997d216d6453295831c25325a35ac",
+        "shock_events/manifest.rank0": "b08d4d6a228a4b70ca947be607fd5c569f30f8f7255850e815da9713bc0a65c1"
+      }
+    },
+    {
+      "label": "new_basename_replay",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-replay-stylefinal/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1",
+        "job/basename=mc_replayed"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.2907668330008164,
+      "log_sha256": "4d54701b837d7b6a3c2afbb4cced2a9e779b11273d7271c774e88124808402cc",
+      "directory": "/private/tmp/shock-mc-replay-stylefinal/seed",
+      "checkpoint_and_manifest_sha256": {
+        "rst/shock_mc.00000.rst.shock.rank0": "d4da22ca26d148840458a7f6ad70f992e387fd9d10df43fbcb469ac8daff0e67",
+        "rst/shock_mc.00002.rst": "fa631a02199d7a54bdce05c60a58fd83dde9d7f9f4102ed26a6ba54cc9c99cae",
+        "rst/shock_mc.00000.rst": "7214b040b8751d952c4f2713297f220f6e824b60d858ffae74b3c662d1db0204",
+        "rst/shock_mc.00001.rst": "a46b25fa1731737dcb680c17c30cf31302b7c4076a01f093944529d5d5b21f1f",
+        "rst/shock_mc.00001.rst.shock.rank0": "dd248ce6e59aabc038d06ccf30025dbd29756e279920f5ccd366540947c7505e",
+        "rst/mc_replayed.00002.rst": "9d037123c276c2195fdd79a24c827bcc1dc6add759e0b9f99a295ec334eb0402",
+        "rst/shock_mc.00002.rst.shock.rank0": "10f1d0f2f9f6730ae405c08348e24c07b8ea5d4447469fe113950195bfc820b6",
+        "rst/mc_replayed.00002.rst.shock.rank0": "6aaa358b583184363453bd260780a924937997d216d6453295831c25325a35ac",
+        "shock_events/manifest.rank0": "b08d4d6a228a4b70ca947be607fd5c569f30f8f7255850e815da9713bc0a65c1"
+      }
+    }
+  ],
+  "status": "passed_immutable_pair_and_canonical_replay",
+  "checks": {
+    "test_ids": [
+      "RST04",
+      "RST07",
+      "IO08"
+    ],
+    "old_checkpoint": "/private/tmp/shock-mc-replay-stylefinal/seed/rst/shock_mc.00001.rst",
+    "old_pairs_byte_unchanged": true,
+    "canonical_event_history_unchanged": true,
+    "new_basename_replay_supported": true,
+    "legacy_thermo_scope": "legacy append-only thermo may append identical rows; no claim its whole file remains unchanged"
+  },
+  "production_commit": "38c55570c2f758c3bd8a54ff4674f06265e87c6d",
+  "input_template_sha256": "be32d13293f1a2654c6b657c65015d822c9ae9d3dd37ecfba78a4e603670a0a7",
+  "reproduction_helper_sha256": {
+    "tst/shocks-mc/replay.py": "025d2aa8135846c62e74099f2f5d0f16a36256752c7b5613bf481f21337ca4a8",
+    "tst/shocks-mc/common.py": "82b99bd932e212d018f539880fece453ad50163976b2e8483c2f73c01a8752ba",
+    "vis/python/shock_history.py": "74caae7d31533a7b97a7078e963c8d17305b835b94a52ac740672761045482ad"
+  },
+  "helper_note": "Trace reader also exposes stored sequence for selected review CSV; numerical pass criteria unchanged."
+}

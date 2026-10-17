@@ -1,0 +1,34 @@
+-- Enabling Kokkos debug mode
+-- Setting default Kokkos CXX standard to 17
+-- Kokkos version: 4.4.0
+-- The project name is: Kokkos
+-- Using internal gtest for testing
+-- Using -std=c++17 for C++17 standard as feature
+-- Built-in Execution Spaces:
+--     Device Parallel: NoTypeDefined
+--     Host Parallel: NoTypeDefined
+--       Host Serial: SERIAL
+-- 
+-- Architectures:
+-- Using internal desul_atomics copy
+-- Experimental mdspan support is enabled
+-- Using internal mdspan directory /Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/mdspan/include
+-- Kokkos Backends: SERIAL
+-- Configuring done (1.0s)
+-- Generating done (0.2s)
+-- Build files have been written to: /Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock
+[  1%] Built target kokkossimd
+[  1%] Built target AlwaysCheckGit
+[ 10%] Built target kokkoscore
+[ 11%] Built target impl_git_version
+[ 12%] Built target kokkoscontainers
+[ 14%] Built target shock_encounter_test
+[ 15%] Built target shock_detector_test
+[ 15%] Building CXX object src/CMakeFiles/athena.dir/particles/particles.cpp.o
+/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src/particles/particles.cpp:154:26: error: no member named 'GetFirstBlock' in 'ParameterInput'
+  154 |     for (auto block=pin->GetFirstBlock(); block; block=block->pnext) {
+      |                     ~~~  ^
+1 error generated.
+make[2]: *** [src/CMakeFiles/athena.dir/particles/particles.cpp.o] Error 1
+make[1]: *** [src/CMakeFiles/athena.dir/all] Error 2
+make: *** [all] Error 2

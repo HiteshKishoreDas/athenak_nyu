@@ -1,0 +1,14 @@
+{
+  "name": "target_unsupported_kinematic",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_kinematic/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "9fb7b82bbdd0d99953d7da0f1bd96e9d3cedb096e1f875df15125605b25eaf1a",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_kinematic",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

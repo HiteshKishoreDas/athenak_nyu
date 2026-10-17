@@ -542,6 +542,15 @@ int main(int argc, char *argv[]) {
       }
       pmesh->pmb_pack->pcurves->Load(restart_file);
     }
+    if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
+      std::string shock_payload = restart_file;
+      if (restart_shard_mode == FileShardMode::per_rank) {
+        shock_payload = (restart_base_dir.empty() ? "" : restart_base_dir + "/")
+                        + ShardDirectoryName(FileShardMode::per_rank)
+                        + restart_file_name;
+      }
+      pmesh->pmb_pack->ppart->ReadShockRestart(shock_payload);
+    }
   }
   //--- Step 6. --------------------------------------------------------------------------
   // Construct Driver and Outputs. Actual outputs (including initial conditions) are made

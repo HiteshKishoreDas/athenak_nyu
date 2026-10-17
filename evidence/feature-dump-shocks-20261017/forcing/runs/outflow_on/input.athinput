@@ -1,0 +1,124 @@
+# Native-forced Mach3 Fourier box, no cooling.
+# Both shock_tube states are equal: uniform rho/P before existing Fourier velocity initializer.
+<job>
+basename = shock_turb_forced
+<mesh>
+nghost = 4
+nx1 = 16
+x1min = 0
+x1max = 1
+ix1_bc = outflow
+ox1_bc = outflow
+nx2 = 16
+x2min = 0
+x2max = 1
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 16
+x3min = 0
+x3max = 1
+ix3_bc = periodic
+ox3_bc = periodic
+<meshblock>
+nx1 = 16
+nx2 = 16
+nx3 = 16
+<time>
+evolution = dynamic
+integrator = rk2
+cfl_number = .3
+tlim = 0.04
+ndiag = 100
+<hydro>
+eos = ideal
+gamma = 1.4
+rsolver = hllc
+reconstruct = plm
+<particles>
+particle_type = lagrangian_mc
+pusher = lagrangian_mc
+random_seed = 11
+next_tracer_tag = 0
+track_variables = rho,p,v1,v2,v3
+<tracer_seed_initial>
+id = 1
+start_time = 0
+count_per_event = 128
+seed = 903
+region = all
+slab_axis = 1
+slab_min = .45
+slab_max = .75
+weight = mass
+<shock_tracking>
+enabled = true
+lineage = exploratory-forced-m3-32
+width = 4
+min_mach = 1.1
+event_capacity = 8192
+trace = true
+directory = /private/tmp/athenak-feature-dump-shocks-tests/forcing-runs/outflow_on/shock_events
+<problem>
+pgen_name = shock_tube
+shock_dir = 1
+xshock = .3
+dl = 1
+pl = 0.7142857142857143
+ul = 0
+vl = 0
+wl = 0
+dr = 1
+pr = 0.7142857142857143
+ur = 0
+vr = 0
+wr = 0
+<output1>
+file_type = hst
+dt = 0.01
+<output2>
+file_type = prtcl_thermo_history
+variables = rho,p,v1,v2,v3
+dcycle = 1
+<output3>
+file_type = bin
+variable = hydro_u
+dt = -1
+data_precision = real
+dcycle = 1
+<initial_perturbations>
+variables = velocity
+velocity_rms = 3
+remove_velocity_mean = true
+spectral_slope = 2
+nlow = 1
+nhigh = 3
+f_solenoidal = 0.5
+rseed = 24680
+localization = none
+
+<turb_driving>
+turb_flag = 2
+normalization = accel_rms
+accel_rms = 10
+tcorr = .1
+dt_update = .01
+nlow = 1
+nhigh = 3
+npeak = 2
+spectrum = parabolic
+sol_fraction = .5
+rseed = 2718
+localization = none
+tile_nx = 1
+tile_ny = 1
+tile_nz = 1
+<output4>
+file_type = rst
+dt = -1
+<output5>
+file_type = bin
+variable = turb_force
+id = force
+dt = -1
+data_precision = real
+dcycle = 1

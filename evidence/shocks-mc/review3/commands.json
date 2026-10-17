@@ -1,0 +1,84 @@
+[
+  {
+    "command": [
+      "build-release/shock_encounter_test"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 0.2894547079995391
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks/parity.py",
+      "build-release/shock_detector_test",
+      "--reference",
+      "evidence/shocks/reference",
+      "--report",
+      "/private/tmp/shock-mc-review3-checks/parity/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 0.7880440419994557
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/integration.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-review3-checks/integration/raw",
+      "--report",
+      "/private/tmp/shock-mc-review3-checks/integration/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 13.576101165999717
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/rejects.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-review3-checks/rejects/raw",
+      "--report",
+      "/private/tmp/shock-mc-review3-checks/rejects/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 0.21030816699931165
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/replay.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-review3-checks/replay/raw",
+      "--report",
+      "/private/tmp/shock-mc-review3-checks/replay/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 1.075979458000802
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/qualification.py",
+      "--executable",
+      "build-release/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-review3-checks/qualification/raw",
+      "--report",
+      "/private/tmp/shock-mc-review3-checks/qualification/report.json"
+    ],
+    "cwd": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "exit": 0,
+    "seconds": 27.003628124999523
+  }
+]

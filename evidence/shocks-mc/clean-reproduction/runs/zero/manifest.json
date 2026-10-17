@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/shock-mc-clean-42bcf12c/build/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-clean-integration/zero/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-clean-integration/zero",
+  "exit": 0,
+  "elapsed_seconds": 0.040427833000649116,
+  "input_sha256": "14fb3949af6d4a950f81b738de3a7d7bfbfcffce2755e8184e6aa7e82e8509d6",
+  "log_sha256": "4a51ced9cad39fb96ce78d01947cae0f83d57e8348af0e2c7245facc2fb218a7",
+  "executable_sha256": "d2edc6cf634b20bbf66b66a834ad521cc7bbe5ed866ec6392262d3c1d62cbd9b",
+  "label": "zero",
+  "expected_error": null,
+  "passed": true
+}

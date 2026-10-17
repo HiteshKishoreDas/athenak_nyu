@@ -301,3 +301,15 @@ Host topology/adaptation/lookup and host-buffer MPI are explicit ceilings. GPU-a
 MPI and within-curve device/distributed topology are not implemented. The default
 GPU rejection remains deliberate until external qualification establishes a
 reviewed supported envelope.
+
+
+## Shock-feature integration (2026-10-17)
+
+`feature_dump` includes native MC shock encounters alongside material curves.
+The existing no-particles/no-forcing curve guard remains in force. Curve nodes
+have no shock flags or encounter histories. Requesting shock tracking without
+particles now fails explicitly rather than silently producing no history.
+Fresh curve core/regression/unsupported/persistence and native restart checks
+passed locally; see [the integration record](../docs/feature_dump.md) for exact
+source, commands, evidence and qualification limits. This merge does not qualify
+shock histories on material curves or new GPU/AMR/forcing combinations.

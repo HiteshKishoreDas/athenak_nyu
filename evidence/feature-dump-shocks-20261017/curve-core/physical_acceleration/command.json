@@ -1,0 +1,14 @@
+{
+  "name": "physical_acceleration",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/physical_acceleration/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "5b7083c02cfa9554f4302db3ffe9f1cd7631f7df8921515b67caa9f59240513d",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/physical_acceleration",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "circle_32",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/circle_32/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "d8040532017f66b137c995f993ca03f2836ebf1dc4b51df30fedea826b4e951b",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/circle_32",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

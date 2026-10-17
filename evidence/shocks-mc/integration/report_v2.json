@@ -1,0 +1,2828 @@
+{
+  "executable_sha256": "1a5afaa49db46171d947da64417f983a802db5322f99e50c55c1dddbf1e40900",
+  "input_sha256": "be32d13293f1a2654c6b657c65015d822c9ae9d3dd37ecfba78a4e603670a0a7",
+  "runs": [
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-integration-v2/uniform_off/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-integration-v2/uniform_off",
+      "exit": 0,
+      "elapsed_seconds": 1.8664429590007785,
+      "input_sha256": "e651ece50fc0d53ae6a441fa1197af116fd6ce55ac154ce01d31154157c56613",
+      "log_sha256": "83b0e29add31a306f68ad87b2a52cc5e02d65e3eff30c43ddfa46ad60cac2696",
+      "executable_sha256": "1a5afaa49db46171d947da64417f983a802db5322f99e50c55c1dddbf1e40900",
+      "label": "uniform_off",
+      "expected_error": null,
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-integration-v2/uniform_on/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-integration-v2/uniform_on",
+      "exit": 0,
+      "elapsed_seconds": 5.926041708000412,
+      "input_sha256": "0eb56ef88f48a6101f9d87b9e548ef135ce714ed8153c2128eaa17026a70d765",
+      "log_sha256": "fc5a8efd4452eb9429a99f29e3a97a3d25bfc74a48af78bd9209d843b055d0a5",
+      "executable_sha256": "1a5afaa49db46171d947da64417f983a802db5322f99e50c55c1dddbf1e40900",
+      "label": "uniform_on",
+      "expected_error": null,
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-integration-v2/zero/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-integration-v2/zero",
+      "exit": 0,
+      "elapsed_seconds": 0.7219897499999206,
+      "input_sha256": "9e96ff764750b1e383ba08fcec0979918dd6d70fd7ddfa4f55d361c35fdad2ec",
+      "log_sha256": "1976f04a03277ce2d88f3c9434ea1b4fbf95f5e74cb598240a8d2ee00dd63c12",
+      "executable_sha256": "1a5afaa49db46171d947da64417f983a802db5322f99e50c55c1dddbf1e40900",
+      "label": "zero",
+      "expected_error": null,
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-integration-v2/planar/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-integration-v2/planar",
+      "exit": 0,
+      "elapsed_seconds": 10.03025187500134,
+      "input_sha256": "9bddeb04a71315bcb6fa4331ace387a9bafc8b30d47436fd086441cba98ca819",
+      "log_sha256": "a0af69f92a664a67e14c9fb8816a13123669d1f9cbbd88da2b23d423faa4e003",
+      "executable_sha256": "1a5afaa49db46171d947da64417f983a802db5322f99e50c55c1dddbf1e40900",
+      "label": "planar",
+      "expected_error": null,
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-integration-v2/planar_off/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-integration-v2/planar_off",
+      "exit": 0,
+      "elapsed_seconds": 8.467387708999013,
+      "input_sha256": "0d02f40aba6b69a80cb867d5cb31f839a8d22873f6389a8312be61e5c25fed27",
+      "log_sha256": "361f846cd25549a3c080db1554b471fc37f75389c17917eb796d627af1c47768",
+      "executable_sha256": "1a5afaa49db46171d947da64417f983a802db5322f99e50c55c1dddbf1e40900",
+      "label": "planar_off",
+      "expected_error": null,
+      "passed": true
+    }
+  ],
+  "checks": [
+    {
+      "test_id": "TRC11",
+      "records": 119808,
+      "source_parent_and_timestep_exact": true,
+      "max_probability_error": 6.106226635438361e-16,
+      "double_roundoff_tolerance": 1e-12,
+      "draw_direction_and_realized_cell_hop_consistent": true,
+      "scope": "uniform fixedseed serial; conditional source evidence, no continuous physical path"
+    },
+    {
+      "test_ids": [
+        "CFG01",
+        "PHY08",
+        "TRC01"
+      ],
+      "status": "passed",
+      "comparison": "exact samepartition fixedseed thermo observations; no deterministic physical path"
+    },
+    {
+      "test_id": "CFG06",
+      "status": "passed"
+    },
+    {
+      "test_id": "SYS02",
+      "status": "passed",
+      "comparison": "exact fixedseed planar particle records and byte-identical17digit conserved slice"
+    }
+  ],
+  "physical": {
+    "planar": {
+      "sampled_particles": 128,
+      "raw_region_particles": 128,
+      "emitted_particles": 128,
+      "emitted_events": 128,
+      "completed_events": 128,
+      "partial_events": 0,
+      "terminal_suspended": 0,
+      "particles_with_multiple_episodes": {},
+      "raw_membership_recovery_fraction": 1.0,
+      "physical_acceptance": "stochastic recovery, censoring and reentries measured; owner thresholds pending",
+      "event_evidence": [
+        {
+          "particle_id": 0,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14217830008680218,
+            0.14294683143862275
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 1.989332784149048,
+          "temperature_mach": 2.0006534765954567,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 1,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0116774762780834,
+          "temperature_mach": 1.9995362197181028,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 2,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 2.011819372169748,
+          "temperature_mach": 2.0005980529974576,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 3,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07992726058933751,
+            0.08069579194115806
+          ],
+          "exit_region_bracket": [
+            0.09068669951482518,
+            0.09145523086664573
+          ],
+          "pressure_mach": 1.9898013506876122,
+          "temperature_mach": 1.9996192234871815,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 4,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.13679858062405825,
+            0.13756711197587881
+          ],
+          "exit_region_bracket": [
+            0.1498636136050078,
+            0.15063214495682836
+          ],
+          "pressure_mach": 1.9836971536109946,
+          "temperature_mach": 2.0032471959939,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 5,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.18137339902965083,
+            0.1821419303814714
+          ],
+          "exit_region_bracket": [
+            0.19059577525149757,
+            0.19136430660331813
+          ],
+          "pressure_mach": 2.008127835538556,
+          "temperature_mach": 1.99259470754717,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 6,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12527061034674983,
+            0.1260391416985704
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.0118064018512802,
+          "temperature_mach": 1.9994665623204018,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 7,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10298320114395394,
+            0.10375173249577449
+          ],
+          "exit_region_bracket": [
+            0.1275762044022115,
+            0.12834473575403207
+          ],
+          "pressure_mach": 1.9857246351757722,
+          "temperature_mach": 2.006708111082335,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 8,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10298320114395394,
+            0.10375173249577449
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 1.9857246351757722,
+          "temperature_mach": 2.006708111082335,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 9,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.22748528013888453,
+            0.2282538114907051
+          ],
+          "exit_region_bracket": [
+            0.24131884447165464,
+            0.2420873758234752
+          ],
+          "pressure_mach": 1.9870494226557902,
+          "temperature_mach": 2.011164884158417,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 10,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.18521605578875364,
+            0.1859845871405742
+          ],
+          "exit_region_bracket": [
+            0.189827243899677,
+            0.19059577525149757
+          ],
+          "pressure_mach": 2.0109297299372026,
+          "temperature_mach": 1.9964800705733123,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 11,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14448389414226387,
+            0.14525242549408443
+          ],
+          "exit_region_bracket": [
+            0.15908598982685454,
+            0.1598545211786751
+          ],
+          "pressure_mach": 1.9940759720332248,
+          "temperature_mach": 2.0012342599902624,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 12,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.09068669951482518,
+            0.09145523086664573
+          ],
+          "exit_region_bracket": [
+            0.0991405443848512,
+            0.09990907573667175
+          ],
+          "pressure_mach": 2.0105761661110284,
+          "temperature_mach": 1.997897445107437,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 13,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10375173249577449,
+            0.10452026384759504
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 1.9843746877457178,
+          "temperature_mach": 2.0049872101140958,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 14,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.16523424064141903,
+            0.1660027719932396
+          ],
+          "exit_region_bracket": [
+            0.17906780497418914,
+            0.1798363363260097
+          ],
+          "pressure_mach": 1.98643513557616,
+          "temperature_mach": 2.009382426887339,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 15,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.08069579194115806,
+            0.0814643232929786
+          ],
+          "exit_region_bracket": [
+            0.09837201303303066,
+            0.0991405443848512
+          ],
+          "pressure_mach": 1.9913676717721998,
+          "temperature_mach": 1.9999071373041812,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 16,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14909508225318724,
+            0.1498636136050078
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0007635848304637,
+          "temperature_mach": 2.0004157856810116,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 17,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.18521605578875364,
+            0.1859845871405742
+          ],
+          "exit_region_bracket": [
+            0.189827243899677,
+            0.19059577525149757
+          ],
+          "pressure_mach": 2.0109297299372026,
+          "temperature_mach": 1.9964800705733123,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 18,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.09990907573667175,
+            0.1006776070884923
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 2.0097498863143013,
+          "temperature_mach": 2.002103196813544,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 19,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12450207899492928,
+            0.12527061034674983
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.01168290142507,
+          "temperature_mach": 1.99905007645405,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 20,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.15908598982685454,
+            0.1598545211786751
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.011573151074946,
+          "temperature_mach": 1.999829493933382,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 21,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.15140067630864892,
+            0.15216920766046949
+          ],
+          "exit_region_bracket": [
+            0.15908598982685454,
+            0.1598545211786751
+          ],
+          "pressure_mach": 2.009051337263008,
+          "temperature_mach": 1.9943697481078304,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 22,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.08376991734844025,
+            0.0845384487002608
+          ],
+          "exit_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "pressure_mach": 1.9970380927328297,
+          "temperature_mach": 2.000521174787582,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 23,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12450207899492928,
+            0.12527061034674983
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.01168290142507,
+          "temperature_mach": 1.99905007645405,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 24,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07685313518205532,
+            0.07762166653387587
+          ],
+          "exit_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "pressure_mach": 1.9852721678227303,
+          "temperature_mach": 1.9995740805544964,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 25,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1398727060313405,
+            0.14064123738316106
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 1.985815062000368,
+          "temperature_mach": 2.000825852990948,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 26,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.08914963681118408,
+            0.08991816816300463
+          ],
+          "exit_region_bracket": [
+            0.09837201303303066,
+            0.0991405443848512
+          ],
+          "pressure_mach": 2.0094719153199874,
+          "temperature_mach": 1.996426587810222,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 27,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.18137339902965083,
+            0.1821419303814714
+          ],
+          "exit_region_bracket": [
+            0.1859845871405742,
+            0.18675311849239476
+          ],
+          "pressure_mach": 2.008127835538556,
+          "temperature_mach": 1.99259470754717,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 28,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07147341571931148,
+            0.07224194707113203
+          ],
+          "exit_region_bracket": [
+            0.07839019788569641,
+            0.07915872923751696
+          ],
+          "pressure_mach": 1.9866412251798085,
+          "temperature_mach": 2.0062284508647528,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 29,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.15216920766046949,
+            0.15293773901229005
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 2.0096360224371823,
+          "temperature_mach": 1.9951567259720964,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 30,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07147341571931148,
+            0.07224194707113203
+          ],
+          "exit_region_bracket": [
+            0.09606641897756901,
+            0.09683495032938956
+          ],
+          "pressure_mach": 1.9866412251798085,
+          "temperature_mach": 2.0062284508647528,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 31,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12142795358764709,
+            0.12219648493946764
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.010037788210343,
+          "temperature_mach": 1.9964808664071618,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 32,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1398727060313405,
+            0.14064123738316106
+          ],
+          "exit_region_bracket": [
+            0.146020956845905,
+            0.14678948819772555
+          ],
+          "pressure_mach": 1.985815062000368,
+          "temperature_mach": 2.000825852990948,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 33,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.19059577525149757,
+            0.19136430660331813
+          ],
+          "exit_region_bracket": [
+            0.20366080823244712,
+            0.20442933958426768
+          ],
+          "pressure_mach": 2.0115820989898907,
+          "temperature_mach": 1.999657416477067,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 34,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.16523424064141903,
+            0.1660027719932396
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0018747455192187,
+          "temperature_mach": 2.0013985907699703,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 35,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.06763075896020875,
+            0.06839929031202929
+          ],
+          "exit_region_bracket": [
+            0.07839019788569641,
+            0.07915872923751696
+          ],
+          "pressure_mach": 2.0111755679362746,
+          "temperature_mach": 2.002167127886063,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 36,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14755801954954612,
+            0.14832655090136668
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 1.9989350736908262,
+          "temperature_mach": 2.000896135089266,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 37,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12834473575403207,
+            0.12911326710585264
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.011492485996532,
+          "temperature_mach": 2.0005700004512352,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 38,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.119890890884006,
+            0.12065942223582654
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 2.0088871237850645,
+          "temperature_mach": 1.9949470765717294,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 39,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1152797027730827,
+            0.11604823412490325
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 1.9974702103962232,
+          "temperature_mach": 2.0008889321112933,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 40,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.16523424064141903,
+            0.1660027719932396
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0018747455192187,
+          "temperature_mach": 2.0013985907699703,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 41,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14909508225318724,
+            0.1498636136050078
+          ],
+          "exit_region_bracket": [
+            0.15908598982685454,
+            0.1598545211786751
+          ],
+          "pressure_mach": 2.0007635848304637,
+          "temperature_mach": 2.0004157856810116,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 42,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.08376991734844025,
+            0.0845384487002608
+          ],
+          "exit_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "pressure_mach": 1.9970380927328297,
+          "temperature_mach": 2.000521174787582,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 43,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.062251039497464904,
+            0.06301957084928546
+          ],
+          "exit_region_bracket": [
+            0.06455663355292655,
+            0.0653251649047471
+          ],
+          "pressure_mach": 2.011774312234815,
+          "temperature_mach": 2.000377407788463,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 44,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14140976873498162,
+            0.14217830008680218
+          ],
+          "exit_region_bracket": [
+            0.1498636136050078,
+            0.15063214495682836
+          ],
+          "pressure_mach": 1.9879317445161933,
+          "temperature_mach": 2.0005393688507236,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 45,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.11758529682854435,
+            0.1183538281803649
+          ],
+          "exit_region_bracket": [
+            0.1260391416985704,
+            0.12680767305039095
+          ],
+          "pressure_mach": 2.000414881689472,
+          "temperature_mach": 2.0003648401899126,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 46,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.08530698005208134,
+            0.08607551140390189
+          ],
+          "exit_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "pressure_mach": 1.9991492071872623,
+          "temperature_mach": 2.000319320805321,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 47,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10144613844031285,
+            0.1022146697921334
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 2.0062773325010927,
+          "temperature_mach": 2.0020737304257126,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 48,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1836789930851125,
+            0.18444752443693307
+          ],
+          "exit_region_bracket": [
+            0.189827243899677,
+            0.19059577525149757
+          ],
+          "pressure_mach": 2.0098744860587727,
+          "temperature_mach": 1.9949491416542984,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 49,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14525242549408443,
+            0.146020956845905
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 1.995515017970084,
+          "temperature_mach": 2.0013117245421292,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 50,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1598545211786751,
+            0.16062305253049566
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0114834360965217,
+          "temperature_mach": 2.0002030927474133,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 51,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.13756711197587881,
+            0.13833564332769938
+          ],
+          "exit_region_bracket": [
+            0.14909508225318724,
+            0.1498636136050078
+          ],
+          "pressure_mach": 1.9838967381975334,
+          "temperature_mach": 2.0023908213410517,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 52,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.09299229357028682,
+            0.09376082492210737
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 2.011746109235461,
+          "temperature_mach": 1.999698199382488,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 53,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.2121146531024733,
+            0.21288318445429386
+          ],
+          "exit_region_bracket": [
+            0.22133702932432003,
+            0.2221055606761406
+          ],
+          "pressure_mach": 2.007767244391896,
+          "temperature_mach": 1.9917084647640453,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 54,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10298320114395394,
+            0.10375173249577449
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 1.9857246351757722,
+          "temperature_mach": 2.006708111082335,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 55,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.11912235953218545,
+            0.119890890884006
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.008306480054788,
+          "temperature_mach": 1.9941893660811099,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 56,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.08991816816300463,
+            0.09068669951482518
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 2.010040076110075,
+          "temperature_mach": 1.9971743322058113,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 57,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.046111881109233255,
+            0.04688041246105381
+          ],
+          "exit_region_bracket": [
+            0.05149160057197714,
+            0.05226013192379769
+          ],
+          "pressure_mach": 1.987572056549921,
+          "temperature_mach": 1.997070322482545,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 58,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12450207899492928,
+            0.12527061034674983
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.01168290142507,
+          "temperature_mach": 1.99905007645405,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 59,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.11604823412490325,
+            0.1168167654767238
+          ],
+          "exit_region_bracket": [
+            0.1275762044022115,
+            0.12834473575403207
+          ],
+          "pressure_mach": 1.9985245451888138,
+          "temperature_mach": 2.0007366374335485,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 60,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10682585790305668,
+            0.10759438925487723
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 1.9840616265077549,
+          "temperature_mach": 2.0010775947156647,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 61,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.13526151792041713,
+            0.1360300492722377
+          ],
+          "exit_region_bracket": [
+            0.15908598982685454,
+            0.1598545211786751
+          ],
+          "pressure_mach": 1.9841585400213246,
+          "temperature_mach": 2.00555573627071,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 62,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10605732655123613,
+            0.10682585790305668
+          ],
+          "exit_region_bracket": [
+            0.1152797027730827,
+            0.11604823412490325
+          ],
+          "pressure_mach": 1.9836883467116933,
+          "temperature_mach": 2.0017451356888216,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 63,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.16062305253049566,
+            0.16139158388231623
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0113006179601296,
+          "temperature_mach": 2.0006300382022926,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 64,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.15447480171593117,
+            0.15524333306775173
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.011177096196745,
+          "temperature_mach": 1.9973822721523953,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 65,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.19520696336242094,
+            0.1959754947142415
+          ],
+          "exit_region_bracket": [
+            0.20366080823244712,
+            0.20442933958426768
+          ],
+          "pressure_mach": 2.006353525920499,
+          "temperature_mach": 2.001928885020696,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 66,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.16523424064141903,
+            0.1660027719932396
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 1.98643513557616,
+          "temperature_mach": 2.009382426887339,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 67,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07992726058933751,
+            0.08069579194115806
+          ],
+          "exit_region_bracket": [
+            0.09606641897756901,
+            0.09683495032938956
+          ],
+          "pressure_mach": 1.9898013506876122,
+          "temperature_mach": 1.9996192234871815,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 68,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.16446570928959847,
+            0.16523424064141903
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0047359598742203,
+          "temperature_mach": 2.0018759975400737,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 69,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.17753074227054802,
+            0.17829927362236858
+          ],
+          "exit_region_bracket": [
+            0.189827243899677,
+            0.19059577525149757
+          ],
+          "pressure_mach": 1.9971953700441178,
+          "temperature_mach": 2.001429917743735,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 70,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07685313518205532,
+            0.07762166653387587
+          ],
+          "exit_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "pressure_mach": 1.9852721678227303,
+          "temperature_mach": 1.9995740805544964,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 71,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07762166653387587,
+            0.07839019788569641
+          ],
+          "exit_region_bracket": [
+            0.09606641897756901,
+            0.09683495032938956
+          ],
+          "pressure_mach": 1.9861419776275002,
+          "temperature_mach": 1.9993640581322945,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 72,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.18137339902965083,
+            0.1821419303814714
+          ],
+          "exit_region_bracket": [
+            0.189827243899677,
+            0.19059577525149757
+          ],
+          "pressure_mach": 2.008127835538556,
+          "temperature_mach": 1.99259470754717,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 73,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.133724455216776,
+            0.13449298656859657
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 1.987043940275379,
+          "temperature_mach": 2.009210060028333,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 74,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10298320114395394,
+            0.10375173249577449
+          ],
+          "exit_region_bracket": [
+            0.11297410871762106,
+            0.11374264006944161
+          ],
+          "pressure_mach": 1.9857246351757722,
+          "temperature_mach": 2.006708111082335,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 75,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.05149160057197714,
+            0.05226013192379769
+          ],
+          "exit_region_bracket": [
+            0.05533425733107991,
+            0.056102788682900466
+          ],
+          "pressure_mach": 1.9954195186703516,
+          "temperature_mach": 1.995975534208641,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 76,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.08838110545936353,
+            0.08914963681118408
+          ],
+          "exit_region_bracket": [
+            0.11143704601397997,
+            0.11220557736580052
+          ],
+          "pressure_mach": 2.008890948945224,
+          "temperature_mach": 1.9956737923558943,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 77,
+          "sequence": 0,
+          "status": 0,
+          "flags": 28,
+          "entry_region_bracket": [
+            0.0814643232929786,
+            0.08223285464479915
+          ],
+          "exit_region_bracket": [
+            0.09606641897756901,
+            0.09683495032938956
+          ],
+          "pressure_mach": 1.9929604492435409,
+          "temperature_mach": 2.0001997853942384,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 78,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1698454287523424,
+            0.17061396010416296
+          ],
+          "exit_region_bracket": [
+            0.17445661686326577,
+            0.17522514821508633
+          ],
+          "pressure_mach": 1.9845337112078285,
+          "temperature_mach": 2.002075695535003,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 79,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.133724455216776,
+            0.13449298656859657
+          ],
+          "exit_region_bracket": [
+            0.146020956845905,
+            0.14678948819772555
+          ],
+          "pressure_mach": 1.987043940275379,
+          "temperature_mach": 2.009210060028333,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 80,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1498636136050078,
+            0.15063214495682836
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0078951797056552,
+          "temperature_mach": 1.992844141958166,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 81,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.062251039497464904,
+            0.06301957084928546
+          ],
+          "exit_region_bracket": [
+            0.07839019788569641,
+            0.07915872923751696
+          ],
+          "pressure_mach": 2.011774312234815,
+          "temperature_mach": 2.000377407788463,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 82,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12296501629128818,
+            0.12373354764310873
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.0110384428029953,
+          "temperature_mach": 1.997906933291259,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 83,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.18675311849239476,
+            0.18752164984421532
+          ],
+          "exit_region_bracket": [
+            0.20366080823244712,
+            0.20442933958426768
+          ],
+          "pressure_mach": 2.0116645968534366,
+          "temperature_mach": 1.9977807643497556,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 84,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1183538281803649,
+            0.11912235953218545
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 2.0077353249421153,
+          "temperature_mach": 1.9934538044524897,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 85,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.13833564332769938,
+            0.13910417467951994
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 1.9843366550571722,
+          "temperature_mach": 2.0017142726922503,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 86,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1498636136050078,
+            0.15063214495682836
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0078951797056552,
+          "temperature_mach": 1.992844141958166,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 87,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.06839929031202929,
+            0.06916782166384984
+          ],
+          "exit_region_bracket": [
+            0.07839019788569641,
+            0.07915872923751696
+          ],
+          "pressure_mach": 2.0104408837030214,
+          "temperature_mach": 2.0024058031593226,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 88,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1498636136050078,
+            0.15063214495682836
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0078951797056552,
+          "temperature_mach": 1.992844141958166,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 89,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1183538281803649,
+            0.11912235953218545
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 2.001287149023505,
+          "temperature_mach": 2.000182333182552,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 90,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07839019788569641,
+            0.07915872923751696
+          ],
+          "exit_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "pressure_mach": 1.987142095732565,
+          "temperature_mach": 1.9992944981794136,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 91,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.06763075896020875,
+            0.06839929031202929
+          ],
+          "exit_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "pressure_mach": 2.0111755679362746,
+          "temperature_mach": 2.002167127886063,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 92,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.11220557736580052,
+            0.11297410871762106
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 1.9919153747796965,
+          "temperature_mach": 2.0005533800859827,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 93,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.15447480171593117,
+            0.15524333306775173
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.011177096196745,
+          "temperature_mach": 1.9973822721523953,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 94,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12373354764310873,
+            0.12450207899492928
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.011418403425456,
+          "temperature_mach": 1.9985241206032842,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 95,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.0991405443848512,
+            0.09990907573667175
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 2.010677823246974,
+          "temperature_mach": 2.0018926215792776,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 96,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.15216920766046949,
+            0.15293773901229005
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0096360224371823,
+          "temperature_mach": 1.9951567259720964,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 97,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.06609369625656765,
+            0.0668622276083882
+          ],
+          "exit_region_bracket": [
+            0.07839019788569641,
+            0.07915872923751696
+          ],
+          "pressure_mach": 2.011722097565731,
+          "temperature_mach": 2.001605275272699,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 98,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.15524333306775173,
+            0.1560118644195723
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0115317748804924,
+          "temperature_mach": 1.9980046961269575,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 99,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07147341571931148,
+            0.07224194707113203
+          ],
+          "exit_region_bracket": [
+            0.09606641897756901,
+            0.09683495032938956
+          ],
+          "pressure_mach": 1.9866412251798085,
+          "temperature_mach": 2.0062284508647528,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 100,
+          "sequence": 0,
+          "status": 0,
+          "flags": 28,
+          "entry_region_bracket": [
+            0.15908598982685454,
+            0.1598545211786751
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.011573151074946,
+          "temperature_mach": 1.999829493933382,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 101,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1183538281803649,
+            0.11912235953218545
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 2.0077353249421153,
+          "temperature_mach": 1.9934538044524897,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 102,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1498636136050078,
+            0.15063214495682836
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 2.001611397051239,
+          "temperature_mach": 2.000185606792381,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 103,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14909508225318724,
+            0.1498636136050078
+          ],
+          "exit_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "pressure_mach": 2.0007635848304637,
+          "temperature_mach": 2.0004157856810116,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 104,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1721510228078041,
+            0.17291955415962465
+          ],
+          "exit_region_bracket": [
+            0.17445661686326577,
+            0.17522514821508633
+          ],
+          "pressure_mach": 1.9871580201869772,
+          "temperature_mach": 2.0010022206035205,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 105,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12219648493946764,
+            0.12296501629128818
+          ],
+          "exit_region_bracket": [
+            0.1298817984576732,
+            0.13065032980949376
+          ],
+          "pressure_mach": 2.010569353252906,
+          "temperature_mach": 1.9972185675266898,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 106,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.11374264006944161,
+            0.11451117142126216
+          ],
+          "exit_region_bracket": [
+            0.1275762044022115,
+            0.12834473575403207
+          ],
+          "pressure_mach": 1.9949955921958187,
+          "temperature_mach": 2.000952227816132,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 107,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1498636136050078,
+            0.15063214495682836
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 2.0078951797056552,
+          "temperature_mach": 1.992844141958166,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 108,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.13141886116131432,
+            0.13218739251313488
+          ],
+          "exit_region_bracket": [
+            0.14294683143862275,
+            0.1437153627904433
+          ],
+          "pressure_mach": 2.0093202571889073,
+          "temperature_mach": 2.0019464029098866,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 109,
+          "sequence": 0,
+          "status": 0,
+          "flags": 28,
+          "entry_region_bracket": [
+            0.1275762044022115,
+            0.12834473575403207
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.011578307987093,
+          "temperature_mach": 2.0002588735579567,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 110,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1636971779377779,
+            0.16446570928959847
+          ],
+          "exit_region_bracket": [
+            0.17445661686326577,
+            0.17522514821508633
+          ],
+          "pressure_mach": 2.007114715510453,
+          "temperature_mach": 2.0019620158739544,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 111,
+          "sequence": 0,
+          "status": 0,
+          "flags": 284,
+          "entry_region_bracket": [
+            0.16523424064141903,
+            0.1660027719932396
+          ],
+          "exit_region_bracket": [
+            0.18060486767783027,
+            0.18137339902965083
+          ],
+          "pressure_mach": 1.98643513557616,
+          "temperature_mach": 2.009382426887339,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 112,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1498636136050078,
+            0.15063214495682836
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 2.0078951797056552,
+          "temperature_mach": 1.992844141958166,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 113,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.09068669951482518,
+            0.09145523086664573
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 2.0105761661110284,
+          "temperature_mach": 1.997897445107437,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 114,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.13218739251313488,
+            0.13295592386495544
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.0076971205454432,
+          "temperature_mach": 2.00207760543562,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 115,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.05226013192379769,
+            0.05302866327561825
+          ],
+          "exit_region_bracket": [
+            0.06455663355292655,
+            0.0653251649047471
+          ],
+          "pressure_mach": 1.99660239240012,
+          "temperature_mach": 1.9960195382291601,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 116,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.12065942223582654,
+            0.12142795358764709
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.009469588601645,
+          "temperature_mach": 1.9957165944203124,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 117,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.13065032980949376,
+            0.13141886116131432
+          ],
+          "exit_region_bracket": [
+            0.14064123738316106,
+            0.14140976873498162
+          ],
+          "pressure_mach": 2.0103958593892344,
+          "temperature_mach": 2.001675240274311,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 118,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.07685313518205532,
+            0.07762166653387587
+          ],
+          "exit_region_bracket": [
+            0.09529788762574846,
+            0.09606641897756901
+          ],
+          "pressure_mach": 1.9852721678227303,
+          "temperature_mach": 1.9995740805544964,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 119,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.16907689740052184,
+            0.1698454287523424
+          ],
+          "exit_region_bracket": [
+            0.189827243899677,
+            0.19059577525149757
+          ],
+          "pressure_mach": 1.9840133128127826,
+          "temperature_mach": 2.0027353828296306,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 120,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.14755801954954612,
+            0.14832655090136668
+          ],
+          "exit_region_bracket": [
+            0.15831745847503398,
+            0.15908598982685454
+          ],
+          "pressure_mach": 1.9989350736908262,
+          "temperature_mach": 2.000896135089266,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 121,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.1183538281803649,
+            0.11912235953218545
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 2.0077353249421153,
+          "temperature_mach": 1.9934538044524897,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 122,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.11758529682854435,
+            0.1183538281803649
+          ],
+          "exit_region_bracket": [
+            0.12680767305039095,
+            0.1275762044022115
+          ],
+          "pressure_mach": 2.000414881689472,
+          "temperature_mach": 2.0003648401899126,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 123,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.10298320114395394,
+            0.10375173249577449
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 1.9857246351757722,
+          "temperature_mach": 2.006708111082335,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 124,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.133724455216776,
+            0.13449298656859657
+          ],
+          "exit_region_bracket": [
+            0.14909508225318724,
+            0.1498636136050078
+          ],
+          "pressure_mach": 1.987043940275379,
+          "temperature_mach": 2.009210060028333,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 125,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.08761257410754299,
+            0.08838110545936353
+          ],
+          "exit_region_bracket": [
+            0.10989998331033887,
+            0.11066851466215942
+          ],
+          "pressure_mach": 2.008309367752568,
+          "temperature_mach": 1.994930098385478,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 126,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.18291046173329195,
+            0.1836789930851125
+          ],
+          "exit_region_bracket": [
+            0.20366080823244712,
+            0.20442933958426768
+          ],
+          "pressure_mach": 2.0092933627486436,
+          "temperature_mach": 1.994152457798268,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "particle_id": 127,
+          "sequence": 0,
+          "status": 0,
+          "flags": 24,
+          "entry_region_bracket": [
+            0.059176914090182685,
+            0.05994544544200324
+          ],
+          "exit_region_bracket": [
+            0.06455663355292655,
+            0.0653251649047471
+          ],
+          "pressure_mach": 2.009861357158047,
+          "temperature_mach": 1.9977577678618064,
+          "normal": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    }
+  },
+  "scope": "RK2 existing MC tracer, serial uniform mesh only",
+  "scientific_signoff": "pending",
+  "statistical_path_approval": "pending",
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena",
+  "compiled_source_fingerprint": "11ddfb7dd00d94dfad1907f51bc62e3f69287c20167bc958021d955d0c4b47f0",
+  "build_cache_sha256": "b96de350f8446d42356b143f0fc99e34f6964703fe6b9a442fb90d9a6c18286a",
+  "elapsed_seconds": 33.33945204200063,
+  "status": "failed",
+  "error": "KeyError('rho')"
+}

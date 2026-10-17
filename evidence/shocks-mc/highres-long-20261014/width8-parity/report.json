@@ -1,0 +1,40 @@
+{
+  "status": "passed",
+  "width": 8,
+  "rtol": 1e-12,
+  "atol": 1e-12,
+  "masks": "exact",
+  "detector_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+  "source_sha256": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+  "reference_sha256": {
+    "local_pass.py": "6f5ec8bc89c90ecb1ad2e0135fb8abe7a79f2b43badfc73356fd4ae3f1cc3857",
+    "config.py": "993746b2dd5b878f4e8c455262c68044168338c25a83d837b07a7574e168972f",
+    "derived.py": "3508dc08f1e87199d8c1f6e129cefdd2c6e6bd37674f697bdbae1f786740c18d",
+    "gradients.py": "adafc584ebf4e329d7df1db921e7b6f3de559d32028cc3ce8d1fd3e22678e4e4",
+    "sampling.py": "05b5f152efa4243c44e8ef83d10625969c39b77d1082d433a02ac094cf5fbfe4",
+    "mach.py": "f96e05e4f19717fbf39be9b866f6235fb37e20c1cb218b32ee95d053c191ca9d",
+    "masks.py": "aadabb59ca8670220eda518f7d25795ca3139506fedb5d7141d870e5a8bdbc40",
+    "criteria.py": "055ac7a9ce15c098c5128a1fa5e42484f9045f9157b67bf46c07d00904b12543"
+  },
+  "cases": [
+    {
+      "case": "NUM08_NUM10_width8_RH_M3",
+      "status": "pass",
+      "cells": 1536,
+      "inside_cells": 48,
+      "fixture_sha256": "35df7f6fe19a2724353ef9e5a2784d48b0e987187981b4d4bd688b6a95aacb3f",
+      "native_csv_sha256": "bfbb1ab982c7c882cb6a0aa3fac93a7a5e538ded36ac72d0a626edddb9991e2d",
+      "physical_Mach": 3.0
+    },
+    {
+      "case": "NUM08_width8_noncubic_seed72941",
+      "status": "pass",
+      "cells": 1309,
+      "inside_cells": 28,
+      "fixture_sha256": "ef345997cc551cb4e5d5dd5045ade60a9b59531cff0c722049edc4c0e4f23afe",
+      "native_csv_sha256": "edc18aa318b83b7d4281d527088291f5b435e222b750793dc769889dbab8f17e",
+      "physical_Mach": null
+    }
+  ],
+  "scientific_signoff": "pending"
+}

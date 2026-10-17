@@ -1,0 +1,33 @@
+{
+  "production_commit": "ad4225edea78d255b67df97fe8f593c0c268fa1e",
+  "scientific_signoff": "pending",
+  "readonly": true,
+  "observer_sha256": "718bc86a7350efd4e20e99702c4bd47d6678baa908821575123d6a8d04687ee5",
+  "reviews": [
+    {
+      "agent": "review_numerics",
+      "skill": "ponytail-review",
+      "outcome": "No new timing/transport findings; lean already.",
+      "final_runner_sha256": "fd33f98ef50567735fe234af17f8eb7e075987b4779073ca496a124ae4e92f91",
+      "evidence": "Final30 expected outcomes/source hashes verified.896 completed-step samples exact; both normalizations replay exact. Delayed5/cutoff7 inactive steps checked using full-precision step-start times. Known native thermal bias retained.",
+      "implemented_suggestion": "Add independently timed inactive-force checks; retain native mode constraints in fixture definitions."
+    },
+    {
+      "agent": "review_persistence",
+      "skill": "ponytail-review",
+      "outcome": "No blocking persistence findings; lean already.",
+      "reviewed_runner_sha256": "5e33eb35d68644de53ab266853e4ed98250974890f8954a0e02e0d5a8e2c08a8",
+      "evidence": "Reviewed unchanged production observer, full static forcing contract/native OU persistence, both normalization replay helpers, drift rejection. Later fixture changes were independently reviewed by numerical/integration reviewers.",
+      "limitation": "Variant-specific replay is not qualified by on/off tests."
+    },
+    {
+      "agent": "review_integration",
+      "skill": "ponytail-review",
+      "outcome": "Final frozen review passes; no further safe cuts.",
+      "final_runner_sha256": "fd33f98ef50567735fe234af17f8eb7e075987b4779073ca496a124ae4e92f91",
+      "report_sha256": "214f939c8aaf3d8c64ba11d53a0e5a0018bdfa3572a0e669e639c1ac2fec85fd",
+      "evidence": "Verified all10 source hashes,30 frozen input/log digests and4 expected rejects. Independent16generation exit oracle found exactly IDs3,77,109; all shared rows exact/no resurrection. Replay49152/53248 resumed rows and complete suspended views verified.",
+      "implemented_suggestion": "Keep legacy disabled outflow behavior; derive physical exit oracle from transfer source/hop. Assert complete transfer generations and integer directions. Correct invalid 2D mode fixture."
+    }
+  ]
+}

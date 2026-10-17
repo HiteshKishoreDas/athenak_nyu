@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-forcing-regression-20261013/delayed_inside/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-forcing-regression-20261013/delayed_inside",
+  "exit": 0,
+  "elapsed_seconds": 0.5657886670087464,
+  "input_sha256": "fc1f8b336397e6ace89029b609acdb60ddae46e8c49dfd2db468d7b60ade5dd6",
+  "log_sha256": "9ec21c85b29e02fd1d45e32928da55936d07f4d4e209ff9ab610a85946be9880",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "delayed_inside",
+  "expected_error": null,
+  "passed": true
+}

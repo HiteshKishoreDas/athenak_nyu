@@ -1,0 +1,14 @@
+{
+  "name": "acceleration",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/acceleration/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "f97b1819c1198df06d1cbb4088283e3ed3dbf63ca67e284902749908392ffa60",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/acceleration",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

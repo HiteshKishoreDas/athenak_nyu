@@ -1,0 +1,14 @@
+{
+  "name": "fluid_curves_on",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-regression/fluid_curves_on/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "2cdf95286b3ecd0f1360e3508ce40a565f14460e918f4a615e8dd8b18b063392",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-regression/fluid_curves_on",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

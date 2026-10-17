@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-forcing-regression-20261013/seed_active/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-forcing-regression-20261013/seed_active",
+  "exit": 0,
+  "elapsed_seconds": 0.13331824995111674,
+  "input_sha256": "fd2462bfb85fc1765a8de84ead5c578b892ca472343af30f5590c51e67792712",
+  "log_sha256": "17d2faccf8992f9531ff965082a563e456c08003ac5e89658ecce141ed93aaa4",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "seed_active",
+  "expected_error": null,
+  "passed": true
+}

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-baseline/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-baseline-thermo-replay/zero/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-baseline-thermo-replay/zero",
+  "exit": 0,
+  "elapsed_seconds": 0.7727251249998517,
+  "input_sha256": "97a07871240a696b3d12fe0bbd1315b8dc3354e24b341efa185e46ce088e2900",
+  "log_sha256": "6e6239ac5cbee6ff808b8e9709b4ec6a07e7f719d58004fd165c349ef1f11a74",
+  "executable_sha256": "8e23c3a37b0a784191f1b99e1e02209a1208207eac0612be2336ef4d4759fd18",
+  "label": "zero"
+}

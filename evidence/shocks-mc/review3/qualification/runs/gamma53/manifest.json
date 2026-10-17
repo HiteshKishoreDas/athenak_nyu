@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-review3-checks/qualification/raw/gamma53/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-review3-checks/qualification/raw/gamma53",
+  "exit": 0,
+  "elapsed_seconds": 0.670745249999527,
+  "input_sha256": "266067d3064ccbd3d36ad4289aae4174613a488923742e094b84c2a2a250af00",
+  "log_sha256": "f1822f99f75b1bdc4ab5b2a02650ff1e36d3b70fcdd63e69548e3a3785e2526e",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "gamma53"
+}

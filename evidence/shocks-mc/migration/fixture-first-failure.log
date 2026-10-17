@@ -1,0 +1,3 @@
+Initial fixture had CPU create_mirror_view aliasing live state; expected images were incremented twice.
+periodic2d/periodic3d: SIGABRT at byte comparison; outflow PASS.
+Fixture corrected to use create_mirror (independent expectation storage); production code unchanged.

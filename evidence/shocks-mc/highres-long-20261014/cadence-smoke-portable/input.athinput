@@ -1,0 +1,129 @@
+# Native-forced Mach5,128^3,long t=1.0 box; no cooling; full shock traces.
+# Both shock_tube states are equal: uniform rho/P before existing Fourier velocity initializer.
+<job>
+basename = shock_highres128_long
+<mesh>
+nghost = 8
+nx1 = 128
+x1min = 0
+x1max = 1
+ix1_bc = periodic
+ox1_bc = periodic
+nx2 = 128
+x2min = 0
+x2max = 1
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 128
+x3min = 0
+x3max = 1
+ix3_bc = periodic
+ox3_bc = periodic
+<meshblock>
+nx1 = 128
+nx2 = 128
+nx3 = 128
+<time>
+evolution = dynamic
+integrator = rk2
+cfl_number = .3
+tlim = 1.0
+ndiag = 50
+nlim = 2
+<hydro>
+eos = ideal
+gamma = 1.4
+rsolver = hllc
+reconstruct = plm
+<particles>
+particle_type = lagrangian_mc
+pusher = lagrangian_mc
+random_seed = 11
+next_tracer_tag = 0
+track_variables = rho,p,v1,v2,v3
+<tracer_seed_initial>
+id = 1
+start_time = 0
+count_per_event = 8192
+seed = 903
+region = all
+slab_axis = 1
+slab_min = .45
+slab_max = .75
+weight = mass
+<shock_tracking>
+enabled = true
+lineage = showcase-m5-edot50-128-long
+width = 8
+min_mach = 1.1
+event_capacity = 32768
+trace = true
+directory = shock_events
+<problem>
+pgen_name = shock_tube
+shock_dir = 1
+xshock = .3
+dl = 1
+pl = 0.7142857142857143
+ul = 0
+vl = 0
+wl = 0
+dr = 1
+pr = 0.7142857142857143
+ur = 0
+vr = 0
+wr = 0
+<output1>
+file_type = hst
+dt = 0.02
+<output2>
+file_type = prtcl_thermo_history
+variables = rho,p,v1,v2,v3
+dcycle = 50
+<output3>
+file_type = bin
+variable = hydro_w
+dt = 0.1
+data_precision = real
+<initial_perturbations>
+variables = velocity
+velocity_rms = 5
+remove_velocity_mean = true
+spectral_slope = 2
+nlow = 1
+nhigh = 3
+f_solenoidal = 0.5
+rseed = 24680
+localization = none
+
+<turb_driving>
+turb_flag = 2
+normalization = edot
+tcorr = .1
+dt_update = .01
+nlow = 1
+nhigh = 3
+npeak = 2
+spectrum = parabolic
+sol_fraction = .5
+rseed = 2718
+localization = none
+tile_nx = 1
+tile_ny = 1
+tile_nz = 1
+dedt = 50
+<output5>
+file_type = bin
+variable = turb_force
+id = force
+dt = 0.1
+data_precision = real
+<output6>
+file_type = bin
+variable = hydro_u
+id = cons
+dt = 0.1
+data_precision = real
+<output4>
+file_type = rst
+dt = 0.25

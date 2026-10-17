@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/shock-mc-clean-42bcf12c/build/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-clean-integration/uniform_off/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-clean-integration/uniform_off",
+  "exit": 0,
+  "elapsed_seconds": 0.2915823330004059,
+  "input_sha256": "ef878c3e7cb966b2f0bb291f97f5235b5475ccbfdc52a99dc3e6ec305675ef68",
+  "log_sha256": "5455a42caf1b9a0d1640ae5f9b40c0cb55aad3dfa5a74ea9388ea1d7223da9ee",
+  "executable_sha256": "d2edc6cf634b20bbf66b66a834ad521cc7bbe5ed866ec6392262d3c1d62cbd9b",
+  "label": "uniform_off",
+  "expected_error": null,
+  "passed": true
+}

@@ -1,0 +1,4 @@
+(lldb) target create "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena"
+Current executable set to '/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena' (arm64).
+(lldb) settings set -- target.run-args  "-i" "/private/tmp/shock-mc-integration-v1/uniform_on/input.athinput"
+(lldb) run

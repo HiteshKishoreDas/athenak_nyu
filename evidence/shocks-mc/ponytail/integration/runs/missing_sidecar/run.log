@@ -1,0 +1,7 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+### FATAL shock tracking: missing/incompatible shock sidecar: /private/tmp/shock-mc-ponytail-checks/integration/raw/missing_sidecar_artifacts/rst/shock_mc.00001.rst.shock.rank0

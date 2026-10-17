@@ -1,0 +1,11 @@
+{
+  "generation": 1443,
+  "time": 0.25012120158057216,
+  "fluid_sha256": "a353ce0d2728337cd7b786ef6ff43b4e2a4699d20e63c0ee39c7e04197d31450",
+  "mask_npz_sha256": "6818d254a87f0941f83be2e5aa4c1549f9868ec611ff9b6727f96a5511d4c889",
+  "fixture_sha256": "01051263ff8be0af534237edcc7fe77dfe9d6096ec0d5f2b9a54e3890d1e7308",
+  "native_csv_sha256": "ece0bb750cbdb4d8d97009344340abe1c3fee1b55c99766a6274ee0d8c3e7cab",
+  "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+  "scope": "Only z=64 plane: crop z55..73 includes actual +/-8 endpoints and +/-1 gradients. Full x/y periodic neighbors; artificial z wrap cannot affect central plane. No whole-volume mask assertion.",
+  "actual_trace_particles_checked": 64
+}

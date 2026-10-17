@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-laptop-20261008/integration/overflow/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-laptop-20261008/integration/overflow",
+  "exit": 1,
+  "elapsed_seconds": 3.2010913330013864,
+  "input_sha256": "1bfc837e71d845566ea3818dae9df416d8d05a683eda1462c856305f9b269785",
+  "log_sha256": "6c05959c59d33b771aac52988c3d6ae7e37775b1cd5772a331c626e99459e9ee",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "overflow",
+  "expected_error": "event buffer overflow",
+  "passed": true
+}

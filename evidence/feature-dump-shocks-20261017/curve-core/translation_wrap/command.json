@@ -1,0 +1,14 @@
+{
+  "name": "translation_wrap",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/translation_wrap/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "26b6aaa8aa7aba28b572f4f632a5681343f45a1fde34fbbd78055fec61dffa44",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/translation_wrap",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

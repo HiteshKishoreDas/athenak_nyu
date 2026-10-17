@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/qualification-runs/seed29/input.athinput"
+  ],
+  "directory": "/private/tmp/athenak-feature-dump-shocks-tests/qualification-runs/seed29",
+  "exit": 0,
+  "elapsed_seconds": 0.6708215839462355,
+  "input_sha256": "9b3a2605ce9915fbb64918879af8ec90fdf65be39ec1934d34b61b7b546f811a",
+  "log_sha256": "dade3e4bf31bbd41d453952bd17bc17383711b968089419cbdaf3978e7f74dbe",
+  "executable_sha256": "bd2038a751e42335e1ef3e860d827fd060c4e272cf42a2f78374665f43de2769",
+  "label": "seed29"
+}

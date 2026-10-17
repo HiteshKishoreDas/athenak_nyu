@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 213, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 119, in main
+    measured_heat=float(np.mean(gas-gas0));assert measured_heat>1e-12
+                                                  ^^^^^^^^^^^^^^^^^^^
+AssertionError

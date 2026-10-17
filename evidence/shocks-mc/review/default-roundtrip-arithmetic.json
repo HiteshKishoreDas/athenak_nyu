@@ -1,0 +1,33 @@
+{
+  "scope": "Independent decimal-to-binary float arithmetic, not native AthenaK runtime or ParameterInput API test",
+  "samples": {
+    "native_float_min_as_double": {
+      "original": "1.1754943508222875e-38",
+      "limited_precision_string": "1.17549e-38",
+      "precise_string": "1.1754943508222875e-38",
+      "limited_equal": false,
+      "precise_equal": true
+    },
+    "resolved_center": {
+      "original": "0.5555555550555555",
+      "limited_precision_string": "0.555556",
+      "precise_string": "0.55555555505555554",
+      "limited_equal": false,
+      "precise_equal": true
+    },
+    "resolved_end_time": {
+      "original": "0.12345678901234566",
+      "limited_precision_string": "0.123457",
+      "precise_string": "0.12345678901234566",
+      "limited_equal": false,
+      "precise_equal": true
+    },
+    "default_detector_gradient_floor": {
+      "original": "1e-30",
+      "limited_precision_string": "1e-30",
+      "precise_string": "1.0000000000000001e-30",
+      "limited_equal": true,
+      "precise_equal": true
+    }
+  }
+}

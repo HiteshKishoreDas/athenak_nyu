@@ -1,0 +1,14 @@
+{
+  "name": "native_control_rk3",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_rk3/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "48318fb9d5e3482359b630917b9da7514c4203e2cd62c7e960192120f9f0d566",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_rk3",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

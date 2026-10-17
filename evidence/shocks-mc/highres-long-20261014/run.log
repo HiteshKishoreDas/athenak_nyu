@@ -1,0 +1,318 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+Initialising turbulence driving module
+ dedt = 50 tcorr = 0.1 dt_update = 0.01
+Experimental shock history: v1-entry-upstream-logdistance-mc-massflux-rk2-temperature-nearest-reference6f5ec8bc f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b 8 1.3999999999999999 8 1.1000000000000001 1000 1.0000000000000001e-30 0 0 0 rk2 plm hllc 0.29999999999999999 128 128 128 128 128 128 0 1 0 1 0 1 6 6 6 6 6 6 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 0 0 rng 11 schedules 1 1 0 0 -1 8192 903 0 0 0 1 0 1 0 1 0.5 0.5 0.5 0 1 0.45000000000000001 0.75 0 density 0 0 0 0 turb-driver-config-v1 32 9:center_x1 1:0 9:center_x2 1:0 9:center_x3 1:0 4:dedt 2:50 12:driving_type 1:0 9:dt_update 3:.01 7:exp_prl 1:0 7:exp_prp 7:1.66667 4:expo 7:1.66667 12:localization 4:none 6:max_kx 1:3 6:max_ky 1:3 6:max_kz 1:3 6:min_kx 1:0 6:min_ky 1:0 6:min_kz 1:0 5:nhigh 1:3 4:nlow 1:1 13:normalization 4:edot 5:npeak 1:2 5:rseed 4:2718 8:sigma_x1 2:-1 8:sigma_x2 2:-1 8:sigma_x3 2:-1 12:sol_fraction 2:.5 8:spectrum 9:parabolic 5:tcorr 2:.1 11:tdriv_start 1:0 7:tile_nx 1:1 7:tile_ny 1:1 7:tile_nz 1:1 9:turb_flag 1:2
+lineage=showcase-m5-edot50-128-long capacity=32768; first inside representative; code units; no certified plateaus; endpoint cadence limited; scientific review pending
+Total Outputs Time: 0.332403 s (load=0.077506 s, write=0.254897 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=2.895435e+00 cycle=0 time=0.000000e+00 dt=1.853103e-04 nmb=1
+output2 (prtcl_thermo_history): 2.630512e-02 s (load=2.516804e-02 s, write=1.137084e-03 s)
+elapsed=5.306563e+01 cycle=50 time=9.329620e-03 dt=1.881121e-04 nmb=1
+output2 (prtcl_thermo_history): 2.052625e-02 s (load=1.969188e-02 s, write=8.343750e-04 s)
+elapsed=1.073233e+02 cycle=100 time=1.882690e-02 dt=1.920880e-04 nmb=1
+output1 (hst): 2.175267e-02 s (load=2.132342e-02 s, write=4.292500e-04 s)
+output2 (prtcl_thermo_history): 1.097625e-02 s (load=1.001600e-02 s, write=9.602500e-04 s)
+elapsed=1.590824e+02 cycle=150 time=2.854483e-02 dt=1.958973e-04 nmb=1
+output2 (prtcl_thermo_history): 6.639916e-03 s (load=5.538750e-03 s, write=1.101166e-03 s)
+elapsed=2.110448e+02 cycle=200 time=3.845357e-02 dt=2.054161e-04 nmb=1
+output1 (hst): 2.175096e-02 s (load=2.132175e-02 s, write=4.292090e-04 s)
+output2 (prtcl_thermo_history): 6.758000e-03 s (load=5.295417e-03 s, write=1.462583e-03 s)
+elapsed=2.632278e+02 cycle=250 time=4.838850e-02 dt=1.949183e-04 nmb=1
+output2 (prtcl_thermo_history): 6.370709e-03 s (load=5.294125e-03 s, write=1.076584e-03 s)
+elapsed=3.157351e+02 cycle=300 time=5.809167e-02 dt=1.878243e-04 nmb=1
+output1 (hst): 2.177479e-02 s (load=2.136463e-02 s, write=4.101670e-04 s)
+output2 (prtcl_thermo_history): 6.547625e-03 s (load=5.527083e-03 s, write=1.020542e-03 s)
+elapsed=3.687115e+02 cycle=350 time=6.737765e-02 dt=1.745398e-04 nmb=1
+output2 (prtcl_thermo_history): 7.155000e-03 s (load=5.471084e-03 s, write=1.683916e-03 s)
+elapsed=4.228874e+02 cycle=400 time=7.673730e-02 dt=1.828988e-04 nmb=1
+output1 (hst): 2.177242e-02 s (load=2.135704e-02 s, write=4.153750e-04 s)
+output2 (prtcl_thermo_history): 6.558708e-03 s (load=5.617167e-03 s, write=9.415410e-04 s)
+elapsed=4.772758e+02 cycle=450 time=8.538749e-02 dt=1.587672e-04 nmb=1
+output2 (prtcl_thermo_history): 1.388979e-02 s (load=1.282367e-02 s, write=1.066125e-03 s)
+elapsed=5.316044e+02 cycle=500 time=9.344437e-02 dt=1.725411e-04 nmb=1
+output1 (hst): 2.211238e-02 s (load=2.154379e-02 s, write=5.685830e-04 s)
+output2 (prtcl_thermo_history): 6.681167e-03 s (load=5.373625e-03 s, write=1.307542e-03 s)
+elapsed=5.869712e+02 cycle=550 time=1.016857e-01 dt=1.488185e-04 nmb=1
+output2 (prtcl_thermo_history): 6.558583e-03 s (load=5.387208e-03 s, write=1.171375e-03 s)
+elapsed=6.419967e+02 cycle=600 time=1.090537e-01 dt=1.476612e-04 nmb=1
+output2 (prtcl_thermo_history): 6.761292e-03 s (load=5.217750e-03 s, write=1.543542e-03 s)
+elapsed=6.968521e+02 cycle=650 time=1.162676e-01 dt=1.420317e-04 nmb=1
+output1 (hst): 2.182792e-02 s (load=2.134487e-02 s, write=4.830420e-04 s)
+output2 (prtcl_thermo_history): 6.537916e-03 s (load=5.880666e-03 s, write=6.572500e-04 s)
+elapsed=7.517677e+02 cycle=700 time=1.234255e-01 dt=1.461589e-04 nmb=1
+output2 (prtcl_thermo_history): 1.487750e-02 s (load=1.358325e-02 s, write=1.294250e-03 s)
+elapsed=8.071405e+02 cycle=750 time=1.311913e-01 dt=1.672486e-04 nmb=1
+output2 (prtcl_thermo_history): 6.564083e-03 s (load=5.531042e-03 s, write=1.033041e-03 s)
+elapsed=8.621926e+02 cycle=800 time=1.389808e-01 dt=1.443611e-04 nmb=1
+output1 (hst): 2.215263e-02 s (load=2.182404e-02 s, write=3.285840e-04 s)
+output2 (prtcl_thermo_history): 2.088533e-02 s (load=1.996437e-02 s, write=9.209580e-04 s)
+elapsed=9.248482e+02 cycle=850 time=1.463735e-01 dt=1.522213e-04 nmb=1
+output2 (prtcl_thermo_history): 4.644142e-02 s (load=4.499112e-02 s, write=1.450291e-03 s)
+elapsed=1.041030e+03 cycle=900 time=1.539042e-01 dt=1.512013e-04 nmb=1
+output1 (hst): 5.235617e-02 s (load=5.171650e-02 s, write=6.396660e-04 s)
+output2 (prtcl_thermo_history): 5.065592e-02 s (load=4.924258e-02 s, write=1.413333e-03 s)
+elapsed=1.194724e+03 cycle=950 time=1.618968e-01 dt=1.602595e-04 nmb=1
+output2 (prtcl_thermo_history): 2.341996e-02 s (load=2.214508e-02 s, write=1.274875e-03 s)
+elapsed=1.326935e+03 cycle=1000 time=1.700183e-01 dt=1.648383e-04 nmb=1
+output2 (prtcl_thermo_history): 6.194333e-03 s (load=5.533667e-03 s, write=6.606660e-04 s)
+elapsed=1.409597e+03 cycle=1050 time=1.780581e-01 dt=1.576685e-04 nmb=1
+output1 (hst): 2.174779e-02 s (load=2.133400e-02 s, write=4.137910e-04 s)
+output2 (prtcl_thermo_history): 7.341000e-03 s (load=5.299833e-03 s, write=2.041167e-03 s)
+elapsed=1.464332e+03 cycle=1100 time=1.865155e-01 dt=1.812540e-04 nmb=1
+output2 (prtcl_thermo_history): 6.192054e-02 s (load=5.837208e-02 s, write=3.548458e-03 s)
+elapsed=1.563245e+03 cycle=1150 time=1.955282e-01 dt=1.778629e-04 nmb=1
+output1 (hst): 5.310992e-02 s (load=5.234275e-02 s, write=7.671670e-04 s)
+output2 (prtcl_thermo_history): 1.316725e-02 s (load=1.196375e-02 s, write=1.203500e-03 s)
+elapsed=1.703076e+03 cycle=1200 time=2.042959e-01 dt=1.750941e-04 nmb=1
+output2 (prtcl_thermo_history): 1.170717e-02 s (load=1.054858e-02 s, write=1.158583e-03 s)
+elapsed=1.846425e+03 cycle=1250 time=2.133259e-01 dt=1.875806e-04 nmb=1
+output1 (hst): 5.471579e-02 s (load=5.412096e-02 s, write=5.948340e-04 s)
+output2 (prtcl_thermo_history): 1.689817e-02 s (load=1.578800e-02 s, write=1.110166e-03 s)
+elapsed=1.984614e+03 cycle=1300 time=2.230879e-01 dt=1.957469e-04 nmb=1
+output2 (prtcl_thermo_history): 6.490918e-03 s (load=5.490209e-03 s, write=1.000709e-03 s)
+elapsed=2.066440e+03 cycle=1350 time=2.326570e-01 dt=1.895066e-04 nmb=1
+output1 (hst): 2.207213e-02 s (load=2.164317e-02 s, write=4.289590e-04 s)
+output2 (prtcl_thermo_history): 1.398792e-02 s (load=1.300550e-02 s, write=9.824170e-04 s)
+elapsed=2.128941e+03 cycle=1400 time=2.421863e-01 dt=1.898439e-04 nmb=1
+output4 (rst): 1.946248e-01 s (load=2.162917e-02 s, write=1.729956e-01 s)
+output2 (prtcl_thermo_history): 1.354625e-02 s (load=1.286738e-02 s, write=6.788750e-04 s)
+elapsed=2.186307e+03 cycle=1450 time=2.513769e-01 dt=1.787338e-04 nmb=1
+output1 (hst): 2.263992e-02 s (load=2.221212e-02 s, write=4.277920e-04 s)
+output2 (prtcl_thermo_history): 1.210500e-02 s (load=1.155067e-02 s, write=5.543330e-04 s)
+elapsed=2.244755e+03 cycle=1500 time=2.602486e-01 dt=1.776799e-04 nmb=1
+output2 (prtcl_thermo_history): 6.027750e-03 s (load=5.412750e-03 s, write=6.150000e-04 s)
+elapsed=2.302488e+03 cycle=1550 time=2.694617e-01 dt=1.863148e-04 nmb=1
+output2 (prtcl_thermo_history): 5.769833e-03 s (load=5.509708e-03 s, write=2.601250e-04 s)
+elapsed=2.360322e+03 cycle=1600 time=2.787211e-01 dt=1.848283e-04 nmb=1
+output1 (hst): 2.318883e-02 s (load=2.307596e-02 s, write=1.128750e-04 s)
+output2 (prtcl_thermo_history): 5.666750e-03 s (load=5.498958e-03 s, write=1.677920e-04 s)
+elapsed=2.417946e+03 cycle=1650 time=2.880716e-01 dt=1.948703e-04 nmb=1
+output2 (prtcl_thermo_history): 6.126291e-03 s (load=5.580625e-03 s, write=5.456660e-04 s)
+elapsed=2.476030e+03 cycle=1700 time=2.978239e-01 dt=1.865931e-04 nmb=1
+output1 (hst): 2.338617e-02 s (load=2.294712e-02 s, write=4.390410e-04 s)
+output2 (prtcl_thermo_history): 6.417583e-03 s (load=5.263042e-03 s, write=1.154541e-03 s)
+elapsed=2.533687e+03 cycle=1750 time=3.069977e-01 dt=1.829601e-04 nmb=1
+output2 (prtcl_thermo_history): 6.304709e-03 s (load=5.278584e-03 s, write=1.026125e-03 s)
+elapsed=2.591592e+03 cycle=1800 time=3.162213e-01 dt=1.858891e-04 nmb=1
+output1 (hst): 2.259387e-02 s (load=2.219600e-02 s, write=3.978750e-04 s)
+output2 (prtcl_thermo_history): 5.805917e-03 s (load=5.325042e-03 s, write=4.808750e-04 s)
+elapsed=2.649642e+03 cycle=1850 time=3.254206e-01 dt=1.823272e-04 nmb=1
+output2 (prtcl_thermo_history): 6.512209e-03 s (load=5.404834e-03 s, write=1.107375e-03 s)
+elapsed=2.707616e+03 cycle=1900 time=3.345197e-01 dt=1.806522e-04 nmb=1
+output1 (hst): 2.331696e-02 s (load=2.295979e-02 s, write=3.571670e-04 s)
+output2 (prtcl_thermo_history): 6.707000e-03 s (load=5.306000e-03 s, write=1.401000e-03 s)
+elapsed=2.765263e+03 cycle=1950 time=3.434456e-01 dt=1.772140e-04 nmb=1
+output2 (prtcl_thermo_history): 6.645375e-03 s (load=5.306625e-03 s, write=1.338750e-03 s)
+elapsed=2.827246e+03 cycle=2000 time=3.522360e-01 dt=1.745413e-04 nmb=1
+output1 (hst): 2.294975e-02 s (load=2.254658e-02 s, write=4.031670e-04 s)
+output2 (prtcl_thermo_history): 6.115793e-03 s (load=5.208209e-03 s, write=9.075840e-04 s)
+elapsed=2.884558e+03 cycle=2050 time=3.610125e-01 dt=1.758024e-04 nmb=1
+output2 (prtcl_thermo_history): 6.413916e-03 s (load=5.399833e-03 s, write=1.014083e-03 s)
+elapsed=2.944828e+03 cycle=2100 time=3.697021e-01 dt=1.765280e-04 nmb=1
+output2 (prtcl_thermo_history): 5.532084e-03 s (load=5.354625e-03 s, write=1.774590e-04 s)
+elapsed=3.006570e+03 cycle=2150 time=3.786205e-01 dt=1.779885e-04 nmb=1
+output1 (hst): 2.264225e-02 s (load=2.222675e-02 s, write=4.155000e-04 s)
+output2 (prtcl_thermo_history): 5.431334e-03 s (load=5.213417e-03 s, write=2.179170e-04 s)
+elapsed=3.064064e+03 cycle=2200 time=3.874553e-01 dt=1.785128e-04 nmb=1
+output2 (prtcl_thermo_history): 5.534666e-03 s (load=5.279875e-03 s, write=2.547910e-04 s)
+elapsed=3.123756e+03 cycle=2250 time=3.960492e-01 dt=1.655805e-04 nmb=1
+output1 (hst): 2.364496e-02 s (load=2.320996e-02 s, write=4.350000e-04 s)
+output2 (prtcl_thermo_history): 5.526583e-03 s (load=5.351916e-03 s, write=1.746670e-04 s)
+elapsed=3.181591e+03 cycle=2300 time=4.043773e-01 dt=1.631501e-04 nmb=1
+output2 (prtcl_thermo_history): 5.845583e-03 s (load=5.366708e-03 s, write=4.788750e-04 s)
+elapsed=3.241143e+03 cycle=2350 time=4.123767e-01 dt=1.613955e-04 nmb=1
+output1 (hst): 2.259842e-02 s (load=2.220596e-02 s, write=3.924590e-04 s)
+output2 (prtcl_thermo_history): 5.845000e-03 s (load=5.264916e-03 s, write=5.800840e-04 s)
+elapsed=3.298962e+03 cycle=2400 time=4.208634e-01 dt=1.784841e-04 nmb=1
+output2 (prtcl_thermo_history): 5.422999e-03 s (load=5.243458e-03 s, write=1.795410e-04 s)
+elapsed=3.356526e+03 cycle=2450 time=4.297687e-01 dt=1.763163e-04 nmb=1
+output2 (prtcl_thermo_history): 6.588375e-03 s (load=5.329625e-03 s, write=1.258750e-03 s)
+elapsed=3.414381e+03 cycle=2500 time=4.387063e-01 dt=1.800887e-04 nmb=1
+output1 (hst): 2.319358e-02 s (load=2.292567e-02 s, write=2.679170e-04 s)
+output2 (prtcl_thermo_history): 5.868083e-03 s (load=5.368417e-03 s, write=4.996660e-04 s)
+elapsed=3.472286e+03 cycle=2550 time=4.473186e-01 dt=1.662269e-04 nmb=1
+output2 (prtcl_thermo_history): 6.851583e-03 s (load=5.296917e-03 s, write=1.554666e-03 s)
+elapsed=3.530038e+03 cycle=2600 time=4.554854e-01 dt=1.618815e-04 nmb=1
+output1 (hst): 3.039333e-02 s (load=3.002525e-02 s, write=3.680840e-04 s)
+output2 (prtcl_thermo_history): 6.209167e-03 s (load=5.401917e-03 s, write=8.072500e-04 s)
+elapsed=3.595293e+03 cycle=2650 time=4.635514e-01 dt=1.630142e-04 nmb=1
+output2 (prtcl_thermo_history): 6.143791e-03 s (load=5.531541e-03 s, write=6.122500e-04 s)
+elapsed=3.653058e+03 cycle=2700 time=4.719757e-01 dt=1.683557e-04 nmb=1
+output1 (hst): 2.262800e-02 s (load=2.223504e-02 s, write=3.929580e-04 s)
+output2 (prtcl_thermo_history): 5.870334e-03 s (load=5.283334e-03 s, write=5.870000e-04 s)
+elapsed=3.710920e+03 cycle=2750 time=4.804997e-01 dt=1.700465e-04 nmb=1
+output2 (prtcl_thermo_history): 5.540958e-03 s (load=5.336542e-03 s, write=2.044160e-04 s)
+elapsed=3.768562e+03 cycle=2800 time=4.888483e-01 dt=1.641147e-04 nmb=1
+output2 (prtcl_thermo_history): 1.271013e-02 s (load=1.189192e-02 s, write=8.182090e-04 s)
+elapsed=3.831856e+03 cycle=2850 time=4.969820e-01 dt=1.622666e-04 nmb=1
+output1 (hst): 2.421929e-02 s (load=2.381800e-02 s, write=4.012910e-04 s)
+output4 (rst): 2.001395e-01 s (load=1.786567e-02 s, write=1.822738e-01 s)
+output2 (prtcl_thermo_history): 1.919604e-02 s (load=1.820679e-02 s, write=9.892500e-04 s)
+elapsed=3.890459e+03 cycle=2900 time=5.053113e-01 dt=1.725829e-04 nmb=1
+output2 (prtcl_thermo_history): 7.007000e-03 s (load=5.536458e-03 s, write=1.470542e-03 s)
+elapsed=3.953072e+03 cycle=2950 time=5.140826e-01 dt=1.736577e-04 nmb=1
+output1 (hst): 2.340133e-02 s (load=2.296592e-02 s, write=4.354170e-04 s)
+output2 (prtcl_thermo_history): 5.556583e-03 s (load=5.326333e-03 s, write=2.302500e-04 s)
+elapsed=4.010205e+03 cycle=3000 time=5.226195e-01 dt=1.653291e-04 nmb=1
+output2 (prtcl_thermo_history): 5.561167e-03 s (load=5.351000e-03 s, write=2.101670e-04 s)
+elapsed=4.067788e+03 cycle=3050 time=5.307137e-01 dt=1.611197e-04 nmb=1
+output2 (prtcl_thermo_history): 5.393334e-03 s (load=5.219709e-03 s, write=1.736250e-04 s)
+elapsed=4.125349e+03 cycle=3100 time=5.389041e-01 dt=1.657356e-04 nmb=1
+output1 (hst): 2.234938e-02 s (load=2.224854e-02 s, write=1.008340e-04 s)
+output2 (prtcl_thermo_history): 5.537792e-03 s (load=5.257375e-03 s, write=2.804170e-04 s)
+elapsed=4.183258e+03 cycle=3150 time=5.472235e-01 dt=1.640580e-04 nmb=1
+output2 (prtcl_thermo_history): 5.628625e-03 s (load=5.413041e-03 s, write=2.155840e-04 s)
+elapsed=4.241267e+03 cycle=3200 time=5.552822e-01 dt=1.584972e-04 nmb=1
+output1 (hst): 2.366587e-02 s (load=2.329175e-02 s, write=3.741250e-04 s)
+output2 (prtcl_thermo_history): 6.245416e-03 s (load=5.343625e-03 s, write=9.017910e-04 s)
+elapsed=4.299218e+03 cycle=3250 time=5.630680e-01 dt=1.531587e-04 nmb=1
+output2 (prtcl_thermo_history): 5.605166e-03 s (load=5.368333e-03 s, write=2.368330e-04 s)
+elapsed=4.356651e+03 cycle=3300 time=5.706065e-01 dt=1.553229e-04 nmb=1
+output2 (prtcl_thermo_history): 5.893583e-03 s (load=5.334167e-03 s, write=5.594160e-04 s)
+elapsed=4.414222e+03 cycle=3350 time=5.787490e-01 dt=1.659389e-04 nmb=1
+output1 (hst): 2.277683e-02 s (load=2.234204e-02 s, write=4.347920e-04 s)
+output2 (prtcl_thermo_history): 5.827834e-03 s (load=5.346917e-03 s, write=4.809170e-04 s)
+elapsed=4.471689e+03 cycle=3400 time=5.869214e-01 dt=1.645443e-04 nmb=1
+output2 (prtcl_thermo_history): 6.378958e-03 s (load=5.285583e-03 s, write=1.093375e-03 s)
+elapsed=4.529350e+03 cycle=3450 time=5.951978e-01 dt=1.677692e-04 nmb=1
+output1 (hst): 2.333350e-02 s (load=2.292092e-02 s, write=4.125830e-04 s)
+output2 (prtcl_thermo_history): 5.792374e-03 s (load=5.294458e-03 s, write=4.979160e-04 s)
+elapsed=4.586891e+03 cycle=3500 time=6.033833e-01 dt=1.544092e-04 nmb=1
+output2 (prtcl_thermo_history): 5.834375e-03 s (load=5.302958e-03 s, write=5.314170e-04 s)
+elapsed=4.644330e+03 cycle=3550 time=6.110338e-01 dt=1.570411e-04 nmb=1
+output2 (prtcl_thermo_history): 5.802083e-03 s (load=5.242458e-03 s, write=5.596250e-04 s)
+elapsed=4.701908e+03 cycle=3600 time=6.189285e-01 dt=1.590567e-04 nmb=1
+output1 (hst): 2.267358e-02 s (load=2.241471e-02 s, write=2.588750e-04 s)
+output2 (prtcl_thermo_history): 5.972000e-03 s (load=5.471833e-03 s, write=5.001670e-04 s)
+elapsed=4.759529e+03 cycle=3650 time=6.269670e-01 dt=1.604689e-04 nmb=1
+output2 (prtcl_thermo_history): 6.165042e-03 s (load=5.568125e-03 s, write=5.969170e-04 s)
+elapsed=4.818301e+03 cycle=3700 time=6.350672e-01 dt=1.626261e-04 nmb=1
+output1 (hst): 2.296392e-02 s (load=2.251758e-02 s, write=4.463330e-04 s)
+output2 (prtcl_thermo_history): 5.837750e-03 s (load=5.327042e-03 s, write=5.107080e-04 s)
+elapsed=4.876628e+03 cycle=3750 time=6.433041e-01 dt=1.666318e-04 nmb=1
+output2 (prtcl_thermo_history): 5.454375e-03 s (load=5.233125e-03 s, write=2.212500e-04 s)
+elapsed=4.934226e+03 cycle=3800 time=6.515435e-01 dt=1.669265e-04 nmb=1
+output2 (prtcl_thermo_history): 5.587833e-03 s (load=5.384583e-03 s, write=2.032500e-04 s)
+elapsed=4.991814e+03 cycle=3850 time=6.599148e-01 dt=1.680318e-04 nmb=1
+output1 (hst): 2.334292e-02 s (load=2.292662e-02 s, write=4.162920e-04 s)
+output2 (prtcl_thermo_history): 5.945375e-03 s (load=5.427334e-03 s, write=5.180410e-04 s)
+elapsed=5.049358e+03 cycle=3900 time=6.683163e-01 dt=1.668852e-04 nmb=1
+output2 (prtcl_thermo_history): 6.026167e-03 s (load=5.437000e-03 s, write=5.891670e-04 s)
+elapsed=5.107124e+03 cycle=3950 time=6.765113e-01 dt=1.629248e-04 nmb=1
+output1 (hst): 2.262192e-02 s (load=2.220279e-02 s, write=4.191250e-04 s)
+output2 (prtcl_thermo_history): 6.163458e-03 s (load=5.352500e-03 s, write=8.109580e-04 s)
+elapsed=5.164781e+03 cycle=4000 time=6.846433e-01 dt=1.608218e-04 nmb=1
+output2 (prtcl_thermo_history): 5.749667e-03 s (load=5.273875e-03 s, write=4.757920e-04 s)
+elapsed=5.222086e+03 cycle=4050 time=6.924945e-01 dt=1.551042e-04 nmb=1
+output1 (hst): 2.438638e-02 s (load=2.393800e-02 s, write=4.483750e-04 s)
+output2 (prtcl_thermo_history): 5.975000e-03 s (load=5.360667e-03 s, write=6.143330e-04 s)
+elapsed=5.279572e+03 cycle=4100 time=7.002593e-01 dt=1.548077e-04 nmb=1
+output2 (prtcl_thermo_history): 6.123708e-03 s (load=5.301292e-03 s, write=8.224160e-04 s)
+elapsed=5.337097e+03 cycle=4150 time=7.081119e-01 dt=1.583724e-04 nmb=1
+output2 (prtcl_thermo_history): 6.481124e-03 s (load=5.249208e-03 s, write=1.231916e-03 s)
+elapsed=5.394921e+03 cycle=4200 time=7.162285e-01 dt=1.651433e-04 nmb=1
+output1 (hst): 2.331000e-02 s (load=2.294646e-02 s, write=3.635420e-04 s)
+output2 (prtcl_thermo_history): 5.838875e-03 s (load=5.375250e-03 s, write=4.636250e-04 s)
+elapsed=5.452582e+03 cycle=4250 time=7.243313e-01 dt=1.616721e-04 nmb=1
+output2 (prtcl_thermo_history): 5.878292e-03 s (load=5.235292e-03 s, write=6.430000e-04 s)
+elapsed=5.510282e+03 cycle=4300 time=7.323249e-01 dt=1.582469e-04 nmb=1
+output1 (hst): 2.293467e-02 s (load=2.256433e-02 s, write=3.703330e-04 s)
+output2 (prtcl_thermo_history): 5.447292e-03 s (load=5.239417e-03 s, write=2.078750e-04 s)
+elapsed=5.568123e+03 cycle=4350 time=7.403917e-01 dt=1.698528e-04 nmb=1
+output2 (prtcl_thermo_history): 5.505500e-03 s (load=5.326167e-03 s, write=1.793330e-04 s)
+elapsed=5.626307e+03 cycle=4400 time=7.488071e-01 dt=1.669529e-04 nmb=1
+output4 (rst): 2.320001e-01 s (load=4.037250e-03 s, write=2.279629e-01 s)
+output2 (prtcl_thermo_history): 6.121626e-03 s (load=5.260917e-03 s, write=8.607090e-04 s)
+elapsed=5.686819e+03 cycle=4450 time=7.570097e-01 dt=1.619709e-04 nmb=1
+output1 (hst): 3.111867e-02 s (load=3.067100e-02 s, write=4.476670e-04 s)
+output2 (prtcl_thermo_history): 6.630875e-03 s (load=5.395917e-03 s, write=1.234958e-03 s)
+elapsed=5.753876e+03 cycle=4500 time=7.649422e-01 dt=1.582055e-04 nmb=1
+output2 (prtcl_thermo_history): 5.413167e-03 s (load=5.245208e-03 s, write=1.679590e-04 s)
+elapsed=5.811728e+03 cycle=4550 time=7.729585e-01 dt=1.575117e-04 nmb=1
+output1 (hst): 2.417900e-02 s (load=2.373400e-02 s, write=4.450000e-04 s)
+output2 (prtcl_thermo_history): 5.909043e-03 s (load=5.336834e-03 s, write=5.722090e-04 s)
+elapsed=5.870810e+03 cycle=4600 time=7.807636e-01 dt=1.590044e-04 nmb=1
+output2 (prtcl_thermo_history): 5.516166e-03 s (load=5.301083e-03 s, write=2.150830e-04 s)
+elapsed=5.930073e+03 cycle=4650 time=7.888583e-01 dt=1.652713e-04 nmb=1
+output2 (prtcl_thermo_history): 5.873916e-03 s (load=5.706875e-03 s, write=1.670410e-04 s)
+elapsed=5.989161e+03 cycle=4700 time=7.971695e-01 dt=1.652982e-04 nmb=1
+output1 (hst): 2.385058e-02 s (load=2.375492e-02 s, write=9.566700e-05 s)
+output2 (prtcl_thermo_history): 5.435042e-03 s (load=5.267125e-03 s, write=1.679170e-04 s)
+elapsed=6.047969e+03 cycle=4750 time=8.051712e-01 dt=1.543138e-04 nmb=1
+output2 (prtcl_thermo_history): 5.544250e-03 s (load=5.192583e-03 s, write=3.516670e-04 s)
+elapsed=6.107353e+03 cycle=4800 time=8.127588e-01 dt=1.486305e-04 nmb=1
+output1 (hst): 2.415242e-02 s (load=2.374562e-02 s, write=4.067920e-04 s)
+output2 (prtcl_thermo_history): 6.051667e-03 s (load=5.277333e-03 s, write=7.743340e-04 s)
+elapsed=6.166364e+03 cycle=4850 time=8.202269e-01 dt=1.490055e-04 nmb=1
+output2 (prtcl_thermo_history): 6.875000e-03 s (load=5.358542e-03 s, write=1.516458e-03 s)
+elapsed=6.226389e+03 cycle=4900 time=8.275968e-01 dt=1.463035e-04 nmb=1
+output2 (prtcl_thermo_history): 6.273459e-03 s (load=5.217417e-03 s, write=1.056042e-03 s)
+elapsed=6.285416e+03 cycle=4950 time=8.350669e-01 dt=1.538287e-04 nmb=1
+output1 (hst): 2.411263e-02 s (load=2.377213e-02 s, write=3.405000e-04 s)
+output2 (prtcl_thermo_history): 5.798126e-03 s (load=5.281334e-03 s, write=5.167920e-04 s)
+elapsed=6.344219e+03 cycle=5000 time=8.428830e-01 dt=1.561704e-04 nmb=1
+output2 (prtcl_thermo_history): 7.097459e-03 s (load=5.214959e-03 s, write=1.882500e-03 s)
+elapsed=6.403084e+03 cycle=5050 time=8.506817e-01 dt=1.523852e-04 nmb=1
+output2 (prtcl_thermo_history): 6.492125e-03 s (load=5.384000e-03 s, write=1.108125e-03 s)
+elapsed=6.461828e+03 cycle=5100 time=8.583003e-01 dt=1.560998e-04 nmb=1
+output1 (hst): 2.420029e-02 s (load=2.375783e-02 s, write=4.424580e-04 s)
+output2 (prtcl_thermo_history): 6.950874e-03 s (load=5.963583e-03 s, write=9.872910e-04 s)
+elapsed=6.520954e+03 cycle=5150 time=8.661750e-01 dt=1.596188e-04 nmb=1
+output2 (prtcl_thermo_history): 7.043834e-03 s (load=5.304625e-03 s, write=1.739209e-03 s)
+elapsed=6.579970e+03 cycle=5200 time=8.740693e-01 dt=1.557995e-04 nmb=1
+output1 (hst): 2.440850e-02 s (load=2.381525e-02 s, write=5.932500e-04 s)
+output2 (prtcl_thermo_history): 6.008958e-03 s (load=5.263792e-03 s, write=7.451660e-04 s)
+elapsed=6.638982e+03 cycle=5250 time=8.817266e-01 dt=1.529877e-04 nmb=1
+output2 (prtcl_thermo_history): 1.488775e-02 s (load=1.402088e-02 s, write=8.668750e-04 s)
+elapsed=6.701189e+03 cycle=5300 time=8.894737e-01 dt=1.561367e-04 nmb=1
+output2 (prtcl_thermo_history): 6.633958e-03 s (load=5.920250e-03 s, write=7.137080e-04 s)
+elapsed=6.779122e+03 cycle=5350 time=8.971413e-01 dt=1.499839e-04 nmb=1
+output1 (hst): 3.047225e-02 s (load=3.004833e-02 s, write=4.239170e-04 s)
+output2 (prtcl_thermo_history): 7.011291e-03 s (load=6.448291e-03 s, write=5.630000e-04 s)
+elapsed=6.850355e+03 cycle=5400 time=9.046381e-01 dt=1.521061e-04 nmb=1
+output2 (prtcl_thermo_history): 5.979791e-03 s (load=5.815083e-03 s, write=1.647080e-04 s)
+elapsed=6.908156e+03 cycle=5450 time=9.121444e-01 dt=1.482249e-04 nmb=1
+output2 (prtcl_thermo_history): 6.221875e-03 s (load=5.695500e-03 s, write=5.263750e-04 s)
+elapsed=6.967480e+03 cycle=5500 time=9.196075e-01 dt=1.504694e-04 nmb=1
+output1 (hst): 2.338779e-02 s (load=2.297392e-02 s, write=4.138750e-04 s)
+output2 (prtcl_thermo_history): 5.839833e-03 s (load=5.332875e-03 s, write=5.069580e-04 s)
+elapsed=7.025740e+03 cycle=5550 time=9.270215e-01 dt=1.479246e-04 nmb=1
+output2 (prtcl_thermo_history): 6.378458e-03 s (load=5.347333e-03 s, write=1.031125e-03 s)
+elapsed=7.084066e+03 cycle=5600 time=9.344862e-01 dt=1.467317e-04 nmb=1
+output1 (hst): 2.327325e-02 s (load=2.291342e-02 s, write=3.598330e-04 s)
+output2 (prtcl_thermo_history): 5.704791e-03 s (load=5.227625e-03 s, write=4.771660e-04 s)
+elapsed=7.142475e+03 cycle=5650 time=9.419754e-01 dt=1.504734e-04 nmb=1
+output2 (prtcl_thermo_history): 6.830708e-03 s (load=5.963958e-03 s, write=8.667500e-04 s)
+elapsed=7.200984e+03 cycle=5700 time=9.495217e-01 dt=1.547335e-04 nmb=1
+output2 (prtcl_thermo_history): 7.817166e-03 s (load=5.407208e-03 s, write=2.409958e-03 s)
+elapsed=7.259347e+03 cycle=5750 time=9.571474e-01 dt=1.514184e-04 nmb=1
+output1 (hst): 2.329146e-02 s (load=2.289121e-02 s, write=4.002500e-04 s)
+output2 (prtcl_thermo_history): 6.140208e-03 s (load=5.371167e-03 s, write=7.690410e-04 s)
+elapsed=7.317585e+03 cycle=5800 time=9.646937e-01 dt=1.528067e-04 nmb=1
+output2 (prtcl_thermo_history): 5.540917e-03 s (load=5.367250e-03 s, write=1.736670e-04 s)
+elapsed=7.375181e+03 cycle=5850 time=9.722293e-01 dt=1.538171e-04 nmb=1
+output2 (prtcl_thermo_history): 7.187583e-03 s (load=5.306792e-03 s, write=1.880791e-03 s)
+elapsed=7.432748e+03 cycle=5900 time=9.798920e-01 dt=1.521081e-04 nmb=1
+output1 (hst): 2.326488e-02 s (load=2.289338e-02 s, write=3.715000e-04 s)
+output2 (prtcl_thermo_history): 6.452833e-03 s (load=5.375125e-03 s, write=1.077708e-03 s)
+elapsed=7.490764e+03 cycle=5950 time=9.874339e-01 dt=1.492869e-04 nmb=1
+output2 (prtcl_thermo_history): 5.909625e-03 s (load=5.284042e-03 s, write=6.255830e-04 s)
+elapsed=7.548555e+03 cycle=6000 time=9.949087e-01 dt=1.504931e-04 nmb=1
+Shock rank=0 sampled=49430528 invalid=0 complete=367074 partial=0 suspended=999 suppressed_reentries_surviving=405806 event_highwater=99 diagnostic_seconds_this_process=2.407654e+03
+Total Outputs Time: 6.659246e-01 s (load=1.475152e-01 s, write=5.184094e-01 s)
+
+Terminating on time limit
+time=1.000000e+00 cycle=6033
+tlim=1.000000e+00 nlim=-1
+
+MeshBlock-cycles = 6033
+cpu time used  = 7.584468e+03
+zone-cycles/cpu_second = 1.668162e+06
+particle-updates/cpu_second = 6.516256e+03

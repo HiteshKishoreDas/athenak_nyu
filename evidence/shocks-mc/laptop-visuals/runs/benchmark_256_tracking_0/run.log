@@ -1,0 +1,24 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+Experimental shock history: v1-entry-upstream-logdistance-mc-massflux-rk2-temperature-nearest-reference6f5ec8bc 3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc 8 1.3999999999999999 4 1.1000000000000001 1000 1.0000000000000001e-30 0 0 0 rk2 plm hllc 0.29999999999999999 256 4 1 256 4 1 0 1 0 0.10000000000000001 0 0.10000000000000001 6 6 6 6 -1 -1 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 0 0 rng 11 schedules 1 1 0 0 -1 1024 903 0 3 0 1 0 0.10000000000000001 0 0.10000000000000001 0.5 0.050000000000000003 0.050000000000000003 0 1 0.90000000000000002 0.98999999999999999 0 density 0 0 0 0
+lineage=experimental-mc-m2 capacity=4096; first inside representative; code units; no certified plateaus; endpoint cadence limited; scientific review pending
+Total Outputs Time: 0.000133917 s (load=2.775e-05 s, write=0.000106167 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=1.833917e-03 cycle=0 time=0.000000e+00 dt=5.367655e-04 nmb=1
+Shock rank=0 sampled=192512 invalid=0 complete=0 partial=0 suspended=0 suppressed_reentries_surviving=0 event_highwater=0 diagnostic_seconds_this_process=7.689536e-02
+Total Outputs Time: 1.482090e-04 s (load=4.204200e-05 s, write=1.061670e-04 s)
+
+Terminating on time limit
+time=1.000000e-01 cycle=187
+tlim=1.000000e-01 nlim=-1
+
+MeshBlock-cycles = 187
+cpu time used  = 1.062018e-01
+zone-cycles/cpu_second = 1.803057e+06
+particle-updates/cpu_second = 1.803057e+06

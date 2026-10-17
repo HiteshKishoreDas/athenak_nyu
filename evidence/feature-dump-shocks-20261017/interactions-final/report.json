@@ -1,0 +1,161 @@
+{
+  "executable": "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+  "executable_sha256": "bd2038a751e42335e1ef3e860d827fd060c4e272cf42a2f78374665f43de2769",
+  "compiled_source_fingerprint": "48c53dc5c167604269d121412d4316215f09be8224e053d98af2eae9908a2b7b",
+  "build_cache_sha256": "08a8b1b38d4bbf0fb57ebf9f15d7b89be477c9a1122e1219e130577693494965",
+  "runs": [
+    {
+      "name": "curves",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/curves/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "9fc5142ecd6d37e6db6b1dc89c210602fe382f5c6ed48725387f60a570331d1c",
+      "log_sha256": "8a355fccc2a76195418e25736f463957944b2716c839cd621ca5ed1775c6bcf7",
+      "restart_sha256": null
+    },
+    {
+      "name": "curves_shocks_off",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/curves_shocks_off/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "2f087145cf91383d65f25e0a37c7fdf3d090ae64ba9955f2535d767a432d72e9",
+      "log_sha256": "d5ec45524f1f85a7aa387679db43b44ecc74c99550d10b38536c824a9b81ad3c",
+      "restart_sha256": null
+    },
+    {
+      "name": "fluid_only",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/fluid_only/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "6e4906dbf1e334214f3e87b76573224a526ef106e1f66e67733ec27edab4639c",
+      "log_sha256": "b5bbe57157b0a5d24e00dbfbd27fbe333deefa8b4535d89be296c714624126a5",
+      "restart_sha256": null
+    },
+    {
+      "name": "curve_restart_reference",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/curve_restart_reference/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "c5e3423f68c705250554481b641e1f0eac4a1bcab440831426c1917197fbb971",
+      "log_sha256": "605141ec7c381dfb747d47b5243811128e93bd0f7d73d1a076660d706b30cd78",
+      "restart_sha256": null
+    },
+    {
+      "name": "curve_restart_source",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/curve_restart_source/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "72ffbc35aee08c6c6f1ebd1aa61c79274581ebf0757d78661bc2a3becdeb70fc",
+      "log_sha256": "72f3b74413f4b32cf4cc1b90d3d7132c93abb161c07ff4df42d8a10784912dd6",
+      "restart_sha256": null
+    },
+    {
+      "name": "curve_restart_resumed",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-r",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/curve_restart_source/rst/material_line.00001.rst",
+        "time/nlim=6"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "e4d9db2cfb8a2afaa7e7d7f3413b6c03d9c210f6538d1b2dfa8bd9dec47e3c9b",
+      "log_sha256": "b6fa982b1dba92077e4b8e6227fb33669ad14f8cfff3558859a11f5361ab5ce9",
+      "restart_sha256": "42beb8b5637e65b10b5df7ea80bd4c4ffb197531c8a518b5a4796b6ac15a96db"
+    },
+    {
+      "name": "curves_missing_particles",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/curves_missing_particles/input.athinput"
+      ],
+      "exit": 1,
+      "expected_error": "shock tracking requires lagrangian_mc particles",
+      "input_sha256": "d3300ee1f854f99e672c1f5032c28273cab9ea0cf33569088d519918c96a78e2",
+      "log_sha256": "75f37e88bf67785831f835b88528a3deaab7db597cd4304a6f1b71b5eaf9513c",
+      "restart_sha256": null
+    },
+    {
+      "name": "hydro_missing_particles",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/hydro_missing_particles/input.athinput"
+      ],
+      "exit": 1,
+      "expected_error": "shock tracking requires lagrangian_mc particles",
+      "input_sha256": "a22034283a527ed049b75c1b21955e2681b2a5824a74d9ad025349be488b9d84",
+      "log_sha256": "75f37e88bf67785831f835b88528a3deaab7db597cd4304a6f1b71b5eaf9513c",
+      "restart_sha256": null
+    },
+    {
+      "name": "shocks",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/shocks/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "b6e2158430f8314def96e064c9b3d209d4d8a2f589583b221f711e6a4f642478",
+      "log_sha256": "1b599729da637d067b7f6a50618cdeb0f0e0ea23ac5d7937685205b31f09cbca",
+      "restart_sha256": null
+    },
+    {
+      "name": "shocks_curves_off",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/shocks_curves_off/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "2dae5d1120721aba095ff47e52c763aa1f49cdb8d58222abb83f1a263b7bc7eb",
+      "log_sha256": "830e0d432e8c60f0ac02f40c8974b52e4455d2ab218de6a28df7b58d89f220f7",
+      "restart_sha256": null
+    },
+    {
+      "name": "shocks_curves_on",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions-final/shocks_curves_on/input.athinput"
+      ],
+      "exit": 1,
+      "expected_error": "requires passive Newtonian single-fluid HD without particles/forcing",
+      "input_sha256": "b56b6c3e05e37f1cf2fdf257a0216edfd67f7d7e0526c572f25dfe5fc982a8bf",
+      "log_sha256": "6532d74d34c38eeebf68b856d2f463b538a19bd183e85a1d0384cd510558c8dc",
+      "restart_sha256": null
+    }
+  ],
+  "checks": [
+    "float64 fluid passivity and exact curve disabled-shock equivalence",
+    "native paired curve restart yields exact final snapshot",
+    "orphan shock requests rejected for both curves and hydro",
+    "shock observations unchanged when curves explicitly disabled",
+    "curve plus MC shock history remains explicitly unsupported"
+  ],
+  "scientific_signoff": "pending",
+  "status": "passed"
+}

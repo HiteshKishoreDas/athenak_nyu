@@ -1,0 +1,39 @@
+[
+  {
+    "command": [
+      "build/shock_encounter_test"
+    ],
+    "cwd": "/private/tmp/shock-mc-clean-42bcf12c",
+    "exit": 0,
+    "seconds": 0.25427387499985343
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks/parity.py",
+      "build/shock_detector_test",
+      "--reference",
+      "evidence/shocks/reference",
+      "--report",
+      "/private/tmp/shock-mc-clean-results/parity.json"
+    ],
+    "cwd": "/private/tmp/shock-mc-clean-42bcf12c",
+    "exit": 0,
+    "seconds": 0.8352569159997074
+  },
+  {
+    "command": [
+      "/Users/hitesh/hitesh/git/shockit/.venv/bin/python",
+      "tst/shocks-mc/integration.py",
+      "--executable",
+      "build/src/athena",
+      "--workdir",
+      "/private/tmp/shock-mc-clean-integration",
+      "--report",
+      "/private/tmp/shock-mc-clean-results/integration.json"
+    ],
+    "cwd": "/private/tmp/shock-mc-clean-42bcf12c",
+    "exit": 0,
+    "seconds": 14.144933834000767
+  }
+]

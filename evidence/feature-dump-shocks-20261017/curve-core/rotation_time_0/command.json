@@ -1,0 +1,14 @@
+{
+  "name": "rotation_time_0",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/rotation_time_0/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "f777e9ad966f21246d568a61b940fbac0aa9b7cc799444fe570891d6f0aa28ed",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/rotation_time_0",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

@@ -1,0 +1,38 @@
+
+Root grid = 4 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 4
+Number of logical  levels of refinement = 2 (3 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+Total Outputs Time: 0.00199979 s (load=0.00125675 s, write=0.000743043 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=5.339458e-03 cycle=0 time=0.000000e+00 dt=2.147062e-03 nmb=4
+output2 (prtcl_thermo_history): 1.662500e-03 s (load=1.209334e-03 s, write=4.531660e-04 s)
+output2 (prtcl_thermo_history): 2.435542e-03 s (load=1.807084e-03 s, write=6.284580e-04 s)
+output2 (prtcl_thermo_history): 1.772416e-03 s (load=1.296375e-03 s, write=4.760410e-04 s)
+output2 (prtcl_thermo_history): 3.668833e-03 s (load=3.065250e-03 s, write=6.035830e-04 s)
+output2 (prtcl_thermo_history): 1.821750e-03 s (load=1.297583e-03 s, write=5.241670e-04 s)
+output2 (prtcl_thermo_history): 1.641041e-03 s (load=1.164958e-03 s, write=4.760830e-04 s)
+output2 (prtcl_thermo_history): 1.672249e-03 s (load=1.216333e-03 s, write=4.559160e-04 s)
+output2 (prtcl_thermo_history): 1.922541e-03 s (load=1.364541e-03 s, write=5.580000e-04 s)
+output2 (prtcl_thermo_history): 1.731875e-03 s (load=1.234208e-03 s, write=4.976670e-04 s)
+output2 (prtcl_thermo_history): 2.620334e-03 s (load=1.543167e-03 s, write=1.077167e-03 s)
+output2 (prtcl_thermo_history): 1.642375e-03 s (load=1.162500e-03 s, write=4.798750e-04 s)
+output2 (prtcl_thermo_history): 1.827542e-03 s (load=1.295667e-03 s, write=5.318750e-04 s)
+output2 (prtcl_thermo_history): 3.559208e-03 s (load=2.556083e-03 s, write=1.003125e-03 s)
+output2 (prtcl_thermo_history): 1.967126e-03 s (load=1.399417e-03 s, write=5.677090e-04 s)
+output2 (prtcl_thermo_history): 2.809583e-03 s (load=2.254833e-03 s, write=5.547500e-04 s)
+output2 (prtcl_thermo_history): 1.715042e-03 s (load=1.225417e-03 s, write=4.896250e-04 s)
+output2 (prtcl_thermo_history): 1.811208e-03 s (load=1.333375e-03 s, write=4.778330e-04 s)
+Total Outputs Time: 1.869667e-03 s (load=1.229125e-03 s, write=6.405420e-04 s)
+
+Terminating on cycle limit
+time=3.650005e-02 cycle=17
+tlim=2.500000e-01 nlim=17
+
+MeshBlock-cycles = 68
+cpu time used  = 1.731749e-01
+zone-cycles/cpu_second = 2.513067e+04
+particle-updates/cpu_second = 1.005227e+05

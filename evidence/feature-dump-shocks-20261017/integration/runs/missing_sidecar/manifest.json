@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+    "-r",
+    "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/missing_sidecar_artifacts/rst/shock_mc.00001.rst",
+    "output1/dt=-1",
+    "shock_tracking/directory=/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/missing_sidecar_artifacts/shock_events"
+  ],
+  "directory": "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/missing_sidecar",
+  "exit": 1,
+  "elapsed_seconds": 0.006196207948960364,
+  "input_sha256": "8183b6fd9615f4d710f97efe0f2cf76fa36fb615e42de7505c61b45833324319",
+  "log_sha256": "81a440df7b5c002fa879b222cdac159bb17c640a2117599607ac382dd72a4cd6",
+  "executable_sha256": "bd2038a751e42335e1ef3e860d827fd060c4e272cf42a2f78374665f43de2769",
+  "label": "missing_sidecar",
+  "expected_error": "sidecar",
+  "passed": true
+}

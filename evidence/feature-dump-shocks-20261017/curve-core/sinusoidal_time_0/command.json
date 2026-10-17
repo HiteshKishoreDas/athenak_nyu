@@ -1,0 +1,14 @@
+{
+  "name": "sinusoidal_time_0",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/sinusoidal_time_0/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "c7d58abfca289ceecbe9f3295910cba89c9753dbd6e7a3475d901c28023b93bf",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/sinusoidal_time_0",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

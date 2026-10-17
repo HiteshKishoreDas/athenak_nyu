@@ -1,0 +1,417 @@
+{
+  "test_id": "PHY16",
+  "scientific_signoff": "pending",
+  "scope": "Exploratory 32^3 periodic decaying ideal-gas box, initial rms Mach3; no forcing/cooling.",
+  "definitions": {
+    "mach": "sqrt(volume mean(v^2/(gamma P/rho)))",
+    "strength": "first valid inside spatial detector estimate; not plateau-certified",
+    "counts": "numerical episodes, not certified unique physical shocks",
+    "timing": "recorded prior-outside / first-inside brackets, not exact crossings"
+  },
+  "experimental_settings": {
+    "width": 4,
+    "min_mach": 1.1,
+    "velocity_seed": 24680,
+    "particle_seed": 11,
+    "seed_schedule_seed": 903,
+    "tlim": 0.2
+  },
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "698263869439614748269e08c46498bd2d1a576ed84be43fefbf50e7c1358746",
+  "compiled_source_fingerprint": "1ac1558c43b9ef5c4b338afe57f4c91995f9aa239d66d0a1a4ca876a89a237d5",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "runs": [
+    {
+      "name": "baseline",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-turb-fixed-20261013/baseline/input.athinput"
+      ],
+      "exit": 0,
+      "wall_seconds": 2.3536891670082696,
+      "input_sha256": "010beac0dcd32c5b443f31090a522e8e9ff967dde3e077f889f123c8eace5f4c",
+      "log_sha256": "66652457b4d2908b6a02502b3d210446d6f0841d83ca1bcc92f82399e813172f"
+    },
+    {
+      "name": "off",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-turb-fixed-20261013/off/input.athinput"
+      ],
+      "exit": 0,
+      "wall_seconds": 0.9999942499562167,
+      "input_sha256": "bcc50d7523379d1784f7a7073631abeab54276fc86b53b46e50bbc74f41f90bb",
+      "log_sha256": "5bbf0df82da6bb6d7bd91c35f89d7fb3c7351a1ff49cdcea329213b0e6305552"
+    },
+    {
+      "name": "half_cfl",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-turb-fixed-20261013/half_cfl/input.athinput"
+      ],
+      "exit": 0,
+      "wall_seconds": 3.8962340829893947,
+      "input_sha256": "86e460c54d49dcff2b173e4169491292ad6242666ff822cb81057b6da620887a",
+      "log_sha256": "e4bad8708db0f28f4374ec930a983978c0c5656c9aa047a9fcd201957e75ba9d"
+    }
+  ],
+  "non_interference": "Exact equality of all saved double conserved volumes and sampled native particle records.",
+  "cases": {
+    "baseline": {
+      "completed": 7123,
+      "partial": 0,
+      "suspended": 540,
+      "particles": 4096,
+      "particles_with_emitted_events": 3661,
+      "particles_with_any_recorded_episode": 3765,
+      "particles_with_no_recorded_episode": 331,
+      "mean_emitted_episodes_per_particle": 1.739013671875,
+      "mean_recorded_starts_per_particle": 1.870849609375,
+      "maximum_emitted_per_particle": 9,
+      "emitted_count_histogram": {
+        "0": 435,
+        "1": 1488,
+        "2": 1321,
+        "3": 552,
+        "4": 196,
+        "5": 78,
+        "6": 22,
+        "7": 2,
+        "8": 1,
+        "9": 1
+      },
+      "started_count_histogram": {
+        "0": 331,
+        "1": 1381,
+        "2": 1378,
+        "3": 659,
+        "4": 230,
+        "5": 85,
+        "6": 25,
+        "7": 5,
+        "9": 1,
+        "10": 1
+      },
+      "flags_all_recorded_episodes": {
+        "left_censored": 0,
+        "invalid_observation": 0,
+        "merged_flicker": 946,
+        "no_plateau": 7663,
+        "cadence_limited": 7663,
+        "temperature_invalid": 0,
+        "right_censored": 540,
+        "domain_exit": 0,
+        "direction_ambiguous": 351,
+        "downstream_reentry": 0
+      },
+      "pressure_mach_quantiles": [
+        1.1127166699468654,
+        1.5399471740991268,
+        2.988044797319173
+      ],
+      "temperature_mach_quantiles": [
+        1.1167375042711278,
+        1.6369294892260358,
+        2.806943103056204
+      ],
+      "finite_pressure_estimates": 7123,
+      "finite_temperature_estimates": 7123,
+      "counters": {
+        "sampled": 581632,
+        "invalid": 0,
+        "complete": 7123,
+        "partial": 0,
+        "suspended": 540,
+        "suppressed_reentries_surviving": 12087,
+        "event_highwater": 98,
+        "diagnostic_seconds_this_process": 0.999686
+      },
+      "particle_ids_preserved": true,
+      "unique_contiguous_event_ids": true,
+      "max_mass_absolute_error": 2.220446049250313e-16,
+      "max_total_energy_relative_error": 2.220446049250313e-16,
+      "field_evolution": [
+        {
+          "time": 0.0,
+          "cycle": 0,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 4.499999999999986,
+          "thermal": 1.7857142857142856,
+          "mach": 2.999999999999995
+        },
+        {
+          "time": 0.0253245,
+          "cycle": 21,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 4.354796965046859,
+          "thermal": 1.9309173206674135,
+          "mach": 2.9952507668958526
+        },
+        {
+          "time": 0.0506537,
+          "cycle": 41,
+          "mass": 1.0,
+          "energy": 6.285714285714273,
+          "kinetic": 3.747446553628872,
+          "thermal": 2.5382677320854,
+          "mach": 2.999726631374946
+        },
+        {
+          "time": 0.075311,
+          "cycle": 59,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 3.1183344880493156,
+          "thermal": 3.1673797976649567,
+          "mach": 2.8634301553067245
+        },
+        {
+          "time": 0.100191,
+          "cycle": 76,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 2.686791610104774,
+          "thermal": 3.5989226756094985,
+          "mach": 2.593278688044822
+        },
+        {
+          "time": 0.125525,
+          "cycle": 93,
+          "mass": 0.9999999999999998,
+          "energy": 6.285714285714273,
+          "kinetic": 2.426166394657119,
+          "thermal": 3.8595478910571535,
+          "mach": 2.2452544573575355
+        },
+        {
+          "time": 0.15119,
+          "cycle": 110,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 2.2404105609815415,
+          "thermal": 4.045303724732731,
+          "mach": 1.9702383411969109
+        },
+        {
+          "time": 0.175377,
+          "cycle": 125,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 2.092461926064214,
+          "thermal": 4.193252359650058,
+          "mach": 1.7804412519226944
+        },
+        {
+          "time": 0.2,
+          "cycle": 141,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 1.9885472615263202,
+          "thermal": 4.297167024187952,
+          "mach": 1.6500136983678129
+        }
+      ]
+    },
+    "half_cfl": {
+      "completed": 7623,
+      "partial": 0,
+      "suspended": 530,
+      "particles": 4096,
+      "particles_with_emitted_events": 3672,
+      "particles_with_any_recorded_episode": 3759,
+      "particles_with_no_recorded_episode": 337,
+      "mean_emitted_episodes_per_particle": 1.861083984375,
+      "mean_recorded_starts_per_particle": 1.990478515625,
+      "maximum_emitted_per_particle": 9,
+      "emitted_count_histogram": {
+        "0": 424,
+        "1": 1400,
+        "2": 1201,
+        "3": 668,
+        "4": 269,
+        "5": 87,
+        "6": 31,
+        "7": 11,
+        "8": 2,
+        "9": 3
+      },
+      "started_count_histogram": {
+        "0": 337,
+        "1": 1283,
+        "2": 1264,
+        "3": 737,
+        "4": 323,
+        "5": 100,
+        "6": 33,
+        "7": 14,
+        "8": 2,
+        "9": 3
+      },
+      "flags_all_recorded_episodes": {
+        "left_censored": 0,
+        "invalid_observation": 0,
+        "merged_flicker": 568,
+        "no_plateau": 8153,
+        "cadence_limited": 8153,
+        "temperature_invalid": 0,
+        "right_censored": 530,
+        "domain_exit": 0,
+        "direction_ambiguous": 311,
+        "downstream_reentry": 0
+      },
+      "pressure_mach_quantiles": [
+        1.1055998655807413,
+        1.5304663447312405,
+        3.00526071930553
+      ],
+      "temperature_mach_quantiles": [
+        1.1084028469746265,
+        1.6372875607095096,
+        2.8196897828677856
+      ],
+      "finite_pressure_estimates": 7623,
+      "finite_temperature_estimates": 7623,
+      "counters": {
+        "sampled": 1155072,
+        "invalid": 0,
+        "complete": 7623,
+        "partial": 0,
+        "suspended": 530,
+        "suppressed_reentries_surviving": 13496,
+        "event_highwater": 56,
+        "diagnostic_seconds_this_process": 1.831187
+      },
+      "particle_ids_preserved": true,
+      "unique_contiguous_event_ids": true,
+      "max_mass_absolute_error": 1.1102230246251565e-16,
+      "max_total_energy_relative_error": 0.0,
+      "field_evolution": [
+        {
+          "time": 0.0,
+          "cycle": 0,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 4.499999999999986,
+          "thermal": 1.7857142857142856,
+          "mach": 2.999999999999995
+        },
+        {
+          "time": 0.0253334,
+          "cycle": 42,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 4.354857812048903,
+          "thermal": 1.9308564736653702,
+          "mach": 2.9962051206951488
+        },
+        {
+          "time": 0.0506493,
+          "cycle": 82,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 3.748885846485079,
+          "thermal": 2.5368284392291933,
+          "mach": 3.0034717436558656
+        },
+        {
+          "time": 0.0752955,
+          "cycle": 118,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 3.1201410818271933,
+          "thermal": 3.1655732038870794,
+          "mach": 2.868505188893674
+        },
+        {
+          "time": 0.100169,
+          "cycle": 152,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 2.6888184246232965,
+          "thermal": 3.5968958610909763,
+          "mach": 2.5972808168734556
+        },
+        {
+          "time": 0.125495,
+          "cycle": 186,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 2.4279724437026577,
+          "thermal": 3.8577418420116145,
+          "mach": 2.2482005544400425
+        },
+        {
+          "time": 0.150394,
+          "cycle": 219,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 2.2474036645421624,
+          "thermal": 4.03831062117211,
+          "mach": 1.979889077684981
+        },
+        {
+          "time": 0.17537,
+          "cycle": 250,
+          "mass": 0.9999999999999999,
+          "energy": 6.285714285714272,
+          "kinetic": 2.0935730191291495,
+          "thermal": 4.192141266585123,
+          "mach": 1.7819871352535541
+        },
+        {
+          "time": 0.2,
+          "cycle": 281,
+          "mass": 1.0,
+          "energy": 6.285714285714272,
+          "kinetic": 1.9894251527889513,
+          "thermal": 4.296289132925321,
+          "mach": 1.651041577900448
+        }
+      ]
+    }
+  },
+  "cfl_count_change_fraction": 0.07019514249613934,
+  "limitations": [
+    "One realization, short low-resolution decaying run; not steady driven turbulence.",
+    "CFL change affects the fluid solution, MC random draws and detector sampling jointly.",
+    "Episodes, first-inside strengths and reentries require scientific qualification.",
+    "All episodes retain no_plateau/cadence flags; open episodes remain right-censored.",
+    "No independent truth shock catalogue, recall, physical waiting-time law or HPC qualification."
+  ],
+  "source_commit": "099109b66e6f502563c2169001a0eadac91d53ae",
+  "source_sha256": {
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/srcterms/initial_perturbations.cpp": "a040fb9ffc2e363b36a0ba985fc6347d862d2cde7e64601fc2ef2475b77d1fdb",
+    "tst/shocks-mc/turbulence_pilot.py": "8b35d94cb7db54259baf9ad34bcb08d778f2853e77d046317bd41df0e8029812",
+    "inputs/tests/shock_mc_turb_decay.athinput": "010beac0dcd32c5b443f31090a522e8e9ff967dde3e077f889f123c8eace5f4c"
+  },
+  "archive_scope": "All canonical event/suspended chunks and inputs/logs; four baseline volumes and half-CFL endpoint volumes. Full local raw data are SHA256 inventoried separately.",
+  "figures": [
+    {
+      "name": "box_slices",
+      "description": "Real z=0.515625 slices of the 32^3 box. Each row shares a color scale across times; compression is not the detector mask."
+    },
+    {
+      "name": "fluid_evolution",
+      "description": "The box begins supersonic and heats as kinetic energy decays. This is not stationary turbulence. Conservation is checked independently at 1e-12."
+    },
+    {
+      "name": "encounter_counts",
+      "description": "Numerical episode counts, including all 4096 particles. Starts include terminal suspended episodes; emitted counts exclude those open episodes. CFL changes are a joint numerical sensitivity check."
+    },
+    {
+      "name": "strength_estimates",
+      "description": "These are spatial detector estimates at the first inside sample, not Mach numbers from certified plateaus. Both estimators are shown; particle encounter counts are not a truth shock catalogue."
+    },
+    {
+      "name": "quality_and_timing",
+      "description": "Flags overlap. All episodes additionally have no_plateau and cadence_limited. Entry brackets span recorded prior-outside to first-inside observations; gaps can include suppressed reentry. They are not exact crossing errors. Suspended episodes retain right censoring."
+    }
+  ]
+}

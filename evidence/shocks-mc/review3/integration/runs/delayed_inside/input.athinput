@@ -1,0 +1,86 @@
+# Experimental MC mass-flux tracer shock fixture; human scientific review pending.
+# Forward RH M=2, gamma1.4; downstream left, front x=.3+.5t.
+<job>
+basename = shock_mc
+<mesh>
+nghost = 4
+nx1 = 128
+x1min = 0
+x1max = 1
+ix1_bc = outflow
+ox1_bc = outflow
+nx2 = 4
+x2min = 0
+x2max = .1
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 1
+x3min = 0
+x3max = .1
+<meshblock>
+nx1 = 128
+nx2 = 4
+nx3 = 1
+<time>
+evolution = dynamic
+integrator = rk2
+cfl_number = .3
+tlim = .25
+ndiag = 1000
+<hydro>
+eos = ideal
+gamma = 1.4
+rsolver = hllc
+reconstruct = plm
+<particles>
+particle_type = lagrangian_mc
+pusher = lagrangian_mc
+random_seed = 11
+next_tracer_tag = 0
+track_variables = rho,p,v1,v2,v3
+<tracer_seed_initial>
+id = 1
+start_time = 0.1
+count_per_event = 128
+seed = 903
+region = slab
+slab_axis = 1
+slab_min = 0.34
+slab_max = 0.36
+weight = mass
+end_time = 0.1
+<shock_tracking>
+enabled = true
+lineage = experimental-mc-m2
+width = 4
+min_mach = 1.1
+event_capacity = 4096
+trace = true
+directory = /private/tmp/shock-mc-review3-checks/integration/raw/delayed_inside/shock_events
+<problem>
+pgen_name = shock_tube
+shock_dir = 1
+xshock = .3
+dl = 2.6666666666666665
+pl = 4.5
+ul = -.38741196746494233
+vl = 0
+wl = 0
+dr = 1
+pr = 1
+ur = -1.8664319132398464
+vr = 0
+wr = 0
+<output1>
+file_type = rst
+dt = -1
+<output2>
+file_type = prtcl_thermo_history
+variables = rho,p,v1,v2,v3
+dcycle = 1
+<output3>
+file_type = tab
+variable = hydro_u
+dt = -1
+slice_x2 = .05
+slice_x3 = .05

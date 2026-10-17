@@ -1,0 +1,28 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+  "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "checkpoint": "/private/tmp/shock-highres128-long-20261014/rst/shock_highres128_long.00001.rst",
+  "checkpoint_sha256": "e07a965bae5e3b0beaf5f2dd8a7e35bb6bf4398282ea76411e32d83569858879",
+  "sidecar_sha256": "6fe1071a100d311b0e96bbfe1598c14d2aa09ee6c2ebd1f3f159a84e393c0778",
+  "generation": 1443,
+  "time": 0.25012120158057216,
+  "evolved_steps": 0,
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-r",
+    "/private/tmp/shock-highres128-long-20261014/rst/shock_highres128_long.00001.rst",
+    "time/nlim=1443",
+    "output4/dt=-1",
+    "output3/dcycle=1",
+    "output5/dcycle=0",
+    "output6/dcycle=1",
+    "job/basename=checkpoint_view",
+    "shock_tracking/directory=/private/tmp/shock-highres128-long-20261014/checkpoint-views/generation-1443/shock_events",
+    "shock_tracking/trace=false"
+  ],
+  "exit": 0,
+  "seconds": 1.3372273329878226,
+  "log_sha256": "2e8f79255e1586441b83015303b7cf9dc22516f1b943afe42c344def8fb6e56b"
+}

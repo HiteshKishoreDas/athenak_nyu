@@ -1,0 +1,71 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "9bc9b5e4536fe1d4f95502bd33b20230defdf497749ec4fa2ff0c6bfdfcd629a",
+  "compiled_source_fingerprint": "854a8ac86f781811fca5c4de291b3301562c7450f56d31719655cd049df1f194",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "status": "in_progress",
+  "runs": [
+    {
+      "name": "shear_one_step",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-forcing-checks-c-20261013/shear_one_step/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.021174333000089973,
+      "expected_error": null,
+      "log_sha256": "fd37b49e319b921eac00c27c3cc953a49e71489ff733b216617d96de5b0e82c7",
+      "input_sha256": "67ac17ed099da4a639830e14b58a4a074cf291479be2372d3dc51e1008f352c9"
+    },
+    {
+      "name": "smooth_shear",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-forcing-checks-c-20261013/smooth_shear/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.020728333038277924,
+      "expected_error": null,
+      "log_sha256": "c25087df94dc8a19b50e7eef98d662fcb54356ddf61c744ba485df7d9d3a552c",
+      "input_sha256": "129e86c4054e172a17b9d085416f969d88a23466e93a23e8aaf7b8b1c0da95f6"
+    },
+    {
+      "name": "timing",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-forcing-checks-c-20261013/timing/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.07647308299783617,
+      "expected_error": null,
+      "log_sha256": "79de909dc20d98b93f2687b37772c924e558fdf9352a71fc155c716a624b3b14",
+      "input_sha256": "ebf7d5d6306a5b916507dcd73d9a12093b89bad0a94287f54667b307404eb029"
+    }
+  ],
+  "checks": [
+    {
+      "ids": [
+        "EXT06",
+        "PHY09"
+      ],
+      "smooth_forcing_events": 0,
+      "note": "Negative detection control, not thermodynamic neutrality."
+    }
+  ],
+  "scientific_signoff": "pending",
+  "scope": "Serial/double RK2 uniform periodic3D hydro, native continuous untiled/unlocalized accel_rms forcing.",
+  "inherited_forcing_heat": {
+    "physical_oracle": "Divergence-free single-mode transverse acceleration preserves rho and gas internal energy in the continuum.",
+    "physical_gas_energy_oracle_passed": false,
+    "measured_mean_excess_gas_energy": 0.00013183593749990785,
+    "predicted_mean_excess_gas_energy": 0.00013183593749999722,
+    "max_discrete_prediction_error": 2.357868674612851e-16,
+    "max_momentum_error": 0.0,
+    "dt": 0.01875,
+    "formula": "3 rho |a|^2 dt^2 / 8 for native RK2 at zero flux divergence",
+    "driver_modified": false
+  }
+}

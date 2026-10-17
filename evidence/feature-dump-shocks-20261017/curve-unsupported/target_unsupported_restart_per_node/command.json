@@ -1,0 +1,14 @@
+{
+  "name": "target_unsupported_restart_per_node",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_restart_per_node/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "0c41116f954353e186ac6b0053e2ca1e2e4116840d3df1d869ff1c78bc6ff39f",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_restart_per_node",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

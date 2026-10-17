@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-forcing-heldout-20261013/boost2/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-forcing-heldout-20261013/boost2",
+  "exit": 0,
+  "elapsed_seconds": 0.6789209999842569,
+  "input_sha256": "f19c27c1efbdcdaf9d40bffea5eae6d0ddef31c6c693dadf31bd7a53651db3f8",
+  "log_sha256": "2179f1031a882cd602c477a47407830697b42f17921861c5abd1d509cd987c77",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "boost2"
+}

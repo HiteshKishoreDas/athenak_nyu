@@ -109,6 +109,7 @@ add_executable(
         material_curves/material_curves.cpp
         material_curves/material_curves_io.cpp
 
+        particles/shock_particles.cpp
         particles/particles.cpp
         particles/particles_lagrangian_mc.cpp
         particles/particles_pushers.cpp

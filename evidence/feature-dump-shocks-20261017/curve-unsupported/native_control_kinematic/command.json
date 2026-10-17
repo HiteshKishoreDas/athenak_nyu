@@ -1,0 +1,14 @@
+{
+  "name": "native_control_kinematic",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_kinematic/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "a79ce54835d73897a22abfb099eb423f76fbd5d551572f0001b17e37b73a8152",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/native_control_kinematic",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

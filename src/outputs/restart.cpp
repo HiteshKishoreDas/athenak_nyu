@@ -223,6 +223,9 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
     // where XXXXX = 5-digit file_number
     fname = std::string("rst/") + out_params.file_basename + number + ".rst";
   }
+  if (pm->pmb_pack->ppart && pm->pmb_pack->ppart->shock_enabled) {
+    pm->pmb_pack->ppart->PreflightShockRestart(fname);
+  }
   // increment counters now so values for *next* dump are stored in restart file
   out_params.file_number++;
   if (out_params.last_time < 0.0) {
@@ -279,7 +282,15 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
     if (split_per_node_manifest) {
       manifestfile.Write_any_type(buf, count, datatype, true);
     } else {
-      resfile.Write_any_type(buf, count, datatype, use_serial_io);
+      auto written = resfile.Write_any_type(buf, count, datatype, use_serial_io);
+      if (pm->pmb_pack->ppart && pm->pmb_pack->ppart->shock_enabled &&
+          written != static_cast<std::size_t>(count)) {
+        std::cerr << "Shock paired checkpoint metadata write failed" << std::endl;
+#if MPI_PARALLEL_ENABLED
+        MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
+#endif
+        std::exit(EXIT_FAILURE);
+      }
     }
   };
 
@@ -699,7 +710,17 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
   // close file, clean up
   payload_time = phase_timer.seconds();
   phase_timer.reset();
-  resfile.Close(use_serial_io);
+  const int close_result = resfile.Close(use_serial_io);
+  if (pm->pmb_pack->ppart && pm->pmb_pack->ppart->shock_enabled) {
+    if (close_result != 0) {
+      std::cerr << "Shock paired checkpoint close failed" << std::endl;
+#if MPI_PARALLEL_ENABLED
+      MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
+#endif
+      std::exit(EXIT_FAILURE);
+    }
+    pm->pmb_pack->ppart->WriteShockRestart(fname);
+  }
   close_time = phase_timer.seconds();
   if (pm->pmb_pack->pcurves) pm->pmb_pack->pcurves->Save(fname);
   PrintRestartWriteStats(shard_mode, open_time, header_time, payload_time, close_time);

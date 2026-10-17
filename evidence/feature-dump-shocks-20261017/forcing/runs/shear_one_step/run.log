@@ -1,0 +1,32 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+Initialising turbulence driving module
+ dedt = 0 tcorr = 0.1 dt_update = 0.01
+Experimental shock history: v1-entry-upstream-logdistance-mc-massflux-rk2-temperature-nearest-reference6f5ec8bc 48c53dc5c167604269d121412d4316215f09be8224e053d98af2eae9908a2b7b 8 1.3999999999999999 4 1.1000000000000001 1000 1.0000000000000001e-30 0 0 0 rk2 plm hllc 0.29999999999999999 16 16 16 16 16 16 0 1 0 1 0 1 6 6 6 6 6 6 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 0 0 rng 11 schedules 1 1 0 0 -1 128 903 0 0 0 1 0 1 0 1 0.5 0.5 0.5 0 1 0.45000000000000001 0.75 0 density 0 0 0 0 turb-driver-config-v1 32 9:accel_rms 1:1 9:center_x1 1:0 9:center_x2 1:0 9:center_x3 1:0 12:driving_type 1:0 9:dt_update 3:.01 7:exp_prl 1:0 7:exp_prp 7:1.66667 4:expo 7:1.66667 12:localization 4:none 6:max_kx 1:1 6:max_ky 1:0 6:max_kz 1:0 6:min_kx 1:1 6:min_ky 1:0 6:min_kz 1:0 5:nhigh 1:1 4:nlow 1:1 13:normalization 9:accel_rms 5:npeak 1:2 5:rseed 4:2718 8:sigma_x1 2:-1 8:sigma_x2 2:-1 8:sigma_x3 2:-1 12:sol_fraction 1:1 8:spectrum 9:power_law 5:tcorr 2:.1 11:tdriv_start 1:0 7:tile_nx 1:1 7:tile_ny 1:1 7:tile_nz 1:1 9:turb_flag 1:2
+lineage=forcing-shear-control capacity=8192; first inside representative; code units; no certified plateaus; endpoint cadence limited; scientific review pending
+Total Outputs Time: 0.000531167 s (load=0.000151499 s, write=0.000379668 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=3.623583e-03 cycle=0 time=0.000000e+00 dt=1.875000e-02 nmb=1
+output5 (bin): 1.211250e-04 s (load=2.083400e-05 s, write=1.002910e-04 s)
+output3 (bin): 1.435830e-04 s (load=3.458300e-05 s, write=1.090000e-04 s)
+output1 (hst): 6.933300e-05 s (load=4.533300e-05 s, write=2.400000e-05 s)
+output5 (bin): 1.124160e-04 s (load=1.995800e-05 s, write=9.245800e-05 s)
+output3 (bin): 1.376250e-04 s (load=3.437500e-05 s, write=1.032500e-04 s)
+output1 (hst): 6.891700e-05 s (load=4.533300e-05 s, write=2.358400e-05 s)
+Shock rank=0 sampled=384 invalid=0 complete=0 partial=0 suspended=0 suppressed_reentries_surviving=0 event_highwater=0 diagnostic_seconds_this_process=2.293417e-03
+Total Outputs Time: 3.975410e-04 s (load=1.228340e-04 s, write=2.747070e-04 s)
+
+Terminating on cycle limit
+time=3.750000e-02 cycle=2
+tlim=5.000000e-02 nlim=2
+
+MeshBlock-cycles = 2
+cpu time used  = 4.640417e-03
+zone-cycles/cpu_second = 1.765358e+06
+particle-updates/cpu_second = 5.516745e+04

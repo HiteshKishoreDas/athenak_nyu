@@ -1,0 +1,18 @@
+{
+  "numerical_timing": {
+    "reviewer": "review_numerics",
+    "read_only": true,
+    "independent_fixture_reproduction": "34 stale post timestamps among 540 suspended rows",
+    "finding": "One-line clear is correctly after suppression returns; invalid/pending observations retain first-outside evidence. No detector arithmetic, cadence, identity, restart layout or event schema change.",
+    "runtime_tests_run_by_reviewer": false,
+    "ponytail_review": "Lean already; no additional actionable findings."
+  },
+  "persistence": {
+    "reviewer": "review_persistence",
+    "read_only": true,
+    "independent_fixture_reproduction": "34 stale post timestamps among 540 suspended rows",
+    "finding": "Clearing post keeps active checkpoints without exit evidence; pending retains first-outside until reentry. first/previous/sequence/flags and suspended identity/right-censored status remain intact. Strict reader unchanged.",
+    "runtime_tests_run_by_reviewer": false,
+    "ponytail_review": "One-line fix sufficient; no additional abstraction needed."
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "base_commit": "8b453ed7",
+  "scope": "Three read-only Ponytail complexity reviews, followed by independent reviews of integrated source. Root applied changes and ran runtime validation. No human scientific approval.",
+  "reviewers": {
+    "review_numerics": "Detector/state/config validation; deduplicated representative state, ConfigValid reuse. Post-edit source/compiled ABI checks pass.",
+    "review_integration": "Native migration/restart/hooks; common header, writer tautology, redundant exit-index sort. Post-edit source review passes.",
+    "review_persistence": "Configuration/serialization/durability/reader; shared fatal path, PutEvent, guarded bulk append. Post-edit source review passes."
+  },
+  "accepted_changes": [
+    "Remove always-duplicate EncounterState representative; derive emitted representative from first",
+    "Reuse ConfigValid at original check point; keep actual gamma assignment ordering",
+    "Share exact native ParticleRestartHeader in existing anonymous namespace",
+    "Remove tautological writer comparison, preserve reader mismatch check",
+    "Remove redundant exit-index sort; preserve final event identity ordering",
+    "Reuse ten existing-message configuration failures through same-file ShockError",
+    "Share 124-column event row serializer with two actual callers",
+    "Append nonempty contiguous sidecar state in one operation"
+  ],
+  "deliberately_retained": [
+    "Required loss/corruption/replay and validity checks",
+    "Guarded enabled-only uniform boundary/compaction path",
+    "Existing MC transport/RNG/solver/task graph",
+    "Strict event reader and explicitly requested scientific test catalogue"
+  ],
+  "source_fingerprint": "3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc",
+  "reviewed_source_sha256": {
+    "src/shocks/encounter.hpp": "2833a7a8c06fc590a140f33dd088420ece10b668be46106acc57709782a69143",
+    "src/particles/particles_lagrangian_mc.cpp": "3e496ee50042e2b2eb759b77494f7e23c101b82eb07a7fd601d1bff508f88775",
+    "src/bvals/bvals_part.cpp": "0d8a2db955e335c670c2cf68b6caf358505fe94b0490cb7f633f8b50cd5d678b",
+    "src/particles/shock_particles.cpp": "e24b3a786ef6b175c7cfc17d0b5fe189e2a7d822a8ae09e1d40e24ab0ecd020a"
+  },
+  "reviewed_fixture_sha256": "92e22f661b72a1aa234ee1cb2922ba869b5ae82603c8a147d8950152ef65e8dc",
+  "post_review_change": "One extra native-header blank line removed; adding it back reproduces independently reviewed MC hash21eb4bcb. No other drift.",
+  "net_production_lines_removed": 40,
+  "encounter_state_bytes": {
+    "old": 1000,
+    "new": 816,
+    "saved": 184
+  },
+  "native_header_bytes": 48,
+  "event_bytes": 944,
+  "checkpoint_policy": "State size and implementation fingerprint changed; prior sidecars reject explicitly. No cross-version compatibility introduced."
+}

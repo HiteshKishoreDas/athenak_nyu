@@ -1,0 +1,8 @@
+{
+  "raw_directory": "/private/tmp/shock-mc-integration-v1/uniform_on",
+  "copied_file_sha256": {
+    "lldb.log": "c6b0d8bcbc7e6ba5b5c23ac36c7b3c13ad93021eca02ac428dd8836e5f1da07c",
+    "run.log": "747eff125690fbb0252da636302338d148db2b0560cc0e92a8bc2283842bd8d0",
+    "input.athinput": "a3d5f8d2f6d9215911ce4caf3b9f7250a4b9687a583a2e3fff4991a1b2661eb2"
+  }
+}

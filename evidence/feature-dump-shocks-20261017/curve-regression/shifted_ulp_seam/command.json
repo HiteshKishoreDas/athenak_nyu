@@ -1,0 +1,14 @@
+{
+  "name": "shifted_ulp_seam",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-regression/shifted_ulp_seam/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "de47e630ee39abe64ccb6cb621aee555c5156909c4e8e13d3596f63be8a6ca23",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-regression/shifted_ulp_seam",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

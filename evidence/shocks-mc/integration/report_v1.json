@@ -1,0 +1,49 @@
+{
+  "executable_sha256": "ee63e9b3a16466608695faf4f0142f191df4020b64359640e4a2bbb189ea98fb",
+  "input_sha256": "be32d13293f1a2654c6b657c65015d822c9ae9d3dd37ecfba78a4e603670a0a7",
+  "runs": [
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-integration-v1/uniform_off/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-integration-v1/uniform_off",
+      "exit": 0,
+      "elapsed_seconds": 6.417171832999884,
+      "input_sha256": "acfcbc252c795ab777645ef0a7ffaf341d59cb3ce42441c446d72a385d13035d",
+      "log_sha256": "76abd42d2140ec474050e00476d565efa1bf7856ddec36dc9e0c971d5845ed95",
+      "executable_sha256": "ee63e9b3a16466608695faf4f0142f191df4020b64359640e4a2bbb189ea98fb",
+      "label": "uniform_off",
+      "expected_error": null,
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-integration-v1/uniform_on/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-integration-v1/uniform_on",
+      "exit": -11,
+      "elapsed_seconds": 0.18395662500006438,
+      "input_sha256": "a3d5f8d2f6d9215911ce4caf3b9f7250a4b9687a583a2e3fff4991a1b2661eb2",
+      "log_sha256": "747eff125690fbb0252da636302338d148db2b0560cc0e92a8bc2283842bd8d0",
+      "executable_sha256": "ee63e9b3a16466608695faf4f0142f191df4020b64359640e4a2bbb189ea98fb",
+      "label": "uniform_on",
+      "expected_error": null,
+      "passed": false
+    }
+  ],
+  "checks": [],
+  "physical": {},
+  "scope": "RK2 existing MC tracer, serial uniform mesh only",
+  "scientific_signoff": "pending",
+  "statistical_path_approval": "pending",
+  "elapsed_seconds": 6.692925291999927,
+  "status": "failed",
+  "error": "AssertionError('uniform_on: expected None, got -11')",
+  "compiled_source_fingerprint": "53158c98b82f1bc9877f0b4bd041f47da471b6cce9218aaae76827089bad127f",
+  "diagnosis": "parent identified nullptr Hydro::psrc dereference in feature guard before any initial seed/sample",
+  "debugger": "launch hung; SIGTERM ended own debugger, no stack obtained"
+}

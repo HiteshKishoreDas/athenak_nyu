@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/uniform_on/input.athinput"
+  ],
+  "directory": "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/uniform_on",
+  "exit": 0,
+  "elapsed_seconds": 0.7219437080202624,
+  "input_sha256": "8fe7342b6e5d88cb0db090da1b31bb323dd5033082d49c8a0ba86fb091cc2b67",
+  "log_sha256": "53fc85fd527206c699e81e4746be9dda38c9b32aa34d4ab1089c700ab8fb39a8",
+  "executable_sha256": "bd2038a751e42335e1ef3e860d827fd060c4e272cf42a2f78374665f43de2769",
+  "label": "uniform_on",
+  "expected_error": null,
+  "passed": true
+}

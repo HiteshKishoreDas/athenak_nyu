@@ -1,0 +1,14 @@
+{
+  "name": "nonlinear_spatial_32",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/nonlinear_spatial_32/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "a56f4160c8281bc76c5f27e1aba0110b402ea02454f7ea9f8e20cca21a06334a",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/nonlinear_spatial_32",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

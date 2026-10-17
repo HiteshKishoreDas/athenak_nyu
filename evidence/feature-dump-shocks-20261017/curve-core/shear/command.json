@@ -1,0 +1,14 @@
+{
+  "name": "shear",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/shear/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "7c3295534a4d1544a0fcafef4351ddf398846c952ba11d0507d9e2e01ba31bfc",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-core/shear",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

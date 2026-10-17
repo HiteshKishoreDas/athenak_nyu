@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-rejects-stylefinal/shearing_box/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-rejects-stylefinal/shearing_box",
+  "exit": 1,
+  "elapsed_seconds": 0.004812791999938781,
+  "input_sha256": "9709ea00a17c1843b2e72ffd81a5cb652b0cda731354d26dfe96e6c163cd709f",
+  "log_sha256": "2d4388dd3243bc984d9bb61a9d7762a44707e02dad475b0027c2df25f07409b7",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "shearing_box",
+  "expected_diagnostic": "requires uniform",
+  "passed": true
+}

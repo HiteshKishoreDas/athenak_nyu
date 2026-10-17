@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-qualification-stylefinal/seed307/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-qualification-stylefinal/seed307",
+  "exit": 0,
+  "elapsed_seconds": 0.7687707499990211,
+  "input_sha256": "409192c05963a904bdcdba0daf598ef4f31ccf4a6d144871a726062f40a103f6",
+  "log_sha256": "ebea2e964e7040e7fc6da57f5284cb7952ee8e0577584808be0f65d1b70e6735",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "seed307"
+}

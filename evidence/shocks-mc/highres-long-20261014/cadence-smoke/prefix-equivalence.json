@@ -1,0 +1,13 @@
+{
+  "check": "Corrected-cadence smoke vs original long-run prefix",
+  "initial_fluid_fields_exact": true,
+  "matched_thermo_samples": 16384,
+  "generations": [
+    0,
+    2
+  ],
+  "time_and_positions_exact": true,
+  "density_exact": true,
+  "pressure_rtol": 1e-12,
+  "pressure_atol": 1e-12
+}

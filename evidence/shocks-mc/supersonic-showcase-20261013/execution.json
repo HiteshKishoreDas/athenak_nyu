@@ -1,0 +1,70 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+  "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "source_commit": "5701ea74faed93c2faeb2c655a38ff4713537911",
+  "runs": [
+    {
+      "name": "baseline",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/supersonic-showcase-20261013/baseline/input.athinput"
+      ],
+      "exit": 0,
+      "wall_seconds": 95.34299562498927,
+      "input_sha256": "bdc605f118d15eb67cf9b1c8cc985c00b7c5c225477f18ef2c1b8fd77a965b4d",
+      "log_sha256": "c51dab9bb04a5f17e53febe33a88771dc92970c500f36eec553ab4e32bc5a2a8"
+    },
+    {
+      "name": "tracking_off",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/supersonic-showcase-20261013/tracking_off/input.athinput"
+      ],
+      "exit": 0,
+      "wall_seconds": 62.317325167008676,
+      "input_sha256": "eefcd2ebe3ace6905d640ea2c7ef723e962144da9ae99926b280070259ab2b29",
+      "log_sha256": "94bf85869d07d628f786c098f699bda8c58ff86e0b6c5d3e49e0c04f8a849cc4"
+    },
+    {
+      "name": "half_cfl",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/supersonic-showcase-20261013/half_cfl/input.athinput"
+      ],
+      "exit": 0,
+      "wall_seconds": 186.3981507080025,
+      "input_sha256": "f4e81ba61a2ce57764b6bbe28cdf829f292b2342a23a5c99af6cb56bd321bc32",
+      "log_sha256": "18d850a01e27ca27d97154eb2394233fd053ca4bea4acdc336e2dce469b82482"
+    },
+    {
+      "name": "coarse32",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/supersonic-showcase-20261013/coarse32/input.athinput"
+      ],
+      "exit": 0,
+      "wall_seconds": 6.722592290956527,
+      "input_sha256": "851e0a53de50676130b864106b51e09a4080de0798f1954b84ce81313cea3793",
+      "log_sha256": "eb72d11cf8ca9eacc6dbbdf67c5fdde12d45054de4b252d16fb5dc46ef051ecd"
+    },
+    {
+      "name": "coarse32_matched",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/supersonic-showcase-20261013/coarse32_matched/input.athinput"
+      ],
+      "exit": 0,
+      "wall_seconds": 7.299789957993198,
+      "input_sha256": "86c05e0fa68b69ce3cc0eccfaae1614b540c5cc9f732d59fe79996ce1c872c73",
+      "log_sha256": "988899ab445658118590058fd2eaa291462546e2ef485d10faf35f154c25ecc3"
+    }
+  ],
+  "status": "simulations_completed"
+}

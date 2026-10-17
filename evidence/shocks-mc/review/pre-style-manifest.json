@@ -1,0 +1,75 @@
+{
+  "base_commit": "526a187f938e38634e89a88192ebe9731c4d36bb",
+  "kokkos_commit": "08ceff92bcf3a828844480bc1e6137eb74028517",
+  "scope": "Independent source-only numerical/timing/persistence review; no native runtime or scientific approval",
+  "cmake_implementation_fingerprint": "26d4b28ee7f5bc0f8b33e60a0331b243af5bf9aeb6d7e98d612a9731a2c9044f",
+  "cmake_source_files": [
+    "src/shocks/detector.hpp",
+    "src/shocks/encounter.hpp",
+    "src/particles/shock_particles.cpp",
+    "src/particles/particles.cpp",
+    "src/particles/particles.hpp",
+    "src/particles/particles_tasks.cpp",
+    "src/particles/particles_pushers.cpp",
+    "src/particles/particles_lagrangian_mc.cpp",
+    "src/hydro/hydro_fluxes.cpp",
+    "src/pgen/pgen.cpp",
+    "src/bvals/bvals_part.cpp",
+    "src/bvals/bvals.hpp",
+    "src/driver/driver.cpp",
+    "src/outputs/restart.cpp",
+    "src/main.cpp",
+    "src/mesh/mesh.cpp",
+    "src/mesh/mesh.hpp",
+    "src/mesh/meshblock_pack.cpp"
+  ],
+  "reviewed_source_sha256": {
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "84cc51a2af2b397b9f3360d34a39bcfbf0fe61aee4c059cb745b1c076cba10f4",
+    "src/particles/shock_particles.cpp": "1d76fae810db5af1b9828fc27b076ad0135554f56507fcc53462920bbdba35bc",
+    "src/particles/particles.cpp": "451c34fd05324b0a1ceb7a26decda66d7be55faa234357f16af71a5bb6ecc2d3",
+    "src/particles/particles.hpp": "e79e47d13dbadc82c6312bf19d64fa7821ae2414f70d7c962ae13810f1ce9a6c",
+    "src/particles/particles_tasks.cpp": "24da2b5dcef92ae6b0039382fbdeb9b9891f5b6b43c98510545d1e978ee8bbf4",
+    "src/particles/particles_pushers.cpp": "d0a7440982f9d265a897c017877e14a99497563499fd5b18ca570fc90fa6946d",
+    "src/particles/particles_lagrangian_mc.cpp": "d33d8e477a91171a84417836a4f4bb4892b0b8f9637a02e94f41f8274f21ff48",
+    "src/hydro/hydro_fluxes.cpp": "7f25c8e8496c4446cdff8ba6e924259251bda6e0bdea9d0e2b3f5e4dc2c7f447",
+    "src/pgen/pgen.cpp": "c5bb44e9d0b100a70c5cb03a9629dfbcfe6c789c9efda1376478d8c557c53ba7",
+    "src/bvals/bvals_part.cpp": "74894470e05f39804c7a1b1c2b689ecd1acda1b164576814f8eb8d4e54e0c27e",
+    "src/bvals/bvals.hpp": "4022e5b850d3486e45632690b39aafca8c1aa5af798e10bfc47efcd14537e623",
+    "src/driver/driver.cpp": "fcb9edf5c0cff0336e3d0445a6532514cd8cc3b5607f7944cfc1e87e420e219e",
+    "src/outputs/restart.cpp": "32e4f935cc8af72c3b91b7fc11bac62ae9b9326a84b617795fb685ff985fd048",
+    "src/main.cpp": "1d4aadd6f61c634a0bb8ec3dc2927d2916c0f0bf2b0777d37c3c2f02d58ee0d7",
+    "src/mesh/mesh.cpp": "c7e6712f95a5875a17b711a0ce8f6b837d824c4a76a836fd5e1897708c9d9900",
+    "src/mesh/mesh.hpp": "309f3d9b4daa6f0613b132d092cb70b3f2048910f9e5cc3d4d193d36e82c6e57",
+    "src/mesh/meshblock_pack.cpp": "70573e1fa8c414c3881013fff5bced63b0c105596a8ed851495dc4aaa536a237",
+    "src/athena.hpp": "58425b282cbec9e2eebb06eda8e41ad5817a1a998f2f4344c05a8937150be81d",
+    "src/hydro/hydro.cpp": "5befb3892a730dc1058aea1acba33f5a5cbe4866fbe32daddfee0666dd476148",
+    "src/hydro/hydro_tasks.cpp": "d8bbec20a94e77adb8bd94c960af9b0604efdac70b667cd763da5cee9c8aeeb3",
+    "src/eos/eos.cpp": "d8ffde935736b6a1569b53322293f3f3c1a746a99780c91a83effcb6f00b4d46",
+    "src/outputs/io_wrapper.cpp": "ca7cf9ed9fb2b708cd531a73c6b53ff8034224da5d37c152733227e79f034b12",
+    "CMakeLists.txt": "5f32f2f27338a0c46edba43fdec775c59150c3ee487b19a4c59951ee438ba0d8",
+    "src/parameter_input.cpp": "cc9a9d2b0145e67f2e44090ca136b46f8b5bb0a77bcdb2c2f0f44cff6a3842f3",
+    "src/parameter_input.hpp": "1d7c48117e92591b87128829b101154e79debdb62c68787e5c89b769467dc945"
+  },
+  "frozen_headers": {
+    "src/shocks/detector.hpp": {
+      "current_sha256": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+      "previous_sha256": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+      "byte_identical": true
+    },
+    "src/shocks/encounter.hpp": {
+      "current_sha256": "84cc51a2af2b397b9f3360d34a39bcfbf0fe61aee4c059cb745b1c076cba10f4",
+      "previous_sha256": "84cc51a2af2b397b9f3360d34a39bcfbf0fe61aee4c059cb745b1c076cba10f4",
+      "byte_identical": true
+    }
+  },
+  "checks": {
+    "git_diff_check_exit": 0,
+    "frozen_header_byte_comparison": "pass",
+    "native_runtime": "not run by this reviewer"
+  },
+  "artifact_sha256": {
+    "integrated-review.md": "58e6867152092fd19ce93c833f1fb62955459817ba762e2184dc3ca9e052924b",
+    "default-roundtrip-arithmetic.json": "77e57681dbdd3734b5079b14049950de658a99ffdca6dfe0417552e225307d62"
+  }
+}

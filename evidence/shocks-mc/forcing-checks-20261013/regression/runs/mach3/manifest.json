@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-forcing-heldout-20261013/mach3/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-forcing-heldout-20261013/mach3",
+  "exit": 0,
+  "elapsed_seconds": 0.8954651670064777,
+  "input_sha256": "f2cee5dcdde5c108f42f15fa009b0b4fc839085ce91a7a6001aa76b3356528c8",
+  "log_sha256": "22a22466c0c7e97ce6fe798afbd1950c24eb0e04f530c39900ce82dad28ce96a",
+  "executable_sha256": "23fe70bc7b4e0e2c70d3e29b99776ccc684f8f5c67b37860d8ab23655401e25a",
+  "label": "mach3"
+}

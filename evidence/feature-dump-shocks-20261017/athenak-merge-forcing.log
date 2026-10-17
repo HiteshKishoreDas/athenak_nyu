@@ -1,0 +1,7 @@
+
+Fontconfig error: No writable cache directories
+	/opt/homebrew/var/cache/fontconfig
+	/Users/hitesh/.cache/fontconfig
+	/Users/hitesh/.fontconfig
+Matplotlib is building the font cache; this may take a moment.
+{"status": "passed_forcing_engineering_compatibility_with_inherited_forcing_heat_bias", "counts": {"driven_on": {"completed": 7063, "partial": 0, "suspended": 556}, "half_cfl": {"completed": 7744, "partial": 0, "suspended": 520}, "edot_on": {"completed": 7357, "partial": 0, "suspended": 479}}, "native_heat_bias": 0.00013183593749990785, "count_change_fraction": 0.09641795271131248}

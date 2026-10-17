@@ -1,0 +1,14 @@
+{
+  "name": "target_unsupported_standalone_cooling",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_standalone_cooling/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "cd7b8851b85acb100a49b796125806958828f2374e9bfd1f9e133b4ac8fca0e5",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_standalone_cooling",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-qualification-stylefinal/cfl0.45/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-qualification-stylefinal/cfl0.45",
+  "exit": 0,
+  "elapsed_seconds": 0.453645959001733,
+  "input_sha256": "0588105ae53f26c8a30c59cdb2d5578221fff2912db67cea2499058af917a2ca",
+  "log_sha256": "181090cc7b54267680566c508458068682b51c712d5163ddca198c70a794e049",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "cfl0.45"
+}

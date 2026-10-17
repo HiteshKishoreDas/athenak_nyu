@@ -1,0 +1,27 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+Experimental shock history: v1-entry-upstream-logdistance-mc-massflux-rk2-temperature-nearest-reference6f5ec8bc 48c53dc5c167604269d121412d4316215f09be8224e053d98af2eae9908a2b7b 8 1.3999999999999999 4 1.1000000000000001 1000 1.0000000000000001e-30 0 0 0 rk2 plm hllc 0.29999999999999999 128 4 1 128 4 1 0 1 0 0.10000000000000001 0 0.10000000000000001 3 3 6 6 -1 -1 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 0 0 rng 11 schedules 1 1 0 0 -1 128 903 0 3 0 1 0 0.10000000000000001 0 0.10000000000000001 0.5 0.050000000000000003 0.050000000000000003 0 1 0.45000000000000001 0.75 0 density 0 0 0 0
+lineage=experimental-mc-m2 capacity=4096; first inside representative; code units; no certified plateaus; endpoint cadence limited; scientific review pending
+Total Outputs Time: 8.5542e-05 s (load=1.175e-05 s, write=7.3792e-05 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=2.291583e-03 cycle=0 time=0.000000e+00 dt=7.685314e-04 nmb=1
+output2 (prtcl_thermo_history): 6.254200e-05 s (load=8.709000e-06 s, write=5.383300e-05 s)
+output2 (prtcl_thermo_history): 6.591700e-05 s (load=9.042000e-06 s, write=5.687500e-05 s)
+output2 (prtcl_thermo_history): 7.316700e-05 s (load=9.458000e-06 s, write=6.370900e-05 s)
+Shock rank=0 sampled=512 invalid=0 complete=0 partial=0 suspended=0 suppressed_reentries_surviving=0 event_highwater=0 diagnostic_seconds_this_process=4.422167e-03
+Total Outputs Time: 1.002500e-04 s (load=8.625000e-06 s, write=9.162500e-05 s)
+
+Terminating on cycle limit
+time=2.305594e-03 cycle=3
+tlim=2.500000e-01 nlim=3
+
+MeshBlock-cycles = 3
+cpu time used  = 5.981000e-03
+zone-cycles/cpu_second = 2.568132e+05
+particle-updates/cpu_second = 6.420331e+04

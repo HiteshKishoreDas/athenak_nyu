@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-13",
+  "source_parent_commit": "ead7c81a1c3c1cfc56b34954b67a0a310f86a151",
+  "core_source_fingerprint": "93a861ab4638613fb94f475caeb5527e971bfdb1fc43b15baeee479a89997bc7",
+  "forcing_processes": 15,
+  "successful_processes": 8,
+  "expected_rejections": 7,
+  "native_forcing_thermal_oracle": "FAILED: excess gas energy measured; scientific forcing gate remains open",
+  "native_forcing_code_changed": false,
+  "runtime_task_graph_changed": false,
+  "fresh_core_regressions": {
+    "state_unit": "passed",
+    "offline_fixture_reader": "passed",
+    "parity_cases": 53,
+    "integration_processes": 20,
+    "heldout_physical_runs": 21,
+    "all_heldout_measurements_unchanged": true
+  },
+  "plots_visually_reviewed": true,
+  "final_run_command": "MPLCONFIGDIR=/private/tmp/shock-turb-mpl /Users/hitesh/hitesh/git/shockit/.venv/bin/python tst/shocks-mc/forcing_checks.py --executable build-release/src/athena --workdir /private/tmp/shock-forcing-checks-final-20261013 --output /private/tmp/shock-forcing-evidence-final-20261013",
+  "source_sha256": {
+    "CMakeLists.txt": "26169cb15945b29935e0018c401dfb5a44934e2ff6e9f34ac5b8121937233611",
+    "src/particles/shock_particles.cpp": "63d1b1a344487f3d05e48c4ddc036f966939689d215677a05addba989f2e8bc1",
+    "src/srcterms/turb_driver.cpp": "8a2e0ef47a0fbc611a528e8e9de414b7b23c87df04c64402943a0d4ca6265659",
+    "src/srcterms/turb_driver.hpp": "f8e9337923f11c46b5a009d7cf64219a7622a8346c02606b59031b028057ee4f",
+    "src/utils/random.hpp": "6ef51642d6285f7e2d51a0649a424cf21328e9855b608882851ac56edec1ad2a",
+    "src/hydro/hydro_tasks.cpp": "d8bbec20a94e77adb8bd94c960af9b0604efdac70b667cd763da5cee9c8aeeb3",
+    "src/hydro/hydro_update.cpp": "c13aa050f3043e09440c3cd36bf567f2c0fc8620ad819bf5da93ad8b18ba1098",
+    "tst/shocks-mc/forcing_checks.py": "7a68d761f19d631efcf4f7e507c62d73050294107b266176229201f04624d050",
+    "tst/shocks-mc/common.py": "7493ba7843ffc6ef6323eb1eb018d4f68f312368417b38e379a7ff93f24e6c6e",
+    "inputs/tests/shock_mc_forced.athinput": "50044d1f7cd5a506d7ddedfa201b3dcba1a81fc19cea5bc066d358a4a7d59f4d"
+  },
+  "failing_preflight_explanations": [
+    "Native final binary output can duplicate a generation; accept only exactly identical payloads.",
+    "OU force initially zero; oracle selects first active forced step and asserts nonzero acceleration.",
+    "Binary header time prints6significant digits; exact full-double trace/thermo clocks retained; separately check exact formatted header.",
+    "Fixture editor emitted repeated appended headers, letting stale dt=-1 override checkpoint output. Group new blocks and regression-check subsequent edits.",
+    "Restart from another directory requires retained absolute history path. Missing-history rejection was correct."
+  ],
+  "numerical_tolerances_changed": false,
+  "scientific_signoff": "pending",
+  "production_commit": "a03d621bef92fec80d90d5b0bce53973176c98f7"
+}

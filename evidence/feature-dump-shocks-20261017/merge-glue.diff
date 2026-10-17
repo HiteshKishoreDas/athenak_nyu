@@ -1,0 +1,127 @@
+diff --git a/src/driver/driver.cpp b/src/driver/driver.cpp
+index 9a25a6a3..ab7ad0a3 100644
+--- a/src/driver/driver.cpp
++++ b/src/driver/driver.cpp
+@@ -355,6 +355,13 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
+     pmesh->pmb_pack->ppart->SeedInitialTracers();
+   }
+ 
++  if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
++    auto pp = pmesh->pmb_pack->ppart;
++    pp->ValidateShockPhysics();
++    pp->PrepareShockStore(res_flag);
++    pp->ObserveShocks(pmesh->time, pmesh->ncycle);
++  }
++
+   //---- Step 2.  Compute time step (if problem involves time evolution)
+   // NOTE: For new simulations (!res_flag), the initial conditions haven't been set yet
+   // by the ProblemGenerator, so we can't compute a proper timestep for MHD here.
+@@ -473,6 +480,10 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
+ 
+       // Work after time integrator indicated by "1" in stage
+       ExecuteTaskList(pmesh, "after_timeintegrator", 1);
++      if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
++        pmesh->pmb_pack->ppart->ObserveShocks(pmesh->time+pmesh->dt,
++                                             pmesh->ncycle+1);
++      }
+ 
+       // Work outside of TaskLists:
+       // increment time, ncycle, etc.
+@@ -562,6 +573,9 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
+ //!  and printing diagnostic messages
+ 
+ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
++  if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
++    pmesh->pmb_pack->ppart->WriteShockSuspended();
++  }
+   // cycle through output Types and load data / write files
+   //  This design allows for asynchronous outputs to implemented in the future.
+   Kokkos::fence();
+diff --git a/src/main.cpp b/src/main.cpp
+index d2e46414..f8586670 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -542,6 +542,15 @@ int main(int argc, char *argv[]) {
+       }
+       pmesh->pmb_pack->pcurves->Load(restart_file);
+     }
++    if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
++      std::string shock_payload = restart_file;
++      if (restart_shard_mode == FileShardMode::per_rank) {
++        shock_payload = (restart_base_dir.empty() ? "" : restart_base_dir + "/")
++                        + ShardDirectoryName(FileShardMode::per_rank)
++                        + restart_file_name;
++      }
++      pmesh->pmb_pack->ppart->ReadShockRestart(shock_payload);
++    }
+   }
+   //--- Step 6. --------------------------------------------------------------------------
+   // Construct Driver and Outputs. Actual outputs (including initial conditions) are made
+diff --git a/src/mesh/meshblock_pack.cpp b/src/mesh/meshblock_pack.cpp
+index 7b78873c..33166c22 100644
+--- a/src/mesh/meshblock_pack.cpp
++++ b/src/mesh/meshblock_pack.cpp
+@@ -256,6 +256,13 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
+     ppart = nullptr;
+   }
+ 
++  if (!ppart && pin->DoesBlockExist("shock_tracking") &&
++      pin->GetOrAddBoolean("shock_tracking", "enabled", false)) {
++    std::cerr << "### FATAL ERROR: shock tracking requires lagrangian_mc particles; "
++              << "material curve shock histories are unsupported" << std::endl;
++    std::exit(EXIT_FAILURE);
++  }
++
+   // Check that at least ONE is requested and initialized.
+   // Error if there are no physics blocks in the input file.
+   if (nphysics == 0) {
+diff --git a/src/outputs/restart.cpp b/src/outputs/restart.cpp
+index fc0b1baa..c49ca367 100644
+--- a/src/outputs/restart.cpp
++++ b/src/outputs/restart.cpp
+@@ -223,6 +223,9 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
+     // where XXXXX = 5-digit file_number
+     fname = std::string("rst/") + out_params.file_basename + number + ".rst";
+   }
++  if (pm->pmb_pack->ppart && pm->pmb_pack->ppart->shock_enabled) {
++    pm->pmb_pack->ppart->PreflightShockRestart(fname);
++  }
+   // increment counters now so values for *next* dump are stored in restart file
+   out_params.file_number++;
+   if (out_params.last_time < 0.0) {
+@@ -279,7 +282,15 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
+     if (split_per_node_manifest) {
+       manifestfile.Write_any_type(buf, count, datatype, true);
+     } else {
+-      resfile.Write_any_type(buf, count, datatype, use_serial_io);
++      auto written = resfile.Write_any_type(buf, count, datatype, use_serial_io);
++      if (pm->pmb_pack->ppart && pm->pmb_pack->ppart->shock_enabled &&
++          written != static_cast<std::size_t>(count)) {
++        std::cerr << "Shock paired checkpoint metadata write failed" << std::endl;
++#if MPI_PARALLEL_ENABLED
++        MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
++#endif
++        std::exit(EXIT_FAILURE);
++      }
+     }
+   };
+ 
+@@ -699,7 +710,17 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
+   // close file, clean up
+   payload_time = phase_timer.seconds();
+   phase_timer.reset();
+-  resfile.Close(use_serial_io);
++  const int close_result = resfile.Close(use_serial_io);
++  if (pm->pmb_pack->ppart && pm->pmb_pack->ppart->shock_enabled) {
++    if (close_result != 0) {
++      std::cerr << "Shock paired checkpoint close failed" << std::endl;
++#if MPI_PARALLEL_ENABLED
++      MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
++#endif
++      std::exit(EXIT_FAILURE);
++    }
++    pm->pmb_pack->ppart->WriteShockRestart(fname);
++  }
+   close_time = phase_timer.seconds();
+   if (pm->pmb_pack->pcurves) pm->pmb_pack->pcurves->Save(fname);
+   PrintRestartWriteStats(shard_mode, open_time, header_time, payload_time, close_time);

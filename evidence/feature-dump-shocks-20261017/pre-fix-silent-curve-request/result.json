@@ -1,0 +1,9 @@
+{
+  "exit": 0,
+  "requested_shock_tracking": true,
+  "has_particles": false,
+  "has_curves": true,
+  "shock_history_produced": false,
+  "binary_sha256": "2869f7cdc4adb66530ecd708cfc3495819131f61657bef09a1cd16c903c857fd",
+  "status": "reproduced_silent_ignored_request"
+}

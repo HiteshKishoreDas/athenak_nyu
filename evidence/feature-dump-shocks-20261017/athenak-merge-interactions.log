@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/private/tmp/athenak-feature-dump-shocks-20261017/tst/shocks-mc/feature_dump.py", line 118, in <module>
+    main()
+    ~~~~^^
+  File "/private/tmp/athenak-feature-dump-shocks-20261017/tst/shocks-mc/feature_dump.py", line 84, in main
+    same_fluid(curves, off)
+    ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/private/tmp/athenak-feature-dump-shocks-20261017/tst/shocks-mc/feature_dump.py", line 68, in same_fluid
+    a, b = fluid(left), fluid(right)
+           ~~~~~^^^^^^
+  File "/private/tmp/athenak-feature-dump-shocks-20261017/tst/shocks-mc/feature_dump.py", line 56, in fluid
+    assert all(np.isfinite(v).all() and v.dtype == np.float64
+           ^^^
+  File "/private/tmp/athenak-feature-dump-shocks-20261017/tst/shocks-mc/feature_dump.py", line 56, in <genexpr>
+    assert all(np.isfinite(v).all() and v.dtype == np.float64
+                                        ^^^^^^^
+AttributeError: 'list' object has no attribute 'dtype'

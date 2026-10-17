@@ -1,0 +1,14 @@
+{
+  "name": "target_unsupported_forcing",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_forcing/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "b7433d0b727cb953f843f0d552c5b2f151a1cc8979df0489cc81c8eb7edabcc3",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-unsupported/target_unsupported_forcing",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

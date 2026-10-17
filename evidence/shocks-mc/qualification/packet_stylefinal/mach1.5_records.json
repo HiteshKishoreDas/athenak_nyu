@@ -1,0 +1,797 @@
+{
+  "label": "mach1.5",
+  "selected_ids": [
+    0,
+    1,
+    2,
+    9
+  ],
+  "original_raw_directory": "/private/tmp/shock-mc-qualification-stylefinal/mach1.5/shock_events",
+  "compiled_source_fingerprint": "78e5cb1d425daaa8ab2e06deaa40db6c8249de79cd1480c7d0b069fd1587f7c3",
+  "input_sha256": "546c4c34a3366bd0259e4e87fbfac2352e68ad6180c3f1b8c920f41fe3ac3f7a",
+  "selected_csv_sha256": "0fa87d38efdb56db50c9f82ce8a432637d824bd0c2b93a74e95c9442ace9f155",
+  "rows": 1264,
+  "transfer_csv_sha256": "cbc1aeccd5d35e362802297512037e636ea4f3a965e7290b5fd124e780d1c6c8",
+  "transfer_rows": 1260,
+  "events": [
+    {
+      "lineage": "experimental-mc-m2",
+      "particle_id": 0,
+      "sequence": 0,
+      "status": 0,
+      "flags": 28,
+      "emission_generation": 231,
+      "identity": [
+        "experimental-mc-m2",
+        0,
+        0
+      ],
+      "pre": {
+        "time": 0.1897472256668418,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": NaN,
+        "mach_temperature": NaN,
+        "generation": 199,
+        "valid": true,
+        "inside": false,
+        "x": [
+          0.41015625,
+          0.012499999999999997,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8791264239215355,
+          2.4874811559729846,
+          1.3237433758085728
+        ]
+      },
+      "first": {
+        "time": 0.19070072931340884,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": 1.5073927641179763,
+        "mach_temperature": 1.5044446245165788,
+        "generation": 200,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.41015625,
+          0.012499999999999997,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8775055641934202,
+          2.484271769534439,
+          1.3231767814236475
+        ]
+      },
+      "last": {
+        "time": 0.21835233506385313,
+        "rho": 1.8820234901398751,
+        "pressure": 2.4932084340911143,
+        "temperature": 1.3247488392962699,
+        "mach_pressure": 1.4939401421772045,
+        "mach_temperature": 1.4947332063411125,
+        "generation": 229,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.39453125,
+          0.012499999999999997,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8509470055361963,
+          2.437166673143187,
+          1.3167133720487962
+        ]
+      },
+      "post": {
+        "time": 0.21930583871042017,
+        "rho": 1.8801819150802663,
+        "pressure": 2.492545277739451,
+        "temperature": 1.3256936776955661,
+        "mach_pressure": NaN,
+        "mach_temperature": NaN,
+        "generation": 230,
+        "valid": true,
+        "inside": false,
+        "x": [
+          0.38671875,
+          0.012499999999999997,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8469385449439883,
+          2.4308086407573253,
+          1.3161285996286594
+        ]
+      },
+      "representative": {
+        "time": 0.19070072931340884,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": 1.5073927641179763,
+        "mach_temperature": 1.5044446245165788,
+        "generation": 200,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.41015625,
+          0.012499999999999997,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8775055641934202,
+          2.484271769534439,
+          1.3231767814236475
+        ]
+      },
+      "rank": 0
+    },
+    {
+      "lineage": "experimental-mc-m2",
+      "particle_id": 1,
+      "sequence": 0,
+      "status": 0,
+      "flags": 24,
+      "emission_generation": 248,
+      "identity": [
+        "experimental-mc-m2",
+        1,
+        0
+      ],
+      "pre": {
+        "time": 0.2135848168310179,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": NaN,
+        "mach_temperature": NaN,
+        "generation": 224,
+        "valid": true,
+        "inside": false,
+        "x": [
+          0.42578125,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.878782489238811,
+          2.4884385294585156,
+          1.3244952748450975
+        ]
+      },
+      "first": {
+        "time": 0.21453832047758495,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": 1.507055165918765,
+        "mach_temperature": 1.506838500667453,
+        "generation": 225,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.41796875,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8743467424690952,
+          2.4830844853095093,
+          1.3247732818307236
+        ]
+      },
+      "last": {
+        "time": 0.23456189705549288,
+        "rho": 1.7931099498157304,
+        "pressure": 2.3303559254761828,
+        "temperature": 1.299616861596057,
+        "mach_pressure": 1.500051638686591,
+        "mach_temperature": 1.5007054591538929,
+        "generation": 246,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.41015625,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8615436653605801,
+          2.458514071847382,
+          1.3206856855389255
+        ]
+      },
+      "post": {
+        "time": 0.23551540070205992,
+        "rho": 1.8441692498695093,
+        "pressure": 2.428681544420618,
+        "temperature": 1.3169515458477945,
+        "mach_pressure": NaN,
+        "mach_temperature": NaN,
+        "generation": 247,
+        "valid": true,
+        "inside": false,
+        "x": [
+          0.40234375,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8723326766967254,
+          2.4777157971723067,
+          1.323330959294922
+        ]
+      },
+      "representative": {
+        "time": 0.21453832047758495,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": 1.507055165918765,
+        "mach_temperature": 1.506838500667453,
+        "generation": 225,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.41796875,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8743467424690952,
+          2.4830844853095093,
+          1.3247732818307236
+        ]
+      },
+      "rank": 0
+    },
+    {
+      "lineage": "experimental-mc-m2",
+      "particle_id": 2,
+      "sequence": 0,
+      "status": 0,
+      "flags": 24,
+      "emission_generation": 153,
+      "identity": [
+        "experimental-mc-m2",
+        2,
+        0
+      ],
+      "pre": {
+        "time": 0.13444401416595322,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": NaN,
+        "mach_temperature": NaN,
+        "generation": 141,
+        "valid": true,
+        "inside": false,
+        "x": [
+          0.38671875,
+          0.0625,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8132574764875715,
+          2.370435255041848,
+          1.307280011680181
+        ]
+      },
+      "first": {
+        "time": 0.13539751781252027,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": 1.4942570080834434,
+        "mach_temperature": 1.4939362542737138,
+        "generation": 142,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.37890625,
+          0.0625,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8525309002369024,
+          2.438271340574232,
+          1.3161838975330584
+        ]
+      },
+      "last": {
+        "time": 0.14397905063162367,
+        "rho": 1.3144970070260078,
+        "pressure": 1.5130304460394997,
+        "temperature": 1.1510337702956548,
+        "mach_pressure": 1.4901463078323527,
+        "mach_temperature": 1.4913929986375232,
+        "generation": 151,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.37109375,
+          0.0625,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8440225230768892,
+          2.423958688537459,
+          1.3144951638079252
+        ]
+      },
+      "post": {
+        "time": 0.1449325542781907,
+        "rho": 1.8467799669752094,
+        "pressure": 2.430640334265459,
+        "temperature": 1.3161504769009047,
+        "mach_pressure": NaN,
+        "mach_temperature": NaN,
+        "generation": 152,
+        "valid": true,
+        "inside": false,
+        "x": [
+          0.36328125,
+          0.0625,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.849558247097014,
+          2.4355178663957027,
+          1.3168105790765905
+        ]
+      },
+      "representative": {
+        "time": 0.13539751781252027,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": 1.4942570080834434,
+        "mach_temperature": 1.4939362542737138,
+        "generation": 142,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.37890625,
+          0.0625,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8525309002369024,
+          2.438271340574232,
+          1.3161838975330584
+        ]
+      },
+      "rank": 0
+    }
+  ],
+  "suspended": [
+    {
+      "lineage": "experimental-mc-m2",
+      "particle_id": 9,
+      "sequence": 0,
+      "status": 1,
+      "flags": 88,
+      "emission_generation": 315,
+      "identity": [
+        "experimental-mc-m2",
+        9,
+        0
+      ],
+      "pre": {
+        "time": 0.2936791231426496,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": NaN,
+        "mach_temperature": NaN,
+        "generation": 308,
+        "valid": true,
+        "inside": false,
+        "x": [
+          0.46484375,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.826706844885936,
+          2.39589022165176,
+          1.3115898855688393
+        ]
+      },
+      "first": {
+        "time": 0.29463262678921665,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": 1.4913882780473195,
+        "mach_temperature": 1.4910884779337983,
+        "generation": 309,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.45703125,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8475931351831483,
+          2.428278828546441,
+          1.3142930563582822
+        ]
+      },
+      "last": {
+        "time": 0.3,
+        "rho": 1.3046414559510968,
+        "pressure": 1.4967063082586018,
+        "temperature": 1.1472165792612252,
+        "mach_pressure": 1.490220536067798,
+        "mach_temperature": 1.4911650418452234,
+        "generation": 315,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.44921875,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8444311599219525,
+          2.4242167871378952,
+          1.314343869163692
+        ]
+      },
+      "post": {
+        "time": -1.0,
+        "rho": 0.0,
+        "pressure": 0.0,
+        "temperature": 0.0,
+        "mach_pressure": 0.0,
+        "mach_temperature": 0.0,
+        "generation": 0,
+        "valid": false,
+        "inside": false,
+        "x": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "downstream": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "representative": {
+        "time": 0.29463262678921665,
+        "rho": 1.0,
+        "pressure": 1.0000000000000002,
+        "temperature": 1.0000000000000002,
+        "mach_pressure": 1.4913882780473195,
+        "mach_temperature": 1.4910884779337983,
+        "generation": 309,
+        "valid": true,
+        "inside": true,
+        "x": [
+          0.45703125,
+          0.037500000000000006,
+          0.05
+        ],
+        "image": [
+          0,
+          0,
+          0
+        ],
+        "normal": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "upstream": [
+          1.0,
+          1.0000000000000002,
+          1.0000000000000002
+        ],
+        "downstream": [
+          1.8475931351831483,
+          2.428278828546441,
+          1.3142930563582822
+        ]
+      },
+      "rank": 0
+    }
+  ],
+  "scope": "cell-center MC samples and known Eulerian planar front; no continuous material trajectory or exact crossing time"
+}

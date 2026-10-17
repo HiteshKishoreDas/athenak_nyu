@@ -1,0 +1,48 @@
+{
+  "executable": "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+  "executable_sha256": "bd2038a751e42335e1ef3e860d827fd060c4e272cf42a2f78374665f43de2769",
+  "compiled_source_fingerprint": "48c53dc5c167604269d121412d4316215f09be8224e053d98af2eae9908a2b7b",
+  "build_cache_sha256": "08a8b1b38d4bbf0fb57ebf9f15d7b89be477c9a1122e1219e130577693494965",
+  "runs": [
+    {
+      "name": "curves",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions/curves/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "9fc5142ecd6d37e6db6b1dc89c210602fe382f5c6ed48725387f60a570331d1c",
+      "log_sha256": "3cbdf408035c3f396cdf4d51a6357b2842fcec68f4fbc88ce815d0d54f13f6c3"
+    },
+    {
+      "name": "curves_shocks_off",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions/curves_shocks_off/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "2f087145cf91383d65f25e0a37c7fdf3d090ae64ba9955f2535d767a432d72e9",
+      "log_sha256": "1c479c42521dbb4a2fe049009a5fc8d9825537735fa7312a0fcbfe2c0196ec11"
+    },
+    {
+      "name": "fluid_only",
+      "command": [
+        "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/athenak-feature-dump-shocks-tests/interactions/fluid_only/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "6e4906dbf1e334214f3e87b76573224a526ef106e1f66e67733ec27edab4639c",
+      "log_sha256": "4dfffbd8c80df5954295706515852af65004be0242bfde2787695ade8a26a1a9"
+    }
+  ],
+  "checks": [],
+  "scientific_signoff": "pending",
+  "status": "failed",
+  "error": "AttributeError(\"'list' object has no attribute 'dtype'\")"
+}

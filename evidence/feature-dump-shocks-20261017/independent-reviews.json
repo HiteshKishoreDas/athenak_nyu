@@ -1,0 +1,22 @@
+{
+  "integration": {
+    "finding": "Enabled shock request without Particles was silently ignored. Reproduced and fixed by seven-line physics-assembly fatal guard.",
+    "final_review": "No production blocker;11native interactions (8success/3expected rejects).",
+    "test_changes_applied": [
+      "Require512actual samples before comparing traces.",
+      "Restart consumed-input hash distinguished from unused fixture template."
+    ]
+  },
+  "numerical": {
+    "result": "No timing/dataflow regression. Curve RK2 previous-stage primitives preserved; MC shock observations remain step-complete. Curve regrid/adaptation precedes curve outputs. Curves still reject particles/forcing.",
+    "scope": "Read-only source review, no runtime or scientific approval."
+  },
+  "persistence": {
+    "result": "Both independent loaders retained. Shock preflight precedes output mutation/open; checked metadata/close and durable shock sidecar retained; curve sidecar Save follows native close.",
+    "reviewed_main_sha256": "e03d2cefddbd953819bf50416d9c186b2a92be0a2f3397f3e47c9bc69cec15d7",
+    "reviewed_restart_sha256": "1cc8db9fba5254f367142b95cb00080720be04fe5fd88a799105c2d61993f832",
+    "scope": "Read-only merge review, no combined curve/MC histories or hardware approval."
+  },
+  "ponytail": "Minimal guard and existing fixtures; no new dependency, abstraction or physics algorithm.",
+  "scientific_signoff": "pending"
+}

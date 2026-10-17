@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/athenak-feature-dump-shocks-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/planar/input.athinput"
+  ],
+  "directory": "/private/tmp/athenak-feature-dump-shocks-tests/integration-runs/planar",
+  "exit": 0,
+  "elapsed_seconds": 0.6783558749593794,
+  "input_sha256": "08ae2914e8b5e6a520d5d67ef39eeb30e305ea4a6457aa97dbcfd5b312481be5",
+  "log_sha256": "9eab39ae2e2b55690f695b36ec320bf12fa4fb4948e97cec80700f1fd1eaab23",
+  "executable_sha256": "bd2038a751e42335e1ef3e860d827fd060c4e272cf42a2f78374665f43de2769",
+  "label": "planar",
+  "expected_error": null,
+  "passed": true
+}

@@ -1,0 +1,4 @@
+#ifndef SHOCK_VERSION_HPP_
+#define SHOCK_VERSION_HPP_
+#define SHOCK_IMPLEMENTATION_HASH "3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc"
+#endif

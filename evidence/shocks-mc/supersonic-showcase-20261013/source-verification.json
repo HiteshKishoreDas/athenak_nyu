@@ -1,0 +1,25 @@
+{
+  "showcase_tools_commit": "bac7241d59d56fee565bf9c25e3a0d03d24a8ee5",
+  "production_core_commit": "ad4225edea78d255b67df97fe8f593c0c268fa1e",
+  "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+  "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+  "source_sha256": {
+    "tst/shocks-mc/supersonic_showcase.py": "57128e0e60930231f2c790aad2015c86323b885a237d468fbd0d2c3447e6710c",
+    "inputs/tests/shock_mc_showcase.athinput": "beb5e83a36e6cd5fc3f2141cf5f7cc60c78131ab5fc34c9e0fbd118aea2ea48a",
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/particles/shock_particles.cpp": "718bc86a7350efd4e20e99702c4bd47d6678baa908821575123d6a8d04687ee5",
+    "src/srcterms/turb_driver.cpp": "8a2e0ef47a0fbc611a528e8e9de414b7b23c87df04c64402943a0d4ca6265659",
+    "tst/shocks/detector_test.cpp": "e7a163ceb6320a50dbd59dcbdb803a7d8a4ae224f0d41bfc9e5d1e1c008771b1"
+  },
+  "pdf_source_sha256": "855b1153831f8d086923177b8f4194d69aca3b35824a9b849add2ed9510f27ce",
+  "pdf_helper_sha256": "981e26b70448d8ddb489cd2d7edfe30c2719d4742ef0aa44c499cb2294b32474",
+  "source_files_match_committed_code": true,
+  "pdf_pages": 12,
+  "vector_figure_families": 10,
+  "rendered_pdf_pages_visually_reviewed": 12,
+  "post_presentation_fix_all_case_measurements_and_detector_masks_unchanged": true,
+  "physical_scientific_signoff": "pending",
+  "production_source_modified": false,
+  "pushed": false
+}

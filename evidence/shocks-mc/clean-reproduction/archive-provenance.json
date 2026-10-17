@@ -1,0 +1,6 @@
+{
+  "commit": "42bcf12cf57d8e834b80f39f08b3f5603b24e0a4",
+  "kokkos_commit": "08ceff92bcf3a828844480bc1e6137eb74028517",
+  "kokkos_status": "",
+  "source": "git archive; clean pinned Kokkos copied without .git"
+}

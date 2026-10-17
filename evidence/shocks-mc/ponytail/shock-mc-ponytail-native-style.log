@@ -1,0 +1,7 @@
+/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/scripts/style/cpplint.py:6485: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(cfg_file, 'r', 'utf8', 'replace') as file_handle:
+/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/scripts/style/cpplint.py:6587: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(filename, 'r', 'utf8', 'replace') as target_file:
+Done processing src/particles/particles.cpp
+Done processing src/particles/particles.hpp
+Done processing src/particles/shock_particles.cpp

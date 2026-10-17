@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 304, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 247, in main
+    variant_on=run(name+'_on',changes)
+  File "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/shocks-mc/forcing_checks.py", line 103, in run
+    assert code==0 if expected is None else isinstance(code,int) and code!=0 and expected in log,row
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'name': 'planar_2d_on', 'command': ['/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena', '-i', '/private/tmp/shock-forcing-enabled-final-20261013/planar_2d_on/input.athinput'], 'exit': 1, 'seconds': 0.006992457958403975, 'expected_error': None, 'log_sha256': '53f0ac26c78171d401fc69ffafa4c2ed55879ff212518f5379bd08826fdc777e', 'input_sha256': 'deeb4be7d4a2fffcde123e54d679a8d825217298024013c158f8a782676abf88'}

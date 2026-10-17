@@ -1,0 +1,14 @@
+{
+  "base": "526a187f938e38634e89a88192ebe9731c4d36bb",
+  "branch": "codex/shock-multiphase",
+  "kokkos": "08ceff92bcf3a828844480bc1e6137eb74028517",
+  "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 17.0.0 (clang-1700.6.4.2)\nTarget: arm64-apple-darwin25.3.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin\n",
+  "cmake": "cmake version 4.1.2\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n",
+  "scientific_signoff": "pending",
+  "deployment_targets": [
+    "RUSTY (Flatiron)",
+    "Frontier"
+  ],
+  "remote_hardware_used": false
+}

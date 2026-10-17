@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-laptop-20261008/integration/uniform_on/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-laptop-20261008/integration/uniform_on",
+  "exit": 0,
+  "elapsed_seconds": 0.7744901249989198,
+  "input_sha256": "2e032a0c2feaaa274c4958721f4089a4aae0020d3c76b52e1f646418f00e0112",
+  "log_sha256": "a4eb52659d5a3c814e1dfdbe685389957f08a7be7036dd395d65c7d4a0960fd2",
+  "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+  "label": "uniform_on",
+  "expected_error": null,
+  "passed": true
+}

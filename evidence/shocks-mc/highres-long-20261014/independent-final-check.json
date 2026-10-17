@@ -1,0 +1,60 @@
+{
+  "status": "passed_independent_csv_and_conserved_field_checks",
+  "scope": "Final exported episode stream and final native conserved volume only; no full trace scan or scientific/HPC sign-off",
+  "generation": 6033,
+  "time": 1.0,
+  "particles_in_denominator": 8192,
+  "outcomes": {
+    "complete": 367074,
+    "open": 999
+  },
+  "unique_contiguous_sequences": true,
+  "complete_uncensored_brackets_checked": 367074,
+  "open_right_censored_identities": 999,
+  "flags": {
+    "left_censored": 0,
+    "invalid_observation": 0,
+    "merged_flicker": 25955,
+    "no_plateau": 368073,
+    "cadence_limited": 368073,
+    "temperature_invalid": 0,
+    "right_censored": 999,
+    "domain_exit": 0,
+    "direction_ambiguous": 3426,
+    "downstream_reentry": 0
+  },
+  "pressure_mach_quantiles": [
+    1.1003520223689798,
+    1.26166623693938,
+    1.8156497879193443
+  ],
+  "common_window_starts": {
+    "t": 0.3,
+    "baseline64": 58225,
+    "highres128": 71419
+  },
+  "derived_from_conserved": {
+    "mass": 1.0,
+    "mach_volume": 0.8085756437487729,
+    "supersonic_volume_fraction": 0.20398950576782227,
+    "kinetic": 9.167226429643268,
+    "gas_energy": 55.124192344940816
+  },
+  "primitive_route_absolute_differences": {
+    "mass": 0.0,
+    "mach_volume": 0.0,
+    "supersonic_volume_fraction": 0.0,
+    "kinetic": 0.0,
+    "gas_energy": 0.0
+  },
+  "float_rtol": 1e-12,
+  "float_atol": 1e-12,
+  "supersonic_fraction_comparison": "exact",
+  "source_sha256": {
+    "report": "f3fe9f114fbe730f6a2d6028d89157da5c4deb46af8bc2e990666acd4a760fc8",
+    "episodes": "d7d9db13b4390a0e3bf2d68d81b79bf2a4466a9cca1aec84f4c0432437e2a751",
+    "native_final_conserved": "c305387f3e7abecc6f9554c80903e9516f22f14bf55f79c6d252b7440bf7f96b",
+    "baseline_episodes": "e09a45ba664dcb24d2eea9565af61e5ebbcdad5b4628814a602a7df549c52813"
+  },
+  "all8192_particle_ids_present_in_episode_export": true
+}

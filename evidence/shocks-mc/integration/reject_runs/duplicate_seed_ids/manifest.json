@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-rejects-stylefinal/duplicate_seed_ids/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-rejects-stylefinal/duplicate_seed_ids",
+  "exit": 1,
+  "elapsed_seconds": 0.005085832999611739,
+  "input_sha256": "44478400fbd368eaa91ea7bcfce83a330c05bad57a67e2f7c0573ab30b953b99",
+  "log_sha256": "03013a4a0a874c0d61f0449817d6a138c4fef9ada9dd256b185fa1cd76b00a8b",
+  "executable_sha256": "ccb1c87b2e909869fefd1b7e4d07188b7642c857071b839ced52fbe8795e9fe9",
+  "label": "duplicate_seed_ids",
+  "expected_diagnostic": "unique tracer seed schedule IDs",
+  "passed": true
+}

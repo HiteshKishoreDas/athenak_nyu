@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/shock-mc-clean-42bcf12c/build/src/athena",
+    "-i",
+    "/private/tmp/shock-mc-clean-integration/seed_pending/input.athinput"
+  ],
+  "directory": "/private/tmp/shock-mc-clean-integration/seed_pending",
+  "exit": 0,
+  "elapsed_seconds": 0.1769360840007721,
+  "input_sha256": "d2604d1234899ff6f16435b97f5c1b2504533cc5882d6b870dbf48a183568d7c",
+  "log_sha256": "8b9d1b515eea6ba540d7a15dee2651582f0ebbf3233c9c8b320e48dd1089be72",
+  "executable_sha256": "d2edc6cf634b20bbf66b66a834ad521cc7bbe5ed866ec6392262d3c1d62cbd9b",
+  "label": "seed_pending",
+  "expected_error": null,
+  "passed": true
+}

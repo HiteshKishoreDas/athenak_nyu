@@ -1,0 +1,31 @@
+{
+  "analysis_tools_commit": "60c25ccd97a34d0dd9efaa0cc0792fc324232af8",
+  "runtime_start_commit": "3e6ce69ad11182a14c5a90d8fa2e7f34e2b3f83e",
+  "production_core_commit": "ad4225edea78d255b67df97fe8f593c0c268fa1e",
+  "production_src_and_cmake_unchanged": true,
+  "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+  "source_sha256": {
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/particles/shock_particles.cpp": "718bc86a7350efd4e20e99702c4bd47d6678baa908821575123d6a8d04687ee5",
+    "src/srcterms/turb_driver.cpp": "8a2e0ef47a0fbc611a528e8e9de414b7b23c87df04c64402943a0d4ca6265659",
+    "tst/shocks/detector_test.cpp": "e7a163ceb6320a50dbd59dcbdb803a7d8a4ae224f0d41bfc9e5d1e1c008771b1",
+    "tst/shocks-mc/highres_long_analysis.py": "7e6751491e1caec5f76cc763706cbc3ce7bc48b4fbfb4030930c322ad28dddb4",
+    "tst/shocks-mc/highres_long_pdf.py": "71a1461910c6679cd4871db966a944e1f03aa20cd4038e54ccb561be501ddd70",
+    "inputs/tests/shock_mc_highres_long.athinput": "52c190a3254c35fb138017ad6ffcdc3fe76bb86043a97e44842f16e3261df8c4"
+  },
+  "scientific_signoff": "pending",
+  "large_raw_current_path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/raw",
+  "original_raw_alias": "/private/tmp/shock-highres128-long-20261014",
+  "current_plot_path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/plots",
+  "trace_validation_path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/trace-validation",
+  "preserved_runtime": {
+    "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/runtime/shock_detector_test": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+    "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/runtime/athenak-source.tar.gz": "f94828c3ead6b887a5bf26b033cf587d95f3b3e7f658a174e2cebafb3e5d7f68",
+    "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/runtime/kokkos-source.tar.gz": "c7ed67311b42bdda1bd512d9bc8c74fa3914f0c979e5141c09f1dab3976f129c",
+    "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/runtime/CMakeCache.txt": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+    "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/highres128-long-20261014/runtime/athena": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806"
+  },
+  "kokkos_commit": "08ceff92bcf3a828844480bc1e6137eb74028517",
+  "kokkos_clean": true
+}

@@ -1,0 +1,35 @@
+{
+  "status": "source_arithmetic_demonstrated_not_native_runtime",
+  "rk3": {
+    "stage_flux": [
+      "1",
+      "2",
+      "4"
+    ],
+    "correct": "19/6",
+    "baseline_stage_average": "7/3"
+  },
+  "rng_key_alias": {
+    "tag_cycle_pairs": [
+      [
+        104729,
+        0
+      ],
+      [
+        0,
+        7919
+      ]
+    ],
+    "key": 829348951
+  },
+  "overoutflow": {
+    "requested": [
+      "4/5",
+      "4/5"
+    ],
+    "cumulative_uniform_draw_realized": [
+      "4/5",
+      "1/5"
+    ]
+  }
+}

@@ -1,0 +1,2 @@
+### FATAL ERROR in /Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src/parameter_input.cpp at line 392
+Parameter 'nlim' in block 'time' on command line not found

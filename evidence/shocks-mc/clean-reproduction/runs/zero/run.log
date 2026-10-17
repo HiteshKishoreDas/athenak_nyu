@@ -1,0 +1,51 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+Experimental shock history: v1-entry-upstream-logdistance-mc-massflux-rk2-temperature-nearest-reference6f5ec8bc 78e5cb1d425daaa8ab2e06deaa40db6c8249de79cd1480c7d0b069fd1587f7c3 8 1.3999999999999999 4 1.1000000000000001 1000 1.0000000000000001e-30 0 0 0 rk2 plm hllc 0.29999999999999999 128 4 1 128 4 1 0 1 0 0.10000000000000001 0 0.10000000000000001 3 3 6 6 -1 -1 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 0 0 rng 11 schedules 1 1 0 0 -1 0 903 0 3 0 1 0 0.10000000000000001 0 0.10000000000000001 0.5 0.050000000000000003 0.050000000000000003 0 1 0.45000000000000001 0.75 0 density 0 0 0 0
+lineage=experimental-mc-m2 capacity=4096; first inside representative; code units; no certified plateaus; endpoint cadence limited; scientific review pending
+Total Outputs Time: 5.6749e-05 s (load=1.083e-06 s, write=5.5666e-05 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=1.838542e-03 cycle=0 time=0.000000e+00 dt=7.685314e-04 nmb=1
+output2 (prtcl_thermo_history): 3.262500e-05 s (load=1.792000e-06 s, write=3.083300e-05 s)
+output2 (prtcl_thermo_history): 3.137500e-05 s (load=1.000000e-06 s, write=3.037500e-05 s)
+output2 (prtcl_thermo_history): 2.833300e-05 s (load=9.580000e-07 s, write=2.737500e-05 s)
+output2 (prtcl_thermo_history): 5.100000e-05 s (load=1.542000e-06 s, write=4.945800e-05 s)
+output2 (prtcl_thermo_history): 3.750000e-05 s (load=1.000000e-06 s, write=3.650000e-05 s)
+output2 (prtcl_thermo_history): 3.237500e-05 s (load=9.580000e-07 s, write=3.141700e-05 s)
+output2 (prtcl_thermo_history): 3.429100e-05 s (load=9.160000e-07 s, write=3.337500e-05 s)
+output2 (prtcl_thermo_history): 3.245800e-05 s (load=8.330000e-07 s, write=3.162500e-05 s)
+output2 (prtcl_thermo_history): 3.150000e-05 s (load=7.920000e-07 s, write=3.070800e-05 s)
+output2 (prtcl_thermo_history): 3.045900e-05 s (load=8.340000e-07 s, write=2.962500e-05 s)
+output2 (prtcl_thermo_history): 2.670800e-05 s (load=7.920000e-07 s, write=2.591600e-05 s)
+output2 (prtcl_thermo_history): 2.595800e-05 s (load=7.920000e-07 s, write=2.516600e-05 s)
+output2 (prtcl_thermo_history): 2.833400e-05 s (load=8.340000e-07 s, write=2.750000e-05 s)
+output2 (prtcl_thermo_history): 2.783300e-05 s (load=8.750000e-07 s, write=2.695800e-05 s)
+output2 (prtcl_thermo_history): 3.191700e-05 s (load=8.750000e-07 s, write=3.104200e-05 s)
+output2 (prtcl_thermo_history): 2.816700e-05 s (load=8.750000e-07 s, write=2.729200e-05 s)
+output2 (prtcl_thermo_history): 2.520900e-05 s (load=7.920000e-07 s, write=2.441700e-05 s)
+output2 (prtcl_thermo_history): 2.720800e-05 s (load=8.330000e-07 s, write=2.637500e-05 s)
+output2 (prtcl_thermo_history): 4.745800e-05 s (load=1.375000e-06 s, write=4.608300e-05 s)
+output2 (prtcl_thermo_history): 3.504200e-05 s (load=4.000000e-06 s, write=3.104200e-05 s)
+output2 (prtcl_thermo_history): 2.958400e-05 s (load=9.590000e-07 s, write=2.862500e-05 s)
+output2 (prtcl_thermo_history): 4.145800e-05 s (load=1.458000e-06 s, write=4.000000e-05 s)
+output2 (prtcl_thermo_history): 3.379100e-05 s (load=9.580000e-07 s, write=3.283300e-05 s)
+output2 (prtcl_thermo_history): 3.058400e-05 s (load=8.750000e-07 s, write=2.970900e-05 s)
+output2 (prtcl_thermo_history): 3.341600e-05 s (load=8.330000e-07 s, write=3.258300e-05 s)
+output2 (prtcl_thermo_history): 4.137500e-05 s (load=7.920000e-07 s, write=4.058300e-05 s)
+output2 (prtcl_thermo_history): 3.929200e-05 s (load=7.920000e-07 s, write=3.850000e-05 s)
+Shock rank=0 sampled=0 invalid=0 complete=0 partial=0 suspended=0 suppressed_reentries_surviving=0 event_highwater=0 diagnostic_seconds_this_process=1.820275e-02
+Total Outputs Time: 3.925000e-05 s (load=8.750000e-07 s, write=3.837500e-05 s)
+
+Terminating on time limit
+time=2.000000e-02 cycle=27
+tlim=2.000000e-02 nlim=-1
+
+MeshBlock-cycles = 27
+cpu time used  = 3.038021e-02
+zone-cycles/cpu_second = 4.550331e+05
+particle-updates/cpu_second = 0.000000e+00

@@ -1,0 +1,14 @@
+{
+  "name": "invalid_seed",
+  "command": [
+    "/private/tmp/athenak-feature-dump-curves-build/src/athena",
+    "-i",
+    "/private/tmp/athenak-feature-dump-shocks-tests/curve-regression/invalid_seed/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "32cf3740dd2e0ae94187547639bd93efdde3fdd38e1355a979a517ed3af18505",
+  "artifacts": "/private/tmp/athenak-feature-dump-shocks-tests/curve-regression/invalid_seed",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "95b33f0916e94688f297b997086aa89854917ab3bf4c5c094ff1c2a4e7cd0c93"
+}

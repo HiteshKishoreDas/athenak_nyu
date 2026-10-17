@@ -1,0 +1,318 @@
+{
+  "status": "completed_scientific_review_pending",
+  "through_generation": 6033,
+  "end_time": 1.0,
+  "particles": 8192,
+  "configuration": {
+    "cells": 128,
+    "particles": 8192,
+    "tlim": 1.0,
+    "width": 8,
+    "nghost": 8,
+    "trace": true,
+    "gamma": 1.4,
+    "dedt": 50,
+    "initial_mach": 5
+  },
+  "execution": {
+    "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "executable_sha256": "4c084ef8402a788837edcc75ae025d114707f6106f229a99a1d054035c11b806",
+    "compiled_source_fingerprint": "f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b",
+    "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+    "source_commit": "3e6ce69ad11182a14c5a90d8fa2e7f34e2b3f83e",
+    "command": [
+      "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+      "-i",
+      "/private/tmp/shock-highres128-long-20261014/input.athinput"
+    ],
+    "input_sha256": "3448bdf0cc213dbad811af5ec5aa1c6f42e5db659691f33cdc9a712595be86a0",
+    "configuration": {
+      "cells": 128,
+      "particles": 8192,
+      "tlim": 1.0,
+      "width": 8,
+      "nghost": 8,
+      "trace": true,
+      "gamma": 1.4,
+      "dedt": 50,
+      "initial_mach": 5
+    },
+    "status": "completed",
+    "started_unix": 1791958213.865487,
+    "exit": 0,
+    "wall_seconds": 7587.413352167001,
+    "log_sha256": "a05f0a8110bbf64edb8b0ba6256cca385375ab28e3f54436493b95810a21a08b"
+  },
+  "trace_validation": {
+    "collector_progress": {
+      "status": "completed",
+      "last_generation": 6033,
+      "last_time": 1.0,
+      "validated_observations": 49430528,
+      "all_8192_ids_every_frame": true,
+      "continuous_generations_and_sequences": true,
+      "full_precision_clocks": true,
+      "source_script_sha256": "acf007592d3c3d7fcab7836ae5de15ddff43f720f1550cc49a1f7eef1703879d"
+    },
+    "analyzed_generation": 6033,
+    "analyzed_observations": 49430528
+  },
+  "counters": {
+    "sampled": 49430528,
+    "invalid": 0,
+    "complete": 367074,
+    "partial": 0,
+    "suspended": 999,
+    "suppressed_reentries_surviving": 405806,
+    "event_highwater": 99,
+    "diagnostic_seconds_this_process": 2407.654
+  },
+  "outcomes": {
+    "complete": 367074,
+    "open": 999
+  },
+  "starts_per_particle": 44.9307861328125,
+  "complete_per_particle": 44.808837890625,
+  "completed_count_histogram": {
+    "21": 1,
+    "22": 1,
+    "24": 3,
+    "25": 4,
+    "26": 8,
+    "27": 11,
+    "28": 25,
+    "29": 28,
+    "30": 30,
+    "31": 69,
+    "32": 92,
+    "33": 99,
+    "34": 165,
+    "35": 194,
+    "36": 227,
+    "37": 255,
+    "38": 300,
+    "39": 368,
+    "40": 376,
+    "41": 414,
+    "42": 447,
+    "43": 430,
+    "44": 464,
+    "45": 467,
+    "46": 470,
+    "47": 443,
+    "48": 408,
+    "49": 368,
+    "50": 357,
+    "51": 297,
+    "52": 291,
+    "53": 210,
+    "54": 187,
+    "55": 146,
+    "56": 119,
+    "57": 111,
+    "58": 75,
+    "59": 56,
+    "60": 47,
+    "61": 29,
+    "62": 25,
+    "63": 23,
+    "64": 14,
+    "65": 10,
+    "66": 7,
+    "67": 9,
+    "68": 3,
+    "69": 4,
+    "70": 3,
+    "72": 1,
+    "74": 1
+  },
+  "flags": {
+    "left_censored": 0,
+    "invalid_observation": 0,
+    "merged_flicker": 25955,
+    "no_plateau": 368073,
+    "cadence_limited": 368073,
+    "temperature_invalid": 0,
+    "right_censored": 999,
+    "domain_exit": 0,
+    "direction_ambiguous": 3426,
+    "downstream_reentry": 0
+  },
+  "mask_slice_validation": [
+    {
+      "generation": 6033,
+      "time": 1.0,
+      "fluid_sha256": "254ab202182979de33ba71c3f1e13f0be694eab3077afde2f4ea9210d9221416",
+      "mask_npz_sha256": "06b9006311ffc19300793f58cea61dc1677b3faec07aad8315cd93d22f1de6f6",
+      "fixture_sha256": "d021ad0356c27538297a2c84d75d0a4191fb44fa1193b057db86f41ea397a01d",
+      "native_csv_sha256": "987553414a7de56b01db130098b6408c71ac926a8dc63a6af1479d24ea49b0c7",
+      "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+      "scope": "Only z=64 plane: crop z55..73 includes actual +/-8 endpoints and +/-1 gradients. Full x/y periodic neighbors; artificial z wrap cannot affect central plane. No whole-volume mask assertion.",
+      "actual_trace_particles_checked": 48
+    },
+    {
+      "generation": 0,
+      "time": 0.0,
+      "fluid_sha256": "ab7b922b82afd63df51f3f0eca929e6315cd68eddf64b8a77de4dd506f8be93d",
+      "mask_npz_sha256": "4687105d507d89f411dda8a03a35ab04ca857da4ed6427ed6661c896671f95f4",
+      "fixture_sha256": "d7a4be29f0b18347b91f3cdea8ecb8b2ce7a6924709ad72461d02583afade722",
+      "native_csv_sha256": "8dbef03cc118fddfd46139f3371e598b623fb37f6a6a6dd62ff129d3cd142d28",
+      "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+      "scope": "Only z=64 plane: crop z55..73 includes actual +/-8 endpoints and +/-1 gradients. Full x/y periodic neighbors; artificial z wrap cannot affect central plane. No whole-volume mask assertion.",
+      "actual_trace_particles_checked": 81
+    },
+    {
+      "generation": 1443,
+      "time": 0.25012120158057216,
+      "fluid_sha256": "a353ce0d2728337cd7b786ef6ff43b4e2a4699d20e63c0ee39c7e04197d31450",
+      "mask_npz_sha256": "6818d254a87f0941f83be2e5aa4c1549f9868ec611ff9b6727f96a5511d4c889",
+      "fixture_sha256": "01051263ff8be0af534237edcc7fe77dfe9d6096ec0d5f2b9a54e3890d1e7308",
+      "native_csv_sha256": "ece0bb750cbdb4d8d97009344340abe1c3fee1b55c99766a6274ee0d8c3e7cab",
+      "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+      "scope": "Only z=64 plane: crop z55..73 includes actual +/-8 endpoints and +/-1 gradients. Full x/y periodic neighbors; artificial z wrap cannot affect central plane. No whole-volume mask assertion.",
+      "actual_trace_particles_checked": 64
+    },
+    {
+      "generation": 2869,
+      "time": 0.5000860254640649,
+      "fluid_sha256": "b78137174cd44e6f8166ff68b9c65ad3e56ccd412c464385fd5120179416fb22",
+      "mask_npz_sha256": "f86db8e90bb4970c1443d0836571bfdd758924d30bf530fb37358f08fa59d35f",
+      "fixture_sha256": "552c2b863faf54246ba4c4d28c04c56177d9b1572e95578eb702a64d875fccd0",
+      "native_csv_sha256": "d17f89b776ba4d5a59b21f34076eaf5578cdeee0e4eb4c15bf2995ddac7f12ca",
+      "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+      "scope": "Only z=64 plane: crop z55..73 includes actual +/-8 endpoints and +/-1 gradients. Full x/y periodic neighbors; artificial z wrap cannot affect central plane. No whole-volume mask assertion.",
+      "actual_trace_particles_checked": 63
+    },
+    {
+      "generation": 4408,
+      "time": 0.7501261927930813,
+      "fluid_sha256": "95cafc267c11f6df117d21b10be4e499c92ff3802d1a900b58bd4049b09045df",
+      "mask_npz_sha256": "3581b3b4a60a1fc3484defbba1a4c32998ef499f1e2598e90c74b240793918e1",
+      "fixture_sha256": "ce843aa8f61d3dfc36d94f836eec4bc202d2bb03c04dc8586e6d84519126d6ac",
+      "native_csv_sha256": "32e1319d7315e24b24134d313218d9606188f7eaa4dc5b3a1f77920239fdb6b1",
+      "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+      "scope": "Only z=64 plane: crop z55..73 includes actual +/-8 endpoints and +/-1 gradients. Full x/y periodic neighbors; artificial z wrap cannot affect central plane. No whole-volume mask assertion.",
+      "actual_trace_particles_checked": 68
+    }
+  ],
+  "field_evolution": [
+    {
+      "generation": 0,
+      "time": 0.0,
+      "mass": 1.0,
+      "mach_volume": 4.999999999999738,
+      "mach_mass": 4.999999999999738,
+      "supersonic_volume_fraction": 0.9898242950439453,
+      "supersonic_mass_fraction": 0.9898242950439453,
+      "kinetic": 12.499999999998684,
+      "gas_energy": 1.7857142857142854
+    },
+    {
+      "generation": 1443,
+      "time": 0.25012120158057216,
+      "mass": 1.0,
+      "mach_volume": 1.5345798000550461,
+      "mach_mass": 1.3602066810823839,
+      "supersonic_volume_fraction": 0.6830716133117676,
+      "supersonic_mass_fraction": 0.6049717143217975,
+      "kinetic": 8.250475247925369,
+      "gas_energy": 18.54178138907927
+    },
+    {
+      "generation": 2869,
+      "time": 0.5000860254640649,
+      "mass": 0.9999999999999999,
+      "mach_volume": 1.1096443141659722,
+      "mach_mass": 1.0142829753972058,
+      "supersonic_volume_fraction": 0.4691014289855957,
+      "supersonic_mass_fraction": 0.39195047917981357,
+      "kinetic": 8.367971460990063,
+      "gas_energy": 30.92331596892542
+    },
+    {
+      "generation": 4408,
+      "time": 0.7501261927930813,
+      "mass": 1.0,
+      "mach_volume": 0.8944192668072505,
+      "mach_mass": 0.858071909240583,
+      "supersonic_volume_fraction": 0.2909703254699707,
+      "supersonic_mass_fraction": 0.25286604581753347,
+      "kinetic": 8.598594181530657,
+      "gas_energy": 43.19805717685816
+    },
+    {
+      "generation": 6033,
+      "time": 1.0,
+      "mass": 1.0,
+      "mach_volume": 0.8085756437487729,
+      "mach_mass": 0.7805464059823329,
+      "supersonic_volume_fraction": 0.20398950576782227,
+      "supersonic_mass_fraction": 0.17492460336076696,
+      "kinetic": 9.167226429643268,
+      "gas_energy": 55.124192344940816
+    }
+  ],
+  "scientific_signoff": "pending",
+  "limitations": [
+    "Adiabatic evolving forced realization; no stationarity or physical shock calibration.",
+    "Inherited native RK2 forcing thermal oracle fails; forcing source unchanged.",
+    "Endpoint no_plateau/cadence flags retained. MC cell hops are not continuous material trajectories.",
+    "Width8 at128 matches width4 at64 physical half-span1/16; resolution/CFL/MC dynamics still coupled.",
+    "Current run dcycle=-1 presence suppresses intermediate volume outputs; zero-step native checkpoint recovery supplies quarter-time maps. Corrected future input removes dcycle keys.",
+    "Local Serial double CPU run, no new MPI/GPU/Rusty/Frontier qualification."
+  ],
+  "figures": [
+    {
+      "name": "01_flow",
+      "title": "128-cubed flow and detected regions",
+      "caption": "Actual z=64 cell-center slices (z=0.50390625). Top: log10 density; bottom: local speed/sound speed. Each row uses shared color limits spanning all plotted data, with no clipped tails. Cyan outlines use the native unreduced width8 detector. The central crop has full real support; masks and finite/NaN strength values agree with actual live particle samples on this plane at rtol=atol=1e-12. Checkpoint maps were recovered with the same binary and zero evolved steps. These detector masks are numerical evidence, not independently certified physical shock surfaces."
+    },
+    {
+      "name": "02_evolution",
+      "title": "Flow evolution under continuous forcing",
+      "caption": "Volume rms Mach = sqrt(mean(v^2/(gamma P/rho))). The gas is adiabatic: initial Mach5 and continuous edot50 do not hold its sound speed or Mach number fixed. Lines only connect the saved checkpoint states. Actual mass stays within1e-12 of1. Forcing energy is not independently calibrated because the inherited RK2 source thermal oracle fails; no stationary regime is asserted."
+    },
+    {
+      "name": "03_encounters",
+      "title": "Accumulated particle encounter statistics",
+      "caption": "All8192 IDs are included, including zero-complete particles. Starts count every committed or terminal-open identity once at its first-inside sample. Partial/open outcomes are retained separately. Rate bins cover the stated time window; these are numerical recording rates, not exact physical shock crossing rates or independent Poisson trials."
+    },
+    {
+      "name": "04_membership_strength",
+      "title": "Shock flags, episode state and strength evidence",
+      "caption": "The full per-step trace explicitly saves each raw inside flag. Raw membership and encounter phase differ: a pending exit can be outside while the episode remains open, and a suppressed downstream reentry can be inside while its phase is outside. Both are plotted from recorded states. Suppressed reentry attempts are a separate native counter, not extra event identities. All validity bits are retained. Finite first-inside strength estimates compare two native estimators; their agreement is not a physical calibration. Either estimator can accept membership, so a pressure estimate belowmin_mach1.1 can remain present."
+    },
+    {
+      "name": "05_particle_histories",
+      "title": "Actual per-step particle flags and encounter histories",
+      "caption": "Same IDs as the earlier64-cubed history illustration, with fresh128-cubed realizations. Top: blue first-to-last inside evidence, orange entry/exit brackets, red right-censored terminal marker. Middle: every saved raw0/1 inside flag, vertically offset by particle. Bottom: actual every-step density samples. Connecting samples guides the eye; it does not invent continuous trajectories or exact crossing times. Selected IDs are illustrations, not unbiased ensemble statistics."
+    },
+    {
+      "name": "06_timing",
+      "title": "Timing bounds from observed samples",
+      "caption": "For complete episodes the entry bracket is[pre,first], exit bracket[last,post], and elapsed-span interval[last-first,post-pre]. No midpoint is assigned. Merged flicker may include brief outside intervals, so this span is not continuous inside residence time. Terminal-open records receive no artificial completed duration."
+    },
+    {
+      "name": "07_resolution",
+      "title": "Matched detector span in the common time window",
+      "caption": "Both cases use8192 particles, CFL.30 and the same seeds/forcing inputs. Width8 at128\u00b3 matches width4 at64\u00b3 physical half-span1/16box. Only first-inside starts through the common observed endpoint are compared, including unique terminal-open identities; unequal later closure times do not bias this measure. Resolution still changes fluid evolution, MC random draws and observation cadence together. This is measured sensitivity, with no claimed converged tolerance or independent ensemble error bar."
+    }
+  ],
+  "source_sha256": {
+    "highres_long_analysis.py": "7e6751491e1caec5f76cc763706cbc3ce7bc48b4fbfb4030930c322ad28dddb4",
+    "input.athinput": "3448bdf0cc213dbad811af5ec5aa1c6f42e5db659691f33cdc9a712595be86a0"
+  },
+  "common_window_comparison": {
+    "time": 0.3,
+    "baseline64_starts": 58225,
+    "highres128_starts": 71419,
+    "physical_half_span": 0.0625,
+    "baseline_episode_sha256": "e09a45ba664dcb24d2eea9565af61e5ebbcdad5b4628814a602a7df549c52813",
+    "claim": "Sensitivity only; not a convergence gate. Closure counts are not compared across unequal endpoints."
+  },
+  "pressure_mach_quantiles": [
+    1.1003520223689798,
+    1.26166623693938,
+    1.8156497879193443
+  ]
+}

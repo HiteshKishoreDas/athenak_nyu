@@ -1,0 +1,21 @@
+{
+  "baseline_commit": "526a187f938e38634e89a88192ebe9731c4d36bb",
+  "linter_sha256": "0c9f128f029c91c3eda8b033a4d879e2f5c904b1607b0af5fb89636dc716a603",
+  "baseline_findings": 22,
+  "final_findings": 19,
+  "introduced_findings": [],
+  "command": [
+    "python3",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/tst/scripts/style/cpplint.py",
+    "--filter=-build/include_subdir",
+    "src/particles/particles.cpp",
+    "src/particles/particles_lagrangian_mc.cpp",
+    "src/particles/particles.hpp",
+    "src/bvals/bvals.hpp",
+    "src/bvals/bvals_part.cpp",
+    "src/driver/driver.cpp",
+    "src/main.cpp",
+    "src/outputs/restart.cpp"
+  ],
+  "scope": "selected touched C++ files; frozen detector/encounter/new observer have zero findings"
+}

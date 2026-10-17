@@ -1,0 +1,74 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+Initialising turbulence driving module
+ dedt = 0 tcorr = 0.1 dt_update = 0.01
+Experimental shock history: v1-entry-upstream-logdistance-mc-massflux-rk2-temperature-nearest-reference6f5ec8bc f6195adafb7e6a554c23a7537053bb00e6ae8c618a10ff1951a487d6981cb70b 8 1.3999999999999999 4 1.1000000000000001 1000 1.0000000000000001e-30 0 0 0 rk2 plm hllc 0.29999999999999999 32 32 32 32 32 32 0 1 0 1 0 1 6 6 6 6 6 6 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 1.1754943508222875e-38 0 0 rng 11 schedules 1 1 0 0 -1 4096 903 0 0 0 1 0 1 0 1 0.5 0.5 0.5 0 1 0.45000000000000001 0.75 0 density 0 0 0 0 turb-driver-config-v1 32 9:accel_rms 2:10 9:center_x1 1:0 9:center_x2 1:0 9:center_x3 1:0 12:driving_type 1:0 9:dt_update 3:.01 7:exp_prl 1:0 7:exp_prp 7:1.66667 4:expo 7:1.66667 12:localization 4:none 6:max_kx 1:3 6:max_ky 1:3 6:max_kz 1:3 6:min_kx 1:0 6:min_ky 1:0 6:min_kz 1:0 5:nhigh 1:3 4:nlow 1:1 13:normalization 9:accel_rms 5:npeak 1:2 5:rseed 4:2718 8:sigma_x1 2:-1 8:sigma_x2 2:-1 8:sigma_x3 2:-1 12:sol_fraction 2:.5 8:spectrum 9:parabolic 5:tcorr 2:.1 11:tdriv_start 1:0 7:tile_nx 1:1 7:tile_ny 1:1 7:tile_nz 1:1 9:turb_flag 1:2
+lineage=exploratory-forced-m3-32 capacity=8192; first inside representative; code units; no certified plateaus; endpoint cadence limited; scientific review pending
+Total Outputs Time: 0.00195063 s (load=0.00119421 s, write=0.000756417 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=4.856079e-02 cycle=0 time=0.000000e+00 dt=1.177897e-03 nmb=1
+output1 (hst): 3.732910e-04 s (load=3.334580e-04 s, write=3.983300e-05 s)
+output2 (prtcl_thermo_history): 5.020420e-04 s (load=3.488750e-04 s, write=1.531670e-04 s)
+output1 (hst): 3.722910e-04 s (load=3.337500e-04 s, write=3.854100e-05 s)
+output2 (prtcl_thermo_history): 4.845830e-04 s (load=3.257920e-04 s, write=1.587910e-04 s)
+output5 (bin): 3.418330e-04 s (load=1.143330e-04 s, write=2.275000e-04 s)
+output3 (bin): 4.712500e-04 s (load=1.852080e-04 s, write=2.860420e-04 s)
+output1 (hst): 4.200000e-04 s (load=3.737080e-04 s, write=4.629200e-05 s)
+output2 (prtcl_thermo_history): 3.980000e-04 s (load=2.465840e-04 s, write=1.514160e-04 s)
+output1 (hst): 3.757500e-04 s (load=3.327080e-04 s, write=4.304200e-05 s)
+output2 (prtcl_thermo_history): 4.331260e-04 s (load=2.848340e-04 s, write=1.482920e-04 s)
+output5 (bin): 3.366670e-04 s (load=1.186670e-04 s, write=2.180000e-04 s)
+output3 (bin): 4.872500e-04 s (load=1.632080e-04 s, write=3.240420e-04 s)
+output1 (hst): 4.232920e-04 s (load=3.750000e-04 s, write=4.829200e-05 s)
+output1 (hst): 3.779160e-04 s (load=3.327080e-04 s, write=4.520800e-05 s)
+output2 (prtcl_thermo_history): 4.226660e-04 s (load=2.690410e-04 s, write=1.536250e-04 s)
+output1 (hst): 3.774580e-04 s (load=3.329170e-04 s, write=4.454100e-05 s)
+output5 (bin): 4.729580e-04 s (load=1.336660e-04 s, write=3.392920e-04 s)
+output3 (bin): 2.964042e-03 s (load=1.732920e-04 s, write=2.790750e-03 s)
+output2 (prtcl_thermo_history): 3.897910e-04 s (load=2.566250e-04 s, write=1.331660e-04 s)
+output1 (hst): 3.745830e-04 s (load=3.335420e-04 s, write=4.104100e-05 s)
+output1 (hst): 3.730830e-04 s (load=3.331250e-04 s, write=3.995800e-05 s)
+output2 (prtcl_thermo_history): 3.718750e-04 s (load=2.574590e-04 s, write=1.144160e-04 s)
+output5 (bin): 3.989590e-04 s (load=1.082500e-04 s, write=2.907090e-04 s)
+output3 (bin): 4.572920e-04 s (load=1.672090e-04 s, write=2.900830e-04 s)
+output1 (hst): 3.868340e-04 s (load=3.532920e-04 s, write=3.354200e-05 s)
+output2 (prtcl_thermo_history): 4.222080e-04 s (load=2.720000e-04 s, write=1.502080e-04 s)
+output1 (hst): 3.705420e-04 s (load=3.332920e-04 s, write=3.725000e-05 s)
+output2 (prtcl_thermo_history): 3.707910e-04 s (load=2.707080e-04 s, write=1.000830e-04 s)
+output1 (hst): 3.715840e-04 s (load=3.415000e-04 s, write=3.008400e-05 s)
+output5 (bin): 3.252920e-04 s (load=1.090840e-04 s, write=2.162080e-04 s)
+output3 (bin): 1.526209e-03 s (load=1.537090e-04 s, write=1.372500e-03 s)
+output1 (hst): 3.938340e-04 s (load=3.462920e-04 s, write=4.754200e-05 s)
+output2 (prtcl_thermo_history): 3.736250e-04 s (load=2.691670e-04 s, write=1.044580e-04 s)
+elapsed=1.746775e+00 cycle=100 time=1.363518e-01 dt=1.534231e-03 nmb=1
+output1 (hst): 3.881670e-04 s (load=3.476250e-04 s, write=4.054200e-05 s)
+output5 (bin): 3.330830e-04 s (load=1.057500e-04 s, write=2.273330e-04 s)
+output3 (bin): 6.860830e-04 s (load=1.519170e-04 s, write=5.341660e-04 s)
+output2 (prtcl_thermo_history): 3.895840e-04 s (load=2.767500e-04 s, write=1.128340e-04 s)
+output1 (hst): 3.818340e-04 s (load=3.514170e-04 s, write=3.041700e-05 s)
+output1 (hst): 3.893740e-04 s (load=3.426660e-04 s, write=4.670800e-05 s)
+output2 (prtcl_thermo_history): 3.732920e-04 s (load=2.594170e-04 s, write=1.138750e-04 s)
+output1 (hst): 3.745420e-04 s (load=3.331250e-04 s, write=4.141700e-05 s)
+output5 (bin): 3.259580e-04 s (load=1.032080e-04 s, write=2.227500e-04 s)
+output3 (bin): 4.240000e-04 s (load=1.432500e-04 s, write=2.807500e-04 s)
+output2 (prtcl_thermo_history): 3.620420e-04 s (load=2.530420e-04 s, write=1.090000e-04 s)
+output1 (hst): 3.636250e-04 s (load=3.358330e-04 s, write=2.779200e-05 s)
+output1 (hst): 3.717910e-04 s (load=3.337500e-04 s, write=3.804100e-05 s)
+output2 (prtcl_thermo_history): 3.976240e-04 s (load=2.639160e-04 s, write=1.337080e-04 s)
+Shock rank=0 sampled=593920 invalid=0 complete=7063 partial=0 suspended=556 suppressed_reentries_surviving=12478 event_highwater=108 diagnostic_seconds_this_process=1.023854e+00
+Total Outputs Time: 1.486707e-03 s (load=8.861670e-04 s, write=6.005400e-04 s)
+
+Terminating on time limit
+time=2.000000e-01 cycle=144
+tlim=2.000000e-01 nlim=-1
+
+MeshBlock-cycles = 144
+cpu time used  = 2.462727e+00
+zone-cycles/cpu_second = 1.916003e+06
+particle-updates/cpu_second = 2.395003e+05

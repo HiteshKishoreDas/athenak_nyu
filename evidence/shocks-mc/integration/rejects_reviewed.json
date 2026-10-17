@@ -1,0 +1,220 @@
+{
+  "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+  "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+  "compiled_source_fingerprint": "26d4b28ee7f5bc0f8b33e60a0331b243af5bf9aeb6d7e98d612a9731a2c9044f",
+  "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b",
+  "runs": [
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-rejects-reviewed/duplicate_seed_ids/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/duplicate_seed_ids",
+      "exit": 1,
+      "elapsed_seconds": 0.007133416998840403,
+      "input_sha256": "44478400fbd368eaa91ea7bcfce83a330c05bad57a67e2f7c0573ab30b953b99",
+      "log_sha256": "03013a4a0a874c0d61f0449817d6a138c4fef9ada9dd256b185fa1cd76b00a8b",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "duplicate_seed_ids",
+      "expected_diagnostic": "unique tracer seed schedule IDs",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-rejects-reviewed/pernode_restart/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/pernode_restart",
+      "exit": 1,
+      "elapsed_seconds": 0.004892457998721511,
+      "input_sha256": "df9e900d22bf80b50696b296b0d779be0bb04f4b15b9d13080e1c1e911a4ba99",
+      "log_sha256": "e99980fcfc8faf5a04fd4eba9b5bf56ea7ff0122e68c3658946a0b34f1e391d8",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "pernode_restart",
+      "expected_diagnostic": "per-node",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-rejects-reviewed/shearing_box/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/shearing_box",
+      "exit": 1,
+      "elapsed_seconds": 0.004740708000099403,
+      "input_sha256": "9709ea00a17c1843b2e72ffd81a5cb652b0cda731354d26dfe96e6c163cd709f",
+      "log_sha256": "2d4388dd3243bc984d9bb61a9d7762a44707e02dad475b0027c2df25f07409b7",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "shearing_box",
+      "expected_diagnostic": "requires uniform",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-rejects-reviewed/fofc/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/fofc",
+      "exit": 1,
+      "elapsed_seconds": 0.004760124998938409,
+      "input_sha256": "c0354037195ce4657bcf4aa8f89e9e4606e4e8947d27dc04ef56e5cfb90b9252",
+      "log_sha256": "2d4388dd3243bc984d9bb61a9d7762a44707e02dad475b0027c2df25f07409b7",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "fofc",
+      "expected_diagnostic": "requires uniform",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-rejects-reviewed/tag_overflow/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/tag_overflow",
+      "exit": 1,
+      "elapsed_seconds": 0.0048403330001747236,
+      "input_sha256": "984e3341047d7b2868f07f26870d78239f9beefac34049a8820bc01430d6094d",
+      "log_sha256": "4302f8b1c2e42d6d38bddbe5cd9e424120f3bd7127d0c5ad908108964962c259",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "tag_overflow",
+      "expected_diagnostic": "identity/schedule range exhausted",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-rejects-reviewed/bound_seed/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/bound_seed",
+      "exit": 0,
+      "elapsed_seconds": 0.020838749998802086,
+      "input_sha256": "ca350dc9aaab1c64f29214e248cebd8ea10090ee6d7f99b9b27c78c65994b801",
+      "log_sha256": "655506fafa1470c07b5fb26b6afcbcb8ed3bac96a4c402f9190b3674ef4de7a3",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "bound_seed",
+      "expected_diagnostic": null,
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-rejects-reviewed/bound_seed/rst/shock_mc.00001.rst",
+        "output1/dt=-1",
+        "hydro/dfloor=.1"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/changed_floor",
+      "exit": 1,
+      "elapsed_seconds": 0.010146499998882064,
+      "input_sha256": "cce3739bfdba096bab3877faee843e2e7f146d2af8be3103eea818e9f18f0f55",
+      "log_sha256": "e1f49ea6299dd147581436b02815ac0d06d98d8949c7372888980509bbcdf798",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "changed_floor",
+      "expected_diagnostic": "contract changed",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-rejects-reviewed/bound_seed/rst/shock_mc.00001.rst",
+        "output1/dt=-1",
+        "particles/random_seed=29"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/changed_rng",
+      "exit": 1,
+      "elapsed_seconds": 0.004955083000822924,
+      "input_sha256": "cce3739bfdba096bab3877faee843e2e7f146d2af8be3103eea818e9f18f0f55",
+      "log_sha256": "e1f49ea6299dd147581436b02815ac0d06d98d8949c7372888980509bbcdf798",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "changed_rng",
+      "expected_diagnostic": "contract changed",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-rejects-reviewed/future_sidecar_artifacts/rst/shock_mc.00001.rst",
+        "output1/dt=-1",
+        "shock_tracking/directory=/private/tmp/shock-mc-rejects-reviewed/future_sidecar_artifacts/shock_events"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/future_sidecar",
+      "exit": 1,
+      "elapsed_seconds": 0.01100849999966158,
+      "input_sha256": "cce3739bfdba096bab3877faee843e2e7f146d2af8be3103eea818e9f18f0f55",
+      "log_sha256": "09269bf9d7c957f4ffbabc589179ef95a7c7c8b8d488113e90043c584011ea13",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "future_sidecar",
+      "expected_diagnostic": "incompatible shock sidecar",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-rejects-reviewed/truncated_sidecar_artifacts/rst/shock_mc.00001.rst",
+        "output1/dt=-1",
+        "shock_tracking/directory=/private/tmp/shock-mc-rejects-reviewed/truncated_sidecar_artifacts/shock_events"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/truncated_sidecar",
+      "exit": 1,
+      "elapsed_seconds": 0.005068000000392203,
+      "input_sha256": "cce3739bfdba096bab3877faee843e2e7f146d2af8be3103eea818e9f18f0f55",
+      "log_sha256": "4b069d54dc560c9a80a8f07977b2808c8319083e38401af6074faf004875479b",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "truncated_sidecar",
+      "expected_diagnostic": "sidecar",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-rejects-reviewed/corrupt_fluid_artifacts/rst/shock_mc.00001.rst",
+        "output1/dt=-1",
+        "shock_tracking/directory=/private/tmp/shock-mc-rejects-reviewed/corrupt_fluid_artifacts/shock_events"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/corrupt_fluid",
+      "exit": 1,
+      "elapsed_seconds": 0.010991125000145985,
+      "input_sha256": "6a3ef965c9f4750e5e1ae5069940856909c529943d367586fcc2a53f9306f9b6",
+      "log_sha256": "59726d3f6045d3d91f119cd9e042995a565e810ce2d8046d4de2f61e380a5bbc",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "corrupt_fluid",
+      "expected_diagnostic": "checksum",
+      "passed": true
+    },
+    {
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-rejects-reviewed/bound_artifacts/rst/shock_mc.00001.rst",
+        "output1/dt=-1",
+        "shock_tracking/directory=/private/tmp/shock-mc-rejects-reviewed/bound_artifacts/shock_events"
+      ],
+      "directory": "/private/tmp/shock-mc-rejects-reviewed/bound_contract",
+      "exit": 1,
+      "elapsed_seconds": 0.011531666999871959,
+      "input_sha256": "cce3739bfdba096bab3877faee843e2e7f146d2af8be3103eea818e9f18f0f55",
+      "log_sha256": "3787a287daa60cda40a182adffc6d963632610e87f3d74d38b34205e0bf06851",
+      "executable_sha256": "c7ee31d6f55cac8b42d2ee3dedb6dc7f407c44f4be815e24df1f72f03ea9047f",
+      "label": "bound_contract",
+      "expected_diagnostic": "incompatible shock sidecar",
+      "passed": true
+    }
+  ],
+  "bound_contract_mutation": {
+    "native_header_offset": 72,
+    "contract_bytes": 1048576,
+    "sidecar_sha256": "cb2b844a2d0304e64e5109c5eeb726e386d001e70063a37a3c552140911ad11e",
+    "footer_recomputed": true,
+    "purpose": "reject impossible contract length before string allocation despite valid whole-sidecar checksum"
+  },
+  "status": "passed_explicit_reject_checks"
+}

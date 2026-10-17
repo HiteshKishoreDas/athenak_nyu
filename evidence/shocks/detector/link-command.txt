@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names -DKOKKOS_DEPENDENCE CMakeFiles/shock_detector_test.dir/tst/shocks/detector_test.cpp.o -o shock_detector_test  kokkos/containers/src/libkokkoscontainers.a kokkos/algorithms/src/libkokkosalgorithms.a kokkos/core/src/libkokkoscore.a kokkos/simd/src/libkokkossimd.a

@@ -1,0 +1,39 @@
+{
+  "source": {
+    "executable": "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+    "executable_sha256": "0b78478d9b550584051c8a564c562d9bf76628d88f66ddb3ab24aaaa368aff2d",
+    "compiled_source_fingerprint": "3feb3bcdf77d21296516544e67b5ad75f6ac6ca7bc17c4b48be886ddc0fb7cbc",
+    "build_cache_sha256": "436bb37ec14d364db7ecca016558476ee9d6c599539f046b0fb0afadd1ec986b"
+  },
+  "commands": [
+    {
+      "label": "domain_exit",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-i",
+        "/private/tmp/shock-mc-review3-extra/domain_exit/input.athinput"
+      ],
+      "directory": "/private/tmp/shock-mc-review3-extra/domain_exit",
+      "exit": 0,
+      "seconds": 0.23600537499987695
+    },
+    {
+      "label": "old_layout_rejection",
+      "command": [
+        "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-release/src/athena",
+        "-r",
+        "/private/tmp/shock-mc-ponytail-checks/integration/raw/seed_active/rst/shock_mc.00001.rst"
+      ],
+      "directory": "/private/tmp/shock-mc-review3-extra/old_layout_rejection",
+      "exit": 1,
+      "seconds": 0.004901333000816521
+    }
+  ],
+  "domain_exit_count": 13,
+  "domain_exit_evidence_exactly_equal": true,
+  "old_layout_checkpoint": "/private/tmp/shock-mc-ponytail-checks/integration/raw/seed_active/rst/shock_mc.00001.rst",
+  "old_layout_checkpoint_sha256": "210486bb54622c00ba61ad079ff689578ab803a48c21ee8eb35a43e3c5e7a128",
+  "old_layout_sidecar_sha256": "e6bef5bd738bac0f3606248ba9755c1c0c5f1ee46f47293494bfd83eebcf0664",
+  "old_layout_rejected": true,
+  "scope": "Actual production exit and incompatible-layout rejection; no new physical crossing-time or cluster qualification."
+}
