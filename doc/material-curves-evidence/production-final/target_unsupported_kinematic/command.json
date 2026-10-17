@@ -1,0 +1,14 @@
+{
+  "name": "target_unsupported_kinematic",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/target_unsupported_kinematic/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "9fb7b82bbdd0d99953d7da0f1bd96e9d3cedb096e1f875df15125605b25eaf1a",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/target_unsupported_kinematic",
+  "returncode": 1,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

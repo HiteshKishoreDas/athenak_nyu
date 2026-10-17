@@ -44,6 +44,7 @@
 #include "outputs/outputs.hpp"
 #include "driver/driver.hpp"
 #include "particles/particles.hpp"
+#include "material_curves/material_curves.hpp"
 #include "srcterms/initial_perturbations.hpp"
 #include "utils/utils.hpp"
 
@@ -535,6 +536,12 @@ int main(int argc, char *argv[]) {
                                                      restartfile,
                                                      restart_shard_mode);
     restartfile.Close(UsesSerialIO(restart_shard_mode));
+    if (pmesh->pmb_pack->pcurves) {
+      if (restart_shard_mode != FileShardMode::shared) {
+        material_curves::MaterialCurves::Fail("curves require shared fluid checkpoints");
+      }
+      pmesh->pmb_pack->pcurves->Load(restart_file);
+    }
   }
   //--- Step 6. --------------------------------------------------------------------------
   // Construct Driver and Outputs. Actual outputs (including initial conditions) are made

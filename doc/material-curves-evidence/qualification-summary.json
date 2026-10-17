@@ -1,0 +1,146 @@
+{
+  "status": "pass",
+  "target_base": "526a187f",
+  "runtime_revision": "313977256c95e0aee17433afed27379f0b5579bc",
+  "test_revision": "15b40a7ceb35521651244326fa7cab92b87552aa",
+  "fresh_evidence": true,
+  "old_baseline_evidence_reused": false,
+  "cohorts": {
+    "production": {
+      "path": "/private/tmp/athenak-multiphase-curves-validation/production-final/results.json",
+      "sha256": "229674e521ae92832417ced40575787953a14260eee2c9cff1ae597fe4ded7ca",
+      "status": "pass"
+    },
+    "physical": {
+      "path": "/private/tmp/athenak-multiphase-curves-validation/physical/results.json",
+      "sha256": "e789a52879b59b50926fdce32291c21a171c46dd09ba0cd246d98f8ce1bd0112",
+      "status": "pass"
+    },
+    "evolved_shear": {
+      "path": "/private/tmp/athenak-multiphase-curves-validation/evolved-shear/results.json",
+      "sha256": "88d1d7ebc53223a963962f49f29fa54bb8afb4b82beb200fcac3c32862da05ae",
+      "status": "pass"
+    },
+    "native_parity": {
+      "path": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-comparison.json",
+      "sha256": "fcb8fc0d4f6014e139ad691b13030fb4c6b1f7c5fea044aa0964151ddf6ee0b6",
+      "status": "pass"
+    },
+    "oracles": {
+      "path": "/private/tmp/athenak-multiphase-curves-validation/oracles.json",
+      "sha256": "4cd0b11d47068024b0deae22d68515b5772f6a8deb692423e718b0a7fe573871",
+      "status": "pass"
+    },
+    "harness": {
+      "path": "/private/tmp/athenak-multiphase-curves-validation/harness.json",
+      "sha256": "566f3a476f3345277e1fff7c5958a196fe14087193002d2c2e9f8673b68727eb",
+      "status": "pass"
+    }
+  },
+  "production_records": 93,
+  "executed_production_cases": 78,
+  "implementation_execution": true,
+  "analysis_replay": false,
+  "qualification_scope": "bounded CPU double precision dynamic Newtonian HD/RK2 periodic Cartesian fixtures; no GPU or forced/cooling/frame/MC extension qualification",
+  "provenance": {
+    "debug": "/private/tmp/athenak-multiphase-curves-validation/final-debug-provenance/environment.json",
+    "release": "/private/tmp/athenak-multiphase-curves-validation/release-provenance/environment.json",
+    "baseline": "/private/tmp/athenak-multiphase-curves-validation/baseline-provenance/environment.json",
+    "source_and_executable_unchanged_at_completion": true
+  },
+  "q10": [
+    {
+      "case": "Q10",
+      "name": "amr_restart_2_resume_30",
+      "source_ranks": 2,
+      "resume_ranks": 4,
+      "checkpoint_cycle": 30,
+      "checkpoint_time": 0.2437500000000001,
+      "refinement_interval": 5,
+      "ncycle_check": 3,
+      "history_cycles_compared": 15,
+      "position_error": 0.0,
+      "budget": 2e-11,
+      "final_meshblocks": 4,
+      "logical_leaves_and_clocks": "exact every-cycle equality",
+      "status": "pass"
+    },
+    {
+      "case": "Q10",
+      "name": "amr_restart_2_resume_33",
+      "source_ranks": 2,
+      "resume_ranks": 4,
+      "checkpoint_cycle": 33,
+      "checkpoint_time": 0.26250000000000007,
+      "refinement_interval": 5,
+      "ncycle_check": 3,
+      "history_cycles_compared": 12,
+      "position_error": 0.0,
+      "budget": 2e-11,
+      "final_meshblocks": 4,
+      "logical_leaves_and_clocks": "exact every-cycle equality",
+      "status": "pass"
+    },
+    {
+      "case": "Q10",
+      "name": "amr_restart_1_resume_30",
+      "source_ranks": 1,
+      "resume_ranks": 1,
+      "checkpoint_cycle": 30,
+      "checkpoint_time": 0.2437500000000001,
+      "refinement_interval": 5,
+      "ncycle_check": 3,
+      "history_cycles_compared": 15,
+      "position_error": 0.0,
+      "budget": 2e-11,
+      "final_meshblocks": 4,
+      "logical_leaves_and_clocks": "exact every-cycle equality",
+      "status": "pass"
+    },
+    {
+      "case": "Q10",
+      "name": "amr_restart_1_resume_33",
+      "source_ranks": 1,
+      "resume_ranks": 1,
+      "checkpoint_cycle": 33,
+      "checkpoint_time": 0.26250000000000007,
+      "refinement_interval": 5,
+      "ncycle_check": 3,
+      "history_cycles_compared": 12,
+      "position_error": 0.0,
+      "budget": 2e-11,
+      "final_meshblocks": 4,
+      "logical_leaves_and_clocks": "exact every-cycle equality",
+      "status": "pass"
+    }
+  ],
+  "evolved_shear_order": {
+    "case": "E03",
+    "name": "unforced_stationary_shear_order",
+    "errors": [
+      0.0015357838696740678,
+      0.0003838281681566996,
+      9.496980551874229e-05,
+      2.4038148910526802e-05
+    ],
+    "slopes": [
+      2.000442704186826,
+      2.0149197867578987,
+      1.982143095520918
+    ],
+    "minimum_order": 1.8,
+    "position_budget": 0.0001,
+    "status": "pass"
+  },
+  "native_error_files_equal": 6,
+  "preserved_failed_pilots": [
+    {
+      "path": "/private/tmp/athenak-multiphase-curves-validation/unsupported-pilot/results.json",
+      "cause": "kinematic initialization used LLF; target requires advect; corrected fixture then passed"
+    },
+    {
+      "path": "/private/tmp/athenak-multiphase-curves-validation/production-all/results.json",
+      "cause": "target requires explicit amr_criterion method=user to enroll user hook; corrected fixture then final fresh full cohort passed"
+    }
+  ]
+}

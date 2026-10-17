@@ -1,0 +1,14 @@
+{
+  "name": "rank_crossing_1",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/rank_crossing_1/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "057b59187e8fcffb36f500103336c216b1481162771f94ac7f74728cad7962ae",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/rank_crossing_1",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

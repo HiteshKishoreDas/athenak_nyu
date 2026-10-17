@@ -1,0 +1,14 @@
+{
+  "name": "oblique_rotation",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/oblique_rotation/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "934d757b400b6820b65eb88da92a4abe23addddfb0cd252e283a592fc77aa64c",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/oblique_rotation",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

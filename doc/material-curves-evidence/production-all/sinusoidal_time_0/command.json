@@ -1,0 +1,14 @@
+{
+  "name": "sinusoidal_time_0",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/sinusoidal_time_0/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "c7d58abfca289ceecbe9f3295910cba89c9753dbd6e7a3475d901c28023b93bf",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/sinusoidal_time_0",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

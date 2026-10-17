@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "records": [
+    {
+      "name": "line",
+      "initial_time": 0.0,
+      "time": 0.1,
+      "cycle": 13,
+      "nodes": [
+        16
+      ],
+      "inserted": [
+        0
+      ],
+      "input": "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/inputs/material_curves/line.athinput",
+      "ranks": 1,
+      "logs": "line.stdout"
+    },
+    {
+      "name": "loop",
+      "initial_time": 0.0,
+      "time": 0.1,
+      "cycle": 13,
+      "nodes": [
+        128
+      ],
+      "inserted": [
+        112
+      ],
+      "input": "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/inputs/material_curves/loop.athinput",
+      "ranks": 1,
+      "logs": "loop.stdout"
+    },
+    {
+      "name": "amr",
+      "initial_time": 0.0,
+      "time": 0.4,
+      "cycle": 44,
+      "nodes": [
+        29
+      ],
+      "inserted": [
+        21
+      ],
+      "input": "/Users/hitesh/.codex/worktrees/multiphase-material-curves/athenak_nyu/inputs/material_curves/amr-restart.athinput",
+      "ranks": 2,
+      "logs": "amr.stdout"
+    }
+  ]
+}

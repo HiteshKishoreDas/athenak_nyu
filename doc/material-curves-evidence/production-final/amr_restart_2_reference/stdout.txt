@@ -1,0 +1,44 @@
+
+Root grid = 2 x 2 x 1 MeshBlocks
+Total number of MeshBlocks = 4
+Number of logical  levels of refinement = 2 (3 levels total)
+Number of physical levels of refinement = 1 (2 levels total)
+Number of parallel ranks = 2
+  Rank = 0: 2 MeshBlocks, cost = 2
+  Rank = 1: 2 MeshBlocks, cost = 2
+Load Balancing:
+  Maximum normalized cost = 1, Average = 1
+Material curve sampling/push execution space: Serial; topology/adaptation: host
+Total Outputs Time: 0.00175837 s (load=2.0542e-05 s, write=0.00173875 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=1.378804e-02 cycle=0 time=0.000000e+00 dt=1.250000e-02 nmb=4
+output1 (rst): 1.448458e-03 s (load=9.833000e-06 s, write=1.438667e-03 s)
+output1 (rst): 1.660959e-03 s (load=9.458000e-06 s, write=1.651917e-03 s)
+output1 (rst): 2.963958e-03 s (load=3.187500e-05 s, write=2.932583e-03 s)
+output1 (rst): 2.469001e-03 s (load=1.454200e-05 s, write=2.454792e-03 s)
+output1 (rst): 2.542751e-03 s (load=1.466700e-05 s, write=2.528084e-03 s)
+output1 (rst): 2.442542e-03 s (load=1.516700e-05 s, write=2.427459e-03 s)
+output1 (rst): 6.610833e-03 s (load=1.370800e-05 s, write=6.597125e-03 s)
+output1 (rst): 2.278834e-03 s (load=1.508400e-05 s, write=2.263750e-03 s)
+output1 (rst): 2.373750e-03 s (load=1.545800e-05 s, write=2.358416e-03 s)
+output1 (rst): 2.270584e-03 s (load=1.725000e-05 s, write=2.253334e-03 s)
+output1 (rst): 2.721875e-03 s (load=1.679200e-05 s, write=2.705083e-03 s)
+output1 (rst): 2.129458e-03 s (load=1.212500e-05 s, write=2.117333e-03 s)
+output1 (rst): 1.705333e-03 s (load=9.958000e-06 s, write=1.695375e-03 s)
+output1 (rst): 1.838334e-03 s (load=1.120900e-05 s, write=1.827125e-03 s)
+Total Outputs Time: 1.878375e-03 s (load=9.125000e-06 s, write=1.869250e-03 s)
+
+Terminating on time limit
+time=4.000000e-01 cycle=44
+tlim=4.000000e-01 nlim=-1
+
+Current number of MeshBlocks = 4
+12 MeshBlocks created, 12 deleted by AMR
+0 communicated for load balancing, load balancing efficiency = 1.000000e+00
+
+MeshBlock-cycles = 464
+cpu time used  = 1.646894e+00
+zone-cycles/cpu_second = 7.212609e+04
+particle-updates/cpu_second = 0.000000e+00

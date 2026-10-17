@@ -1,0 +1,14 @@
+{
+  "name": "reversing_return",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/reversing_return/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "d5cd43a1887e1c5a0f5a60edd4d86f4d5d97ec7f2f139d5ca7e8af7b197d2999",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/reversing_return",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

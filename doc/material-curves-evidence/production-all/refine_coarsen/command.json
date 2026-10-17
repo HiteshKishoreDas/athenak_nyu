@@ -1,0 +1,14 @@
+{
+  "name": "refine_coarsen",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/refine_coarsen/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "b30ed6fd758b291fc97f7cd9e1b59197c3334eb5606c39044aa22843757045b2",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/refine_coarsen",
+  "returncode": -6,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

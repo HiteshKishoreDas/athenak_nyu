@@ -1,0 +1,44 @@
+{
+  "status": "pass",
+  "scope": "six native curves-off RK2/PLM/HLLC runs; no forced RK3 workload",
+  "tests": [
+    {
+      "name": "left_sound_16",
+      "error_file_bitwise_equal": true,
+      "baseline": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/left_sound_16/native_wave-errs.dat",
+      "port": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-port/left_sound_16/native_wave-errs.dat"
+    },
+    {
+      "name": "left_sound_32",
+      "error_file_bitwise_equal": true,
+      "baseline": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/left_sound_32/native_wave-errs.dat",
+      "port": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-port/left_sound_32/native_wave-errs.dat"
+    },
+    {
+      "name": "right_sound_16",
+      "error_file_bitwise_equal": true,
+      "baseline": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/right_sound_16/native_wave-errs.dat",
+      "port": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-port/right_sound_16/native_wave-errs.dat"
+    },
+    {
+      "name": "right_sound_32",
+      "error_file_bitwise_equal": true,
+      "baseline": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/right_sound_32/native_wave-errs.dat",
+      "port": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-port/right_sound_32/native_wave-errs.dat"
+    },
+    {
+      "name": "entropy_16",
+      "error_file_bitwise_equal": true,
+      "baseline": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/entropy_16/native_wave-errs.dat",
+      "port": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-port/entropy_16/native_wave-errs.dat"
+    },
+    {
+      "name": "entropy_32",
+      "error_file_bitwise_equal": true,
+      "baseline": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-baseline/entropy_32/native_wave-errs.dat",
+      "port": "/private/tmp/athenak-multiphase-curves-validation/native-hydro-port/entropy_32/native_wave-errs.dat"
+    }
+  ],
+  "baseline_provenance": "/private/tmp/athenak-multiphase-curves-validation/baseline-provenance/environment.json",
+  "port_provenance": "/private/tmp/athenak-multiphase-curves-validation/release-provenance/environment.json"
+}

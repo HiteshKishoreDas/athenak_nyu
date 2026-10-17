@@ -1,0 +1,8 @@
+[  2%] Built target kokkossimd
+[ 11%] Built target kokkoscore
+[ 12%] Built target kokkoscontainers
+[ 12%] Built target AlwaysCheckGit
+[ 13%] Built target impl_git_version
+[ 14%] Building CXX object src/CMakeFiles/athena.dir/material_curves/material_curves.cpp.o
+[ 15%] Linking CXX executable athena
+[100%] Built target athena

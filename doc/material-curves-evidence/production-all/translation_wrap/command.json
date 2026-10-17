@@ -1,0 +1,14 @@
+{
+  "name": "translation_wrap",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/translation_wrap/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "26b6aaa8aa7aba28b572f4f632a5681343f45a1fde34fbbd78055fec61dffa44",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/translation_wrap",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

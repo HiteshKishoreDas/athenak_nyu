@@ -36,6 +36,7 @@ namespace z4c {class CCE;}
 namespace adm {class ADM;}
 namespace particles {class Particles;}
 namespace units {class Units;}
+namespace material_curves {class MaterialCurves;}
 
 //----------------------------------------------------------------------------------------
 //! \class MeshBlockPack
@@ -76,6 +77,7 @@ class MeshBlockPack {
   radiation::Radiation *prad=nullptr;
   std::vector<z4c::CCE *> pz4c_cce;
   particles::Particles *ppart=nullptr;
+  material_curves::MaterialCurves *pcurves=nullptr;
 
   // units (needed to convert code units to cgs for, e.g., cooling or radiation)
   units::Units *punit=nullptr;

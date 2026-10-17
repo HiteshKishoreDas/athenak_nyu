@@ -1,0 +1,18 @@
+{
+  "name": "amr_restart_2_interrupted",
+  "command": [
+    "/opt/homebrew/bin/prterun",
+    "--oversubscribe",
+    "-n",
+    "2",
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/amr_restart_2_interrupted/input.athinput"
+  ],
+  "ranks": 2,
+  "input_sha256": "b0e76e7b117329d53e3c68da3675119ec17c5737ab71ea5bc0126b1e779be94d",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/amr_restart_2_interrupted",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

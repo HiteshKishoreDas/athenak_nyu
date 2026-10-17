@@ -3,6 +3,7 @@
 # Modules
 import logging
 import os
+import shutil
 import subprocess
 from timeit import default_timer as timer
 from .log_pipe import LogPipe
@@ -20,7 +21,10 @@ def make(arguments):
         subprocess.check_call(['mkdir', 'build'], stdout=out_log)
         build_dir = current_dir + '/build/'
         os.chdir(build_dir)
-        cmake_command = ['cmake3', '../' + athena_rel_path] + arguments
+        cmake = shutil.which('cmake3') or shutil.which('cmake')
+        if cmake is None:
+            raise AthenaError('Neither cmake3 nor cmake is available in PATH')
+        cmake_command = [cmake, '../' + athena_rel_path] + arguments
         make_command = ['make', '-j8']
         try:
             t0 = timer()

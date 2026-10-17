@@ -30,6 +30,7 @@
 #include "srcterms/frame_tracker.hpp"
 #include "srcterms/turb_driver.hpp"
 #include "particles/particles.hpp"
+#include "material_curves/material_curves.hpp"
 #include "units/units.hpp"
 #include "meshblock_pack.hpp"
 
@@ -53,6 +54,7 @@ MeshBlockPack::MeshBlockPack(Mesh *pm, int igids, int igide) :
 // MeshBlock destructor
 
 MeshBlockPack::~MeshBlockPack() {
+  if (pcurves != nullptr) {delete pcurves;}
   if (ppart  != nullptr) {delete ppart;}
   if (pnr    != nullptr) {delete pnr;}
   if (pdyngr != nullptr) {delete pdyngr;}
@@ -260,6 +262,11 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
         << "At least one physics module must be specified in input file." << std::endl;
     std::exit(EXIT_FAILURE);
+  }
+
+  if (pin->DoesBlockExist("material_curves") &&
+      pin->GetOrAddBoolean("material_curves", "enabled", true)) {
+    pcurves = new material_curves::MaterialCurves(pmesh, pin);
   }
 
   return;

@@ -1,0 +1,96 @@
+{
+  "executables": {
+    "baseline": {
+      "path": "/private/tmp/athenak-multiphase-curves-baseline/src/athena",
+      "sha256": "374e0cd6782acc52aa545ee2fdd9deb6be6f3e1c2c2d90d3731b8a24a95b8adb"
+    },
+    "port": {
+      "path": "/private/tmp/athenak-multiphase-curves-release/src/athena",
+      "sha256": "14461bc1c008dcfa3738efe5c171ff4e703fb1ff47929a52e4ae681cbaec7f39"
+    }
+  },
+  "cases": [
+    {
+      "name": "plain_hydro",
+      "ranks": 1,
+      "input_sha256": "d74c52f181a47144b254d6716c94727d7a75fea192cfbd89ecdf86d42d9240e0",
+      "runs": [
+        {
+          "command": [
+            "/opt/homebrew/bin/prterun",
+            "-n",
+            "1",
+            "/private/tmp/athenak-multiphase-curves-baseline/src/athena",
+            "-i",
+            "/private/tmp/athenak-multiphase-curves-validation/branch-feature-off/plain_hydro/input.athinput",
+            "-d",
+            "/private/tmp/athenak-multiphase-curves-validation/branch-feature-off/plain_hydro/baseline"
+          ],
+          "returncode": 0
+        },
+        {
+          "command": [
+            "/opt/homebrew/bin/prterun",
+            "-n",
+            "1",
+            "/private/tmp/athenak-multiphase-curves-release/src/athena",
+            "-i",
+            "/private/tmp/athenak-multiphase-curves-validation/branch-feature-off/plain_hydro/input.athinput",
+            "-d",
+            "/private/tmp/athenak-multiphase-curves-validation/branch-feature-off/plain_hydro/port"
+          ],
+          "returncode": 0
+        }
+      ],
+      "files": {
+        "lagrangian_mc_thermo-errs.dat": "c5af42ace00cd6ba3d43117f7b95d789c1dba0d43c89a10ffedeafb15d859fc4",
+        "bin/lagrangian_mc_thermo.hydro_u.00002.bin": "607e6301a58056d7ad4bf605cbafca07df50cd524295527f9d0decbbc55e9743",
+        "bin/lagrangian_mc_thermo.hydro_u.00001.bin": "6f610dacb19f52a69c989de5229fe1b4774f76fefe4b653b85f303e6b3fdde2d",
+        "bin/lagrangian_mc_thermo.hydro_u.00000.bin": "e597076086f730b891ffb2b003706f57bafcba6ad30330e0ed5ef4deb5054b34",
+        "rst/lagrangian_mc_thermo.00001.rst": "42f1e11b76ed81b64efff8ff917c88048c67e318763a2d0754b1bad61db8d52f",
+        "rst/lagrangian_mc_thermo.00000.rst": "bb660f68017399514ce652e8024e5c4e875f20c03cf8848bbec65aefcec93a95"
+      },
+      "identical": true,
+      "mismatches": {}
+    },
+    {
+      "name": "standalone_cooling",
+      "ranks": 1,
+      "input_sha256": "052a57f656ba32a3a2234864f3db3b8db76892f7494dd86a05722c4e6ebf8b48",
+      "runs": [
+        {
+          "command": [
+            "/opt/homebrew/bin/prterun",
+            "-n",
+            "1",
+            "/private/tmp/athenak-multiphase-curves-baseline/src/athena",
+            "-i",
+            "/private/tmp/athenak-multiphase-curves-validation/branch-feature-off/standalone_cooling/input.athinput",
+            "-d",
+            "/private/tmp/athenak-multiphase-curves-validation/branch-feature-off/standalone_cooling/baseline"
+          ],
+          "returncode": 0
+        },
+        {
+          "command": [
+            "/opt/homebrew/bin/prterun",
+            "-n",
+            "1",
+            "/private/tmp/athenak-multiphase-curves-release/src/athena",
+            "-i",
+            "/private/tmp/athenak-multiphase-curves-validation/branch-feature-off/standalone_cooling/input.athinput",
+            "-d",
+            "/private/tmp/athenak-multiphase-curves-validation/branch-feature-off/standalone_cooling/port"
+          ],
+          "returncode": 0
+        }
+      ],
+      "files": {
+        "cooling_powerlaw.hydro.hst": "8f2d1ec8656cf545fc2ddf494df70029708d31b15253fac3aca8cf4d14bd0b4a",
+        "cooling_powerlaw-errs.dat": "ea733bc57b2cd1379ae305606af9c9e8bb66f3d9e58b0d09152ba13b73be05c5"
+      },
+      "identical": true,
+      "mismatches": {}
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+
+Root grid = 2 x 2 x 1 MeshBlocks
+Total number of MeshBlocks = 4
+Number of logical  levels of refinement = 1 (2 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+Total Outputs Time: 0 s (load=0 s, write=0 s)
+
+Setup complete, executing task list(s)...
+
+Total Outputs Time: 0 s (load=0 s, write=0 s)
+elapsed=7.089708e-03 cycle=0 time=0.000000e+00 dt=2.500000e-01 nmb=4
+
+Terminating on cycle limit
+time=0.000000e+00 cycle=0
+tlim=4.000000e-01 nlim=0
+
+MeshBlock-cycles = 0
+cpu time used  = 6.041000e-06
+zone-cycles/cpu_second = 0.000000e+00
+particle-updates/cpu_second = 0.000000e+00

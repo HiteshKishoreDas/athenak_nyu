@@ -1,0 +1,20 @@
+{
+  "name": "restart_four_ranks",
+  "command": [
+    "/opt/homebrew/bin/prterun",
+    "--oversubscribe",
+    "-n",
+    "4",
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/restart_four_ranks/input.athinput",
+    "-r",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/restart_source/rst/material.00001.rst"
+  ],
+  "ranks": 4,
+  "input_sha256": "1e465a36e827dead51f863b661d11bb2f7bc077c9d187b343a981d96f6c9baf3",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/restart_four_ranks",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

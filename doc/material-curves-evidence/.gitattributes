@@ -1,0 +1,2 @@
+# Preserve original whitespace in captured logs/configuration and source evidence.
+* -whitespace

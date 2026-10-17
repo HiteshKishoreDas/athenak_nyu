@@ -1,0 +1,14 @@
+{
+  "name": "strained_circle_placement",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/strained_circle_placement/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "5243c5d955f81b1c2d8ae6bf0571597df6cb209de629b9321101eaff7343238a",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/strained_circle_placement",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

@@ -1,0 +1,11 @@
+{
+  "head": "313977256c95e0aee17433afed27379f0b5579bc",
+  "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "files": {
+    "/private/tmp/athenak-multiphase-curves-serial/src/athena": "c045602abe854ccc992dda6605ba14f9825b980c06981bbb002e2f183319a706",
+    "/private/tmp/athenak-multiphase-curves-serial/config.hpp": "b954e5558798540565db70ce475587f7d1f440356fec0466096ee58e2c2a5163",
+    "/private/tmp/athenak-multiphase-curves-serial/CMakeCache.txt": "a0f1f36e5e4472933f9fae32045abd903435f6116d0aac7862bfb1dfbeadfe17",
+    "/private/tmp/athenak-multiphase-curves-serial/compile_commands.json": "078f1926f270f4465c3094e217015968b8e89aba97a363502f01e1cb252b7603",
+    "/private/tmp/athenak-multiphase-curves-serial/kokkos/KokkosCore_config.h": "23cef46876461bbe83402d66e78d9101a26f3afce67ec1b381fcc926ae2cb639"
+  }
+}

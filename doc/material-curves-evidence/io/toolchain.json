@@ -1,0 +1,29 @@
+[
+  {
+    "command": [
+      "/usr/bin/c++",
+      "--version"
+    ],
+    "returncode": 0,
+    "stdout": "Apple clang version 17.0.0 (clang-1700.6.4.2)\nTarget: arm64-apple-darwin25.3.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/opt/homebrew/bin/mpicxx",
+      "--showme"
+    ],
+    "returncode": 0,
+    "stdout": "clang++ -I/opt/homebrew/Cellar/open-mpi/5.0.9/include -L/opt/homebrew/Cellar/open-mpi/5.0.9/lib -lmpi\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/opt/homebrew/bin/prterun",
+      "--version"
+    ],
+    "returncode": 0,
+    "stdout": "\nprterun (PRRTE) 4.1.0\n\nReport bugs to: https://github.com/openpmix/prrte\n\n",
+    "stderr": ""
+  }
+]

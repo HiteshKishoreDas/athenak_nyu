@@ -1,0 +1,14 @@
+{
+  "name": "physical_acceleration",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-all/physical_acceleration/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "5b7083c02cfa9554f4302db3ffe9f1cd7631f7df8921515b67caa9f59240513d",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-all/physical_acceleration",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

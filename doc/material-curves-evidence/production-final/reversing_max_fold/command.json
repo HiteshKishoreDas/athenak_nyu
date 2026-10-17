@@ -1,0 +1,14 @@
+{
+  "name": "reversing_max_fold",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/reversing_max_fold/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "cdb02388af3a90fc77013d955e993be383738d4d883198491489eb606071f591",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/reversing_max_fold",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

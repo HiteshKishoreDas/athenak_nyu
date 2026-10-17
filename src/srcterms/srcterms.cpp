@@ -201,6 +201,10 @@ void SourceTerms::RelCooling(const DvceArray5D<Real> &w0, const EOS_Data &eos_da
   return;
 }
 
+bool SourceTerms::CoolingEnabled() const {
+  return (pcooling != nullptr && pcooling->Enabled());
+}
+
 bool SourceTerms::CoolingHistoryEnabled() const {
   return (pcooling != nullptr && pcooling->HistoryEnabled());
 }

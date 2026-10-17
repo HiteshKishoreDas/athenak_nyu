@@ -1,0 +1,102 @@
+# Dedicated kinematic field fixture; compile with PROBLEM=material_curve_test.
+# Analytic conserved state is prescribed at each RK2 stage through user source terms.
+# Curve trajectories still use primitive mesh sampling and production time integration.
+<job>
+basename = material
+
+<mesh>
+nghost = 2
+nx1 = 32
+x1min = -2.0
+x1max = 2.0
+ix1_bc = periodic
+ox1_bc = periodic
+nx2 = 32
+x2min = -2.0
+x2max = 2.0
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 1
+x3min = -2.0
+x3max = 2.0
+ix3_bc = periodic
+ox3_bc = periodic
+
+<meshblock>
+nx1 = 16
+nx2 = 16
+nx3 = 1
+
+<time>
+evolution = dynamic
+integrator = rk2
+cfl_number = 0.4
+tlim = 0.4
+nlim = -1
+ndiag = 100000
+
+<hydro>
+eos = ideal
+reconstruct = plm
+rsolver = llf
+gamma = 1.6666666666666667
+
+<problem>
+user_srcs = true
+flow = translation
+signal_speed = 4.0
+v1 = 0.2
+v2 = -0.1
+v3 = 0.0
+
+<material_curves>
+enabled = true
+ncurves = 1
+max_nodes = 1000000
+max_spacing = 1000
+spacing_cells = 1000000
+max_angle = 3.0
+chord_error = 1000
+adaptive = false
+output_dcycle = 0
+
+<curve1>
+id = 1
+type = line
+count = 32
+x1 = -0.4
+x2 = -0.3
+x3 = 0.0
+end1 = 0.4
+end2 = 0.3
+end3 = 0.0
+
+<job>
+basename = material
+
+<problem>
+flow = sinusoidal
+
+<problem>
+v1 = 0
+
+<problem>
+v2 = 0
+
+<time>
+tlim = 0.8
+
+<time>
+cfl_number = 0.4
+
+<problem>
+a1 = 1.0
+
+<problem>
+amplitude = 0.5
+
+<problem>
+s1 = 0.2
+
+<problem>
+s2 = -0.2

@@ -1,0 +1,9 @@
+{
+  "schema": "athenak-material-curves-production-v1",
+  "implementation_execution": true,
+  "analysis_replay": false,
+  "suite": "all",
+  "allow_unqualified_accelerator": false,
+  "status": "fail",
+  "error": "refine_coarsen executable failed; see /private/tmp/athenak-multiphase-curves-validation/production-all/refine_coarsen"
+}

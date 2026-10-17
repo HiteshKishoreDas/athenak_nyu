@@ -1,0 +1,38 @@
+
+Root grid = 1 x 1 x 1 MeshBlocks
+Total number of MeshBlocks = 1
+Number of logical  levels of refinement = 0 (1 levels total)
+Number of physical levels of refinement = 0 (1 levels total)
+Number of parallel ranks = 1
+FrameTracker configuration: fluid=hydro axes=x1 target=density range=[-4.494232837155789e+307,4.494232837155789e+307] weight=mass mode=velocity position_signal=blend slew=per_apply state=new
+Total Outputs Time: 0.003631999 s (load=0.000158541 s, write=0.003473458 s)
+
+Setup complete, executing task list(s)...
+
+elapsed=6.278750e-03 cycle=0 time=0.000000e+00 dt=1.135679e-02 nmb=1
+output1 (bin): 1.426541e-03 s (load=3.912500e-05 s, write=1.387416e-03 s)
+elapsed=8.234333e-03 cycle=1 time=1.135679e-02 dt=1.086541e-02 nmb=1
+FrameTracker primed filter state; skipping first actuation
+ x1_global_weight=1.000000e+00
+ x1_centroid=1.581144e-04
+ x1_mean_velocity=9.999950e-02
+ x1_midpoint=0.000000e+00
+ x1_control_position=4.743431e-05
+ x1_filtered_position=4.743431e-05
+ x1_filtered_velocity=9.999950e-02
+ x1_position_error=4.743431e-05
+ x1_frame_velocity=0.000000e+00
+ x1_frame_displacement=0.000000e+00
+ target_min_active=-4.494233e+307
+ target_max_active=4.494233e+307
+Total Outputs Time: 2.610749e-03 s (load=4.758200e-05 s, write=2.563167e-03 s)
+elapsed=1.170575e-02 cycle=2 time=2.222220e-02 dt=1.135679e-02 nmb=1
+
+Terminating on time limit
+time=2.222220e-02 cycle=2
+tlim=2.222220e-02 nlim=4
+
+MeshBlock-cycles = 2
+cpu time used  = 5.431167e-03
+zone-cycles/cpu_second = 3.770829e+05
+particle-updates/cpu_second = 0.000000e+00

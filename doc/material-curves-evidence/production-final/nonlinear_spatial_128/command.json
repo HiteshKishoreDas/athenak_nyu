@@ -1,0 +1,14 @@
+{
+  "name": "nonlinear_spatial_128",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/nonlinear_spatial_128/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "0b9aadf813e1c09fa5478dcbf27fb83fe2ac2c99dd205887e8c876b888f17614",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/nonlinear_spatial_128",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

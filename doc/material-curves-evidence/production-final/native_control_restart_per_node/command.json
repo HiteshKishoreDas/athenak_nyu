@@ -1,0 +1,14 @@
+{
+  "name": "native_control_restart_per_node",
+  "command": [
+    "/private/tmp/athenak-multiphase-curves-debug/src/athena",
+    "-i",
+    "/private/tmp/athenak-multiphase-curves-validation/production-final/native_control_restart_per_node/input.athinput"
+  ],
+  "ranks": 1,
+  "input_sha256": "b2fff9c9d23641cd656bea4776f823edcb96336368aa5adc41cab8223c147250",
+  "artifacts": "/private/tmp/athenak-multiphase-curves-validation/production-final/native_control_restart_per_node",
+  "returncode": 0,
+  "replay": false,
+  "executable_sha256": "1386ca430052fa412628f5f823412973606678bb8232bc09c5dbfbf184c1ded6"
+}

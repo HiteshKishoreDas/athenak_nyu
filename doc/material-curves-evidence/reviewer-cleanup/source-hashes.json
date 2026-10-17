@@ -1,0 +1,7 @@
+{
+  "src/material_curves/material_curves.cpp": "f19e36ca1f488a664834b261cf8823a81ced8469f41949a68a2cc3716ade04b3",
+  "src/material_curves/material_curves_io.cpp": "619d7da628d599585d638fdd47ba08cb46c8688416e7f9e89206ba51529e0b5e",
+  "tst/scripts/material_curves/production.py": "526b2f974b1a497a2b0585ef128cde285499792dc91a6a4d1f46d495cfcd7836",
+  "tst/scripts/material_curves_io/test_cpp.py": "313e26e8f3d01189252cfb4900ac7e3fd56d27a87c93d1b400bac52dd7d9d842",
+  "tst/scripts/material_curves_io/test_reader.py": "c57ec44eb2a2d12155b9908afbe5766ced0b9b02cde3190aa668bcf333ca8062"
+}

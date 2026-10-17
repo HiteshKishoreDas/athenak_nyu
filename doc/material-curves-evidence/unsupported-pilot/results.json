@@ -1,0 +1,9 @@
+{
+  "schema": "athenak-material-curves-production-v1",
+  "implementation_execution": true,
+  "analysis_replay": false,
+  "suite": "unsupported",
+  "allow_unqualified_accelerator": false,
+  "status": "fail",
+  "error": "native_control_kinematic executable failed; see /private/tmp/athenak-multiphase-curves-validation/unsupported-pilot/native_control_kinematic"
+}
