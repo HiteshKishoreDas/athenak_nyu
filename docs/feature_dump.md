@@ -137,3 +137,23 @@ Verified both histories are ancestors and every tested source-file hash matches
 this checkout. Main checkout was clean after fast-forward. The source branch
 `codex/shock-multiphase` remains exactly `2450e1c2`; its worktree is preserved.
 No push performed. This final completion entry is documentation/evidence metadata only.
+
+
+### Clarification: “curve shock histories remain unsupported”
+
+This means node-level shock observation, encounter state and shock persistence/output
+are not implemented for MaterialCurves. It is not a claim that shock tracking on
+curves is physically impossible. The merged executable contains both features,
+but the existing curve constructor rejects any particles module or forcing module.
+The shock observer iterates MC particles; it never iterates Curve::nodes. The Node
+structure stores identity, geometry, ancestry and birth data, with no encounter state.
+
+Existing MC history therefore cannot answer when a particular curve node crossed
+which shock. Matching an independently moving tracer to a nearby curve node would
+not establish the node's history. A future node observer can reuse the detector
+kernel and encounter state machine, with synchronized sampling, stable node IDs,
+bounded events and complete output/restart persistence. Adaptive nodes only have
+observed histories after their actual numerical birth; earlier history is unknown
+and must not be fabricated by copying parents' events. Planar crossing, insertion
+and replay tests would qualify that coupling separately. No implementation change
+was made during this clarification.
