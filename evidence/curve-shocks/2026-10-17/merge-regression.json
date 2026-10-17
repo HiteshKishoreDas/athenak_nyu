@@ -1,0 +1,172 @@
+{
+  "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+  "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+  "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+  "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+  "runs": [
+    {
+      "name": "curves",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/curves/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "9fc5142ecd6d37e6db6b1dc89c210602fe382f5c6ed48725387f60a570331d1c",
+      "template_input_sha256": null,
+      "log_sha256": "87070a813dca9a957ad07d79d13993830063d3f5722107244ad6687c0a6a0e25",
+      "restart_sha256": null
+    },
+    {
+      "name": "curves_shocks_off",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/curves_shocks_off/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "2f087145cf91383d65f25e0a37c7fdf3d090ae64ba9955f2535d767a432d72e9",
+      "template_input_sha256": null,
+      "log_sha256": "a53feed411131f19e3d76faf945e1a72d4dc7e41a25cc09b4a6a99c0ce6afd62",
+      "restart_sha256": null
+    },
+    {
+      "name": "fluid_only",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/fluid_only/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "6e4906dbf1e334214f3e87b76573224a526ef106e1f66e67733ec27edab4639c",
+      "template_input_sha256": null,
+      "log_sha256": "59d950a09662b41be923efc58f8ddae335a36d782300c6b4d7c5dc08e638cd33",
+      "restart_sha256": null
+    },
+    {
+      "name": "curve_restart_reference",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/curve_restart_reference/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "c5e3423f68c705250554481b641e1f0eac4a1bcab440831426c1917197fbb971",
+      "template_input_sha256": null,
+      "log_sha256": "d4723d10000e42ec961211619f4b7deb4750c0f0bac70e19ee4989d269689212",
+      "restart_sha256": null
+    },
+    {
+      "name": "curve_restart_source",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/curve_restart_source/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "72ffbc35aee08c6c6f1ebd1aa61c79274581ebf0757d78661bc2a3becdeb70fc",
+      "template_input_sha256": null,
+      "log_sha256": "145ebc17159af5ca15be009ef71ed31a41a2f3ebfc175b3ba59ecb43f01a111b",
+      "restart_sha256": null
+    },
+    {
+      "name": "curve_restart_resumed",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-locked-merge-20261017/curve_restart_source/rst/material_line.00001.rst",
+        "time/nlim=6"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": null,
+      "template_input_sha256": "e4d9db2cfb8a2afaa7e7d7f3413b6c03d9c210f6538d1b2dfa8bd9dec47e3c9b",
+      "log_sha256": "ee4fa2307e6e16f003676edd1d669e1409952d3be32e6053459004d998c83270",
+      "restart_sha256": "42beb8b5637e65b10b5df7ea80bd4c4ffb197531c8a518b5a4796b6ac15a96db"
+    },
+    {
+      "name": "curves_without_particles",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/curves_without_particles/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "48e4347d68e9675bcbdcc3dacb2465d91a9d07cfe0e0fbf0b8637808a3bf03a3",
+      "template_input_sha256": null,
+      "log_sha256": "940c42575b1737b2f6bdcbbd593109db08f7401e59cdb5bca900eaf37343ceb7",
+      "restart_sha256": null
+    },
+    {
+      "name": "hydro_missing_particles",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/hydro_missing_particles/input.athinput"
+      ],
+      "exit": 1,
+      "expected_error": "shock tracking requires lagrangian_mc particles",
+      "input_sha256": "a22034283a527ed049b75c1b21955e2681b2a5824a74d9ad025349be488b9d84",
+      "template_input_sha256": null,
+      "log_sha256": "ada1daa027af7f6a7d17ccec63a07bf2be1e6a2ca52472325678e6f1017d53cc",
+      "restart_sha256": null
+    },
+    {
+      "name": "shocks",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/shocks/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "b6e2158430f8314def96e064c9b3d209d4d8a2f589583b221f711e6a4f642478",
+      "template_input_sha256": null,
+      "log_sha256": "29e859f01313ba8d3d84f9fc0a3da40fe68e914dac336041adb13ffc76bcf96c",
+      "restart_sha256": null
+    },
+    {
+      "name": "shocks_curves_off",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/shocks_curves_off/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "2dae5d1120721aba095ff47e52c763aa1f49cdb8d58222abb83f1a263b7bc7eb",
+      "template_input_sha256": null,
+      "log_sha256": "509bef15d281978d136a72a7f5d16eb71ae3d180f923b586381115b91c2f1e45",
+      "restart_sha256": null
+    },
+    {
+      "name": "shocks_curves_on",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-merge-20261017/shocks_curves_on/input.athinput"
+      ],
+      "exit": 0,
+      "expected_error": null,
+      "input_sha256": "c40a07d7110d79d88a5167853b1ceabd76bb6c611dca685219c038bcf48a4752",
+      "template_input_sha256": null,
+      "log_sha256": "95c4d49470681f6a2c1cfb714a2fcaea7e859acbbaaae6db7524b3629cc0d522",
+      "restart_sha256": null
+    }
+  ],
+  "checks": [
+    "float64 fluid passivity and exact curve disabled-shock equivalence",
+    "native paired curve restart yields exact final snapshot",
+    "curve-only histories accepted; orphan hydro request rejected",
+    "shock observations unchanged when curves explicitly disabled",
+    "curve and MC history stores coexist"
+  ],
+  "scientific_signoff": "pending",
+  "status": "passed"
+}

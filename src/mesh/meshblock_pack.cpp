@@ -256,10 +256,17 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
     ppart = nullptr;
   }
 
-  if (!ppart && pin->DoesBlockExist("shock_tracking") &&
+  bool has_curves=pin->DoesBlockExist("material_curves") &&
+                  pin->GetOrAddBoolean("material_curves","enabled",true);
+  if (pin->DoesBlockExist("shock_tracking") && !has_curves &&
+      pin->GetOrAddBoolean("shock_tracking","curve_history_present",false)) {
+    std::cerr << "### FATAL ERROR: curve shock history cannot be disabled" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  if (!ppart && !has_curves && pin->DoesBlockExist("shock_tracking") &&
       pin->GetOrAddBoolean("shock_tracking", "enabled", false)) {
-    std::cerr << "### FATAL ERROR: shock tracking requires lagrangian_mc particles; "
-              << "material curve shock histories are unsupported" << std::endl;
+    std::cerr << "### FATAL ERROR: shock tracking requires lagrangian_mc particles "
+              << "or material_curves" << std::endl;
     std::exit(EXIT_FAILURE);
   }
 
@@ -271,8 +278,7 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
     std::exit(EXIT_FAILURE);
   }
 
-  if (pin->DoesBlockExist("material_curves") &&
-      pin->GetOrAddBoolean("material_curves", "enabled", true)) {
+  if (has_curves) {
     pcurves = new material_curves::MaterialCurves(pmesh, pin);
   }
 

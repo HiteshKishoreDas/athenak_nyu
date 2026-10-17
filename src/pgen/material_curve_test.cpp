@@ -101,6 +101,16 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     std::exit(EXIT_FAILURE);
   }
   std::string mode = pin->GetOrAddString("problem", "flow", "translation");
+  if (mode=="shock_tube") {
+    // Native evolved RH fixture with the existing timed AMR callback; no prescribed source.
+    user_srcs=false;
+    user_srcs_func=nullptr;
+    refine_time=pin->GetOrAddReal("problem","refine_time",1.0e30);
+    coarsen_time=pin->GetOrAddReal("problem","coarsen_time",1.0e30);
+    if (pmy_mesh_->adaptive) user_ref_func=TimedRefinement;
+    ShockTube(pin,restart);
+    return;
+  }
   field.mode = -1;
   const char *names[] = {"translation", "acceleration", "sinusoidal", "rotation",
                          "strain", "shear", "reversing_shear"};
@@ -138,7 +148,7 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
   }
   refine_time = pin->GetOrAddReal("problem", "refine_time", 1.0e30);
   coarsen_time = pin->GetOrAddReal("problem", "coarsen_time", 1.0e30);
-  user_srcs_func = Prescribe;
+  if (user_srcs) user_srcs_func = Prescribe;
   if (pmy_mesh_->adaptive) user_ref_func = TimedRefinement;
   if (!restart) SetField(pmy_mesh_, pmy_mesh_->time);
 }

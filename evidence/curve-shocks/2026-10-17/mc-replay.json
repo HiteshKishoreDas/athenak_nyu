@@ -1,0 +1,78 @@
+{
+  "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+  "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+  "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+  "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+  "runs": [
+    {
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-locked-replay-20261017/raw/seed/input.athinput"
+      ],
+      "directory": "/private/tmp/curve-shock-locked-replay-20261017/raw/seed",
+      "exit": 0,
+      "elapsed_seconds": 0.3715102500282228,
+      "input_sha256": "0ee4f9b9eba8432ffc7b93d0f69cde6632406cf89b7d978d80999aac864342fb",
+      "log_sha256": "df86ea78dfeb1ddc1ef2fe414e37aaa1f728ab37855681d5e49366e663f67190",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "label": "seed"
+    },
+    {
+      "label": "later_checkpoint",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-locked-replay-20261017/raw/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.5573541659396142,
+      "log_sha256": "6db174f8ed1416ed13598052de57b0bc0a24bc5e7c39857657ae9f8de027ab0b",
+      "directory": "/private/tmp/curve-shock-locked-replay-20261017/raw/seed"
+    },
+    {
+      "label": "old_checkpoint_collision",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-locked-replay-20261017/raw/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.2537039580056444,
+      "log_sha256": "63e3febd0faf36861d56300df39fa90af40b1769d242022459c80452bb7cf3e7",
+      "directory": "/private/tmp/curve-shock-locked-replay-20261017/raw/seed"
+    },
+    {
+      "label": "new_basename_replay",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-locked-replay-20261017/raw/seed/rst/shock_mc.00001.rst",
+        "time/nlim=-1",
+        "output1/dt=1",
+        "job/basename=mc_replayed"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.2680247499374673,
+      "log_sha256": "f957fcb478a899b90ff9bdef4f9170803179448142651169a8e9edce1ef6f2b0",
+      "directory": "/private/tmp/curve-shock-locked-replay-20261017/raw/seed"
+    }
+  ],
+  "status": "passed_immutable_pair_and_canonical_replay",
+  "checks": {
+    "test_ids": [
+      "RST04",
+      "RST07",
+      "IO08"
+    ],
+    "old_checkpoint": "/private/tmp/curve-shock-locked-replay-20261017/raw/seed/rst/shock_mc.00001.rst",
+    "old_pairs_byte_unchanged": true,
+    "canonical_event_history_unchanged": true,
+    "new_basename_replay_supported": true,
+    "legacy_thermo_scope": "legacy append-only thermo may append identical rows; no claim its whole file remains unchanged"
+  }
+}

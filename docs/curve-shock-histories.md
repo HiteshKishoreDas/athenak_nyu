@@ -77,3 +77,208 @@ regrid/migration/checkpoints; qualify uniform and actual refine/coarsen cases,
 coexistence, passivity and replay with independent physical references. Existing
 MC history rejects AMR and must be extended rather than bypassed. Human scientific
 approval and actual RUSTY/hardware performance remain separate.
+
+
+## Implementation ledger — gate CSH00
+
+Worktree `/private/tmp/athenak-curve-shock-histories-20261017`, branch
+`codex/curve-shock-histories`, from requirements commit dd159953. Original
+`codex/shock-multiphase` remains 2450e1c2. Reused exact local Kokkos commit
+08ceff92bcf3a828844480bc1e6137eb74028517 through a separate Kokkos worktree;
+no network/dependency install. No implementation has been declared validated yet.
+
+Frozen ownership: parent owns curve observation/configuration, sampler hooks,
+driver/restart integration and headers/build lists. Migration task owns MC AMR
+state/boundary/remapping files. Persistence task owns new shared durability helpers,
+curve event/trace/checkpoint IO and strict reader. Independent oracle task owns
+new fixtures/acceptance runner only. Shared interfaces are declared in
+material_curves.hpp; changes integrated sequentially, no competing file edits.
+
+Red baseline /private/tmp/curve-shock-red-v3-20261017 proves actual old binary
+rejects curve/MC coexistence and curve-only history requests. Independent tracking-off
+native RH control exits0 after107steps:16anchors each have exactly one density-front
+passage bracket, without consuming event output. These are moving fluid density
+front observations, not invented exact Lagrangian crossing times. Detection scale
+at AMR interfaces remains a pending user choice; do not promote a default silently.
+
+In-progress code reuses detector/encounter engine, optional node-ID-owned state
+(no geometry/parent copying), native distributed curve sampling route and separate
+curve history output namespace. Birth observation is immediate at initial/insertion
+state; born-inside is left-censored. Completed-step observations follow completed
+AMR transaction and refreshed ghosts. MC state must migrate/regrid intact before
+AMR exclusion is lifted. Existing test-only pgen gains a native ShockTube initializer
+mode with its already-present timed AMR callback; no shock physics is reimplemented.
+
+
+## Implemented slice and why — 2026-10-17
+
+This is an engineering increment, **not completion of the accepted AMR goal**.
+Production lives in the isolated `codex/curve-shock-histories` worktree. The source
+branch `codex/shock-multiphase` remains exactly 2450e1c2; `feature_dump` remains
+requirements commit dd159953 until this increment is integrated deliberately.
+
+- Reuse the unchanged C++/Kokkos detector and encounter state machine. One small
+  observation converter serves both carriers; no second shock algorithm.
+- Store optional state by immutable node ID, outside Node geometry. Adaptation
+  cannot copy parent events. Initial and inserted nodes receive their first
+  observation at actual birth; inside births have unknown entry and left censoring.
+- Extend the existing distributed leaf-owner sampling route rather than create
+  a second mesh communication framework. Reuse native synchronized primitive
+  ghosts. Save current leaf level and cell spacing as detector-scale evidence.
+- Sample complete steps after native regridding, primitive/ghost refresh and curve
+  adaptation. Stage-one insertion observes only newborn IDs at the current clock.
+  MC observation uses the same advanced clock/generation. Uniform MC regressions
+  verify that this ordering change preserves existing observations and trajectories.
+- Share the existing immutable output helpers and unchanged MC event core. Curve
+  events have a separate directory/schema and typed node IDs, birth and mesh metadata.
+  Python identities explicitly include `curve_node` to avoid cross-carrier numeric
+  ID collisions. Every-step trace output is optional; events/state are mandatory.
+- Pair complete node history state with native fluid and geometry checkpoints.
+  Bind source/configuration, ABI, exact IDs/births, rank partition, both native
+  files and committed history prefix. Reject corrupt/missing/incompatible state,
+  disabled consumers and silent activation from older untracked checkpoints.
+- Preserve complete MC encounter state through the existing remap ordering and
+  typed MPI payloads; resize detector storage after block-count changes. This
+  infrastructure does **not** repair the inherited MC mass-allocation failure.
+
+Accepted requirements above are distinct from unchanged experimental detector
+parameters in fixtures: width 4 leaf cells, minimum Mach 1.1 and existing rearming
+rules. No physical threshold, floor, numerical tolerance or exact crossing time
+was invented to obtain a pass. AMR width policy still awaits the UserQuestion.
+
+## Acceptance ledger — locked production source
+
+Built-in source fingerprint:
+`e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf`.
+Test pgen fingerprint:
+`580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77`.
+Both were recomputed from the CMake source list and found in each executable.
+Build caches, compiler commands, source hashes, logs and exact inputs are retained
+in the evidence bundle. Detector/encounter headers are byte-identical to 2450e1c2.
+
+| Gate | Actual result | Limit / next gate |
+|---|---|---|
+| CSH00 interfaces/source/build | Serial/double Release built-in and test-pgen builds pass | No new dependency; exact local Kokkos 08ceff92 |
+| CSH01 zero/translation/shear | Zero events; maximum affine position error below existing \(2\times10^{-12}\) budget | Prescribed-field engineering control |
+| CSH02–03 planar, with/without MC | 16 nodes, 16 complete passages, no extra episodes; all 16 independent density-front brackets covered | Strength errors reported, no owner acceptance tolerance invented |
+| CSH04 initial inside | 16 partial, left-censored encounters | Unknown physical entry remains unknown |
+| CSH04/07 curve-only live AMR | Actual leaves \(2\to8\to2\); 39 positive-time births, 17 inside and 22 outside; every earliest sample at birth/sequence zero | Local-cell detector experiment, not approved AMR mask parity |
+| CSH05 passivity | Native fluid, MC trajectories and curve geometry exactly equal on/off; events unchanged with traces off | Same partition/seed/configuration |
+| CSH06 replay | Actual outside/active/pending checkpoints; exact events, full traces, terminal views, MC continuation and node state; relative-prefix `-d` pass | Same ABI/partition; fresh tracking runs first |
+| CSH06/07 newborn replay | Checkpoint at generation 13 with active inserted nodes; exact full/birth traces, events, terminal views and final nodes | Curve-only actual refine/coarsen |
+| CSH06/08 rejection | Missing/corrupt/future sidecars, prefix corruption, oversized future chunk, changed native source/refinement callback, disabled curve consumer, old untracked activation, nonfinite curves-only forcing, event overflow reject | No silent loss/relabeling |
+| CSH07 smooth AMR | Actual \(4\to16\to4\) leaves, 14 positive-time births, zero events; exact leaf geometry audit | Native ghost contract differs from independent ShockIt AMR reader |
+| CSH09 native forcing + both carriers | Three runs pass exact fluid/MC/curve passivity; 28 complete curve events | Does not repair inherited RK2 forcing heat-oracle failure |
+| Required coexisting live AMR | **Fails explicit MC startup guard** | See inherited occupancy failure and pending physical decision below |
+
+Final serial acceptance reports 19/20 checks passed and returns nonzero overall.
+That nonzero status is intentional evidence that the full requested feature is
+unfinished. Forced suite separately passes. Existing MC integration: 20 native runs
+pass; immutable checkpoint/replay: 4 runs pass. Existing curve suites: 31 core,
+7 regression and 14 remaining unsupported-configuration cases pass. Forcing/MC
+were removed from the old rejection list because new positive suites exercise them;
+no remaining guard assertion was weakened. Strict Python IO, 10 native geometry
+reader checks and isolated production C++ geometry persistence checks pass.
+Unchanged detector parity: 53 cases, exact masks and original \(10^{-12}\) tolerances;
+encounter state checks pass. These are engineering results, not scientific sign-off.
+
+## Independent review and retained failures
+
+Three read-only reviews covered timing/numerics, persistence and minimality.
+Applied: shared finite forcing-field check for curves-only and MC, bound resolved
+native hydro settings, bounded existing-file replay reads, reused curve-enabled
+lookup, removed an unused include and wrapped new lines to repository limits.
+New detector/encounter math was not modified. New-file cpplint and diff checks pass.
+Reviewers withdrew two stale/missed-code findings (post reset and consumer-disable
+bypass); neither justified a production change.
+
+Retain initial failed runs: old baseline rejections, exact wrapped/lifted roundoff
+comparison mistake, suppressed checkpoint fixture, birth counting that omitted
+completed-step full traces, incorrect manifest suffix and future-chunk generation,
+and an invocation with colliding report/raw paths. Test corrections repair those
+fixtures; physical settings and frozen tolerances remain unchanged. Final reports
+are separate from every failed attempt. The earlier candidate executables were
+rebuilt during development; historical logs retain their recorded hashes, but only
+locked-source binaries in the final packet are supplied as exact-code evidence.
+
+## Remaining required decisions and qualification
+
+Two UserQuestions remain pending: leaf-cell versus fixed-physical detector width;
+and whether to repair inherited MC regrid allocation using actual child fluid
+masses, or retain native transport with MC AMR explicitly unqualified. In the
+uniform-child oracle, native remap sends all \(4096\) IDs to one child, counts
+\([0,0,0,4096]\), versus four equal masses. Preserving encounter state is not a
+mass-following tracer qualification. Startup MC AMR rejection remains active.
+See `curve-shocks-mc-amr.md` for the reproducer and repair constraints.
+
+AMR detector qualification also needs an independent interface/physical oracle:
+ShockIt AMR uses its own conservative halo construction, while this native sampler
+uses AthenaK synchronized primitive ghosts. Uniform kernel parity does not prove
+whole-AMR-mask parity. Do not claim otherwise.
+
+RUSTY CPU/MPI execution, migration across ranks, node/particle counts, resource
+budgets and performance remain pending. The current local MPI launcher fails
+before launch with PMIx runtime 0x60100 versus PRRTE build 0x50009. MPI builds and
+singleton collectives do not count as multi-rank execution. Combined multi-rank
+MC+curve checkpoints currently reject before opening a native output: native MC
+requires per-rank files while curves require shared fluid files. A compatible
+layout must be implemented and qualified for the RUSTY coexistence restart gate.
+Frontier/GPU/threaded/single-precision remain unqualified and guarded. Human
+scientific review of the exact-code packet remains pending.
+
+## Laptop reproduction and output
+
+From this checkout, with its exact Kokkos submodule initialized:
+
+```sh
+cmake -S . -B build-curve-shock -DCMAKE_BUILD_TYPE=Release \
+  -DKokkos_ENABLE_SERIAL=ON -DAthena_ENABLE_MPI=OFF -DAthena_SHOCK_TESTS=ON
+cmake --build build-curve-shock -j8
+cmake -S . -B build-curve-shock-test -DCMAKE_BUILD_TYPE=Release \
+  -DKokkos_ENABLE_SERIAL=ON -DAthena_ENABLE_MPI=OFF -DPROBLEM=material_curve_test
+cmake --build build-curve-shock-test -j8
+python3 tst/shocks-curves/io_reader.py
+python3 tst/shocks-curves/acceptance.py \
+  --executable "$PWD/build-curve-shock/src/athena" \
+  --prescribed-executable "$PWD/build-curve-shock-test/src/athena" \
+  --workdir /private/tmp/curve-shock-check-UNIQUE
+python3 tst/shocks-curves/acceptance.py --suite forced \
+  --executable "$PWD/build-curve-shock/src/athena" \
+  --workdir /private/tmp/curve-shock-forced-UNIQUE
+```
+
+The forced suite uses the already installed NumPy dependency of the native binary
+reader; no new package was installed. Here Python was the existing ShockIt venv
+`/Users/hitesh/hitesh/git/shockit/.venv/bin/python`. The core command intentionally
+returns nonzero until the required coexisting AMR gate is implemented/qualified.
+Choose new output directories; immutable histories/checkpoints reject collisions.
+Input fixtures live in `inputs/tests/shocks-curves/`.
+
+Enable `<material_curves>` normally and `<shock_tracking> enabled=true` with a safe
+unique lineage. One global switch tracks both present consumers. MC files remain
+under the configured history directory; curves use its `curves/` child. Events are
+133 CSV fields, optional full/birth traces 33; strict reader:
+`vis/python/curve_shock_history.py`. Complete records use observed entry/exit
+brackets; unknown entry and truncated end remain censored. Never merge suspended
+views into completed-event counts. Whole-curve statistics are an analysis step.
+
+Restart with the native fluid `.rst`, its `.curves` geometry and
+`.curves.shock.rankR` state plus the complete committed history prefix. Use the same
+source/configuration/ABI/partition; a new basename avoids immutable checkpoint
+collisions. Relative history paths work with native `-d`. Do not enable tracking
+from an old untracked checkpoint, disable a recorded consumer, omit a prefix,
+copy parent history into inserted nodes, or interpret checksums as authentication.
+Detailed wire/persistence contract: `tst/shocks-curves/io-format.md`.
+
+
+Final MPI build: full `material_curve_test` executable compiled with Homebrew
+mpicxx and Serial Kokkos. Singleton MPI native curve core passes 31 cases;
+singleton curve-history run repeats 19/20 gates, with the same explicit MC AMR
+guard failure. This is **not** an inter-rank test. The two-rank launcher probe
+exits 213 before AthenaK starts; exact PMIx/PRRTE error is retained.
+
+Final compact evidence is committed under `evidence/curve-shocks/2026-10-17/`.
+Raw test directories/binaries/configuration and historical failure artifacts are
+archived outside Git in the exact-code bundle. The compact copied remap log trims
+only its final blank line; the raw archive preserves original bytes. No scientific
+sign-off, merge into feature_dump, push or original-branch modification is implied.

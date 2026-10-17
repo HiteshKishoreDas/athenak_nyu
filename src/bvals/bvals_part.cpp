@@ -219,7 +219,7 @@ TaskStatus ParticlesBoundaryValues::SetNewPrtclGID() {
   return TaskStatus::complete;
 }
 
-// Uniform-grid shock path preserves the existing disabled particle implementation.
+// Shock path preserves native level/subface selection and the disabled implementation.
 TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
   const int npart = pmy_part->nprtcl_thispack;
   if (pmy_part->shock_state.extent(0) != static_cast<size_t>(npart)) {
@@ -285,12 +285,38 @@ TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
       return;
     }
     if (offset[0] || offset[1] || offset[2]) {
-      const int index = NeighborIndex(offset[0],offset[1],offset[2],0,0);
-      const auto neighbor = neighbors(m,index);
-      if (neighbor.gid < 0 || neighbor.lev != levels(m)) {
-        Kokkos::abort("shock particle requires a uniform adjacent neighbor");
+      const int fx = x[0] < 0.5*(blo[0]+bhi[0]) ? 0 : 1;
+      const int fy = multi_d && x[1] >= 0.5*(blo[1]+bhi[1]) ? 1 : 0;
+      const int fz = three_d && x[2] >= 0.5*(blo[2]+bhi[2]) ? 1 : 0;
+      const int ix = offset[0], iy = offset[1], iz = offset[2];
+      int n1 = 0, n2 = 0;
+      if (iz == 0) {
+        if (iy == 0) {
+          n1 = fy; n2 = fz;
+        } else if (ix == 0) {
+          n1 = fx; n2 = fz;
+        } else {
+          n1 = fz;
+        }
+      } else if (iy == 0) {
+        if (ix == 0) {
+          n1 = fx; n2 = fy;
+        } else {
+          n1 = fy;
+        }
+      } else if (ix == 0) {
+        n1 = fx;
       }
-      UpdateGID(pi(PGID,p), neighbor, myrank, scount, slist, p);
+      // Match native fine-subface selection and coarser-neighbor fallback,
+      // bounded to this face/edge's slots instead of searching past the array.
+      const int base = NeighborIndex(ix,iy,iz,0,0);
+      int index = base;
+      if (neighbors(m,index).lev > levels(m)) index = NeighborIndex(ix,iy,iz,n1,n2);
+      const int axes = (ix != 0)+(iy != 0)+(iz != 0);
+      const int end = base+(axes == 1 ? 4 : (axes == 2 ? 2 : 1));
+      while (index < end && neighbors(m,index).gid < 0) ++index;
+      if (index >= end) Kokkos::abort("shock particle has no adjacent AMR neighbor");
+      UpdateGID(pi(PGID,p), neighbors(m,index), myrank, scount, slist, p);
     }
     for (int d=0; d<ndim; ++d) {
       const bool low = x[d] < lower[d], high = x[d] >= upper[d];

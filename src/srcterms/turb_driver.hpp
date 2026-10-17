@@ -8,6 +8,8 @@
 //! \file turb_driver.hpp
 //  \brief defines the stochastic turbulence forcing driver
 
+#include <cmath>
+#include <initializer_list>
 #include <memory>
 
 #include "athena.hpp"
@@ -60,6 +62,16 @@ struct TurbulenceRestartMetadata {
   Real center_x1;
   Real center_x2;
   Real center_x3;
+
+  bool StaticFieldsFinite() const {
+    for (Real value : {tcorr, dt_update, dedt, accel_rms, sol_fraction,
+                       kpeak, npeak, expo, exp_prp, exp_prl,
+                       tdriv_duration, tdriv_start, sigma_x1, sigma_x2, sigma_x3,
+                       center_x1, center_x2, center_x3}) {
+      if (!std::isfinite(value)) return false;
+    }
+    return true;
+  }
 };
 
 //----------------------------------------------------------------------------------------

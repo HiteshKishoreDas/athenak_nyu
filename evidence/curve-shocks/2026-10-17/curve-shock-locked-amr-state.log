@@ -1,0 +1,13 @@
+compile_exit 0
+refine_coarsen 0 True PASS native AMR fine-subface and coarse-fallback selection
+PASS native remap refine/coarsen rank=0 after_refine=4 after_coarsen=4 full_state_preserved=1 count_calls=2
+
+outside 1 True PASS native AMR fine-subface and coarse-fallback selection
+### FATAL ERROR in particles_lagrangian_mc.cpp
+shock MC particle outside domain before AMR remap
+
+extent 1 True PASS native AMR fine-subface and coarse-fallback selection
+### FATAL ERROR in particles_lagrangian_mc.cpp
+shock AMR state extent does not match native MC particles
+
+occupancy 0 True AMR_OCCUPANCY {"count":4096,"children":[0,0,0,4096],"uniform_child_mass_fraction":0.25,"first_position":[0.1875,0.1875],"scope":"native remap only, uniform-child-mass oracle"}

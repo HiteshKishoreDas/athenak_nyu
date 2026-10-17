@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/opt/homebrew/bin/mpiexec",
+    "--version"
+  ],
+  "exit": 213,
+  "output": "************************************************\nWe have detected that the runtime version\nof the PMIx library we were given is binary\nincompatible with the version we were built against:\n\n    Runtime: 0x60100\n    Build:   0x50009\n\nPlease update your LD_LIBRARY_PATH to point\nus to the same PMIx version used to build PRRTE.\n************************************************\n",
+  "scope": "Launcher inspection only; cross-rank execution unavailable due PMIx/PRRTE binary mismatch"
+}

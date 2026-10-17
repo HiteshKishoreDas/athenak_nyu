@@ -245,7 +245,11 @@ set(shock_source_files src/shocks/detector.hpp src/shocks/encounter.hpp
     src/main.cpp src/mesh/mesh.cpp src/mesh/mesh.hpp src/mesh/meshblock_pack.cpp
     src/srcterms/turb_driver.cpp src/srcterms/turb_driver.hpp
     src/utils/random.hpp src/hydro/hydro_tasks.cpp src/hydro/hydro_update.cpp)
-set(shock_source_hashes "")
+list(APPEND shock_source_files src/material_curves/material_curves.cpp
+    src/material_curves/material_curves.hpp src/material_curves/material_curves_io.cpp
+    src/material_curves/curve_shocks.cpp src/material_curves/curve_shocks_io.cpp
+    src/shocks/observation.hpp src/shocks/store.hpp src/pgen/material_curve_test.cpp)
+set(shock_source_hashes "problem:${PROBLEM};")
 foreach(shock_file IN LISTS shock_source_files)
   file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/${shock_file}" shock_hash)
   string(APPEND shock_source_hashes "${shock_file}:${shock_hash};")

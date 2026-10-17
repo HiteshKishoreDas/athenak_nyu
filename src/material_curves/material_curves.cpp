@@ -2,6 +2,8 @@
 // Licensed under the 3-clause BSD License (the "LICENSE").
 // Passive material curves: separate identity/geometry from fluid leaf ownership.
 #include "material_curves.hpp"
+#include "particles/particles.hpp"
+#include "shocks/observation.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -74,10 +76,10 @@ std::int64_t SignedInteger(const std::string &text) {
 MaterialCurves::MaterialCurves(Mesh *pm, ParameterInput *pin) : mesh(pm), pin_(pin) {
   auto pp = mesh->pmb_pack;
   if (pp->phydro == nullptr || pp->pmhd || pp->prad || pp->pionn || pp->pz4c ||
-      pp->pdyngr || pp->padm || pp->ppart || pp->pturb ||
+      pp->pdyngr || pp->padm || (pp->ppart && !pp->ppart->IsLagrangianMC()) ||
       pp->pcoord->is_special_relativistic || pp->pcoord->is_general_relativistic ||
       pp->pcoord->is_dynamical_relativistic) {
-    Fail("requires passive Newtonian single-fluid HD without particles/forcing");
+    Fail("requires passive Newtonian single-fluid HD; only MC particles may coexist");
   }
   if (pin->GetOrAddString("time", "integrator", "rk2") != "rk2" ||
       pin->GetOrAddString("time", "evolution", "dynamic") != "dynamic") {
@@ -134,6 +136,7 @@ MaterialCurves::MaterialCurves(Mesh *pm, ParameterInput *pin) : mesh(pm), pin_(p
     Fail("invalid spacing, angle, error tolerance, or output cadence");
   }
   RebuildMesh();
+  ConfigureShocks(pin);
 }
 
 std::uint64_t MaterialCurves::NewID(Curve &c) {
@@ -367,7 +370,8 @@ Vec MaterialCurves::Edge(const Curve &c, std::size_t i) const {
   return v;
 }
 
-std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes) {
+std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
+                                        std::vector<ShockObservation> *observations) {
   const int ranks = global_variable::nranks;
   std::vector<std::vector<int>> buckets(ranks);
   std::vector<Vec> wrapped(nodes.size());
@@ -436,6 +440,54 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes) {
   auto sizes=mesh->pmb_pack->pmb->mb_size.d_view;
   auto ind=mesh->mb_indcs;
   bool three=mesh->three_d;
+  if (observations) {
+    if (ns>INT_MAX/static_cast<int>(sizeof(ShockObservation)) ||
+        nr>INT_MAX/static_cast<int>(sizeof(ShockObservation))) {
+      Fail("shock observation batch exceeds MPI byte-count limit");
+    }
+    DvceArray1D<ShockObservation> sample("curve_shock_observations",nr);
+    auto config=shock_config;
+    auto levels=mesh->pmb_pack->pmb->mb_lev.d_view;
+    Real time=mesh->time;
+    std::uint64_t generation=mesh->ncycle;
+    par_for("material_curve_shock", DevExeSpace(), 0, nr-1,
+    KOKKOS_LAMBDA(int p) {
+      int m=block(p);
+      auto size=sizes(m);
+      int i=static_cast<int>(floor((q(p,0)-size.x1min)/size.dx1))+ind.is;
+      int j=static_cast<int>(floor((q(p,1)-size.x2min)/size.dx2))+ind.js;
+      int k=three ? static_cast<int>(floor((q(p,2)-size.x3min)/size.dx3))+ind.ks : 0;
+      Real position[3]={q(p,0),q(p,1),q(p,2)};
+      ShockObservation out;
+      out.level=levels(m);
+      out.spacing[0]=size.dx1; out.spacing[1]=size.dx2; out.spacing[2]=size.dx3;
+      auto signal=shocks::DetectCell(w,m,k,j,i,size.dx1,size.dx2,size.dx3,three,config);
+      out.observation=shocks::ObserveSignal(signal,position,time,generation);
+      sample(p)=out;
+    });
+    auto host=Kokkos::create_mirror_view_and_copy(HostMemSpace(),sample);
+    std::vector<ShockObservation> returned_samples(ns);
+#if MPI_PARALLEL_ENABLED
+    for (int r=0; r<ranks; ++r) {
+      sc3[r]=sc[r]*sizeof(ShockObservation); rc3[r]=rc[r]*sizeof(ShockObservation);
+      sd3[r]=sd[r]*sizeof(ShockObservation); rd3[r]=rd[r]*sizeof(ShockObservation);
+    }
+    MPI_Alltoallv(host.data(),rc3.data(),rd3.data(),MPI_BYTE,
+                  returned_samples.data(),sc3.data(),sd3.data(),MPI_BYTE,MPI_COMM_WORLD);
+    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_UINT64_T,
+                  backid.data(),sc.data(),sd.data(),MPI_UINT64_T,MPI_COMM_WORLD);
+#else
+    for (int p=0; p<nr; ++p) returned_samples[p]=host(p);
+    backid=recvid;
+#endif
+    observations->resize(ns);
+    for (int q=0; q<ns; ++q) {
+      int p=order[q];
+      if (backid[q]!=nodes[p]->id) Fail("shock response identity mismatch");
+      (*observations)[p]=returned_samples[q];
+    }
+    return {};
+  }
   par_for("material_curve_velocity", DevExeSpace(), 0, nr-1,
   KOKKOS_LAMBDA(int p) {
     int m=block(p);
@@ -508,6 +560,7 @@ void MaterialCurves::Advance(int stage) {
   if (stage==1) {
     RebuildMesh();
     if (adaptive) Adapt(mesh->time, false);
+    if (shock_enabled) ObserveShocks(true);
   }
   std::vector<Node *> nodes;
   for (auto &c : curves) for (auto &n : c.nodes) nodes.push_back(&n);
@@ -766,6 +819,7 @@ void MaterialCurves::Adapt(Real birth_time, bool initial, Real affected_time) {
 
 void MaterialCurves::CompleteStep() {
   Adapt(mesh->time, false, mesh->time-mesh->dt);
+  if (shock_enabled) ObserveShocks();
   if (output_dcycle>0 && mesh->ncycle%output_dcycle==0) {
     std::ostringstream path;
     path << basename << ".curves." << std::setw(8) << std::setfill('0')

@@ -1,0 +1,62 @@
+{
+  "source_files": {
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/particles/shock_particles.cpp": "8b8dd6a037586b4f8e11f0c4eeef9d121f37728d7d3c0e751059ea40daeb1d13",
+    "src/particles/particles.cpp": "81c2ff5477c0032f488f8b07c70f20b04f0cde1c1375663de8cef0e85606355a",
+    "src/particles/particles.hpp": "3cf1be87ede5b7d007065ad396a2faed5fba70be0f66da938aeb27153ff70b4f",
+    "src/particles/particles_tasks.cpp": "24da2b5dcef92ae6b0039382fbdeb9b9891f5b6b43c98510545d1e978ee8bbf4",
+    "src/particles/particles_pushers.cpp": "d0a7440982f9d265a897c017877e14a99497563499fd5b18ca570fc90fa6946d",
+    "src/particles/particles_lagrangian_mc.cpp": "2f924c81622de40432e0df6080860546aff226e771f4ee5242017d05e7c787e5",
+    "src/hydro/hydro_fluxes.cpp": "7f25c8e8496c4446cdff8ba6e924259251bda6e0bdea9d0e2b3f5e4dc2c7f447",
+    "src/pgen/pgen.cpp": "c5bb44e9d0b100a70c5cb03a9629dfbcfe6c789c9efda1376478d8c557c53ba7",
+    "src/bvals/bvals_part.cpp": "12b49e1eeecc868cc20a9ddd2ba839b2cadf2e5e46ee797cdc166501454bb7c1",
+    "src/bvals/bvals.hpp": "4022e5b850d3486e45632690b39aafca8c1aa5af798e10bfc47efcd14537e623",
+    "src/driver/driver.cpp": "bdfb05755f93b9475db6fe9347b5828a85d5021b67b63cad34e0318a27f56b46",
+    "src/outputs/restart.cpp": "b098f986d81e4e199386c5d6e2ca51eb63edf385a04f58f5d53af01ca21622e9",
+    "src/main.cpp": "9615e6311fd14fa7de8575777ce1e3049bb8989d9f6447c5158032468a50d87e",
+    "src/mesh/mesh.cpp": "c7e6712f95a5875a17b711a0ce8f6b837d824c4a76a836fd5e1897708c9d9900",
+    "src/mesh/mesh.hpp": "309f3d9b4daa6f0613b132d092cb70b3f2048910f9e5cc3d4d193d36e82c6e57",
+    "src/mesh/meshblock_pack.cpp": "81bda07ef34ddcab4e7329c6198138034486c028b31e797079739d87b73ed79e",
+    "src/srcterms/turb_driver.cpp": "8a2e0ef47a0fbc611a528e8e9de414b7b23c87df04c64402943a0d4ca6265659",
+    "src/srcterms/turb_driver.hpp": "725d2ae0913b5f7dfada68da09397647f043ba1b27a1cf9d480a6c57e6c7d0e8",
+    "src/utils/random.hpp": "6ef51642d6285f7e2d51a0649a424cf21328e9855b608882851ac56edec1ad2a",
+    "src/hydro/hydro_tasks.cpp": "d8bbec20a94e77adb8bd94c960af9b0604efdac70b667cd763da5cee9c8aeeb3",
+    "src/hydro/hydro_update.cpp": "c13aa050f3043e09440c3cd36bf567f2c0fc8620ad819bf5da93ad8b18ba1098",
+    "src/material_curves/material_curves.cpp": "4bd4657071c9048b533e24d02e7d56f7e3653075c84aab26e8fa817209b1103c",
+    "src/material_curves/material_curves.hpp": "deac7cb6d6cdbe9564079d85588004d2a55df4f3466a89c3cf057118aa1373ba",
+    "src/material_curves/material_curves_io.cpp": "619d7da628d599585d638fdd47ba08cb46c8688416e7f9e89206ba51529e0b5e",
+    "src/material_curves/curve_shocks.cpp": "da6d965d8c5aaad33b047d33d14ba3105aff5bc53e075cd00705bf687b0a59ff",
+    "src/material_curves/curve_shocks_io.cpp": "619b3cfe087a464529701631ca69e532f8865ed5906d46be644d7578aa0a66be",
+    "src/shocks/observation.hpp": "aca112ee8c8a7cd32e30275c10ab95649f75d9af3696db2126e9af97e3bb8dca",
+    "src/shocks/store.hpp": "a7db5fa1086a153a075a86ee0a6e68723448e2642d96b3673cbf7bf71ec5fbc4",
+    "src/pgen/material_curve_test.cpp": "965aae87cc9861b278632fd455c72dd502d607f48e8cb850cdfbab59c543ae7f"
+  },
+  "builds": {
+    "builtin": {
+      "problem": "built_in_pgens",
+      "build": "/private/tmp/athenak-curve-shocks-main-build",
+      "fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "binary_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "source_binding": true
+    },
+    "prescribed": {
+      "problem": "material_curve_test",
+      "build": "/private/tmp/athenak-curve-shocks-build",
+      "fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "binary_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5",
+      "source_binding": true
+    },
+    "mpi-prescribed": {
+      "build": "/private/tmp/athenak-curve-shocks-mpi-build",
+      "problem": "material_curve_test",
+      "fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "binary_sha256": "f3671d2cd470d61792007926f7000a3948a4121ceb08b8ed3362177af91652d6",
+      "cache_sha256": "04102ad8323f8765e5ca41b0eb55cea4ea3f23e7b68a207238fa668edddaff50",
+      "source_binding": true,
+      "execution": "singleton only; launcher error213"
+    }
+  }
+}

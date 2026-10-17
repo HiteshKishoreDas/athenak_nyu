@@ -1,0 +1,109 @@
+{
+  "status": "incomplete_required_MC_AMR_gate",
+  "scientific_approval": "pending",
+  "source_branch_preserved": "2450e1c21b0a97c0f1635da75a20701c7e0852a4",
+  "branch": "codex/curve-shock-histories",
+  "reports": {
+    "curve-acceptance": {
+      "path": "/private/tmp/curve-shock-final-evidence-core-20261017/report.json",
+      "sha256": "15524edc3926731c96218983aca7294bd521b07db87cf04c76f2c0d2c6f8bfc2",
+      "status": "incomplete_or_failed",
+      "runs": 36,
+      "checks": 20
+    },
+    "forced-coexistence": {
+      "path": "/private/tmp/curve-shock-final-evidence-forced-20261017/report.json",
+      "sha256": "13beab9406ee18fc558086ef95c59eec921a89005925418be17102a608376927",
+      "status": "pass",
+      "runs": 3,
+      "checks": 1
+    },
+    "mc-regression": {
+      "path": "/private/tmp/curve-shock-locked-mc-20261017/evidence/report.json",
+      "sha256": "f616e7b08692d6cc31519b4b3e752454fb4ae31ebb54f9d7512cd2d41add4f33",
+      "status": "passed_supported_engineering_checks",
+      "runs": 20,
+      "checks": 14
+    },
+    "mc-replay": {
+      "path": "/private/tmp/curve-shock-locked-replay-20261017/report.json",
+      "sha256": "b2a731b7ffac901155b6283e46e6862e16fe1374850b4ce1716e0eb8db24e036",
+      "status": "passed_immutable_pair_and_canonical_replay",
+      "runs": 4,
+      "checks": 6
+    },
+    "merge-regression": {
+      "path": "/private/tmp/curve-shock-locked-merge-20261017/report.json",
+      "sha256": "17fd2874cd4d11a293177a116ef5210e96cbc28a135963e3d171dd78b32a6616",
+      "status": "passed",
+      "runs": 11,
+      "checks": 5
+    },
+    "curve-core": {
+      "path": "/private/tmp/curve-shock-locked-legacy-core-20261017/results.json",
+      "sha256": "8206d4e97c962314e5a018bb278fdc439dd0c9f05081b38e5c9f331cc373243d",
+      "status": "pass",
+      "runs": 0,
+      "checks": 31
+    },
+    "curve-regression": {
+      "path": "/private/tmp/curve-shock-locked-legacy-regression-20261017/results.json",
+      "sha256": "12ca8b198a34b71af879d3c6324bb6a8f3c019828f73d638623880669980524f",
+      "status": "pass",
+      "runs": 0,
+      "checks": 7
+    },
+    "unsupported": {
+      "path": "/private/tmp/curve-shock-locked-legacy-unsupported-20261017/results.json",
+      "sha256": "ab5340d255b5ec452fceeeb7a6fa62806723138d485d7147378cf96ef7e4f40a",
+      "status": "pass",
+      "runs": 0,
+      "checks": 14
+    },
+    "mc-remap-state": {
+      "path": "/private/tmp/curve-shock-locked-amr-state-20261017/report.json",
+      "sha256": "2a45432988c6860dfa0ab806248672a43c849553f38495ff072c14d9b0248680",
+      "status": "method results only",
+      "runs": 4,
+      "checks": 0
+    },
+    "detector-parity": {
+      "path": "/private/tmp/curve-shock-parity-20261017/report.json",
+      "sha256": "dd803700f8390988bd246d2558aa87daa9c00d784ba6d6347935f649c67ae11a",
+      "status": "pass",
+      "runs": 0,
+      "checks": 0
+    },
+    "mpi-singleton-curves": {
+      "path": "/private/tmp/curve-shock-final-mpi-singleton-curves-20261017/results.json",
+      "sha256": "fdc144a91664ec71fb014b3135ed7d6f686101ebf7fcf87dd28ab969520d00e5",
+      "status": "pass",
+      "runs": 0,
+      "checks": 31
+    },
+    "mpi-singleton-history": {
+      "path": "/private/tmp/curve-shock-final-mpi-singleton-history-20261017/report.json",
+      "sha256": "3867050384e23e458e8e94557aa07b523e7314de8b3cce223daccd413b490507",
+      "status": "incomplete_or_failed",
+      "runs": 36,
+      "checks": 20
+    }
+  },
+  "hardware": "laptop Serial/double; MPI singleton only; no inter-rank/RUSTY/GPU qualification",
+  "pending_user_questions": [
+    "AMR width units: local leaf cells versus fixed physical distance",
+    "MC regrid child-mass redistribution versus native unqualified remap"
+  ],
+  "limitations": [
+    "native MC AMR occupancy fails; startup guard retained",
+    "multi-rank MC/curve checkpoint layouts incompatible; preflight rejects",
+    "ShockIt AMR halo parity not established",
+    "inherited RK2 forcing thermal-oracle failure unresolved",
+    "resource budget and performance qualification pending"
+  ],
+  "curve_gate_passed": 19,
+  "curve_gate_total": 20,
+  "compiled_dependency": {
+    "kokkos": "08ceff92bcf3a828844480bc1e6137eb74028517"
+  }
+}

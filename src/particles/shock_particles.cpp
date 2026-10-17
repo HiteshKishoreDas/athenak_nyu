@@ -32,88 +32,16 @@
 #include "pgen/pgen.hpp"
 #include "particles.hpp"
 #include "shock_version.hpp"
+#include "shocks/store.hpp"
 
 namespace {
-[[noreturn]] void ShockError(const std::string &message) {
-  std::cerr << "### FATAL shock tracking: " << message << std::endl;
-#if MPI_PARALLEL_ENABLED
-  MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
-#endif
-  std::exit(EXIT_FAILURE);
-}
-
-uint64_t Digest(uint64_t h, const char *p, size_t count) {
-  for (size_t n=0; n<count; ++n) {
-    h ^= static_cast<unsigned char>(p[n]);
-    h *= UINT64_C(1099511628211);
-  }
-  return h;
-}
-uint64_t FileDigest(const std::string &path, uint64_t limit = UINT64_MAX) {
-  std::ifstream in(path, std::ios::binary);
-  if (!in) ShockError("cannot read integrity input: " + path);
-  uint64_t hash = UINT64_C(14695981039346656037);
-  char buffer[65536];
-  while (limit > 0) {
-    auto amount = static_cast<std::streamsize>(std::min<uint64_t>(limit,sizeof(buffer)));
-    in.read(buffer,amount);
-    if (!in.gcount()) break;
-    hash = Digest(hash,buffer,in.gcount());
-    limit -= in.gcount();
-  }
-  if (in.bad()) ShockError("integrity read failed: " + path);
-  return hash;
-}
-
-std::string RankName() {
-  return ".rank" + std::to_string(global_variable::my_rank);
-}
-
-// Immutable, durable file commit. Existing files permit only byte-identical replay.
-// A torn temp is ignored. A torn final, differing continuation, or lost file fails.
-void CommitFile(const std::string &path, const std::string &data, bool replay) {
-  if (std::filesystem::exists(path)) {
-    std::ifstream in(path, std::ios::binary);
-    std::string old((std::istreambuf_iterator<char>(in)), {});
-    if (!replay || in.bad() || old != data) ShockError("existing file differs: " + path);
-    return;
-  }
-  const std::string temp = path + ".tmp." + std::to_string(getpid());
-  int fd = open(temp.c_str(), O_WRONLY | O_CREAT | O_EXCL, 0664);
-  if (fd < 0) ShockError("cannot create temporary output: " + temp);
-  size_t offset = 0;
-  while (offset < data.size()) {
-    ssize_t n = write(fd, data.data() + offset, data.size() - offset);
-    if (n <= 0) ShockError("failed output write: " + temp);
-    offset += n;
-  }
-  if (fsync(fd) || close(fd)) ShockError("failed output flush: " + temp);
-  if (link(temp.c_str(), path.c_str())) ShockError("failed immutable commit: " + path);
-  if (unlink(temp.c_str())) ShockError("failed temporary cleanup: " + temp);
-  auto dir = std::filesystem::path(path).parent_path();
-  int dfd = open(dir.empty() ? "." : dir.c_str(), O_RDONLY);
-  if (dfd < 0 || fsync(dfd) || close(dfd)) ShockError("failed directory flush: " + path);
-}
-
-void PutObservation(std::ostream &out, const shocks::Observation &o) {
-  out << o.time << ',' << o.generation << ',' << o.valid << ',' << o.inside;
-  for (Real x : o.x) out << ',' << x;
-  for (int64_t x : o.image) out << ',' << x;
-  out << ',' << o.rho << ',' << o.pressure << ',' << o.temperature
-      << ',' << o.mach_pressure << ',' << o.mach_temperature;
-  for (Real x : o.normal) out << ',' << x;
-  for (Real x : o.upstream) out << ',' << x;
-  for (Real x : o.downstream) out << ',' << x;
-}
-
-void PutEvent(std::ostream &out, const shocks::Event &e) {
-  out << e.particle_id << ',' << e.sequence << ',' << e.status << ',' << e.flags;
-  for (const auto *o : {&e.pre, &e.first, &e.last, &e.post, &e.representative}) {
-    out << ',';
-    PutObservation(out,*o);
-  }
-  out << '\n';
-}
+using shocks::Digest;
+using shocks::FileDigest;
+using shocks::RankName;
+using shocks::CommitFile;
+using shocks::PutObservation;
+using shocks::PutEvent;
+[[noreturn]] void ShockError(const std::string &message) {shocks::Fail(message);}
 
 struct CheckpointHeader {
   char magic[8] = {'A','K','S','H','O','C','K','2'};
@@ -316,16 +244,7 @@ void Particles::ValidateShockPhysics() {
        !coord->is_special_relativistic &&
        !coord->is_general_relativistic && !coord->is_dynamical_relativistic;
   if (pmy_pack->pturb) {
-    const auto t = pmy_pack->pturb->RestartMetadata();
-    // Native forcing validates its modes/normalization; tracking adds only the
-    // finite-value requirement needed for trustworthy observations and replay.
-    for (Real value : {t.tcorr, t.dt_update, t.dedt, t.accel_rms, t.sol_fraction,
-                       t.kpeak, t.npeak, t.expo, t.exp_prp, t.exp_prl,
-                       t.tdriv_duration, t.tdriv_start,
-                       t.sigma_x1, t.sigma_x2, t.sigma_x3,
-                       t.center_x1, t.center_x2, t.center_x3}) {
-      ok = ok && std::isfinite(value);
-    }
+    ok = ok && pmy_pack->pturb->RestartMetadata().StaticFieldsFinite();
   }
   if (h) {
     auto s = h->psrc;
@@ -427,6 +346,14 @@ void Particles::ObserveShocks(Real time, uint64_t generation) {
   auto size = pmy_pack->pmb->mb_size.d_view;
   auto w = pmy_pack->phydro->w0;
   auto config = shock_config;
+  const int nk = b.nx3 > 1 ? b.nx3+2*b.ng : 1;
+  const int nj = b.nx2+2*b.ng, ni = b.nx1+2*b.ng;
+  if (shock_signal.extent(0) != static_cast<size_t>(pmy_pack->nmb_thispack) ||
+      shock_signal.extent(1) != static_cast<size_t>(nk) ||
+      shock_signal.extent(2) != static_cast<size_t>(nj) ||
+      shock_signal.extent(3) != static_cast<size_t>(ni)) {
+    Kokkos::realloc(shock_signal,pmy_pack->nmb_thispack,nk,nj,ni);
+  }
   auto signal = shock_signal;
   const bool td = pm->three_d;
   bool physical[6];

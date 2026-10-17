@@ -521,6 +521,7 @@ int main(int argc, char *argv[]) {
   // Note these steps must occur after Mesh (including MeshBlocks and MeshBlockPack)
   // is fully constructed.
 
+  std::string curve_shock_restart_path;
   pmesh->AddCoordinatesAndPhysics(pinput);
   if (!res_flag) {
     // set ICs using ProblemGenerator constructor for new runs
@@ -541,6 +542,9 @@ int main(int argc, char *argv[]) {
         material_curves::MaterialCurves::Fail("curves require shared fluid checkpoints");
       }
       pmesh->pmb_pack->pcurves->Load(restart_file);
+      if (pmesh->pmb_pack->pcurves->shock_enabled) {
+        curve_shock_restart_path=std::filesystem::absolute(restart_file).string();
+      }
     }
     if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
       std::string shock_payload = restart_file;
@@ -556,7 +560,14 @@ int main(int argc, char *argv[]) {
   // Construct Driver and Outputs. Actual outputs (including initial conditions) are made
   // in Driver.Initialize(). Add wall clock timer to Driver if necessary.
 
+  if (pmesh->pmb_pack->pcurves) {
+    // Problem generators resolve runtime callback defaults before the history contract freezes.
+    pmesh->pmb_pack->pcurves->ConfigureShocks(pinput);
+  }
   ChangeRunDir(run_dir);
+  if (!curve_shock_restart_path.empty()) {
+    pmesh->pmb_pack->pcurves->LoadShockRestart(curve_shock_restart_path);
+  }
   Driver* pdriver = new Driver(pinput, pmesh, wtlim, &timer);
   Outputs* pout = new Outputs(pinput, pmesh);
 

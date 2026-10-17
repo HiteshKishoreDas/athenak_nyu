@@ -1,0 +1,90 @@
+{
+  "scope": "actual remap method with constructor/count stand-ins; not full fluid AMR transaction or physical oracle",
+  "mpi": false,
+  "command": [
+    "/usr/bin/c++",
+    "-I/private/tmp/mc-amr-state-serial-occupancy/config",
+    "-I/private/tmp/athenak-curve-shock-histories-20261017/src",
+    "-DKOKKOS_DEPENDENCE",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/core/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/desul/include",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/mdspan/include",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/containers/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/containers/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/algorithms/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/algorithms/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/simd/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/simd/src",
+    "-g",
+    "-std=c++17",
+    "-arch",
+    "arm64",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-Wl,-dead_strip",
+    "/private/tmp/athenak-curve-shock-histories-20261017/tst/shocks-curves/mc_amr_state_test.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/particles/particles_lagrangian_mc.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/bvals/bvals_part.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/globals.cpp",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/containers/src/libkokkoscontainers.a",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/core/src/libkokkoscore.a",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/simd/src/libkokkossimd.a",
+    "-o",
+    "/private/tmp/mc-amr-state-serial-occupancy/mc_amr_state_test"
+  ],
+  "source_sha256": {
+    "tst/shocks-curves/mc_amr_state_test.cpp": "30a1e7a93c3a49d4af73b434bc864d6cb934c17e29d49ac7b66a9ce27ce4261e",
+    "src/particles/particles_lagrangian_mc.cpp": "90e3a03fee260caa3101141ee5b9a737a353193adc38b8ff876bab778be10d58",
+    "src/bvals/bvals_part.cpp": "12b49e1eeecc868cc20a9ddd2ba839b2cadf2e5e46ee797cdc166501454bb7c1",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8"
+  },
+  "compile_exit": 0,
+  "compile_output": "",
+  "runs": [
+    {
+      "mode": "refine_coarsen",
+      "exit": 0,
+      "output": "PASS native AMR fine-subface and coarse-fallback selection\nPASS native remap refine/coarsen rank=0 after_refine=4 after_coarsen=4 full_state_preserved=1 count_calls=2\n",
+      "passed": true
+    },
+    {
+      "mode": "outside",
+      "exit": 1,
+      "output": "PASS native AMR fine-subface and coarse-fallback selection\n### FATAL ERROR in particles_lagrangian_mc.cpp\nshock MC particle outside domain before AMR remap\n",
+      "passed": true
+    },
+    {
+      "mode": "extent",
+      "exit": 1,
+      "output": "PASS native AMR fine-subface and coarse-fallback selection\n### FATAL ERROR in particles_lagrangian_mc.cpp\nshock AMR state extent does not match native MC particles\n",
+      "passed": true
+    },
+    {
+      "mode": "occupancy",
+      "exit": 0,
+      "output": "AMR_OCCUPANCY {\"count\":4096,\"children\":[0,0,0,4096],\"uniform_child_mass_fraction\":0.25,\"first_position\":[0.1875,0.1875],\"scope\":\"native remap only, uniform-child-mass oracle\"}\n",
+      "passed": true,
+      "occupancy": {
+        "count": 4096,
+        "children": [
+          0,
+          0,
+          0,
+          4096
+        ],
+        "uniform_child_mass_fraction": 0.25,
+        "first_position": [
+          0.1875,
+          0.1875
+        ],
+        "scope": "native remap only, uniform-child-mass oracle"
+      },
+      "scientific_mass_following_qualification": "not passed: native remap collapses to one child"
+    }
+  ]
+}

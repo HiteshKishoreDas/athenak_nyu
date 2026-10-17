@@ -809,7 +809,6 @@ TaskStatus Particles::AdjustMeshRefinement(Driver *pdriver, int stage) {
 //! \fn void Particles::RemapAfterMeshRefinement
 
 void Particles::RemapAfterMeshRefinement() {
-  if (shock_enabled) FatalParticleInput("shock AMR remapping is unqualified");
   if (particle_type != ParticleType::lagrangian_mc) return;
 
   Mesh *pm = pmy_pack->pmesh;
@@ -821,8 +820,29 @@ void Particles::RemapAfterMeshRefinement() {
     Kokkos::deep_copy(hi, prtcl_idata);
   }
 
+  HostArray1D<shocks::EncounterState> old_state, new_state;
+  if (shock_enabled) {
+    if (shock_state.extent(0) != static_cast<size_t>(nprtcl_thispack)) {
+      FatalParticleInput("shock AMR state extent does not match native MC particles");
+    }
+    old_state = HostArray1D<shocks::EncounterState>("amr_shock_old", nprtcl_thispack);
+    Kokkos::deep_copy(old_state, shock_state);
+  }
   std::vector<int> dest_rank(nprtcl_thispack, global_variable::my_rank);
   for (int p=0; p<nprtcl_thispack; ++p) {
+    if (shock_enabled) {
+      const auto &ms = pm->mesh_size;
+      // Normal boundary migration already consumed wraps/outflow exits. AMR must
+      // not silently clamp a remaining physical exit or lose an image increment.
+      const Real x[3] = {hr(LMCX,p), hr(LMCY,p), hr(LMCZ,p)};
+      const Real low[3] = {ms.x1min, ms.x2min, ms.x3min};
+      const Real high[3] = {ms.x1max, ms.x2max, ms.x3max};
+      for (int d=0; d<(pm->three_d ? 3 : (pm->multi_d ? 2 : 1)); ++d) {
+        if (!std::isfinite(x[d]) || x[d] < low[d] || x[d] >= high[d]) {
+          FatalParticleInput("shock MC particle outside domain before AMR remap");
+        }
+      }
+    }
     hr(LMCX,p) = WrapOrClamp(hr(LMCX,p), pm->mesh_size.x1min, pm->mesh_size.x1max,
                              pm->mesh_bcs[BoundaryFace::inner_x1] == BoundaryFlag::periodic ||
                              pm->mesh_bcs[BoundaryFace::outer_x1] == BoundaryFlag::periodic);
@@ -842,14 +862,46 @@ void Particles::RemapAfterMeshRefinement() {
     hi(PLASTMOVE,p) = 0;
     hi(PLASTLEVEL,p) = pm->lloc_eachmb[gid].level;
     dest_rank[p] = pm->rank_eachmb[gid];
+    if (shock_enabled &&
+        (dest_rank[p] < 0 || dest_rank[p] >= global_variable::nranks)) {
+      FatalParticleInput("invalid shock MC AMR destination rank");
+    }
   }
 
 #if MPI_PARALLEL_ENABLED
   int nranks = global_variable::nranks;
   std::vector<int> send_particles(nranks, 0), recv_particles(nranks, 0);
   for (int p=0; p<nprtcl_thispack; ++p) send_particles[dest_rank[p]]++;
-  MPI_Alltoall(send_particles.data(), 1, MPI_INT, recv_particles.data(), 1, MPI_INT,
-               MPI_COMM_WORLD);
+  const int counts_error = MPI_Alltoall(send_particles.data(), 1, MPI_INT,
+                                        recv_particles.data(), 1, MPI_INT,
+                                        MPI_COMM_WORLD);
+  if (shock_enabled && counts_error != MPI_SUCCESS) {
+    FatalParticleInput("shock MC AMR particle-count exchange failed");
+  }
+  // Alltoallv uses signed-int counts/displacements in units of its datatype.
+  // Guard totals before the native products and prefix additions below.
+  auto checked_total = [](int count, size_t stride) {
+    if (stride == 0 || count < 0 || static_cast<size_t>(count) >
+        static_cast<size_t>(std::numeric_limits<int>::max())/stride) {
+      FatalParticleInput("shock MC AMR message count/displacement exceeds INT_MAX");
+    }
+    return static_cast<int>(count*stride);
+  };
+  if (shock_enabled) {
+    int64_t received = 0;
+    for (int count : recv_particles) {
+      if (count < 0) FatalParticleInput("negative shock MC AMR receive count");
+      received += count;
+      if (received > std::numeric_limits<int>::max()) {
+        FatalParticleInput("shock MC AMR receive total exceeds INT_MAX");
+      }
+    }
+    for (int count : {nprtcl_thispack, static_cast<int>(received)}) {
+      checked_total(count, static_cast<size_t>(nrdata));
+      checked_total(count, static_cast<size_t>(nidata));
+      checked_total(count, sizeof(shocks::EncounterState));
+    }
+  }
 
   std::vector<int> send_real_count(nranks), recv_real_count(nranks);
   std::vector<int> send_int_count(nranks), recv_int_count(nranks);
@@ -875,6 +927,27 @@ void Particles::RemapAfterMeshRefinement() {
   std::vector<int> send_ints(send_int_disp[nranks-1] + send_int_count[nranks-1]);
   std::vector<int> recv_ints(recv_int_disp[nranks-1] + recv_int_count[nranks-1]);
 
+  std::vector<shocks::EncounterState> send_state, recv_state;
+  std::vector<int> send_state_count, recv_state_count, send_state_disp, recv_state_disp;
+  if (shock_enabled) {
+    send_state.resize(nprtcl_thispack);
+    recv_state.resize(nrecv);
+    send_state_count.resize(nranks);
+    recv_state_count.resize(nranks);
+    send_state_disp.resize(nranks, 0);
+    recv_state_disp.resize(nranks, 0);
+    for (int r=0; r<nranks; ++r) {
+      send_state_count[r] = checked_total(send_particles[r],
+                                          sizeof(shocks::EncounterState));
+      recv_state_count[r] = checked_total(recv_particles[r],
+                                          sizeof(shocks::EncounterState));
+      if (r > 0) {
+        send_state_disp[r] = send_state_disp[r-1]+send_state_count[r-1];
+        recv_state_disp[r] = recv_state_disp[r-1]+recv_state_count[r-1];
+      }
+    }
+  }
+
   std::vector<int> fill(nranks, 0);
   for (int p=0; p<nprtcl_thispack; ++p) {
     int r = dest_rank[p];
@@ -883,15 +956,33 @@ void Particles::RemapAfterMeshRefinement() {
     int ibase = send_int_disp[r] + q*nidata;
     for (int n=0; n<nrdata; ++n) send_reals[rbase+n] = hr(n,p);
     for (int n=0; n<nidata; ++n) send_ints[ibase+n] = hi(n,p);
+    if (shock_enabled) {
+      send_state[send_state_disp[r]/sizeof(shocks::EncounterState)+q] = old_state(p);
+    }
   }
 
-  MPI_Alltoallv(send_reals.data(), send_real_count.data(), send_real_disp.data(),
+  const int real_error = MPI_Alltoallv(send_reals.data(), send_real_count.data(),
+                                      send_real_disp.data(),
                 MPI_ATHENA_REAL, recv_reals.data(), recv_real_count.data(),
                 recv_real_disp.data(), MPI_ATHENA_REAL, MPI_COMM_WORLD);
-  MPI_Alltoallv(send_ints.data(), send_int_count.data(), send_int_disp.data(), MPI_INT,
+  const int int_error = MPI_Alltoallv(send_ints.data(), send_int_count.data(),
+                                     send_int_disp.data(), MPI_INT,
                 recv_ints.data(), recv_int_count.data(), recv_int_disp.data(), MPI_INT,
                 MPI_COMM_WORLD);
 
+  if (shock_enabled) {
+    const int state_error = MPI_Alltoallv(send_state.data(), send_state_count.data(),
+                                          send_state_disp.data(), MPI_BYTE,
+                                          recv_state.data(), recv_state_count.data(),
+                                          recv_state_disp.data(), MPI_BYTE,
+                                          MPI_COMM_WORLD);
+    if (real_error != MPI_SUCCESS || int_error != MPI_SUCCESS ||
+        state_error != MPI_SUCCESS) {
+      FatalParticleInput("shock MC AMR full-state exchange failed");
+    }
+    new_state = HostArray1D<shocks::EncounterState>("amr_shock_new",nrecv);
+    for (int p=0; p<nrecv; ++p) new_state(p) = recv_state[p];
+  }
   nprtcl_thispack = nrecv;
   Kokkos::realloc(prtcl_rdata, nrdata, nprtcl_thispack);
   Kokkos::realloc(prtcl_idata, nidata, nprtcl_thispack);
@@ -908,11 +999,15 @@ void Particles::RemapAfterMeshRefinement() {
   }
   HostArray2D<Real> new_r("amr_prtcl_rdata_new", nrdata, nlocal);
   HostArray2D<int> new_i("amr_prtcl_idata_new", nidata, nlocal);
+  if (shock_enabled) {
+    new_state = HostArray1D<shocks::EncounterState>("amr_shock_new",nlocal);
+  }
   int q = 0;
   for (int p=0; p<nprtcl_thispack; ++p) {
     if (dest_rank[p] != global_variable::my_rank) continue;
     for (int n=0; n<nrdata; ++n) new_r(n,q) = hr(n,p);
     for (int n=0; n<nidata; ++n) new_i(n,q) = hi(n,p);
+    if (shock_enabled) new_state(q) = old_state(p);
     q++;
   }
   nprtcl_thispack = nlocal;
@@ -923,6 +1018,10 @@ void Particles::RemapAfterMeshRefinement() {
   if (nprtcl_thispack > 0) {
     Kokkos::deep_copy(prtcl_rdata, new_r);
     Kokkos::deep_copy(prtcl_idata, new_i);
+  }
+  if (shock_enabled) {
+    Kokkos::realloc(shock_state, nprtcl_thispack);
+    Kokkos::deep_copy(shock_state, new_state);
   }
   pm->UpdateParticleCounts();
 }

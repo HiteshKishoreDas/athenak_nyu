@@ -11,6 +11,8 @@
 
 #include "athena.hpp"
 #include "mesh/mesh.hpp"
+#include "shocks/detector.hpp"
+#include "shocks/encounter.hpp"
 
 namespace material_curves {
 using Vec = std::array<Real, 3>;
@@ -37,10 +39,39 @@ struct Curve {
   std::vector<Node> nodes;  // canonical order by immutable a, audited independently
 };
 
+// History is optional and owned by stable node ID, never copied with geometry.
+struct ShockNode {
+  shocks::EncounterState encounter;
+  Real birth = 0;
+  int first_level = -1, last_level = -1;
+  Real first_spacing[3] = {}, last_spacing[3] = {};
+};
+struct ShockEvent {
+  shocks::Event encounter;
+  Real birth = 0;
+  int first_level = -1, last_level = -1;
+  Real first_spacing[3] = {}, last_spacing[3] = {};
+};
+struct ShockObservation {
+  shocks::Observation observation;
+  int level = -1;
+  Real spacing[3] = {};
+};
+
 class MaterialCurves {
  public:
   MaterialCurves(Mesh *mesh, ParameterInput *pin);
   void Initialize();
+  void ConfigureShocks(ParameterInput *pin);
+  void ObserveShocks(bool births_only = false);
+  void PrepareShockStore(bool restart);
+  void WriteShockChunk(const std::vector<ShockEvent> &events);
+  void WriteShockTrace(const std::vector<Node *> &nodes,
+                       const std::vector<ShockObservation> &samples, bool births_only);
+  void PreflightShockRestart(const std::string &fluid_path) const;
+  void SaveShockRestart(const std::string &fluid_path) const;
+  void LoadShockRestart(const std::string &fluid_path);
+  void WriteShockSuspended() const;
   void Advance(int stage);
   void CompleteStep();
   void RebuildMesh();
@@ -62,6 +93,15 @@ class MaterialCurves {
   int output_dcycle = 0;
   std::string basename;
 
+  bool shock_enabled = false, shock_trace = false;
+  shocks::DetectorConfig shock_config;
+  int shock_capacity = 4096;
+  std::string shock_directory, shock_lineage, shock_contract;
+  std::unordered_map<std::uint64_t, ShockNode> shock_states;
+  std::uint64_t shock_generation = UINT64_MAX;
+  Real shock_time = -1;
+  std::uint64_t shock_history_digest = UINT64_C(14695981039346656037);
+
  private:
   ParameterInput *pin_;
   struct CircleSeed {Vec center, e1, e2; Real radius;};
@@ -69,7 +109,8 @@ class MaterialCurves {
   std::unordered_map<LogicalLocation, int, LogicalLocationHash> leaves_;
   int finest_level_ = 0;
   Real mesh_spacing_ = 0;
-  std::vector<Vec> Sample(std::vector<Node *> &nodes);
+  std::vector<Vec> Sample(std::vector<Node *> &nodes,
+                          std::vector<ShockObservation> *observations = nullptr);
   int Locate(const Vec &lift, Vec &wrapped) const;
   Vec Edge(const Curve &curve, std::size_t i) const;
   void Links(Curve &curve);

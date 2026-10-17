@@ -56,6 +56,36 @@ def parse_observation(fields):
     return result
 
 
+def parse_event(row, lineage, generation):
+    """Parse the unchanged 124-column event core shared by both carriers."""
+    if len(row) != 124:
+        raise HistoryError('Event requires 124 fields')
+    event = dict(lineage=lineage, particle_id=integer(row[0]),
+                 sequence=integer(row[1]), status=integer(row[2], 1),
+                 flags=integer(row[3], 32), emission_generation=generation)
+    event['identity'] = (lineage, event['particle_id'], event['sequence'])
+    if event['flags'] & ~1023:
+        raise HistoryError('Unknown schema-1 validity flag')
+    if event['status'] == 0 and event['flags'] & (1 | 64 | 128):
+        raise HistoryError('Completed event carries censoring flags')
+    for n, name in enumerate(('pre', 'first', 'last', 'post', 'representative')):
+        o = parse_observation(row[4 + 24*n:4 + 24*(n+1)])
+        if o['valid'] and o['generation'] > generation:
+            raise HistoryError('Observation after emission generation')
+        event[name] = o
+    if not event['first']['valid'] or not event['first']['inside']:
+        raise HistoryError('Event has no valid first inside evidence')
+    if event['last']['time'] < event['first']['time']:
+        raise HistoryError('Reversed inside interval')
+    if event['pre']['valid'] and event['pre']['time'] > event['first']['time']:
+        raise HistoryError('Reversed entry bracket')
+    if event['post']['valid'] and event['post']['time'] < event['last']['time']:
+        raise HistoryError('Reversed exit bracket')
+    if event['status'] == 0 and not event['post']['valid']:
+        raise HistoryError('Completed event lacks outside evidence')
+    return event
+
+
 def read_chunk(path, lineage, contract, generation, suspended=False):
     try:
         lines = Path(path).read_text().splitlines()
@@ -76,32 +106,7 @@ def read_chunk(path, lineage, contract, generation, suspended=False):
         raise HistoryError('Chunk row count mismatch')
     events = []
     for row in csv.reader(lines[2:-1]):
-        if len(row) != 124:
-            raise HistoryError('Event requires 124 fields')
-        event = dict(lineage=lineage, particle_id=integer(row[0]),
-                     sequence=integer(row[1]), status=integer(row[2], 1),
-                     flags=integer(row[3], 32), emission_generation=generation)
-        event['identity'] = (lineage, event['particle_id'], event['sequence'])
-        if event['flags'] & ~1023:
-            raise HistoryError('Unknown schema-1 validity flag')
-        if event['status'] == 0 and event['flags'] & (1 | 64 | 128):
-            raise HistoryError('Completed event carries censoring flags')
-        for n, name in enumerate(('pre', 'first', 'last', 'post', 'representative')):
-            o = parse_observation(row[4 + 24*n:4 + 24*(n+1)])
-            if o['valid'] and o['generation'] > generation:
-                raise HistoryError('Observation after emission generation')
-            event[name] = o
-        if not event['first']['valid'] or not event['first']['inside']:
-            raise HistoryError('Event has no valid first inside evidence')
-        if event['last']['time'] < event['first']['time']:
-            raise HistoryError('Reversed inside interval')
-        if event['pre']['valid'] and event['pre']['time'] > event['first']['time']:
-            raise HistoryError('Reversed entry bracket')
-        if event['post']['valid'] and event['post']['time'] < event['last']['time']:
-            raise HistoryError('Reversed exit bracket')
-        if event['status'] == 0 and not event['post']['valid']:
-            raise HistoryError('Completed event lacks outside evidence')
-        events.append(event)
+        events.append(parse_event(row, lineage, generation))
     return events
 
 

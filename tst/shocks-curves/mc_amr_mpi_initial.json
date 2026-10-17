@@ -1,0 +1,73 @@
+{
+  "scope": "actual remap method with constructor/count stand-ins; not full fluid AMR transaction or physical oracle",
+  "mpi": true,
+  "command": [
+    "/opt/homebrew/bin/mpicxx",
+    "-I/private/tmp/mc-amr-state-mpi/config",
+    "-I/private/tmp/athenak-curve-shock-histories-20261017/src",
+    "-DKOKKOS_DEPENDENCE",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/kokkos",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/kokkos/core/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/desul/include",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/mdspan/include",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/kokkos/containers/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/containers/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/kokkos/algorithms/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/algorithms/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/kokkos/simd/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/simd/src",
+    "-isystem",
+    "/opt/homebrew/Cellar/open-mpi/5.0.9/include",
+    "-O3",
+    "-DNDEBUG",
+    "-std=c++17",
+    "-arch",
+    "arm64",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-Wl,-dead_strip",
+    "-include",
+    "mpi.h",
+    "/private/tmp/athenak-curve-shock-histories-20261017/tst/shocks-curves/mc_amr_state_test.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/particles/particles_lagrangian_mc.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/bvals/bvals_part.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/globals.cpp",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/kokkos/containers/src/libkokkoscontainers.a",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/kokkos/core/src/libkokkoscore.a",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-mpi/kokkos/simd/src/libkokkossimd.a",
+    "-o",
+    "/private/tmp/mc-amr-state-mpi/mc_amr_state_test"
+  ],
+  "source_sha256": {
+    "tst/shocks-curves/mc_amr_state_test.cpp": "d00a081f8aa3c41a9f4683a7883e6957f1f51745a85c8750d83069193e40b67a",
+    "src/particles/particles_lagrangian_mc.cpp": "90e3a03fee260caa3101141ee5b9a737a353193adc38b8ff876bab778be10d58",
+    "src/bvals/bvals_part.cpp": "12b49e1eeecc868cc20a9ddd2ba839b2cadf2e5e46ee797cdc166501454bb7c1",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8"
+  },
+  "compile_exit": 0,
+  "compile_output": "",
+  "runs": [
+    {
+      "mode": "refine_coarsen",
+      "exit": 0,
+      "output": "PASS native remap refine/coarsen rank=0 after_refine=4 after_coarsen=4 full_state_preserved=1 count_calls=2\n[Hiteshs-Air][[39665,0],0][btl_tcp_component.c:1021:mca_btl_tcp_component_create_listen] bind() failed: Operation not permitted (1)\n",
+      "passed": true
+    },
+    {
+      "mode": "outside",
+      "exit": 1,
+      "output": "### FATAL ERROR in particles_lagrangian_mc.cpp\nshock MC particle outside domain before AMR remap\n[Hiteshs-Air][[60446,0],0][btl_tcp_component.c:1021:mca_btl_tcp_component_create_listen] bind() failed: Operation not permitted (1)\n",
+      "passed": true
+    },
+    {
+      "mode": "extent",
+      "exit": 1,
+      "output": "### FATAL ERROR in particles_lagrangian_mc.cpp\nshock AMR state extent does not match native MC particles\n[Hiteshs-Air][[14075,0],0][btl_tcp_component.c:1021:mca_btl_tcp_component_create_listen] bind() failed: Operation not permitted (1)\n",
+      "passed": true
+    }
+  ]
+}

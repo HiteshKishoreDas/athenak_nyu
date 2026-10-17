@@ -362,6 +362,12 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
     pp->ObserveShocks(pmesh->time, pmesh->ncycle);
   }
 
+  if (pmesh->pmb_pack->pcurves && pmesh->pmb_pack->pcurves->shock_enabled) {
+    auto curves=pmesh->pmb_pack->pcurves;
+    curves->PrepareShockStore(res_flag);
+    curves->ObserveShocks();
+  }
+
   //---- Step 2.  Compute time step (if problem involves time evolution)
   // NOTE: For new simulations (!res_flag), the initial conditions haven't been set yet
   // by the ProblemGenerator, so we can't compute a proper timestep for MHD here.
@@ -480,10 +486,6 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
 
       // Work after time integrator indicated by "1" in stage
       ExecuteTaskList(pmesh, "after_timeintegrator", 1);
-      if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
-        pmesh->pmb_pack->ppart->ObserveShocks(pmesh->time+pmesh->dt,
-                                             pmesh->ncycle+1);
-      }
 
       // Work outside of TaskLists:
       // increment time, ncycle, etc.
@@ -510,6 +512,12 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
           pmesh->pmb_pack->pcurves->RebuildMesh();
         }
         pmesh->pmb_pack->pcurves->CompleteStep();
+      } else if (pmesh->adaptive && pmesh->pmb_pack->ppart &&
+                 pmesh->pmb_pack->ppart->shock_enabled) {
+        pmesh->pmr->AdaptiveMeshRefinement(this,pin);
+      }
+      if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
+        pmesh->pmb_pack->ppart->ObserveShocks(pmesh->time,pmesh->ncycle);
       }
 
       // Test for/make outputs
@@ -547,7 +555,8 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
       }
 
       // AMR
-      if (pmesh->adaptive && !pmesh->pmb_pack->pcurves) {
+      if (pmesh->adaptive && !pmesh->pmb_pack->pcurves &&
+          !(pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled)) {
         pmesh->pmr->AdaptiveMeshRefinement(this, pin);
       }
       // compute new timestep AFTER all Meshblocks refined/derefined
@@ -573,6 +582,9 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
 //!  and printing diagnostic messages
 
 void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
+  if (pmesh->pmb_pack->pcurves && pmesh->pmb_pack->pcurves->shock_enabled) {
+    pmesh->pmb_pack->pcurves->WriteShockSuspended();
+  }
   if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
     pmesh->pmb_pack->ppart->WriteShockSuspended();
   }

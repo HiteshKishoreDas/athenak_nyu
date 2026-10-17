@@ -1,0 +1,8 @@
+/private/tmp/athenak-curve-shock-histories-20261017/tst/scripts/style/cpplint.py:6485: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(cfg_file, 'r', 'utf8', 'replace') as file_handle:
+/private/tmp/athenak-curve-shock-histories-20261017/tst/scripts/style/cpplint.py:6587: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(filename, 'r', 'utf8', 'replace') as target_file:
+Done processing src/material_curves/curve_shocks.cpp
+Done processing src/material_curves/curve_shocks_io.cpp
+Done processing src/shocks/observation.hpp
+Done processing src/shocks/store.hpp

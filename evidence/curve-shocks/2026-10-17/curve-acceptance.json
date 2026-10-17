@@ -1,0 +1,2618 @@
+{
+  "schema": "curve-shocks-acceptance-1",
+  "runs": [
+    {
+      "name": "planar",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/planar/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.37248345790430903,
+      "input_sha256": "8c65968085d953d0cf96fe1d1456187a71b27c83aa1c4a85ad20150abf404461",
+      "log_sha256": "ebb1f3fdd85471858f5ffff819696a623ea7bbc20f460a830bd798c016e07fa0",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "curve_only",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/curve_only/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.15014174999669194,
+      "input_sha256": "2310e13ee4f3e6cd09eb37c25e219267e7ed15771ae92cfb959103dd803d6888",
+      "log_sha256": "9bab560cece5c6d783cfb61d24aa8b06d4b6054c5713a74400adef0792d82fa2",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "initial_inside",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/initial_inside/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.21000545809511095,
+      "input_sha256": "c886c1b7ee0be871e114f50dab7538c19e2cd6dad2bac3d09c34479027ba4178",
+      "log_sha256": "490e131710d4d30a0e42b03a3e1f5c5cedbccd5cbe9a2c27b6147abbab4b2cf5",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "tracking_off",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/tracking_off/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.08990154205821455,
+      "input_sha256": "f8d6f7c7af891ebd1d3749758b55a42636426de6d018d712097c0d1b378017c8",
+      "log_sha256": "0196131194c506c753667fd3bb263d0d434d892399ee1399098c794bc811b3dc",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "trace_off",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/trace_off/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.19483220798429102,
+      "input_sha256": "1fad9c38f41a4edcea444447602f795d40eb2a12be164e8e3eeffb290fc5ab57",
+      "log_sha256": "ef1250af94d2ad77bfde596538c9652fd0f040c23139dfa16f4c750552a868ca",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "seed_outside",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/seed_outside/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.024198375060223043,
+      "input_sha256": "93b851a0825731460187600cc2c797ff2674bb47713a91e9a369f59ef6c587f5",
+      "log_sha256": "8780f44be6f875917ebb90580b3530ea8b5075dd4243c80e00855d41847c1079",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "resume_outside",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/seed_outside/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=curve_resumed_outside"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.32844312489032745,
+      "input_sha256": "cd0d1e623353cf7aa379ae58b446857c83ee645b23504f2adfd521eac291e154",
+      "log_sha256": "0c80b63315da75891e4358c3da1919a97d2a65c5aec040b1af009fbd2b44ee7d",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "b783434161851d4c84452161335640573181db4d82e1d841abcef4bc7db87c79",
+      "generated_input_used": false
+    },
+    {
+      "name": "seed_active",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/seed_active/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.15015812497586012,
+      "input_sha256": "0b505b40dd45fc666f079a8887cdf0c3daf6cf859f66fc6124870f986e43e92d",
+      "log_sha256": "96ef84b4996709558bb4157e785695f25fc03a06737e85591e856a41f39961c2",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "resume_active",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/seed_active/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=curve_resumed_active"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.2700611670734361,
+      "input_sha256": "7c2fce69ed547cdc234226cb2589b035c34847c4703ef0293b185b8ea5ebeb94",
+      "log_sha256": "f181d45d84ccee7faad9a6d9b0d25f488e8c4b84a5708f40cfddb4f037f9d485",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "0e94212ae9b1b82a6ae9b25c5b0b08f4ae9084811f96f0530d5f46b7ca1aeb1d",
+      "generated_input_used": false
+    },
+    {
+      "name": "seed_pending",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/seed_pending/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.21033949998673052,
+      "input_sha256": "b24a95d2f2a6be1c0fde88fab45d93de43588473cc0c31ba3fd4963f02284f08",
+      "log_sha256": "ae3c6e3f037a8dd5d03dabb1c033f0714f02658162a9995ecb19b34e11072c20",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "resume_pending",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/seed_pending/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=curve_resumed_pending"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.2044780000578612,
+      "input_sha256": "9061039a93ed3d8e6924f898f84ca7276e57654e317ea3e9d4f99a66c5ee26fc",
+      "log_sha256": "3893f4c3c8c55f8c71edcfd8a7fab1d0368635e079afd47b92342d03f633d362",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "badffe32ec07550d40789908150fbb32253ac994c8e3ecc729ea799ada83137b",
+      "generated_input_used": false
+    },
+    {
+      "name": "relative_seed",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/relative_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.023091041017323732,
+      "input_sha256": "f831edca43f63e5ad99f42331ca7a14f45272eb4abb8329dfb8f777b5b0751d9",
+      "log_sha256": "c905cb19de29e1b84a9b96ba7fb3e525d252ed3c1360cc6a72c1a892b86f94a6",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "relative_launch",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/relative_seed/rst/curve_shock.00001.rst",
+        "-d",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/relative_seed",
+        "time/nlim=-1",
+        "job/basename=curve_relative_resumed"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.370902291033417,
+      "input_sha256": "94c3c7c909ec88cf7877287c02bf86ef27619acf6c64b0603d556f1afed5da21",
+      "log_sha256": "e1225433a1086787324e8f231c1da8ca0bf97d48b70b53e95175cd359621d2ca",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "647aff9af10660cfb9b154f4c5220597ba190f8d574f7f671d682ab21b3d7266",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_missing",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/artifacts_missing/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_missing"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.006066374946385622,
+      "input_sha256": "a5b4aa4db55a1f75b6d60b4bde0ec7200c5d8a4fd1433be715d946ca5f7e6e89",
+      "log_sha256": "bbd1a20ae9c5fbb93cba03d9b22401e7767839c08632325dbd25eed7bcb52330",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "0e94212ae9b1b82a6ae9b25c5b0b08f4ae9084811f96f0530d5f46b7ca1aeb1d",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_corrupt",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/artifacts_corrupt/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_corrupt"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005773458047769964,
+      "input_sha256": "2c9a9b8a30f56a23925ed0acd62ee75c77ecc7bae12bf467b483604410e70f5c",
+      "log_sha256": "95cfb5c89b258c6178efc88c2fb545fb83ed1f39f39c221cd07061d08a137e3b",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "0e94212ae9b1b82a6ae9b25c5b0b08f4ae9084811f96f0530d5f46b7ca1aeb1d",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_future",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/artifacts_future/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_future"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005861292011104524,
+      "input_sha256": "7a84ea5c283112345aefcf153c24a7556b89e6db140a85d92542be681969db44",
+      "log_sha256": "bbd1a20ae9c5fbb93cba03d9b22401e7767839c08632325dbd25eed7bcb52330",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "0e94212ae9b1b82a6ae9b25c5b0b08f4ae9084811f96f0530d5f46b7ca1aeb1d",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_prefix",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/artifacts_prefix/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_prefix",
+        "shock_tracking/directory=/private/tmp/curve-shock-final-evidence-core-20261017/artifacts_prefix/shock_events"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.0058376670349389315,
+      "input_sha256": "fcd1c544404950e1a331217071785c5dfbdd8168ef5225546c0f65c48f1e290a",
+      "log_sha256": "38e6f1726e4564cee6bd8c310d09f2d283b1a5aeb67d5aeee1bf5385685fe27e",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "0e94212ae9b1b82a6ae9b25c5b0b08f4ae9084811f96f0530d5f46b7ca1aeb1d",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_oversized_future_chunk",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/artifacts_future_chunk/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_future_chunk",
+        "shock_tracking/directory=/private/tmp/curve-shock-final-evidence-core-20261017/artifacts_future_chunk/shock_events"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.01219820894766599,
+      "input_sha256": "cc7767325a2ec0536996a755c26527817824148a766bf7b60de8b0c6815d3361",
+      "log_sha256": "af9331386816fa601502bcb037ce6f2fbd7e55eac63445615186e0ee5dabb62f",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "0e94212ae9b1b82a6ae9b25c5b0b08f4ae9084811f96f0530d5f46b7ca1aeb1d",
+      "generated_input_used": false
+    },
+    {
+      "name": "overflow",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/overflow/input.athinput"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.1388944589998573,
+      "input_sha256": "d1d21fe8536c6f629e5dd1c2fe4b4ec98a02550d988270e17382c0bb64830e4d",
+      "log_sha256": "fac0852dc894ad56bda38b1e9678c47d2dcac6d22c4f094d105537d8a9468478",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "untracked_curve_seed",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/untracked_curve_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.011637208983302116,
+      "input_sha256": "dd66a204a93468799171af8709769030528242a2a17fe87ccae23ad0730560ac",
+      "log_sha256": "00a15ac32c928be8f58e2c3a729d598c9884e40ab5a9de6f29e2ba95c7b85f30",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "reject_old_untracked_checkpoint",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/untracked_curve_seed/rst/curve_shock.00001.rst",
+        "shock_tracking/enabled=true",
+        "time/nlim=-1",
+        "job/basename=reject_old_untracked_checkpoint"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005878708907403052,
+      "input_sha256": "90f9ef65a734389a5156db7df47196492c031cea43baaba66edd2bf72f0322f6",
+      "log_sha256": "bbd1a20ae9c5fbb93cba03d9b22401e7767839c08632325dbd25eed7bcb52330",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "0285b7a74406a8484a5381dadfd05e2685a70770fb75bba1f6a0e8ace809423d",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_disabled_curves",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/seed_active/rst/curve_shock.00001.rst",
+        "material_curves/enabled=false",
+        "time/nlim=-1",
+        "job/basename=reject_disabled_curves"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005959708942100406,
+      "input_sha256": "b9e8c460c5677fd08b843cab1c3beb1608122ed2fddc7087e78902a46af858f6",
+      "log_sha256": "7b7c91565c788048623aa513eba63763405bb78e7083ce4083c9e05c8aff2b93",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "0e94212ae9b1b82a6ae9b25c5b0b08f4ae9084811f96f0530d5f46b7ca1aeb1d",
+      "generated_input_used": false
+    },
+    {
+      "name": "native_source_seed",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/native_source_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.012128958012908697,
+      "input_sha256": "41b7795a31f930d2e9e08a8d0e906269eb49807f5359ee0eaa4dc21ed07f6086",
+      "log_sha256": "e2463cd810ab5927ed4876d3d40b3a759639d495e5d30c7a73bf99173b01d682",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "reject_changed_native_source",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/native_source_seed/rst/curve_shock.00001.rst",
+        "hydro/const_accel_val=.2",
+        "time/nlim=-1",
+        "job/basename=reject_changed_native_source"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.0059831669786944985,
+      "input_sha256": "4140d004853d078924b55707245ba6681d81e89ce63a431e54d7f116a9c9ec7e",
+      "log_sha256": "532853beb359138c4d2cf49e4df33ec61c3a898d076b1f534fbfcad34ca9c3f6",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7",
+      "restart_sha256": "6d3a4644943ce0d1bca023c1b5a1b05a24693ea62499555829055fe71c553484",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_curveonly_nan_dt_update",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/reject_curveonly_nan_dt_update/input.athinput"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005902624921873212,
+      "input_sha256": "5a4b73fb7c1706534f6c17ef280fce8476ba23f096436bed82ab90fe8d8c21d3",
+      "log_sha256": "170171a5a5443c2d82eef2b4fc305fd8a95812dc83896985190a590c32717abc",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "reject_curveonly_nan_tcorr",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/reject_curveonly_nan_tcorr/input.athinput"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005050458014011383,
+      "input_sha256": "3bfdd1c7cf1ee55e6dc1426180b6397d4bada559a192cd16de9121813bbf6e47",
+      "log_sha256": "e80a5602e52ffc66ea7444343e25a02249cf85283709eda88fff286636b9c4a3",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "zero",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/zero/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.04819483298342675,
+      "input_sha256": "2c4b107b03d864173a14cd7063816ee971f2348d54c9df28ebd17dfb8269b238",
+      "log_sha256": "68b8e968015a41025eb7db1d08108b4277b5c743a1bb6a27265ad8d41871d088",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5"
+    },
+    {
+      "name": "translation",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/translation/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.04819366696756333,
+      "input_sha256": "772de0339a99ce0032d89daa285fa675ebe94ff4cf8889d60affba2444f8faec",
+      "log_sha256": "eb947458be0b653a273a3785c62cfd3201c0fdb32d843bd41407b30db01b293c",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5"
+    },
+    {
+      "name": "shear",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/shear/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.08423291705548763,
+      "input_sha256": "486e69b26b991dc6ce2be7d8674879f6290e2950530f87f62eed80d4cbc7baf3",
+      "log_sha256": "e5d2a6ee3d1975efb446c939a4e9f4da42605633f2a2aa4860fea60b2695a069",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5"
+    },
+    {
+      "name": "amr_smooth",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/amr_smooth/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.08996745897457004,
+      "input_sha256": "f9142a16480c00e8c266e65ece7148e9245daea6e3cd9913650d550a0267036a",
+      "log_sha256": "391905cf875c02eadcd49d920079ae3effc4f2f0a0b5bde4cb2012d124bdc8ff",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5"
+    },
+    {
+      "name": "callback_seed",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/callback_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.012080374988727272,
+      "input_sha256": "984441e2d44aeec11e8afaec499b7101f869275714ee2ac91002fba740315ce2",
+      "log_sha256": "945f081f28d7ba3a547c16bc38600eba731cf080ae5107c77ffadf487fb3a6d7",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5"
+    },
+    {
+      "name": "reject_changed_refine_time",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/callback_seed/rst/curve_shock.00001.rst",
+        "problem/refine_time=.2",
+        "time/nlim=-1",
+        "job/basename=reject_changed_refine_time"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005848666070960462,
+      "input_sha256": "68181b4e5435a58f3065cb98291c42ab319732e59d46f00e65bbc851550a21e8",
+      "log_sha256": "cc32c6821b2314281cc3c4922e7d403e2ac3b3d2580ea058d437f7e7389f1b45",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5",
+      "restart_sha256": "72255ee5a9e96412ee3458ef7f3c5591e513d621c444c9a5bf71b33032e79f63",
+      "generated_input_used": false
+    },
+    {
+      "name": "amr_curveonly_live_shock",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/amr_curveonly_live_shock/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.3888696669600904,
+      "input_sha256": "ae4e55a13a52d83c311f67fb7b64165043eeaa831b0fc4f2a3614664bbc58d80",
+      "log_sha256": "c5478455712a89064496fa399acf3cd4bf87fc6149bb58b19f0959f8278b475f",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5"
+    },
+    {
+      "name": "amr_birth_seed",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/amr_birth_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.048324250034056604,
+      "input_sha256": "90f6bd2377edefcb5e4f2ab2257cec015468f79bd201a3b9f9bcfd71d494d5ca",
+      "log_sha256": "7cb0acd7730e65d4ffc034ffcf84eb0335697b028dc2e3d133872beb2d66ccd1",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5"
+    },
+    {
+      "name": "amr_birth_resumed",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-r",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/amr_birth_seed/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=curve_amr_resumed"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.37135879206471145,
+      "input_sha256": "b194faa9472c5194e14c1a1718b97785d7106df20bffba26d97122c92cac1c1f",
+      "log_sha256": "b3f6da68879ef13c3685d1a65d7bbadae2e7056ba82d0a069b02b1bbfb3c7553",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5",
+      "restart_sha256": "8169428690f7940a49d2770eb3e7408c864c3364eddd742b74bbe8b98cee5988",
+      "generated_input_used": false
+    },
+    {
+      "name": "amr_live_shock",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-final-evidence-core-20261017/amr_live_shock/input.athinput"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.012544833007268608,
+      "input_sha256": "3f91775d175e1bfcc67c2caee02b891df4b88dc36ac88aea2c6443f64e2ceb1e",
+      "log_sha256": "2f4f122b9fa66d1cfa00db7547c74669ab2b730f496a56d32f644b534cc22c5f",
+      "executable": "/private/tmp/athenak-curve-shocks-build/src/athena",
+      "executable_sha256": "ae6bc21a71cb8fdaa6badaf699f1de736efa4d6c6bbdd6932f12391f0ae797d3",
+      "compiled_source_fingerprint": "580f268d9337bc1a8826d4d0dc6705ca95a67e58689282e63def837cdafd6d77",
+      "build_cache_sha256": "9f1d7060ec3dfcc1adda5beefe50ca2f935287da4a8364a65eb713c2da9c9bd5"
+    }
+  ],
+  "checks": [
+    {
+      "id": "CSH02_CSH03_planar",
+      "events": 16,
+      "completed": 16,
+      "suspended": 0,
+      "nodes": 16,
+      "synchronized_observations": 1728,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 16,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "native_density_fronts": [
+        [
+          0,
+          0.0,
+          0.296875
+        ],
+        [
+          1,
+          0.0007685314,
+          0.2970789537009023
+        ],
+        [
+          2,
+          0.001537063,
+          0.2973150534655511
+        ],
+        [
+          3,
+          0.002305594,
+          0.29759432575373673
+        ],
+        [
+          4,
+          0.003074125,
+          0.29792780696273746
+        ],
+        [
+          5,
+          0.003842657,
+          0.298328505029371
+        ],
+        [
+          6,
+          0.004611188,
+          0.2988130774780519
+        ],
+        [
+          7,
+          0.005379719,
+          0.29940404870997916
+        ],
+        [
+          8,
+          0.006148251,
+          0.30013320472629884
+        ],
+        [
+          9,
+          0.006916782,
+          0.3010056096365135
+        ],
+        [
+          10,
+          0.007685314,
+          0.3017362538789698
+        ],
+        [
+          11,
+          0.008453845,
+          0.3023320296590043
+        ],
+        [
+          12,
+          0.009222376,
+          0.30282708070444514
+        ],
+        [
+          13,
+          0.009990908,
+          0.30324038088293637
+        ],
+        [
+          14,
+          0.01075847,
+          0.30358500873670324
+        ],
+        [
+          15,
+          0.01152231,
+          0.30387827164223113
+        ],
+        [
+          16,
+          0.01228263,
+          0.30413887371657605
+        ],
+        [
+          17,
+          0.01303996,
+          0.30438122035801407
+        ],
+        [
+          18,
+          0.01379514,
+          0.30461668313474044
+        ],
+        [
+          19,
+          0.01454923,
+          0.3048545695196902
+        ],
+        [
+          20,
+          0.01530341,
+          0.30510314383611353
+        ],
+        [
+          21,
+          0.01605881,
+          0.30537033212660614
+        ],
+        [
+          22,
+          0.01681072,
+          0.30566194632363264
+        ],
+        [
+          23,
+          0.01755951,
+          0.30598573567864884
+        ],
+        [
+          24,
+          0.01830571,
+          0.3063504815614849
+        ],
+        [
+          25,
+          0.01904992,
+          0.30676685275927434
+        ],
+        [
+          26,
+          0.01979283,
+          0.3072485049029964
+        ],
+        [
+          27,
+          0.02053529,
+          0.3078131429181518
+        ],
+        [
+          28,
+          0.02127814,
+          0.3084845232616969
+        ],
+        [
+          29,
+          0.02202222,
+          0.3091702799162675
+        ],
+        [
+          30,
+          0.02276682,
+          0.3097467664544411
+        ],
+        [
+          31,
+          0.02351002,
+          0.310236614135363
+        ],
+        [
+          32,
+          0.02425235,
+          0.31065755648556165
+        ],
+        [
+          33,
+          0.02499442,
+          0.3110226790895851
+        ],
+        [
+          34,
+          0.02573691,
+          0.3113373673575842
+        ],
+        [
+          35,
+          0.02648035,
+          0.31160876096342777
+        ],
+        [
+          36,
+          0.02722432,
+          0.3118496705702538
+        ],
+        [
+          37,
+          0.02796755,
+          0.3120713408507555
+        ],
+        [
+          38,
+          0.02871036,
+          0.31228355829256077
+        ],
+        [
+          39,
+          0.0294532,
+          0.3124946560075662
+        ],
+        [
+          40,
+          0.03019651,
+          0.3127120809430669
+        ],
+        [
+          41,
+          0.03094065,
+          0.3129428883582809
+        ],
+        [
+          42,
+          0.03168491,
+          0.31319389120702745
+        ],
+        [
+          43,
+          0.03242896,
+          0.3134725066956389
+        ],
+        [
+          44,
+          0.03317322,
+          0.3137874898552432
+        ],
+        [
+          45,
+          0.03391801,
+          0.31414934887039114
+        ],
+        [
+          46,
+          0.03466356,
+          0.31457132910557106
+        ],
+        [
+          47,
+          0.03540938,
+          0.3150698894660179
+        ],
+        [
+          48,
+          0.03615526,
+          0.31566520996218767
+        ],
+        [
+          49,
+          0.0369015,
+          0.31638362907312656
+        ],
+        [
+          50,
+          0.03764821,
+          0.31706791138187473
+        ],
+        [
+          51,
+          0.03839544,
+          0.31764348579252916
+        ],
+        [
+          52,
+          0.03914316,
+          0.3181347353267376
+        ],
+        [
+          53,
+          0.03989108,
+          0.3185583924982556
+        ],
+        [
+          54,
+          0.04063925,
+          0.3189265191942413
+        ],
+        [
+          55,
+          0.0413877,
+          0.3192438429909366
+        ],
+        [
+          56,
+          0.04213639,
+          0.3195188625605432
+        ],
+        [
+          57,
+          0.04288529,
+          0.3197653310603179
+        ],
+        [
+          58,
+          0.04363435,
+          0.3199944966766315
+        ],
+        [
+          59,
+          0.04438354,
+          0.3202151668318006
+        ],
+        [
+          60,
+          0.0451328,
+          0.32043491886416997
+        ],
+        [
+          61,
+          0.04588208,
+          0.32066082792294703
+        ],
+        [
+          62,
+          0.04663135,
+          0.3208995312406477
+        ],
+        [
+          63,
+          0.04738055,
+          0.32115750400017495
+        ],
+        [
+          64,
+          0.04812961,
+          0.3214414662612854
+        ],
+        [
+          65,
+          0.04887849,
+          0.3217588257733596
+        ],
+        [
+          66,
+          0.04962719,
+          0.3221181517571366
+        ],
+        [
+          67,
+          0.05037574,
+          0.3225297834257207
+        ],
+        [
+          68,
+          0.05112423,
+          0.32300663645961475
+        ],
+        [
+          69,
+          0.05187278,
+          0.3235653572848098
+        ],
+        [
+          70,
+          0.05262135,
+          0.3242274056244566
+        ],
+        [
+          71,
+          0.05336964,
+          0.3248842718871231
+        ],
+        [
+          72,
+          0.05411774,
+          0.32543886312463294
+        ],
+        [
+          73,
+          0.05486579,
+          0.3259126652542505
+        ],
+        [
+          74,
+          0.05561391,
+          0.32632170264103283
+        ],
+        [
+          75,
+          0.05636223,
+          0.32667815695442726
+        ],
+        [
+          76,
+          0.0571103,
+          0.326985660362196
+        ],
+        [
+          77,
+          0.05785823,
+          0.32725098913343087
+        ],
+        [
+          78,
+          0.05860613,
+          0.3274874694582124
+        ],
+        [
+          79,
+          0.05935412,
+          0.32770650390485484
+        ],
+        [
+          80,
+          0.06010231,
+          0.32791765810641577
+        ],
+        [
+          81,
+          0.06085039,
+          0.3281290660980522
+        ],
+        [
+          82,
+          0.06159839,
+          0.32834817737916644
+        ],
+        [
+          83,
+          0.0623464,
+          0.3285821632214322
+        ],
+        [
+          84,
+          0.06309449,
+          0.3288384038038735
+        ],
+        [
+          85,
+          0.06384276,
+          0.32912502086100087
+        ],
+        [
+          86,
+          0.06459101,
+          0.3294512926073226
+        ],
+        [
+          87,
+          0.06533924,
+          0.3298286815529559
+        ],
+        [
+          88,
+          0.06608749,
+          0.330271824777009
+        ],
+        [
+          89,
+          0.06683583,
+          0.33079768591776915
+        ],
+        [
+          90,
+          0.06758431,
+          0.3314273620906319
+        ],
+        [
+          91,
+          0.0683328,
+          0.33217236848561793
+        ],
+        [
+          92,
+          0.0690813,
+          0.33283280801777254
+        ],
+        [
+          93,
+          0.06982983,
+          0.3333908501185181
+        ],
+        [
+          94,
+          0.07057846,
+          0.3338679800070989
+        ],
+        [
+          95,
+          0.07132718,
+          0.33428009714491963
+        ],
+        [
+          96,
+          0.0720759,
+          0.3346369173029794
+        ],
+        [
+          97,
+          0.07282466,
+          0.33494418071487947
+        ],
+        [
+          98,
+          0.0735735,
+          0.3352123103199416
+        ],
+        [
+          99,
+          0.07432248,
+          0.33545449935194815
+        ],
+        [
+          100,
+          0.07507142,
+          0.335680976619633
+        ],
+        [
+          101,
+          0.07582038,
+          0.3359003470593532
+        ],
+        [
+          102,
+          0.07656941,
+          0.33612042485184224
+        ],
+        [
+          103,
+          0.0773186,
+          0.33634822585051777
+        ],
+        [
+          104,
+          0.07806782,
+          0.3365902239617871
+        ],
+        [
+          105,
+          0.07881702,
+          0.3368528696462285
+        ],
+        [
+          106,
+          0.07956628,
+          0.3371430800680023
+        ],
+        [
+          107,
+          0.08,
+          0.3373266082616475
+        ],
+        [
+          107,
+          0.08,
+          0.3373266082616475
+        ]
+      ],
+      "density_crossing_brackets": {
+        "30064771073": [
+          0.035409375502100174,
+          0.03615526222668155
+        ],
+        "30064771074": [
+          0.03615526222668155,
+          0.0369014967055269
+        ],
+        "30064771075": [
+          0.03764820887785751,
+          0.03839543503538338
+        ],
+        "30064771076": [
+          0.03839543503538338,
+          0.03914315905723362
+        ],
+        "30064771077": [
+          0.03914315905723362,
+          0.03989108002172968
+        ],
+        "30064771078": [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        "30064771079": [
+          0.04138769965803365,
+          0.04213639407049294
+        ],
+        "30064771080": [
+          0.04213639407049294,
+          0.042885291851948754
+        ],
+        "30064771081": [
+          0.043634350967937,
+          0.04438353730431847
+        ],
+        "30064771082": [
+          0.04513279976240384,
+          0.04588208240370226
+        ],
+        "30064771083": [
+          0.04663134827382395,
+          0.04738054784507752
+        ],
+        "30064771084": [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        "30064771085": [
+          0.0488784940311894,
+          0.04962718966407709
+        ],
+        "30064771086": [
+          0.05037574140587127,
+          0.051124234981376034
+        ],
+        "30064771087": [
+          0.051124234981376034,
+          0.05187278068517021
+        ],
+        "30064771088": [
+          0.05187278068517021,
+          0.05262134828197653
+        ]
+      },
+      "density_brackets_covered_by_event_envelope": 16,
+      "pressure_mach_errors": [
+        0.003360259226112383,
+        0.004744049073434731,
+        0.006226958859918863,
+        0.0074294464442781205,
+        0.008101419706591617,
+        0.008327182873647754,
+        0.008283188635350047,
+        0.0077853307193289645,
+        0.006174733295792656,
+        -0.008939875258685337,
+        -0.008939875258685337,
+        -0.008939875258685337,
+        -0.011005044031481725,
+        -0.013432536693015695,
+        -0.01377318487597945,
+        -0.013564900746482644
+      ],
+      "region_entry_brackets": [
+        [
+          0.027224320915366446,
+          0.02796754807669764
+        ],
+        [
+          0.0287103649612482,
+          0.029453197216177604
+        ],
+        [
+          0.030196506336305103,
+          0.030940646345063987
+        ],
+        [
+          0.03168491025401579,
+          0.03242896024504852
+        ],
+        [
+          0.033173216142501724,
+          0.033918012149504656
+        ],
+        [
+          0.034663559926280285,
+          0.035409375502100174
+        ],
+        [
+          0.03615526222668155,
+          0.0369014967055269
+        ],
+        [
+          0.03764820887785751,
+          0.03839543503538338
+        ],
+        [
+          0.03914315905723362,
+          0.03989108002172968
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.040639251477478405,
+          0.04138769965803365
+        ],
+        [
+          0.04213639407049294,
+          0.042885291851948754
+        ],
+        [
+          0.042885291851948754,
+          0.043634350967937
+        ],
+        [
+          0.04438353730431847,
+          0.04513279976240384
+        ]
+      ],
+      "region_exit_brackets": [
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.0488784940311894,
+          0.04962718966407709
+        ],
+        [
+          0.051124234981376034,
+          0.05187278068517021
+        ],
+        [
+          0.05336963683698513,
+          0.054117742783062334
+        ],
+        [
+          0.0556139139939287,
+          0.05636222501730155
+        ],
+        [
+          0.06533923654753708,
+          0.06608749025426514
+        ]
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CSH02_curve_only_global_enable",
+      "events": 16,
+      "completed": 16,
+      "suspended": 0,
+      "nodes": 16,
+      "synchronized_observations": 1728,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 16,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "native_density_fronts": [
+        [
+          0,
+          0.0,
+          0.296875
+        ],
+        [
+          1,
+          0.0007685314,
+          0.2970789537009023
+        ],
+        [
+          2,
+          0.001537063,
+          0.2973150534655511
+        ],
+        [
+          3,
+          0.002305594,
+          0.29759432575373673
+        ],
+        [
+          4,
+          0.003074125,
+          0.29792780696273746
+        ],
+        [
+          5,
+          0.003842657,
+          0.298328505029371
+        ],
+        [
+          6,
+          0.004611188,
+          0.2988130774780519
+        ],
+        [
+          7,
+          0.005379719,
+          0.29940404870997916
+        ],
+        [
+          8,
+          0.006148251,
+          0.30013320472629884
+        ],
+        [
+          9,
+          0.006916782,
+          0.3010056096365135
+        ],
+        [
+          10,
+          0.007685314,
+          0.3017362538789698
+        ],
+        [
+          11,
+          0.008453845,
+          0.3023320296590043
+        ],
+        [
+          12,
+          0.009222376,
+          0.30282708070444514
+        ],
+        [
+          13,
+          0.009990908,
+          0.30324038088293637
+        ],
+        [
+          14,
+          0.01075847,
+          0.30358500873670324
+        ],
+        [
+          15,
+          0.01152231,
+          0.30387827164223113
+        ],
+        [
+          16,
+          0.01228263,
+          0.30413887371657605
+        ],
+        [
+          17,
+          0.01303996,
+          0.30438122035801407
+        ],
+        [
+          18,
+          0.01379514,
+          0.30461668313474044
+        ],
+        [
+          19,
+          0.01454923,
+          0.3048545695196902
+        ],
+        [
+          20,
+          0.01530341,
+          0.30510314383611353
+        ],
+        [
+          21,
+          0.01605881,
+          0.30537033212660614
+        ],
+        [
+          22,
+          0.01681072,
+          0.30566194632363264
+        ],
+        [
+          23,
+          0.01755951,
+          0.30598573567864884
+        ],
+        [
+          24,
+          0.01830571,
+          0.3063504815614849
+        ],
+        [
+          25,
+          0.01904992,
+          0.30676685275927434
+        ],
+        [
+          26,
+          0.01979283,
+          0.3072485049029964
+        ],
+        [
+          27,
+          0.02053529,
+          0.3078131429181518
+        ],
+        [
+          28,
+          0.02127814,
+          0.3084845232616969
+        ],
+        [
+          29,
+          0.02202222,
+          0.3091702799162675
+        ],
+        [
+          30,
+          0.02276682,
+          0.3097467664544411
+        ],
+        [
+          31,
+          0.02351002,
+          0.310236614135363
+        ],
+        [
+          32,
+          0.02425235,
+          0.31065755648556165
+        ],
+        [
+          33,
+          0.02499442,
+          0.3110226790895851
+        ],
+        [
+          34,
+          0.02573691,
+          0.3113373673575842
+        ],
+        [
+          35,
+          0.02648035,
+          0.31160876096342777
+        ],
+        [
+          36,
+          0.02722432,
+          0.3118496705702538
+        ],
+        [
+          37,
+          0.02796755,
+          0.3120713408507555
+        ],
+        [
+          38,
+          0.02871036,
+          0.31228355829256077
+        ],
+        [
+          39,
+          0.0294532,
+          0.3124946560075662
+        ],
+        [
+          40,
+          0.03019651,
+          0.3127120809430669
+        ],
+        [
+          41,
+          0.03094065,
+          0.3129428883582809
+        ],
+        [
+          42,
+          0.03168491,
+          0.31319389120702745
+        ],
+        [
+          43,
+          0.03242896,
+          0.3134725066956389
+        ],
+        [
+          44,
+          0.03317322,
+          0.3137874898552432
+        ],
+        [
+          45,
+          0.03391801,
+          0.31414934887039114
+        ],
+        [
+          46,
+          0.03466356,
+          0.31457132910557106
+        ],
+        [
+          47,
+          0.03540938,
+          0.3150698894660179
+        ],
+        [
+          48,
+          0.03615526,
+          0.31566520996218767
+        ],
+        [
+          49,
+          0.0369015,
+          0.31638362907312656
+        ],
+        [
+          50,
+          0.03764821,
+          0.31706791138187473
+        ],
+        [
+          51,
+          0.03839544,
+          0.31764348579252916
+        ],
+        [
+          52,
+          0.03914316,
+          0.3181347353267376
+        ],
+        [
+          53,
+          0.03989108,
+          0.3185583924982556
+        ],
+        [
+          54,
+          0.04063925,
+          0.3189265191942413
+        ],
+        [
+          55,
+          0.0413877,
+          0.3192438429909366
+        ],
+        [
+          56,
+          0.04213639,
+          0.3195188625605432
+        ],
+        [
+          57,
+          0.04288529,
+          0.3197653310603179
+        ],
+        [
+          58,
+          0.04363435,
+          0.3199944966766315
+        ],
+        [
+          59,
+          0.04438354,
+          0.3202151668318006
+        ],
+        [
+          60,
+          0.0451328,
+          0.32043491886416997
+        ],
+        [
+          61,
+          0.04588208,
+          0.32066082792294703
+        ],
+        [
+          62,
+          0.04663135,
+          0.3208995312406477
+        ],
+        [
+          63,
+          0.04738055,
+          0.32115750400017495
+        ],
+        [
+          64,
+          0.04812961,
+          0.3214414662612854
+        ],
+        [
+          65,
+          0.04887849,
+          0.3217588257733596
+        ],
+        [
+          66,
+          0.04962719,
+          0.3221181517571366
+        ],
+        [
+          67,
+          0.05037574,
+          0.3225297834257207
+        ],
+        [
+          68,
+          0.05112423,
+          0.32300663645961475
+        ],
+        [
+          69,
+          0.05187278,
+          0.3235653572848098
+        ],
+        [
+          70,
+          0.05262135,
+          0.3242274056244566
+        ],
+        [
+          71,
+          0.05336964,
+          0.3248842718871231
+        ],
+        [
+          72,
+          0.05411774,
+          0.32543886312463294
+        ],
+        [
+          73,
+          0.05486579,
+          0.3259126652542505
+        ],
+        [
+          74,
+          0.05561391,
+          0.32632170264103283
+        ],
+        [
+          75,
+          0.05636223,
+          0.32667815695442726
+        ],
+        [
+          76,
+          0.0571103,
+          0.326985660362196
+        ],
+        [
+          77,
+          0.05785823,
+          0.32725098913343087
+        ],
+        [
+          78,
+          0.05860613,
+          0.3274874694582124
+        ],
+        [
+          79,
+          0.05935412,
+          0.32770650390485484
+        ],
+        [
+          80,
+          0.06010231,
+          0.32791765810641577
+        ],
+        [
+          81,
+          0.06085039,
+          0.3281290660980522
+        ],
+        [
+          82,
+          0.06159839,
+          0.32834817737916644
+        ],
+        [
+          83,
+          0.0623464,
+          0.3285821632214322
+        ],
+        [
+          84,
+          0.06309449,
+          0.3288384038038735
+        ],
+        [
+          85,
+          0.06384276,
+          0.32912502086100087
+        ],
+        [
+          86,
+          0.06459101,
+          0.3294512926073226
+        ],
+        [
+          87,
+          0.06533924,
+          0.3298286815529559
+        ],
+        [
+          88,
+          0.06608749,
+          0.330271824777009
+        ],
+        [
+          89,
+          0.06683583,
+          0.33079768591776915
+        ],
+        [
+          90,
+          0.06758431,
+          0.3314273620906319
+        ],
+        [
+          91,
+          0.0683328,
+          0.33217236848561793
+        ],
+        [
+          92,
+          0.0690813,
+          0.33283280801777254
+        ],
+        [
+          93,
+          0.06982983,
+          0.3333908501185181
+        ],
+        [
+          94,
+          0.07057846,
+          0.3338679800070989
+        ],
+        [
+          95,
+          0.07132718,
+          0.33428009714491963
+        ],
+        [
+          96,
+          0.0720759,
+          0.3346369173029794
+        ],
+        [
+          97,
+          0.07282466,
+          0.33494418071487947
+        ],
+        [
+          98,
+          0.0735735,
+          0.3352123103199416
+        ],
+        [
+          99,
+          0.07432248,
+          0.33545449935194815
+        ],
+        [
+          100,
+          0.07507142,
+          0.335680976619633
+        ],
+        [
+          101,
+          0.07582038,
+          0.3359003470593532
+        ],
+        [
+          102,
+          0.07656941,
+          0.33612042485184224
+        ],
+        [
+          103,
+          0.0773186,
+          0.33634822585051777
+        ],
+        [
+          104,
+          0.07806782,
+          0.3365902239617871
+        ],
+        [
+          105,
+          0.07881702,
+          0.3368528696462285
+        ],
+        [
+          106,
+          0.07956628,
+          0.3371430800680023
+        ],
+        [
+          107,
+          0.08,
+          0.3373266082616475
+        ],
+        [
+          107,
+          0.08,
+          0.3373266082616475
+        ]
+      ],
+      "density_crossing_brackets": {
+        "30064771073": [
+          0.035409375502100174,
+          0.03615526222668155
+        ],
+        "30064771074": [
+          0.03615526222668155,
+          0.0369014967055269
+        ],
+        "30064771075": [
+          0.03764820887785751,
+          0.03839543503538338
+        ],
+        "30064771076": [
+          0.03839543503538338,
+          0.03914315905723362
+        ],
+        "30064771077": [
+          0.03914315905723362,
+          0.03989108002172968
+        ],
+        "30064771078": [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        "30064771079": [
+          0.04138769965803365,
+          0.04213639407049294
+        ],
+        "30064771080": [
+          0.04213639407049294,
+          0.042885291851948754
+        ],
+        "30064771081": [
+          0.043634350967937,
+          0.04438353730431847
+        ],
+        "30064771082": [
+          0.04513279976240384,
+          0.04588208240370226
+        ],
+        "30064771083": [
+          0.04663134827382395,
+          0.04738054784507752
+        ],
+        "30064771084": [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        "30064771085": [
+          0.0488784940311894,
+          0.04962718966407709
+        ],
+        "30064771086": [
+          0.05037574140587127,
+          0.051124234981376034
+        ],
+        "30064771087": [
+          0.051124234981376034,
+          0.05187278068517021
+        ],
+        "30064771088": [
+          0.05187278068517021,
+          0.05262134828197653
+        ]
+      },
+      "density_brackets_covered_by_event_envelope": 16,
+      "pressure_mach_errors": [
+        0.003360259226112383,
+        0.004744049073434731,
+        0.006226958859918863,
+        0.0074294464442781205,
+        0.008101419706591617,
+        0.008327182873647754,
+        0.008283188635350047,
+        0.0077853307193289645,
+        0.006174733295792656,
+        -0.008939875258685337,
+        -0.008939875258685337,
+        -0.008939875258685337,
+        -0.011005044031481725,
+        -0.013432536693015695,
+        -0.01377318487597945,
+        -0.013564900746482644
+      ],
+      "region_entry_brackets": [
+        [
+          0.027224320915366446,
+          0.02796754807669764
+        ],
+        [
+          0.0287103649612482,
+          0.029453197216177604
+        ],
+        [
+          0.030196506336305103,
+          0.030940646345063987
+        ],
+        [
+          0.03168491025401579,
+          0.03242896024504852
+        ],
+        [
+          0.033173216142501724,
+          0.033918012149504656
+        ],
+        [
+          0.034663559926280285,
+          0.035409375502100174
+        ],
+        [
+          0.03615526222668155,
+          0.0369014967055269
+        ],
+        [
+          0.03764820887785751,
+          0.03839543503538338
+        ],
+        [
+          0.03914315905723362,
+          0.03989108002172968
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.040639251477478405,
+          0.04138769965803365
+        ],
+        [
+          0.04213639407049294,
+          0.042885291851948754
+        ],
+        [
+          0.042885291851948754,
+          0.043634350967937
+        ],
+        [
+          0.04438353730431847,
+          0.04513279976240384
+        ]
+      ],
+      "region_exit_brackets": [
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.0488784940311894,
+          0.04962718966407709
+        ],
+        [
+          0.051124234981376034,
+          0.05187278068517021
+        ],
+        [
+          0.05336963683698513,
+          0.054117742783062334
+        ],
+        [
+          0.0556139139939287,
+          0.05636222501730155
+        ],
+        [
+          0.06533923654753708,
+          0.06608749025426514
+        ]
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CSH04_initial_inside",
+      "events": 16,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 16,
+      "synchronized_observations": 880,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 16,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "status": "pass"
+    },
+    {
+      "id": "CSH05_coexist_passivity",
+      "exact_fluid_mc_geometry_equal": true,
+      "trace_optional_events_equal": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_restart_actual_phases",
+      "phase_generations": {
+        "outside": 1,
+        "active": 37,
+        "pending": 53
+      },
+      "samepartition_events_nodes_mc_exact": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_d_relative_prefix",
+      "relative_historyprefix_after_chdir_replayed": true,
+      "checkpoint_argument": "absolute; configured history prefix relative",
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_sidecar_integrity",
+      "missing_and_corrupt_curve_sidecar_rejected": true,
+      "future_version_explicitly_rejected": true,
+      "corrupt_curve_prefix_rejected": true,
+      "oversized_uncommitted_future_chunk_rejected": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH08_overflow",
+      "explicit_overflow_rejection": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH08_old_untracked_checkpoint",
+      "old_untracked_checkpoint_activation_rejected": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_disabled_curve_consumer",
+      "stored_curve_history_cannot_drop_consumer": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_native_hydro_contract",
+      "allowed_native_hydro_settings_bound_to_checkpoint": true,
+      "physics_qualification": "configuration integrity only",
+      "status": "pass"
+    },
+    {
+      "id": "CSH08_curveonly_forcing_input",
+      "curve_only_nonfinite_forcing_rejected_before_evolution": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH01_zero",
+      "events": 0,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 32,
+      "synchronized_observations": 1056,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 32,
+      "maximum_lift_roundoff": 2.220446049250313e-16,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "max_position_error": 0,
+      "roundoff_budget": 2e-12,
+      "status": "pass"
+    },
+    {
+      "id": "CSH01_translation",
+      "events": 0,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 32,
+      "synchronized_observations": 1056,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 32,
+      "maximum_lift_roundoff": 2.220446049250313e-16,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "max_position_error": 8.881784197001252e-16,
+      "roundoff_budget": 2e-12,
+      "status": "pass"
+    },
+    {
+      "id": "CSH01_shear",
+      "events": 0,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 32,
+      "synchronized_observations": 1056,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 32,
+      "maximum_lift_roundoff": 2.220446049250313e-16,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "max_position_error": 8.881784197001252e-16,
+      "roundoff_budget": 2e-12,
+      "status": "pass"
+    },
+    {
+      "id": "CSH07_actual_refine_coarsen",
+      "events": 0,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 29,
+      "synchronized_observations": 1179,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 29,
+      "maximum_lift_roundoff": 2.220446049250313e-16,
+      "positive_births": 14,
+      "inside_positive_births": 0,
+      "outside_positive_births": 14,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "leaf_counts": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_changed_callback_contract",
+      "authentic_checkpoint_changed_refinement_callback_rejected": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH04_CSH07_curveonly_live_amr_births",
+      "events": 63,
+      "completed": 43,
+      "suspended": 0,
+      "nodes": 70,
+      "synchronized_observations": 9644,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 70,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 39,
+      "inside_positive_births": 17,
+      "outside_positive_births": 22,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "leaf_counts": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_CSH07_amr_newborn_restart",
+      "checkpoint_generation": 13,
+      "active_newborn_exercised": true,
+      "events_censored_views_full_birth_traces_nodes_exact": true,
+      "scope": "curve-only; MC AMR qualification remains blocked",
+      "status": "pass"
+    },
+    {
+      "id": "CSH04_CSH07_coexisting_live_amr_births",
+      "status": "fail",
+      "error": "ValueError: amr_live_shock failed native run; see /private/tmp/curve-shock-final-evidence-core-20261017/amr_live_shock/run.log"
+    }
+  ],
+  "scientific_approval": "pending",
+  "hardware_scope": "laptop serial only",
+  "criteria_sha256": "2dbf8bc7d01ee30faa366ef0ba0f553d6dc3674c24e115914e756c5b2100d40e",
+  "runner_sha256": "548e55d1e81f2e4ab517d8def458b45de5a53bbcd78550c4d1deed26d59c69df",
+  "inspected_worktree_source_sha256_not_binary_binding": {
+    "src/material_curves/curve_shocks.cpp": "da6d965d8c5aaad33b047d33d14ba3105aff5bc53e075cd00705bf687b0a59ff",
+    "src/material_curves/curve_shocks_io.cpp": "619b3cfe087a464529701631ca69e532f8865ed5906d46be644d7578aa0a66be",
+    "src/material_curves/material_curves.cpp": "4bd4657071c9048b533e24d02e7d56f7e3653075c84aab26e8fa817209b1103c",
+    "src/material_curves/material_curves_io.cpp": "619d7da628d599585d638fdd47ba08cb46c8688416e7f9e89206ba51529e0b5e",
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/shocks/observation.hpp": "aca112ee8c8a7cd32e30275c10ab95649f75d9af3696db2126e9af97e3bb8dca",
+    "src/shocks/store.hpp": "a7db5fa1086a153a075a86ee0a6e68723448e2642d96b3673cbf7bf71ec5fbc4"
+  },
+  "elapsed_seconds": 7.240915291942656,
+  "status": "incomplete_or_failed"
+}

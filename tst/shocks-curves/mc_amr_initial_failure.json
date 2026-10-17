@@ -1,0 +1,68 @@
+{
+  "scope": "actual remap method with constructor/count stand-ins; not full fluid AMR transaction or physical oracle",
+  "mpi": false,
+  "command": [
+    "/usr/bin/c++",
+    "-I/private/tmp/mc-amr-state-serial/config",
+    "-I/private/tmp/athenak-curve-shock-histories-20261017/src",
+    "-DKOKKOS_DEPENDENCE",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/core/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/desul/include",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/core/src/../../tpls/mdspan/include",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/containers/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/containers/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/algorithms/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/algorithms/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/simd/src",
+    "-I/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/kokkos/simd/src",
+    "-g",
+    "-std=c++17",
+    "-arch",
+    "arm64",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-Wl,-dead_strip",
+    "/private/tmp/athenak-curve-shock-histories-20261017/tst/shocks-curves/mc_amr_state_test.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/particles/particles_lagrangian_mc.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/bvals/bvals_part.cpp",
+    "/private/tmp/athenak-curve-shock-histories-20261017/src/globals.cpp",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/containers/src/libkokkoscontainers.a",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/core/src/libkokkoscore.a",
+    "/Users/hitesh/.codex/worktrees/shock-multiphase/athenak_nyu/build-shock/kokkos/simd/src/libkokkossimd.a",
+    "-o",
+    "/private/tmp/mc-amr-state-serial/mc_amr_state_test"
+  ],
+  "source_sha256": {
+    "tst/shocks-curves/mc_amr_state_test.cpp": "ccd2a95ff477bf7972e050d56f150622dc1e430c993c5fb751b5f15b1b16b7ea",
+    "src/particles/particles_lagrangian_mc.cpp": "bd9dff3e061b8aa4e880d0418fba9262c407685d04e65152047e46077bee913a",
+    "src/bvals/bvals_part.cpp": "191a3328dfb35788a798d788e7ef2758f70213e115d0d2cba12cf8e791fc2d20",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8"
+  },
+  "compile_exit": 0,
+  "compile_output": "",
+  "runs": [
+    {
+      "mode": "refine_coarsen",
+      "exit": -6,
+      "output": "Assertion failed: (std::memcmp(&state(p),&expected,sizeof(expected)) == 0), function operator(), file mc_amr_state_test.cpp, line 157.\n",
+      "passed": false
+    },
+    {
+      "mode": "outside",
+      "exit": -6,
+      "output": "Assertion failed: (std::memcmp(&state(p),&expected,sizeof(expected)) == 0), function operator(), file mc_amr_state_test.cpp, line 157.\n",
+      "passed": false
+    },
+    {
+      "mode": "extent",
+      "exit": -6,
+      "output": "Assertion failed: (state.extent(0) == static_cast<size_t>(part.nprtcl_thispack)), function operator(), file mc_amr_state_test.cpp, line 153.\n",
+      "passed": true
+    }
+  ]
+}

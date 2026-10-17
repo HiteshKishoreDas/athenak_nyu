@@ -1,6 +1,7 @@
 """Bounded merge interactions: passivity, disabled paths and explicit unsupported use.
 
-Uses existing line and planar-shock fixtures; never assigns histories to curve nodes.
+Uses existing line and planar-shock fixtures; full curve qualification is in
+tst/shocks-curves/acceptance.py.
 """
 import argparse
 import json
@@ -105,10 +106,13 @@ def main():
             (resumed/'material_line.curves.final.txt').read_bytes()
         report['checks'].append('native paired curve restart yields exact final snapshot')
         missing = 'shock tracking requires lagrangian_mc particles'
-        case('curves_missing_particles', line, {'shock_tracking/enabled': 'true'}, missing)
+        tracked = case('curves_without_particles', line, {
+            'shock_tracking/enabled': 'true', 'shock_tracking/lineage': 'merge-curve-control'})
+        from curve_shock_history import read_history as read_curve_history
+        assert read_curve_history(tracked/'shock_events/curves') == []
         case('hydro_missing_particles', line, {
             'material_curves/enabled': 'false', 'shock_tracking/enabled': 'true'}, missing)
-        report['checks'].append('orphan shock requests rejected for both curves and hydro')
+        report['checks'].append('curve-only histories accepted; orphan hydro request rejected')
         shock = 'inputs/tests/shock_mc.athinput'
         enabled = case('shocks', shock, {})
         disabled = case('shocks_curves_off', shock, {'material_curves/enabled': 'false'})
@@ -118,9 +122,10 @@ def main():
         assert all(json.dumps(a[k], sort_keys=True) == json.dumps(b[k], sort_keys=True)
                    for k in a)
         report['checks'].append('shock observations unchanged when curves explicitly disabled')
-        case('shocks_curves_on', shock, {'material_curves/enabled': 'true'},
-             'requires passive Newtonian single-fluid HD without particles/forcing')
-        report['checks'].append('curve plus MC shock history remains explicitly unsupported')
+        both = case('shocks_curves_on', 'inputs/tests/shocks-curves/planar.athinput', {})
+        assert (both/'shock_events/curves/manifest.rank0').is_file()
+        read_curve_history(both/'shock_events/curves')
+        report['checks'].append('curve and MC history stores coexist')
         report['status'] = 'passed'
     except Exception as error:
         report['status'] = 'failed'

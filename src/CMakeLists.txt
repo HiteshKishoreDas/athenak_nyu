@@ -106,6 +106,8 @@ add_executable(
         outputs/vtk_mesh.cpp
         outputs/vtk_prtcl.cpp
 
+        material_curves/curve_shocks.cpp
+        material_curves/curve_shocks_io.cpp
         material_curves/material_curves.cpp
         material_curves/material_curves_io.cpp
 
