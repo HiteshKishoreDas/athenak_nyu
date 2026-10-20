@@ -1,0 +1,102 @@
+{
+  "schema": "curve-shocks-acceptance-1",
+  "runs": [
+    {
+      "name": "forced_on",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-plots-forced-20261019/forced_on/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 7.392457334091887,
+      "input_sha256": "6ea8ea7e08159192a9544411014d1dfbc8080b650af78b8ef684313c380199ef",
+      "log_sha256": "9dda4e31d8fcc2a0850465edcbaae0ed1a1c5d8c1fcd7c274cbd4e0bf0d886cc",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "forced_off",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-plots-forced-20261019/forced_off/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.4843892919598147,
+      "input_sha256": "3e43960b39c09a26ae2eaa424aa1df4c0f9e5261d2018e8611f039471edfd7bd",
+      "log_sha256": "44d20225ca342aec797b5ea54f5654f9646a14da14a247442603976f7e71f416",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    },
+    {
+      "name": "forced_no_trace",
+      "command": [
+        "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+        "-i",
+        "/private/tmp/curve-shock-plots-forced-20261019/forced_no_trace/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.5806769580813125,
+      "input_sha256": "33b436d76f246011cedc9107f67e37c077df4d8e5077c0fe245830509d1ce009",
+      "log_sha256": "6d5c543ae6b398702fda13e4e021357237ff03d12ca35271c11908ba8404c67f",
+      "executable": "/private/tmp/athenak-curve-shocks-main-build/src/athena",
+      "executable_sha256": "b9571c72f81793145c33ad80ab3cea189a0ad74a09b7f6daf23bd35e8154acb1",
+      "compiled_source_fingerprint": "e0e18be4dddc954da31130e884456be8585bf5615e6f7ac789438ad2efe2ddcf",
+      "build_cache_sha256": "765af9767c4177382e5fafd44c31b2f188d69ab3c0c951cf3c9239157cbf7bb7"
+    }
+  ],
+  "checks": [
+    {
+      "id": "CSH09_forced_MC_curves_passivity",
+      "events": 28,
+      "completed": 28,
+      "suspended": 0,
+      "nodes": 16,
+      "synchronized_observations": 2320,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 16,
+      "maximum_lift_roundoff": 5.551115123125783e-17,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {
+        "30064771073": 2,
+        "30064771074": 2,
+        "30064771077": 3,
+        "30064771078": 2,
+        "30064771079": 4,
+        "30064771083": 3,
+        "30064771084": 2,
+        "30064771085": 2
+      },
+      "scientific_approval": "pending",
+      "exact_fluid_mc_curve_passivity": true,
+      "trace_optional_events_equal": true,
+      "physical_settings": "EXACT inputs/tests/shock_mc_forced.athinput",
+      "physical_strength_truth": "not asserted",
+      "inherited_RK2_forcing_heat_bias": "unresolved; no scientific approval",
+      "status": "pass"
+    }
+  ],
+  "scientific_approval": "pending",
+  "hardware_scope": "laptop serial only",
+  "criteria_sha256": "2dbf8bc7d01ee30faa366ef0ba0f553d6dc3674c24e115914e756c5b2100d40e",
+  "runner_sha256": "548e55d1e81f2e4ab517d8def458b45de5a53bbcd78550c4d1deed26d59c69df",
+  "inspected_worktree_source_sha256_not_binary_binding": {
+    "src/material_curves/curve_shocks.cpp": "da6d965d8c5aaad33b047d33d14ba3105aff5bc53e075cd00705bf687b0a59ff",
+    "src/material_curves/curve_shocks_io.cpp": "619b3cfe087a464529701631ca69e532f8865ed5906d46be644d7578aa0a66be",
+    "src/material_curves/material_curves.cpp": "4bd4657071c9048b533e24d02e7d56f7e3653075c84aab26e8fa817209b1103c",
+    "src/material_curves/material_curves_io.cpp": "619d7da628d599585d638fdd47ba08cb46c8688416e7f9e89206ba51529e0b5e",
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/shocks/observation.hpp": "aca112ee8c8a7cd32e30275c10ab95649f75d9af3696db2126e9af97e3bb8dca",
+    "src/shocks/store.hpp": "a7db5fa1086a153a075a86ee0a6e68723448e2642d96b3673cbf7bf71ec5fbc4"
+  },
+  "elapsed_seconds": 13.455832500010729,
+  "status": "pass"
+}

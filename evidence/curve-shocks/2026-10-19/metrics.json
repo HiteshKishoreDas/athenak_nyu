@@ -1,0 +1,63 @@
+{
+  "scientific_approval": "pending",
+  "fresh_run_checks_passed": 19,
+  "fresh_run_checks_total": 20,
+  "figures": [
+    "01_planar.png",
+    "02_amr_births.png",
+    "03_forced_coexistence.png",
+    "04_forced_histories.png",
+    "05_passivity_restart.png",
+    "06_amr_blocker.png"
+  ],
+  "planar": {
+    "complete_events": 16,
+    "nodes": 16,
+    "density_brackets_covered": 16
+  },
+  "amr_births": {
+    "inside": 17,
+    "outside": 22,
+    "maximum_birth_delay": 0.0,
+    "all_sequences_start_zero": true,
+    "inside_left_censored": true
+  },
+  "forcing": {
+    "curve_events": 28,
+    "mc_events": 7063,
+    "mc_population": 4096,
+    "curve_nodes": 16,
+    "mc_terminal_censored": 556,
+    "short_engineering_run": true
+  },
+  "reanalysis": {
+    "fluid_on_off_exact": true,
+    "phase_restarts_event_evidence_exact": true,
+    "amr_newborn_full_traces_exact": true,
+    "zero_errors_real_not_clipped": true
+  },
+  "mc_amr": {
+    "observed_children": [
+      0,
+      0,
+      0,
+      4096
+    ],
+    "expected_child_count": 1024,
+    "qualification": "failed; startup guard retained"
+  },
+  "input_sha256": {
+    "/private/tmp/curve-shock-plots-core-20261019/report.json": "acaeb0ce69653a6c3472e6e385275c2c84445de9fd6cfa2842d55ef142f793d0",
+    "/private/tmp/curve-shock-plots-forced-20261019/report.json": "82b429ad2fb6bf05d8a01e8f7c30c9e5479be68e99b3a142adb11469d1f39dab",
+    "/private/tmp/curve-shock-plots-remap-20261019/report.json": "972ef8787e1e9ef99191a18cf2c23cb65078c4fe2892277244925a8cfcf76b57",
+    "/private/tmp/athenak-curve-shock-histories-20261017/tst/shocks-curves/visuals.py": "7a71c0a4bd651666dd1db944e0f8642f4e0d24e73f1265a642cdcce99381bd29"
+  },
+  "figure_sha256": {
+    "06_amr_blocker.png": "557c2ab5f1336f8839bedb31af771faae303a1ee61a6b47622b04dd254daa93a",
+    "01_planar.png": "764c20a5f7b993afd017f3e7ff24fdce7fb33010c0124782dee2107bc33410d1",
+    "05_passivity_restart.png": "886c9b4ed268838cbde022c1ebac2e92666cf513950f85c542e53ed33e608d27",
+    "03_forced_coexistence.png": "a738448b2203450194b3a1a2606a6a1e4842c05fde5ce06a6cf64024f2bf7853",
+    "02_amr_births.png": "d1a05a13a810e13409ce49aa22fcfe47e619abc5f8973f922ba4da5cc381663d",
+    "04_forced_histories.png": "68f4b6393c70ffba61c073035d76e717646a2992db7386b4822cd61720f88482"
+  }
+}

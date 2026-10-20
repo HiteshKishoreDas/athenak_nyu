@@ -1,0 +1,13 @@
+{
+  "production_implementation_commit": "6f1f1486ac671496fcb7b2f7812a87f9a8517f14",
+  "inspected_branch_head": "d5d7c34b486d45d226665cde7d85e0e87c9de86f",
+  "all_production_source_hashes_match_locked_packet": true,
+  "all_run_binary_hashes_match_locked_packet": true,
+  "native_runs": 39,
+  "core_suite_status": "incomplete_or_failed",
+  "forced_suite_status": "pass",
+  "scientific_approval": "pending",
+  "prior_exact_code_bundle": "../curve-shock-histories-20261017",
+  "local_worktree": "/private/tmp/athenak-curve-shock-histories-20261017",
+  "raw_archive": "raw-rerun-evidence.tar.gz"
+}

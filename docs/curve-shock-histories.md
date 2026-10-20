@@ -282,3 +282,55 @@ Raw test directories/binaries/configuration and historical failure artifacts are
 archived outside Git in the exact-code bundle. The compact copied remap log trims
 only its final blank line; the raw archive preserves original bytes. No scientific
 sign-off, merge into feature_dump, push or original-branch modification is implied.
+
+
+## Visual validation requirement and fresh rerun — 2026-10-19
+
+User explicitly requires plots with test results, always. Include failures as well
+as passes, and put explanations beside each plot. Preserve this presentation
+requirement for subsequent work on this feature.
+
+Re-ran the unchanged native core and forced fixtures using the same exact locked
+production binaries: 36 core runs give 19/20 checks; the combined MC/curve AMR
+startup guard remains the sole failed required gate. Three forced runs pass exact
+on/off fluid/MC/node passivity and optional-trace equality. A freshly compiled
+actual-method remap harness reproduces [0,0,0,4096] child occupancy. Its process
+success reports reproduction, not physical acceptance.
+
+Six reviewed figures show planar passage/strength evidence, independent newborn
+histories, a native 32-cubed forced-box projection with both carrier populations,
+per-node flags/episodes, exact passivity/restart comparisons, and the inherited
+AMR failure alongside all 20 gates. Forced run: 28 complete curve records for
+16 nodes; 7063 complete MC records for 4096 particles, plus 556 separately censored
+terminal MC views. Different populations sample different spatial regions;
+matching their counts is not an acceptance requirement. These are short-run
+engineering checks, not converged turbulence statistics, hardware performance
+benchmarks, or scientific approval.
+
+Plot reader assertions check actual files, input/log/binary hashes, exact replay
+evidence, no pre-birth records and all-zero displayed error curves. Every locked
+production source hash and native binary hash was rechecked against the original
+exact-code packet; production source is unchanged. Fixed a plot-provenance check
+that initially skipped log validation when the runner omitted a directory field;
+final plotting validates every explicit run-name directory and input/log hash.
+
+Reviewed output:
+`/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/curve-shock-interaction-plots-20261019-reviewed/index.html`.
+Full PNGs include nearby explanations; original plot iteration is retained
+separately. Raw reruns and exact commands are archived with the reviewed plots;
+compact fresh reports and metrics are in `evidence/curve-shocks/2026-10-19/`.
+
+Reproduce the figures, with the already-installed scientific Python environment:
+
+```sh
+/Users/hitesh/hitesh/git/shockit/.venv/bin/python tst/shocks-curves/visuals.py \
+  --core /private/tmp/curve-shock-plots-core-20261019 \
+  --forced /private/tmp/curve-shock-plots-forced-20261019 \
+  --remap-report /private/tmp/curve-shock-plots-remap-20261019/report.json \
+  --output /private/tmp/curve-shock-figures-UNIQUE
+```
+
+The plot script reuses acceptance.py and production readers. It adds no detector,
+trajectory reconstruction, dependency, physical parameter, floor or tolerance.
+The curve-history implementation remains on codex/curve-shock-histories; it is not
+yet merged into the local feature_dump branch. Original shock branch is preserved.
