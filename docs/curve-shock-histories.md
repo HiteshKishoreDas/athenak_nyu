@@ -334,3 +334,27 @@ The plot script reuses acceptance.py and production readers. It adds no detector
 trajectory reconstruction, dependency, physical parameter, floor or tolerance.
 The curve-history implementation remains on codex/curve-shock-histories; it is not
 yet merged into the local feature_dump branch. Original shock branch is preserved.
+
+
+## Why live MC + curve AMR remains blocked — 2026-10-20 clarification
+
+Rechecked current branch505c0304: ValidateShockPhysics still rejects multilevel or
+adaptive meshes when MC shock tracking is enabled. Curve-only AMR works through
+its tested observation/birth/restart path. The blocking evidence is inherited MC
+mass allocation at a regrid, not a loss of the stored EncounterState.
+
+A mass-following MC population colocated at one coarse cell center should split
+among refined child cells according to their fluid masses. The focused uniform
+2D fixture has4096 distinct identities and four equal-mass children: expected
+counts are1024 per child, with sampling fluctuations for a stochastic split.
+Actual native remap produces[0,0,0,4096] because it locates the new containing cell,
+snaps to its center, then resets PLASTMOVE/PLASTLEVEL. That bypasses redistribution
+of this regridded population. Complete IDs/history survival alone cannot establish
+correct gas-mass sampling; shock encounter statistics could inherit this bias.
+
+The proposed repair is child-mass-weighted random selection, with stable IDs,
+complete histories and reproducible restart/partition behavior. It must preserve
+tracking on/off passivity and pass physical refinement/coarsening checks before
+the guard is lifted. Physical allocation and AMR detector-width UserQuestions
+remain pending. The explanatory chart reuses the actual2026-10-19 rerun; no new
+simulation or numerical change was made for this clarification.
