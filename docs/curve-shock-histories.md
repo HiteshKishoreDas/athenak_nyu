@@ -396,3 +396,20 @@ branch, production source, transport RNG or thresholds were edited.
 Source snapshot, full compile command/output, executable and explained comparison
 plot: /Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/vanilla-mc-amr-20261020.
 Compact probe report is retained in evidence/curve-shocks/2026-10-20/.
+
+
+## Curve nodes versus MC particles — 2026-10-20 clarification
+
+Material-curve geometry uses continuous velocity-following nodes satisfying
+\(d\mathbf{X}(a,t)/dt=\mathbf{u}(\mathbf{X}(a,t),t)\), with persistent material
+labels. Current MaterialCurves::Sample interpolates native primitive velocity
+(bilinear in2D, trilinear in3D); Advance applies the existing two-stage RK2 update.
+Curve nodes are not driven by MC cell hops. They do not need to be objects of the
+existing particle class to implement continuous Lagrangian advection.
+
+MC particles are an independent optional population following mass flux
+statistically. Sharing the detector/encounter code and fluid state does not share
+or replace the two motion algorithms. The combined MC/curve AMR qualification
+blocker concerns the MC population's regrid allocation, not MC-based curve motion.
+This clarification is based on current source inspection; no new simulation,
+production change, or scientific qualification was performed.
