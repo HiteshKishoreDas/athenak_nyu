@@ -358,3 +358,41 @@ tracking on/off passivity and pass physical refinement/coarsening checks before
 the guard is lifted. Physical allocation and AMR detector-width UserQuestions
 remain pending. The explanatory chart reuses the actual2026-10-19 rerun; no new
 simulation or numerical change was made for this clarification.
+
+
+## Original MC behavior compared directly — 2026-10-20
+
+User asked how vanilla MC handles this. Here vanilla means the actual local
+pre-shock multiphase_turb branch526a187f938e38634e89a88192ebe9731c4d36bb;
+no claim is made about another upstream repository/version.
+
+There are three operations in original particles_lagrangian_mc.cpp:
+
+1. PushLagrangianMC(line500): use positive outgoing saved mass flux divided by
+   old-cell mass, draw a uniform pseudo-random number keyed by ID/cycle/seed,
+   choose one face or remain. Particle positions encode cell-center membership.
+   Hydro::SaveFlux stores stage-summed density flux scaled by timestep/cell width.
+2. AdjustMeshRefinement(line592): after actual particle boundary transfer, compare
+   prior/current levels. Coarse-to-fine crossing chooses a transverse fine entry
+   subface using its positive saved flux fraction(two in2D,four in3D). Fine-to-coarse
+   crossing applies deterministic coordinate corrections from stored parity/move.
+3. RemapAfterMeshRefinement(line734): when the mesh itself changes, locate the new
+   leaf from the stored position, snap to its cell center, set PGID, reset last move
+   tozero and last level to new level, then migrate real/integer records to owning
+   MPI ranks. No child-fluid-mass random redistribution occurs in this routine.
+
+These are separate paths: existing stochastic fine-face entry selection does not
+redistribute a coarse-cell population when the mesh is refined underneath it.
+This distinction is the reason the integration gate remains blocked.
+
+Direct check: extracted the entire original MC translation unit byte-for-byte
+using git show526a187f, compiled it against current headers and existing native
+method harness constructor/count stand-ins, and ran occupancy only. Compile0,
+process0; child counts[0,0,0,4096], identical to the current history branch. This
+proves reproduction of the original positional remap, not scientific acceptance
+or a complete original-branch fluid/MPI executable qualification. No original
+branch, production source, transport RNG or thresholds were edited.
+
+Source snapshot, full compile command/output, executable and explained comparison
+plot: /Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/vanilla-mc-amr-20261020.
+Compact probe report is retained in evidence/curve-shocks/2026-10-20/.
