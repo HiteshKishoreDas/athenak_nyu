@@ -1,0 +1,11 @@
+{
+  "status": "pass",
+  "particle_trace_files_byte_equal": 145,
+  "particle_observations": 593920,
+  "curve_observations_equal": 2320,
+  "particle_events_equal_except_new_lineage": true,
+  "curve_events_equal_except_new_lineage": true,
+  "terminal_views_equal_except_new_lineage": true,
+  "physics_changes": false,
+  "simulation_rerun": "primitive-field output only; distinct output lineage"
+}

@@ -1,0 +1,186 @@
+{
+  "curve_evolution.png": {
+    "bytes": 237281,
+    "sha256": "0e1c03bf118acc4323b36c70f59688c9ea597f3cf3aa537af07b91c143ceb1e8"
+  },
+  "detector/cycle0.csv": {
+    "bytes": 8365625,
+    "sha256": "dc4e71667ebcd0d0f6b0ebf912e70b295281716f28474554fb9dc284625e4e4d"
+  },
+  "detector/cycle0.npz": {
+    "bytes": 513,
+    "sha256": "93c84681741d84b190274faee314ec069c1dd2ac9675b93b9ab76ea431a3edb1"
+  },
+  "detector/cycle0.txt": {
+    "bytes": 2634273,
+    "sha256": "9429595abd27f06e9f9aa99a674699868a9f4d2b7364bdf032d39f07f8e78fc3"
+  },
+  "detector/cycle110.csv": {
+    "bytes": 15192406,
+    "sha256": "289fc6d4a78311f3fcb6ff656f11c66b3ba30c706be3af35bd5e7445769de5ad"
+  },
+  "detector/cycle110.npz": {
+    "bytes": 3896,
+    "sha256": "7e9cd8c83d02a885678054a5916feb529cd29a5efb15f94e3a84dea0b88288ac"
+  },
+  "detector/cycle110.txt": {
+    "bytes": 3239992,
+    "sha256": "ff2250feb1b886508c9de6ff5c0a1180c396b8f84f6859f5842f25548e6fb618"
+  },
+  "detector/cycle127.csv": {
+    "bytes": 15150760,
+    "sha256": "682cdcd524c0a0e3bc7af631c523f59eca2ddcded498da52937ceab0544b03a2"
+  },
+  "detector/cycle127.npz": {
+    "bytes": 4146,
+    "sha256": "c882ffd1fbfbc4c33ba9536ea7bf4038230928ced7ec2bb0766fafc3eca68ebb"
+  },
+  "detector/cycle127.txt": {
+    "bytes": 3231629,
+    "sha256": "95e359784f4a206e47eaac1b5d95103affa8d24d623854bb3eb43c7ce15aaa40"
+  },
+  "detector/cycle144.csv": {
+    "bytes": 15125542,
+    "sha256": "801a53d6667b8d6a5c565a4e8eae646c03bb1ce685991d47883654602659ccc5"
+  },
+  "detector/cycle144.npz": {
+    "bytes": 4133,
+    "sha256": "314ed5371a9f29829fd956c58e4cf77cb2c9041788fcee662eed10f87654a7db"
+  },
+  "detector/cycle144.txt": {
+    "bytes": 3226945,
+    "sha256": "747ddf6563cd7c9dd973cdc3a25c5bab20df1f3f266dc258959f39c49b9b5eaa"
+  },
+  "detector/cycle21.csv": {
+    "bytes": 15575312,
+    "sha256": "28713dd3366d4fec1879e1c34201ba63a15513663c17ba240797dd544cb3fc4d"
+  },
+  "detector/cycle21.npz": {
+    "bytes": 3995,
+    "sha256": "50b8cb56f1eda5f65121706b544e13cc782d95f98e2bce53a513fe20c9cf9ea0"
+  },
+  "detector/cycle21.txt": {
+    "bytes": 3219997,
+    "sha256": "7202b75070dde8fd0ac1282823d29dbb3a33eb5bdf4721faec9ac11c553dc27d"
+  },
+  "detector/cycle41.csv": {
+    "bytes": 15449889,
+    "sha256": "9ab1c5b8ab742f9619fa9497c3dd7523c080ac0c9477417bcfc4efc35f5b2fe2"
+  },
+  "detector/cycle41.npz": {
+    "bytes": 4275,
+    "sha256": "c31be9be751686a6c70900dc3ef0525aa17056452b5155d2cbb37da584648144"
+  },
+  "detector/cycle41.txt": {
+    "bytes": 3235249,
+    "sha256": "effa7c0292d1bd2359071eec7a902fbd91d8bd685722685c1f74773f89269b6e"
+  },
+  "detector/cycle59.csv": {
+    "bytes": 15363261,
+    "sha256": "e2457629d5e6613a72ea0953f1c8bb6fe89513e09921dfe55f877806db5f4066"
+  },
+  "detector/cycle59.npz": {
+    "bytes": 3861,
+    "sha256": "3bcac55309b6ad8983ef8970d51bb9d3e4d34344cca6288028a9754ee25cc117"
+  },
+  "detector/cycle59.txt": {
+    "bytes": 3243409,
+    "sha256": "222fbd2ebf2a4862d1f042e3649f29954d4a0dbcce4944eb3e27c7ddc1438353"
+  },
+  "detector/cycle76.csv": {
+    "bytes": 15309936,
+    "sha256": "3fbbc2d45db7f8221c309157a7a3010c16df390a16525e1620d520f9d9f91ec5"
+  },
+  "detector/cycle76.npz": {
+    "bytes": 3547,
+    "sha256": "6efeb1787e841e3680ba13ae2dc8a18fc29b434aeb0a717ee0e561eaa02bde7b"
+  },
+  "detector/cycle76.txt": {
+    "bytes": 3249328,
+    "sha256": "644e4bd60ebb16f8b0a25a2f23c6a2dbb3539052c7ba8eb581b7e37b5daf911f"
+  },
+  "detector/cycle93.csv": {
+    "bytes": 15251821,
+    "sha256": "b3a61c6b18cd427a28e8a4b007f9fa63184e656c2a8a10a70cf0bd3b5b10439e"
+  },
+  "detector/cycle93.npz": {
+    "bytes": 3713,
+    "sha256": "c307ba58787d2b14a21b490046d624f90d83a3ac7eb2f020f70d773566ea94d8"
+  },
+  "detector/cycle93.txt": {
+    "bytes": 3246869,
+    "sha256": "a0a1e07ac293e0362b308b4061f6d28f10dcdd0d65e8dcb52c3cff6c131fe7ef"
+  },
+  "ffmpeg.log": {
+    "bytes": 4764,
+    "sha256": "ecb8e2c5ae3931f80e00875717bc287dcaf5900d8e59837ec1871bde2477921d"
+  },
+  "frames/frame_000.png": {
+    "bytes": 190442,
+    "sha256": "7fef412d350bfd31ee7ac2dbffe535b53829e99217b6ba18b5fca06b5a841cdc"
+  },
+  "frames/frame_001.png": {
+    "bytes": 258009,
+    "sha256": "cffb70ebee30341c0480bb88bcdcc6516e3eb900f965e247d97b64e10db61108"
+  },
+  "frames/frame_002.png": {
+    "bytes": 264668,
+    "sha256": "d9e571c7ad5408738467506ef809d6b43753f160517011f18b4abba3fc25cd26"
+  },
+  "frames/frame_003.png": {
+    "bytes": 270888,
+    "sha256": "ca0786b904ebce11dc170368fb2f32d0145c32ee3aae026018389998f17d2347"
+  },
+  "frames/frame_004.png": {
+    "bytes": 264839,
+    "sha256": "9f6eb83569ead9293a2310bab0872238fb1c852435fbcc6068f378ee7c640398"
+  },
+  "frames/frame_005.png": {
+    "bytes": 275485,
+    "sha256": "c28443ff7f4e44fb05d798a1e03dbfa0f44ef484a855f2fc98ad98a58f096c14"
+  },
+  "frames/frame_006.png": {
+    "bytes": 271457,
+    "sha256": "9127390330f8a9bbf9777469441df327b8948b521410fb212aa7b85be285a4bd"
+  },
+  "frames/frame_007.png": {
+    "bytes": 275926,
+    "sha256": "6b2f1f8a2800105762d30583b70cc0130eafad58a022e7db06bb9d03e274f050"
+  },
+  "frames/frame_008.png": {
+    "bytes": 281005,
+    "sha256": "df2836c9336339f326ccf82c83319b764356e6c777e66e380123ca10001b72d5"
+  },
+  "index.html": {
+    "bytes": 2858,
+    "sha256": "b6dbfa09b34c53a19b43bb35ef724841d49d50974b3eaaf08d78251c99a42a5d"
+  },
+  "media-check.json": {
+    "bytes": 264,
+    "sha256": "0cf96a5253bd9dfe8a60072e79c49f0899db078804f3f988bf823b5391a182e8"
+  },
+  "node_passages.png": {
+    "bytes": 120994,
+    "sha256": "e3c21be9c0fea5b57a25d32034f4d0c1cdec97e68f288d77abb8566e9c6cdc42"
+  },
+  "report.json": {
+    "bytes": 10149,
+    "sha256": "bf56ea4b4a70d6b26f7ffc23423557e8b03facf31e99041df5762a2daa245b3d"
+  },
+  "showcase.gif": {
+    "bytes": 1653735,
+    "sha256": "c4e0c702f2765f00df5e887a3cf011fe036dcd05dbfeb7031baa72bf2046ef09"
+  },
+  "showcase.mp4": {
+    "bytes": 537973,
+    "sha256": "618bc291e969a8ea01bda022c978e2a9ddef4f34a1bc237bcca7733ae9330320"
+  },
+  "showcase.png": {
+    "bytes": 264839,
+    "sha256": "9f6eb83569ead9293a2310bab0872238fb1c852435fbcc6068f378ee7c640398"
+  },
+  "showcase.py": {
+    "bytes": 21884,
+    "sha256": "3806934832ea669ceaa6019b9c951556782351f3a7e7b5641e8e8037ffa82e3e"
+  }
+}

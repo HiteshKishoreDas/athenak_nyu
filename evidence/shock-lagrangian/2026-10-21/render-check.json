@@ -1,0 +1,161 @@
+{
+  "status": "pass",
+  "native_run": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run",
+  "simulation_source_commit": "1c325e5a59d64f743ffdaa4f8678a4805b12608f",
+  "input_sha256": "710f6fed17ae7a53da92e8890bc8f1dd56567c9b67af75dfba6c3501d5603da4",
+  "detector_executable_sha256": "e81fe04be28d1ea110eabefb21bc179af8809f258994a60f9ca92fa73b66dae7",
+  "script_sha256": "3806934832ea669ceaa6019b9c951556782351f3a7e7b5641e8e8037ffa82e3e",
+  "frames": [
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle0.txt"
+      ],
+      "fixture_sha256": "9429595abd27f06e9f9aa99a674699868a9f4d2b7364bdf032d39f07f8e78fc3",
+      "signals_sha256": "dc4e71667ebcd0d0f6b0ebf912e70b295281716f28474554fb9dc284625e4e4d",
+      "flagged_cells": 0,
+      "cycle": 0,
+      "time": 0.0,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00000.bin",
+      "field_sha256": "1288cb613e5d9486984b0d3819ee3e63b2182e4f9264c52b05dc3278c9ff25c8",
+      "particle_trace_sha256": "bc78c680f496b7addfebcea3988f6907ac3d6677a83bf2cb0f7ad941d3e0c456",
+      "membership_matches": 4112
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle21.txt"
+      ],
+      "fixture_sha256": "7202b75070dde8fd0ac1282823d29dbb3a33eb5bdf4721faec9ac11c553dc27d",
+      "signals_sha256": "28713dd3366d4fec1879e1c34201ba63a15513663c17ba240797dd544cb3fc4d",
+      "flagged_cells": 12203,
+      "cycle": 21,
+      "time": 0.025382373432978556,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00001.bin",
+      "field_sha256": "cc9ab521dc93edf8d5d7ee7bcfaab4184923d39e3a16ec95b7d008df90d5eb9a",
+      "particle_trace_sha256": "d053dd145c3eb7270bf1a2321111d32688d9c947b5f7bd691ba5dcf3b65078cb",
+      "membership_matches": 4112
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle41.txt"
+      ],
+      "fixture_sha256": "effa7c0292d1bd2359071eec7a902fbd91d8bd685722685c1f74773f89269b6e",
+      "signals_sha256": "9ab1c5b8ab742f9619fa9497c3dd7523c080ac0c9477417bcfc4efc35f5b2fe2",
+      "flagged_cells": 9594,
+      "cycle": 41,
+      "time": 0.051009060930241316,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00002.bin",
+      "field_sha256": "48dab993bb403fe2da9e69fa1b28c112ffe0e4996edc3dd78062c4f6d633852d",
+      "particle_trace_sha256": "ade67fa9d69a3c5dbd50db1c6e14080a34b30a01769caee4abf97a0c3524b71d",
+      "membership_matches": 4112
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle59.txt"
+      ],
+      "fixture_sha256": "222fbd2ebf2a4862d1f042e3649f29954d4a0dbcce4944eb3e27c7ddc1438353",
+      "signals_sha256": "e2457629d5e6613a72ea0953f1c8bb6fe89513e09921dfe55f877806db5f4066",
+      "flagged_cells": 6086,
+      "cycle": 59,
+      "time": 0.07594980087023841,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00003.bin",
+      "field_sha256": "53b58bfe123fd8bd77684ad250703dd16880668bda42ea8d856fe9d9f1aa2682",
+      "particle_trace_sha256": "e6834d573f4cb0fb74f244a3313d5026f594c80a1f84692f33a30510798b2b0f",
+      "membership_matches": 4112
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle76.txt"
+      ],
+      "fixture_sha256": "644e4bd60ebb16f8b0a25a2f23c6a2dbb3539052c7ba8eb581b7e37b5daf911f",
+      "signals_sha256": "3fbbc2d45db7f8221c309157a7a3010c16df390a16525e1620d520f9d9f91ec5",
+      "flagged_cells": 5215,
+      "cycle": 76,
+      "time": 0.1003285015651099,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00004.bin",
+      "field_sha256": "1b160d6116d2328834848fa766f00ed8dd99b9b67c217f58959bb4d994884791",
+      "particle_trace_sha256": "9a31e45a0d40d277a3ac93626acd7cf017c5c5d955a876b0167ad0f5347be1ab",
+      "membership_matches": 4112
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle93.txt"
+      ],
+      "fixture_sha256": "a0a1e07ac293e0362b308b4061f6d28f10dcdd0d65e8dcb52c3cff6c131fe7ef",
+      "signals_sha256": "b3a61c6b18cd427a28e8a4b007f9fa63184e656c2a8a10a70cf0bd3b5b10439e",
+      "flagged_cells": 5354,
+      "cycle": 93,
+      "time": 0.1255940417010839,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00005.bin",
+      "field_sha256": "a7ca198538c39ae3f8289fde06a5614ba849ff226811f3b6d7eac3cdb0efbc98",
+      "particle_trace_sha256": "a0ca67ba25b84f4ad6ef8384aabdae152a698ee3679da48855fd608c9e8bb474",
+      "membership_matches": 4112
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle110.txt"
+      ],
+      "fixture_sha256": "ff2250feb1b886508c9de6ff5c0a1180c396b8f84f6859f5842f25548e6fb618",
+      "signals_sha256": "289fc6d4a78311f3fcb6ff656f11c66b3ba30c706be3af35bd5e7445769de5ad",
+      "flagged_cells": 5987,
+      "cycle": 110,
+      "time": 0.1515139489669851,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00006.bin",
+      "field_sha256": "c3be022d231ef6d2daa222807d580ff1df75b86dfcd69c3a23f931c5750c5047",
+      "particle_trace_sha256": "c6a5dfceb1fd899d44c04b7bde895f31091d8329e971934d2d64e1edc79472a0",
+      "membership_matches": 4112
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle127.txt"
+      ],
+      "fixture_sha256": "95e359784f4a206e47eaac1b5d95103affa8d24d623854bb3eb43c7ce15aaa40",
+      "signals_sha256": "682cdcd524c0a0e3bc7af631c523f59eca2ddcded498da52937ceab0544b03a2",
+      "flagged_cells": 6844,
+      "cycle": 127,
+      "time": 0.17624692212514614,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00007.bin",
+      "field_sha256": "e9fa2567af64d651d1b3e7e7f338e7f2c5116a654940b9dc07903a239e97056e",
+      "particle_trace_sha256": "a9d6ad5f090c7d79c5a0974e4c3db2041912905d73142cbf57b7f7f0dd981dcb",
+      "membership_matches": 4112
+    },
+    {
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_detector_test",
+        "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/showcase-reviewed/detector/cycle144.txt"
+      ],
+      "fixture_sha256": "747ddf6563cd7c9dd973cdc3a25c5bab20df1f3f266dc258959f39c49b9b5eaa",
+      "signals_sha256": "801a53d6667b8d6a5c565a4e8eae646c03bb1ce685991d47883654602659ccc5",
+      "flagged_cells": 6548,
+      "cycle": 144,
+      "time": 0.2,
+      "native_field": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/bin/curve_shock.hydro_w.00008.bin",
+      "field_sha256": "b2682f82e116e8b67c19d26815408fbf670e4addb72bd9259ffc9e07c6311cdd",
+      "particle_trace_sha256": "2aa4797c74444f6bcd4c03bcde4d5e5c685b0bbcb4620a4e038c3e749b07fe78",
+      "membership_matches": 4112
+    }
+  ],
+  "matched_memberships": 37008,
+  "node_events": 28,
+  "particle_events": 6904,
+  "particle_terminal_censored": 517,
+  "final_length_ratio": 7.412095821049645,
+  "poster_cycle": 76,
+  "raw_inside_node_samples": 775,
+  "suppressed_inside_node_samples": 548,
+  "direction_ambiguous_node_events": 1,
+  "scientific_approval": "pending",
+  "physics_changes": false,
+  "limitations": [
+    "3D projection mixes depths",
+    "9 stored fluid times; no interpolated movie frames",
+    "Short uniform-mesh CPU engineering run; no converged-turbulence/scientific approval"
+  ]
+}

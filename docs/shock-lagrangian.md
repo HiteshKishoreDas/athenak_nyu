@@ -274,3 +274,12 @@ bindings match their reports. All final native reports match the retained exact
 executables. Bundle contains native raw runs, failed attempts, source/dependency
 archives, three runtime builds, compiler configurations and seven explained plots.
 No scientific sign-off supplied. No new branch push performed in this task.
+
+## Combined visual showcase — 2026-10-21
+
+[Setup, output-only replay, exact detector checks, caveats and reproduction](curve-shock-showcase-20261021.md).
+The movie overlays native material-curve geometry and actual node shock flags on
+fluid snapshots, then shows retained per-node passages. Suppressed raw flags are
+explicitly visible in purple. Analysis only; original scientific implementation
+and sealed bundle unchanged. Compact execution/render/replay/media evidence:
+`evidence/shock-lagrangian/2026-10-21/`.

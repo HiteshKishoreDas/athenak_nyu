@@ -1,0 +1,8 @@
+{
+  "status": "pass",
+  "gif_frames": 9,
+  "mp4_frames": 9,
+  "renderer_sha256": "3806934832ea669ceaa6019b9c951556782351f3a7e7b5641e8e8037ffa82e3e",
+  "membership_comparisons": 37008,
+  "projection": "density and shock fraction along z; node flags tested in 3D"
+}

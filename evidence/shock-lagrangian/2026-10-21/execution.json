@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "command": [
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+    "-i",
+    "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/input.athinput"
+  ],
+  "exit": 0,
+  "wall_seconds": 5.672858792000625,
+  "input_sha256": "710f6fed17ae7a53da92e8890bc8f1dd56567c9b67af75dfba6c3501d5603da4",
+  "log_sha256": "827cf6e956ad33cbea6c425aa77dddb4206adbc1a14b88b44095a46c03e66217",
+  "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+  "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+  "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+  "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+  "parent_run": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/forced-final-code/forced_on",
+  "parent_input_sha256": "f68175af9ba2542a02e25203441889a52330cbacaf077a1e664593a3d5f19c60",
+  "changes": {
+    "job/basename": "curve_shock",
+    "shock_tracking/directory": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/native-run/shock_events",
+    "shock_tracking/lineage": "combined-curve-showcase-20261021",
+    "output3/variable": "hydro_w"
+  },
+  "physics_changes": false,
+  "scientific_approval": "pending"
+}
