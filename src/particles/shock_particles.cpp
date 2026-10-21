@@ -73,20 +73,21 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
     }
   }
   if (shock_enabled) {
-    if (pusher != ParticlesPusher::lagrangian_mc || !IsLagrangianMC()) {
-      ShockError("Shock tracking requires lagrangian_mc particles");
+    if (pusher != ParticlesPusher::lagrangian_tracer || !IsLagrangianTracer()) {
+      ShockError("Shock tracking requires particle_type=lagrangian_tracer and "
+                 "pusher=lagrangian_tracer; MC histories are unsupported");
     }
     if (pin->GetOrAddString("time", "integrator", "rk2") != "rk2" ||
         (pin->DoesBlockExist("cooling") &&
          pin->GetOrAddBoolean("cooling", "enabled", false))) {
-      ShockError("Shock MC qualification requires RK2 and cooling disabled");
+      ShockError("Shock Lagrangian qualification requires RK2 and cooling disabled");
     }
     for (auto block=pin->block.begin(); block != pin->block.end(); ++block) {
       if (block->block_name.rfind("output",0) == 0 &&
           pin->DoesParameterExist(block->block_name,"file_type") &&
           pin->GetString(block->block_name,"file_type") == "rst" &&
           pin->GetOrAddBoolean(block->block_name,"single_file_per_node",false)) {
-        ShockError("Shock MC restart does not support per-node files");
+        ShockError("Shock Lagrangian restart does not support per-node files");
       }
     }
     std::set<int> schedule_ids;
@@ -123,7 +124,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
     c.gamma = pmy_pack->phydro ? pmy_pack->phydro->peos->eos_data.gamma : 0;
     std::ostringstream contract;
     contract.precision(std::numeric_limits<Real>::max_digits10);
-    contract << "v1-entry-upstream-logdistance-mc-massflux-rk2-temperature-"
+    contract << "v1-entry-upstream-logdistance-velocity-multilinear-ssprk2-temperature-"
              << "nearest-reference6f5ec8bc "
              << SHOCK_IMPLEMENTATION_HASH << ' ' << sizeof(Real) << ' '
              << c.gamma << ' ' << c.width << ' ' << c.min_mach
@@ -147,7 +148,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
       int index = 0;
       for (Real floor : {eos.dfloor,eos.pfloor,eos.tfloor,eos.sfloor}) {
         if (!std::isfinite(floor) || floor < 0) {
-          ShockError("Shock MC requires finite nonnegative native EOS floors");
+          ShockError("Shock Lagrangian requires finite nonnegative native EOS floors");
         }
         pin->SetRealPrecise("hydro",names[index++],floor);
         contract << ' ' << floor;
@@ -212,6 +213,27 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
                  << ' ' << entry.second.size() << ':' << entry.second;
       }
     }
+    // Regrid controls affect subsequent trajectory sampling and must persist.
+    for (const auto &block : pin->block) {
+      if (block.block_name != "mesh_refinement" &&
+          block.block_name.rfind("amr_criterion",0) != 0) continue;
+      std::vector<std::pair<std::string,std::string>> settings;
+      for (const auto &line : block.line) {
+        settings.emplace_back(line.param_name,line.param_value);
+      }
+      std::sort(settings.begin(),settings.end());
+      contract << ' ' << block.block_name << ' ' << settings.size();
+      for (const auto &entry : settings) {
+        contract << ' ' << entry.first.size() << ':' << entry.first
+                 << ' ' << entry.second.size() << ':' << entry.second;
+      }
+    }
+    for (const char *name : {"refine_time","coarsen_time","refine_x1max"}) {
+      Real value = pin->GetOrAddReal("problem",name,1.0e30);
+      if (!std::isfinite(value)) ShockError("nonfinite timed AMR callback parameter");
+      pin->SetRealPrecise("problem",name,value);
+      contract << ' ' << name << ' ' << value;
+    }
     shock_contract = contract.str();
     if (shock_contract.size()+shock_lineage.size()+1 > 16384) {
       ShockError("Shock restart contract exceeds supported metadata size");
@@ -237,10 +259,10 @@ void Particles::ValidateShockPhysics() {
   auto coord = pmy_pack->pcoord;
   bool ok = h && h->peos->eos_data.is_ideal && h->peos->eos_data.use_e &&
             std::isfinite(h->peos->eos_data.gamma) && h->peos->eos_data.gamma > 1;
-  ok = ok && !pm->one_d && !pm->multilevel && !pm->adaptive &&
+  ok = ok && !pm->one_d &&
        pm->nmb_packs_thisrank == 1 && !pmy_pack->pmhd && !pmy_pack->pionn &&
        !pmy_pack->prad && !pmy_pack->pz4c && !pmy_pack->pdyngr && !pmy_pack->padm &&
-       !pmy_pack->pframe_tracker && IsLagrangianMC() &&
+       !pmy_pack->pframe_tracker && IsLagrangianTracer() &&
        !coord->is_special_relativistic &&
        !coord->is_general_relativistic && !coord->is_dynamical_relativistic;
   if (pmy_pack->pturb) {
@@ -261,7 +283,7 @@ void Particles::ValidateShockPhysics() {
   ok = ok && b.ng >= 1 && b.nx1 >= 4 && b.nx2 >= 4 &&
        (!pm->three_d || b.nx3 >= 4);
   if (shock_enabled) ok = ok && shocks::ConfigValid(shock_config);
-  if (!ok) ShockError("requires uniform 2D/3D Newtonian ideal Cartesian hydro, "
+  if (!ok) ShockError("requires 2D/3D Newtonian ideal Cartesian hydro, "
                       "periodic/outflow boundaries, no other sources/transport, one pack; "
                       "native forcing parameters must be finite");
 }
@@ -312,27 +334,6 @@ void Particles::PrepareShockStore(bool restarting) {
               << "; first inside representative; code units; no certified plateaus; "
               << "endpoint cadence limited; scientific review pending" << std::endl;
   }
-}
-
-// Optional qualification evidence; captures source parent before migration, and
-// actual probability/draw/direction. This is not a continuous particle trajectory.
-void Particles::WriteShockTransfers(const HostArray2D<Real> &evidence) {
-  auto pm = pmy_pack->pmesh;
-  std::ostringstream out;
-  out << std::setprecision(std::numeric_limits<Real>::max_digits10)
-      << "# AKSHOCK-MC-TRANSFERS 1 " << shock_lineage << ' ' << pm->ncycle+1
-      << ' ' << nprtcl_thispack << ' ' << pm->time << ' ' << pm->time+pm->dt
-      << ' ' << random_seed << '\n';
-  for (int p=0; p<nprtcl_thispack; ++p) {
-    for (int n=0; n<17; ++n) {
-      if (n) out << ',';
-      out << evidence(n,p);
-    }
-    out << '\n';
-  }
-  out << "# END " << nprtcl_thispack << '\n';
-  CommitFile(shock_directory + "/transfer" + std::to_string(pm->ncycle+1) +
-               RankName() + ".csv", out.str(), true);
 }
 
 void Particles::ObserveShocks(Real time, uint64_t generation) {

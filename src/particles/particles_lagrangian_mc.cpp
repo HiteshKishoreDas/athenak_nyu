@@ -312,7 +312,7 @@ void Particles::AppendParticles(const HostArray2D<Real> &new_rdata,
 //! \fn void Particles::SeedInitialTracers
 
 void Particles::SeedInitialTracers() {
-  if (particle_type != ParticleType::lagrangian_mc) return;
+  if (!IsFluidTracer()) return;
   SeedTracersAtTime(pmy_pack->pmesh->time, true);
 }
 
@@ -320,7 +320,7 @@ void Particles::SeedInitialTracers() {
 //! \fn void Particles::SeedTracersAtTime
 
 void Particles::SeedTracersAtTime(Real event_time, bool initial_only) {
-  if (particle_type != ParticleType::lagrangian_mc) return;
+  if (!IsFluidTracer()) return;
 
   Mesh *pm = pmy_pack->pmesh;
   constexpr Real eps = 64.0*std::numeric_limits<Real>::epsilon();
@@ -500,7 +500,7 @@ void Particles::SeedTracersAtTime(Real event_time, bool initial_only) {
         new_r(LMCX,p) = CellCenterX(i-is, nx1, h_size(m).x1min, h_size(m).x1max);
         new_r(LMCY,p) = CellCenterX(j-js, nx2, h_size(m).x2min, h_size(m).x2max);
         new_r(LMCZ,p) = CellCenterX(k-ks, nx3, h_size(m).x3min, h_size(m).x3max);
-        new_r(LMC_CREATE_TIME,p) = sched.next_time;
+        new_r(LMC_CREATE_TIME,p) = IsLagrangianTracer() ? event_time : sched.next_time;
       }
       AppendParticles(new_r, new_i, nnew);
 
@@ -539,13 +539,6 @@ TaskStatus Particles::PushLagrangianMC(Driver *pdriver, int stage) {
   std::int64_t rseed = random_seed;
   int nmb = pmy_pack->nmb_thispack;
 
-  const bool checked = shock_enabled;
-  const bool traced = shock_enabled && shock_trace;
-  DvceArray2D<Real> transfer;
-  if (traced) Kokkos::realloc(transfer, 17, nprtcl_thispack);
-  Kokkos::View<int, DevMemSpace> invalid_transfer;
-  if (checked) invalid_transfer =
-      Kokkos::View<int, DevMemSpace>("invalid_mc_transfer");
   par_for("lagrangian_mc_push", DevExeSpace(), 0, (nprtcl_thispack-1),
   KOKKOS_LAMBDA(const int p) {
     if (pi(PLASTMOVE,p) < 0) return;
@@ -574,7 +567,6 @@ TaskStatus Particles::PushLagrangianMC(Driver *pdriver, int stage) {
 
     Real mass = u1_(m,IDN,kp,jp,ip);
     if (mass <= 0.0 || !Kokkos::isfinite(mass)) {
-      if (checked) Kokkos::atomic_inc(&invalid_transfer());
       return;
     }
     Real flx1_left  = fmax(-flx1_(m,kp,jp,ip)/mass, 0.0);
@@ -584,45 +576,10 @@ TaskStatus Particles::PushLagrangianMC(Driver *pdriver, int stage) {
     Real flx3_left  = three_d ? fmax(-flx3_(m,kp,jp,ip)/mass, 0.0) : 0.0;
     Real flx3_right = three_d ? fmax( flx3_(m,kp+1,jp,ip)/mass, 0.0) : 0.0;
 
-    if (checked) {
-      Real sum = flx1_left + flx1_right + flx2_left + flx2_right +
-                 flx3_left + flx3_right;
-      bool valid = Kokkos::isfinite(sum) && sum <= 1.0;
-      valid = valid && Kokkos::isfinite(flx1_(m,kp,jp,ip)) &&
-              Kokkos::isfinite(flx1_(m,kp,jp,ip+1));
-      if (multi_d) valid = valid && Kokkos::isfinite(flx2_(m,kp,jp,ip)) &&
-                          Kokkos::isfinite(flx2_(m,kp,jp+1,ip));
-      if (three_d) valid = valid && Kokkos::isfinite(flx3_(m,kp,jp,ip)) &&
-                          Kokkos::isfinite(flx3_(m,kp+1,jp,ip));
-      if (!valid) {
-        Kokkos::atomic_inc(&invalid_transfer());
-        return;
-      }
-    }
-
-    if (traced) {
-      transfer(0,p) = pi(PTAG,p);
-      transfer(1,p) = pi(PGID,p);
-      transfer(2,p) = ip;
-      transfer(3,p) = jp;
-      transfer(4,p) = kp;
-      transfer(5,p) = mass;
-      transfer(6,p) = flx1_left;
-      transfer(7,p) = flx1_right;
-      transfer(8,p) = flx2_left;
-      transfer(9,p) = flx2_right;
-      transfer(10,p) = flx3_left;
-      transfer(11,p) = flx3_right;
-      transfer(12,p) = pr(LMCX,p);
-      transfer(13,p) = pr(LMCY,p);
-      transfer(14,p) = pr(LMCZ,p);
-    }
-
     std::uint64_t key = static_cast<std::uint64_t>(pi(PTAG,p))*7919ULL
                       + static_cast<std::uint64_t>(ncycle)*104729ULL
                       + static_cast<std::uint64_t>(rseed);
     Real draw = HashReal(key);
-    if (traced) transfer(15,p) = draw;
 
     pi(PLASTLEVEL,p) = mblev.d_view(m);
     pi(PLASTMOVE,p) = 32*(ip % 2) + 16*(jp % 2) + 8*(kp % 2);
@@ -648,18 +605,8 @@ TaskStatus Particles::PushLagrangianMC(Driver *pdriver, int stage) {
       pr(LMCZ,p) += mbsize.d_view(m).dx3;
       pi(PLASTMOVE,p) += 6;
     }
-    if (traced) transfer(16,p) = pi(PLASTMOVE,p) % 8;
   });
 
-  if (checked) {
-    auto invalid = Kokkos::create_mirror_view_and_copy(HostMemSpace(), invalid_transfer);
-    if (invalid()) FatalParticleInput("invalid or overfull MC transfer probabilities");
-  }
-
-  if (traced) {
-    auto host = Kokkos::create_mirror_view_and_copy(HostMemSpace(), transfer);
-    WriteShockTransfers(host);
-  }
   return TaskStatus::complete;
 }
 
@@ -808,8 +755,12 @@ TaskStatus Particles::AdjustMeshRefinement(Driver *pdriver, int stage) {
 //----------------------------------------------------------------------------------------
 //! \fn void Particles::RemapAfterMeshRefinement
 
+int Particles::LocateTracerMeshBlock(Real x, Real y, Real z) const {
+  return LocateMeshBlockGID(pmy_pack->pmesh,x,y,z);
+}
+
 void Particles::RemapAfterMeshRefinement() {
-  if (particle_type != ParticleType::lagrangian_mc) return;
+  if (!IsFluidTracer()) return;
 
   Mesh *pm = pmy_pack->pmesh;
   Kokkos::fence();
@@ -857,7 +808,9 @@ void Particles::RemapAfterMeshRefinement() {
     if (gid < 0) {
       FatalParticleInput("could not locate tracer particle after mesh refinement");
     }
-    SnapToMeshBlockCellCenter(pm, gid, hr(LMCX,p), hr(LMCY,p), hr(LMCZ,p));
+    if (IsLagrangianMC()) {
+      SnapToMeshBlockCellCenter(pm, gid, hr(LMCX,p), hr(LMCY,p), hr(LMCZ,p));
+    }
     hi(PGID,p) = gid;
     hi(PLASTMOVE,p) = 0;
     hi(PLASTLEVEL,p) = pm->lloc_eachmb[gid].level;
@@ -1034,7 +987,7 @@ void Particles::WriteRestartData(IOWrapper &resfile, bool single_file_per_rank) 
   std::memset(&header, 0, sizeof(header));
   std::strncpy(header.magic, "ATHKPRTCLMC", sizeof(header.magic)-1);
   header.version = 1;
-  header.enabled = IsLagrangianMC() ? 1 : 0;
+  header.enabled = IsLagrangianTracer() ? 2 : (IsLagrangianMC() ? 1 : 0);
   header.nrdata = nrdata;
   header.nidata = nidata;
   header.nlocal = nprtcl_thispack;
@@ -1106,6 +1059,9 @@ void Particles::ReadRestartData(IOWrapper &resfile, bool single_file_per_rank) {
       header.next_tag < 0 || header.next_tag >
       static_cast<std::int64_t>(std::numeric_limits<int>::max())+1) {
     FatalParticleInput("invalid particle restart count/schedule/identity range");
+  }
+  if (header.enabled != (IsLagrangianTracer() ? 2 : (IsLagrangianMC() ? 1 : 0))) {
+    FatalParticleInput("particle restart transport does not match particle_type");
   }
   if (!header.enabled) {
     if (shock_enabled) FatalParticleInput("shock restart requires native MC state");

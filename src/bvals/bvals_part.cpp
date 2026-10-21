@@ -76,8 +76,10 @@ void UpdateGID(int &newgid, NeighborBlock nghbr, int myrank,
 //! \fn void ParticlesBoundaryValues::SetNewGID()
 //! \brief
 
-TaskStatus ParticlesBoundaryValues::SetNewPrtclGID() {
-  if (pmy_part->shock_enabled) return SetShockPrtclGID();
+TaskStatus ParticlesBoundaryValues::SetNewPrtclGID(int stage) {
+  if (pmy_part->shock_enabled || pmy_part->IsLagrangianTracer()) {
+    return SetShockPrtclGID(stage);
+  }
   // create local references for variables in kernel
   auto gids = pmy_part->pmy_pack->gids;
   auto &pr = pmy_part->prtcl_rdata;
@@ -220,9 +222,10 @@ TaskStatus ParticlesBoundaryValues::SetNewPrtclGID() {
 }
 
 // Shock path preserves native level/subface selection and the disabled implementation.
-TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
+TaskStatus ParticlesBoundaryValues::SetShockPrtclGID(int stage) {
   const int npart = pmy_part->nprtcl_thispack;
-  if (pmy_part->shock_state.extent(0) != static_cast<size_t>(npart)) {
+  if (pmy_part->shock_enabled &&
+      pmy_part->shock_state.extent(0) != static_cast<size_t>(npart)) {
     std::cerr << "FATAL: particle shock-state extent mismatch" << std::endl;
     std::exit(EXIT_FAILURE);
   }
@@ -235,6 +238,9 @@ TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
   auto pr = pmy_part->prtcl_rdata;
   auto pi = pmy_part->prtcl_idata;
   auto states = pmy_part->shock_state;
+  const bool tracking = pmy_part->shock_enabled;
+  const bool predictor = pmy_part->IsLagrangianTracer() && stage == 1;
+  Kokkos::View<int,DevMemSpace> unresolved("tracer_unresolved_neighbor");
   auto sizes = pack->pmb->mb_size.d_view;
   auto levels = pack->pmb->mb_lev.d_view;
   auto neighbors = pack->pmb->nghbr.d_view;
@@ -280,6 +286,10 @@ TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
     }
     // Outflow has no neighbor. Emit its evidence on the host before deletion.
     if (destroy) {
+      if (predictor) {
+        Kokkos::abort("Lagrangian RK2 predictor left physical domain; "
+                      "outflow trajectory qualification required; no exit event emitted");
+      }
       int n = Kokkos::atomic_fetch_add(&dcount(0),1);
       dlist(n) = p;
       return;
@@ -315,17 +325,23 @@ TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
       const int axes = (ix != 0)+(iy != 0)+(iz != 0);
       const int end = base+(axes == 1 ? 4 : (axes == 2 ? 2 : 1));
       while (index < end && neighbors(m,index).gid < 0) ++index;
-      if (index >= end) Kokkos::abort("shock particle has no adjacent AMR neighbor");
-      UpdateGID(pi(PGID,p), neighbors(m,index), myrank, scount, slist, p);
+      if (index >= end) {
+        // Fine-to-coarse motion across an internal tangential sibling split can
+        // lack a diagonal neighbor slot. Resolve the containing global leaf below.
+        pi(PGID,p) = -1;
+        Kokkos::atomic_inc(&unresolved());
+      } else {
+        UpdateGID(pi(PGID,p), neighbors(m,index), myrank, scount, slist, p);
+      }
     }
     for (int d=0; d<ndim; ++d) {
       const bool low = x[d] < lower[d], high = x[d] >= upper[d];
       if (low || high) {
-        if ((low && states(p).image[d] == INT64_MIN) ||
-            (high && states(p).image[d] == INT64_MAX)) {
+        if (tracking && ((low && states(p).image[d] == INT64_MIN) ||
+                         (high && states(p).image[d] == INT64_MAX))) {
           Kokkos::abort("shock periodic image counter limit reached");
         }
-        states(p).image[d] += low ? -1 : 1;
+        if (tracking) states(p).image[d] += low ? -1 : 1;
         pr(2*d,p) += low ? upper[d]-lower[d] : lower[d]-upper[d];
         if (pr(2*d,p) < lower[d] || pr(2*d,p) >= upper[d]) {
           Kokkos::abort("shock particle periodic wrap did not enter domain");
@@ -338,6 +354,32 @@ TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
   shock_destroy_count.template modify<DevExeSpace>();
   shock_destroy_count.template sync<HostMemSpace>();
   nprtcl_send = send_count.h_view(0);
+  auto missing = Kokkos::create_mirror_view_and_copy(HostMemSpace(),unresolved);
+  if (missing()) {
+    std::cout << "Lagrangian containing-leaf fallback rank=" << myrank
+              << " particles=" << missing() << std::endl;
+    auto positions = Kokkos::create_mirror_view_and_copy(HostMemSpace(),pr);
+    auto ids = Kokkos::create_mirror_view_and_copy(HostMemSpace(),pi);
+    sendlist.template modify<DevExeSpace>();
+    sendlist.template sync<HostMemSpace>();
+    for (int p=0; p<npart; ++p) {
+      if (ids(PGID,p) != -1) continue;
+      const int gid = pmy_part->LocateTracerMeshBlock(
+          positions(IPX,p),positions(IPY,p),positions(IPZ,p));
+      if (gid < 0) Kokkos::abort("no containing leaf for continuous tracer");
+      ids(PGID,p) = gid;
+#if MPI_PARALLEL_ENABLED
+      const int rank = pack->pmesh->rank_eachmb[gid];
+      if (rank != myrank) {
+        auto &entry = sendlist.h_view(nprtcl_send++);
+        entry.prtcl_indx = p; entry.dest_gid = gid; entry.dest_rank = rank;
+      }
+#endif
+    }
+    Kokkos::deep_copy(pi,ids);
+    sendlist.template modify<HostMemSpace>();
+    sendlist.template sync<DevExeSpace>();
+  }
   nprtcl_recv = 0;
   nsends = nrecvs = 0;
   nprtcl_destroy = shock_destroy_count.h_view(0);
@@ -349,7 +391,7 @@ TaskStatus ParticlesBoundaryValues::SetShockPrtclGID() {
   shock_destroylist.template sync<HostMemSpace>();
   std::vector<int> exits;
   for (int n=0; n<nprtcl_destroy; ++n) exits.push_back(shock_destroylist.h_view(n));
-  if (!exits.empty()) pmy_part->EmitShockExits(exits);
+  if (tracking && !exits.empty()) pmy_part->EmitShockExits(exits);
   return TaskStatus::complete;
 }
 
@@ -655,7 +697,9 @@ TaskStatus ParticlesBoundaryValues::PackAndSendPrtcls() {
 //! \brief
 
 TaskStatus ParticlesBoundaryValues::RecvAndUnpackPrtcls() {
-  if (pmy_part->shock_enabled) return RecvAndUnpackShockPrtcls();
+  if (pmy_part->shock_enabled || pmy_part->IsLagrangianTracer()) {
+    return RecvAndUnpackShockPrtcls();
+  }
 #if MPI_PARALLEL_ENABLED
   // Sort sendlist on host by index in particle array
   namespace KE = Kokkos::Experimental;
@@ -766,8 +810,9 @@ TaskStatus ParticlesBoundaryValues::RecvAndUnpackShockPrtcls() {
 #if MPI_PARALLEL_ENABLED
   bool ready = true;
   for (int n=0; n<nrecvs; ++n) {
-    MPI_Request *requests[3] = {&rrecv_req[n], &irecv_req[n], &shock_recv_req[n]};
-    for (int i=0; i<3; ++i) {
+    MPI_Request *requests[3] = {&rrecv_req[n], &irecv_req[n], nullptr};
+    if (pmy_part->shock_enabled) requests[2] = &shock_recv_req[n];
+    for (int i=0; i<(pmy_part->shock_enabled ? 3 : 2); ++i) {
       int done = 0;
       if (MPI_Test(requests[i], &done, MPI_STATUS_IGNORE) != MPI_SUCCESS) {
         std::cerr << "FATAL: testing shock particle receive failed" << std::endl;
@@ -813,7 +858,9 @@ TaskStatus ParticlesBoundaryValues::RecvAndUnpackShockPrtcls() {
     const int nrdata = pmy_part->nrdata, nidata = pmy_part->nidata;
     DvceArray2D<Real> new_real("shock_particle_real", nrdata, new_npart);
     DvceArray2D<int> new_int("shock_particle_int", nidata, new_npart);
-    DvceArray1D<shocks::EncounterState> new_state("shock_particle_state", new_npart);
+    const bool tracking = pmy_part->shock_enabled;
+    DvceArray1D<shocks::EncounterState> new_state;
+    if (tracking) Kokkos::realloc(new_state,new_npart);
     auto old_real = pmy_part->prtcl_rdata;
     auto old_int = pmy_part->prtcl_idata;
     auto old_state = pmy_part->shock_state;
@@ -822,7 +869,7 @@ TaskStatus ParticlesBoundaryValues::RecvAndUnpackShockPrtcls() {
       const int p = survivors(n);
       for (int i=0; i<nrdata; ++i) new_real(i,n) = old_real(i,p);
       for (int i=0; i<nidata; ++i) new_int(i,n) = old_int(i,p);
-      new_state(n) = old_state(p);
+      if (tracking) new_state(n) = old_state(p);
     });
 #if MPI_PARALLEL_ENABLED
     auto real_buffer = prtcl_rrecvbuf;
@@ -833,13 +880,13 @@ TaskStatus ParticlesBoundaryValues::RecvAndUnpackShockPrtcls() {
       const int p = nsurvive+n;
       for (int i=0; i<nrdata; ++i) new_real(i,p) = real_buffer(nrdata*n+i);
       for (int i=0; i<nidata; ++i) new_int(i,p) = int_buffer(nidata*n+i);
-      new_state(p) = state_buffer(n);
+      if (tracking) new_state(p) = state_buffer(n);
     });
 #endif
     Kokkos::fence();
     pmy_part->prtcl_rdata = new_real;
     pmy_part->prtcl_idata = new_int;
-    pmy_part->shock_state = new_state;
+    if (tracking) pmy_part->shock_state = new_state;
     pmy_part->nprtcl_thispack = new_npart;
   }
   // Exactly one count collective per completed receive path on every rank.

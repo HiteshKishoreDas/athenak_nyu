@@ -1,0 +1,54 @@
+{
+  "test_ids": [
+    "PHY01",
+    "PHY02",
+    "PHY03",
+    "PHY05",
+    "PHY06"
+  ],
+  "oracle_self_check": "passed",
+  "fixture": {
+    "mach": 2.0,
+    "gamma": 1.4,
+    "front0": 0.3,
+    "speed": 0.5,
+    "downstream_side": -1,
+    "upstream": {
+      "rho": 1.0,
+      "pressure": 1.0,
+      "velocity": -1.8664319132398464
+    },
+    "downstream": {
+      "rho": 2.666666666666667,
+      "pressure": 4.5,
+      "velocity": -0.38741196746494233
+    },
+    "left": {
+      "rho": 2.666666666666667,
+      "pressure": 4.5,
+      "velocity": -0.38741196746494233
+    },
+    "right": {
+      "rho": 1.0,
+      "pressure": 1.0,
+      "velocity": -1.8664319132398464
+    },
+    "density_ratio": 2.666666666666667,
+    "pressure_ratio": 4.5,
+    "temperature_ratio": 1.6874999999999998
+  },
+  "particles": [
+    {
+      "x0": 0.45,
+      "exact_ideal_crossing": 0.06338656910463876
+    },
+    {
+      "x0": 0.6,
+      "exact_ideal_crossing": 0.1267731382092775
+    },
+    {
+      "x0": 0.75,
+      "exact_ideal_crossing": 0.19015970731391624
+    }
+  ]
+}

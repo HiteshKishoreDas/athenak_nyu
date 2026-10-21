@@ -29,6 +29,11 @@ def main():
         for gamma in (1.4,5/3):
             rh_states(mach,gamma)
             rh_states(mach,gamma,speed=-.5,reflected=True)
+    repeated='<problem>\nflow = translation\n<mesh>\nnx1 = 32\n<problem>\nrefine_time = .1\n'
+    changed=edit_input(repeated,{'problem/refine_time':0})
+    assert changed.count('refine_time')==1 and 'refine_time = 0' in changed
+    duplicate='<problem>\nrefine_time = .1\n<problem>\nrefine_time = .2\n'
+    assert edit_input(duplicate,{'problem/refine_time':0}).count('refine_time = 0')==2
     with tempfile.TemporaryDirectory() as directory:
         path=Path(directory)/'sample.thp'
         header=struct.pack('=32s4i',b'ATHK_PRTCL_THERMO_HISTORY',2,8,1,3)+b'rho'

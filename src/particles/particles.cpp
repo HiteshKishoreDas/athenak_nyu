@@ -39,6 +39,8 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
     std::string ptype = pin->GetString("particles","particle_type");
     if (ptype.compare("cosmic_ray") == 0) {
       particle_type = ParticleType::cosmic_ray;
+    } else if (ptype == "lagrangian_tracer") {
+      particle_type = ParticleType::lagrangian_tracer;
     } else if (ptype.compare("lagrangian_mc") == 0) {
       particle_type = ParticleType::lagrangian_mc;
     } else {
@@ -54,6 +56,8 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
     std::string ppush = pin->GetString("particles","pusher");
     if (ppush.compare("drift") == 0) {
       pusher = ParticlesPusher::drift;
+    } else if (ppush == "lagrangian_tracer") {
+      pusher = ParticlesPusher::lagrangian_tracer;
     } else if (ppush.compare("lagrangian_mc") == 0) {
       pusher = ParticlesPusher::lagrangian_mc;
     } else {
@@ -64,12 +68,30 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
     }
   }
 
-  if (particle_type == ParticleType::lagrangian_mc &&
-      pusher != ParticlesPusher::lagrangian_mc) {
-    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
-              << std::endl << "particle_type=lagrangian_mc requires "
-              << "pusher=lagrangian_mc" << std::endl;
+  if ((IsLagrangianMC() != (pusher == ParticlesPusher::lagrangian_mc)) ||
+      (IsLagrangianTracer() != (pusher == ParticlesPusher::lagrangian_tracer))) {
+    std::cerr << "Fluid tracer particle_type and pusher must match" << std::endl;
     std::exit(EXIT_FAILURE);
+  }
+  if (IsLagrangianTracer()) {
+    auto coord = pmy_pack->pcoord;
+    if (!pmy_pack->phydro || pmy_pack->pmhd || pmy_pack->pframe_tracker ||
+        coord->is_special_relativistic || coord->is_general_relativistic ||
+        coord->is_dynamical_relativistic ||
+        pin->GetOrAddString("time","integrator","rk2") != "rk2" ||
+        pin->GetOrAddString("time","evolution","dynamic") != "dynamic") {
+      std::cerr << "lagrangian_tracer requires dynamic Newtonian hydro with RK2"
+                << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    for (int d=0; d<(pmy_pack->pmesh->three_d ? 6 : 4); ++d) {
+      auto bc = pmy_pack->pmesh->mesh_bcs[d];
+      if (bc != BoundaryFlag::periodic && bc != BoundaryFlag::outflow) {
+        std::cerr << "lagrangian_tracer requires periodic/outflow boundaries"
+                  << std::endl;
+        std::exit(EXIT_FAILURE);
+      }
+    }
   }
 
   // set dimensions of particle arrays. Note particles only work in 2D/3D
@@ -92,6 +114,7 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
         nidata = 2;
         break;
       }
+    case ParticleType::lagrangian_tracer:
     case ParticleType::lagrangian_mc:
       {
         if (pmy_pack->phydro == nullptr && pmy_pack->pmhd == nullptr) {
@@ -114,9 +137,9 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
         random_seed = pin->GetOrAddInteger("particles","random_seed",12345);
         next_tracer_tag = pin->GetOrAddInteger("particles","next_tracer_tag",0);
         ParseTracerSeedSchedules(pin);
-        if (pmy_pack->phydro != nullptr) {
+        if (IsLagrangianMC() && pmy_pack->phydro != nullptr) {
           pmy_pack->phydro->SetSaveUFlxIdn();
-        } else {
+        } else if (IsLagrangianMC()) {
           pmy_pack->pmhd->SetSaveUFlxIdn();
         }
         dtnew = std::numeric_limits<Real>::max();
@@ -155,7 +178,7 @@ int Particles::GetLagrangianMCScalarCount() const {
 // those with tag numbers less than ntrack.
 
 void Particles::CreateParticleTags(ParameterInput *pin) {
-  if (particle_type == ParticleType::lagrangian_mc) return;
+  if (IsFluidTracer()) return;
 
   std::string assign = pin->GetOrAddString("particles","assign_tag","index_order");
 

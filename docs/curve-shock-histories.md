@@ -1,3 +1,10 @@
+# Current carrier policy — 2026-10-20
+
+Shock histories now require continuous `lagrangian_tracer` particles. MC histories
+are rejected. Curves retain continuous RK2 motion. The old combined-MC AMR block
+is superseded for this mode; historical evidence below remains unchanged.
+See [implementation, tests, limits and run instructions](shock-lagrangian.md).
+
 # Material-curve shock histories — requirements
 
 ## 2026-10-17: initial questions (historical)

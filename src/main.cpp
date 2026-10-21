@@ -523,6 +523,10 @@ int main(int argc, char *argv[]) {
 
   std::string curve_shock_restart_path;
   pmesh->AddCoordinatesAndPhysics(pinput);
+  if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
+    // Freeze the resolved AMR criteria, whose defaults are added after particles.
+    pmesh->pmb_pack->ppart->ConfigureShockTracking(pinput);
+  }
   if (!res_flag) {
     // set ICs using ProblemGenerator constructor for new runs
     pmesh->pgen = std::make_unique<ProblemGenerator>(pinput, pmesh);

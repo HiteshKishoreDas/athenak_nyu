@@ -236,7 +236,9 @@ if(Athena_SHOCK_TESTS)
   target_compile_options(shock_encounter_test PRIVATE -UNDEBUG)
 endif()
 
-set(shock_source_files src/shocks/detector.hpp src/shocks/encounter.hpp
+set(shock_source_files src/mesh/mesh_refinement.cpp src/athena.hpp
+    src/outputs/prtcl_thermo_history.cpp src/outputs/vtk_prtcl.cpp
+    src/outputs/track_prtcl.cpp src/particles/fluid_velocity.hpp src/shocks/detector.hpp src/shocks/encounter.hpp
     src/particles/shock_particles.cpp src/particles/particles.cpp
     src/particles/particles.hpp src/particles/particles_tasks.cpp
     src/particles/particles_pushers.cpp src/particles/particles_lagrangian_mc.cpp

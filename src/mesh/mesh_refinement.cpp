@@ -638,7 +638,7 @@ void MeshRefinement::RedistAndRefineMeshBlocks(ParameterInput *pin, int nnew, in
   if (pm->pmb_pack->pframe_tracker != nullptr) {
     pm->pmb_pack->pframe_tracker->UpdateMeshBlockPack(pm->pmb_pack);
   }
-  if (pm->pmb_pack->ppart != nullptr && pm->pmb_pack->ppart->IsLagrangianMC()) {
+  if (pm->pmb_pack->ppart != nullptr && pm->pmb_pack->ppart->IsFluidTracer()) {
     pm->pmb_pack->ppart->RemapAfterMeshRefinement();
   }
 

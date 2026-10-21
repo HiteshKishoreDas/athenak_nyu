@@ -26,7 +26,8 @@ def traces(directory):
             key = (generation,int(row[0]))
             if key in result or observation['generation'] != generation:
                 raise ValueError('duplicate/misaligned trace generation')
-            result[key] = dict(observation, sequence=int(row[1]), phase=int(row[2]), rank=rank)
+            result[key] = dict(observation, sequence=int(row[1]), phase=int(row[2]),
+                               flags=int(row[3]), rank=rank)
     return result
 
 

@@ -1,0 +1,2794 @@
+{
+  "schema": "curve-shocks-acceptance-1",
+  "runs": [
+    {
+      "name": "planar",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/planar/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.3469724589995167,
+      "input_sha256": "0f2194e5ec1ae172017b26c281220c71439d542fb3122bf48434fa61176afa86",
+      "log_sha256": "d283558094ffb1e3e6f2758c3c937d5351905d4f699255885abeefaeff3b9036",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "curve_only",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/curve_only/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.17559845899995707,
+      "input_sha256": "cc8985a88c5ad73ff61bfdc163d1bc1465678ab43c7029416de80ffc50331f65",
+      "log_sha256": "c4a11f570328666dcbc7f2fa672440ca2b578b0500a97cd510cb7f03e03a82d5",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "initial_inside",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/initial_inside/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.18403341699922748,
+      "input_sha256": "eac71da71e897351ee174a1b77a4a90718d5e280eff4959d77f631bc1752e2f5",
+      "log_sha256": "add404ccf575bf55615c64a37408ff36c39288dc4e7852bcc438d485547cd1f5",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "tracking_off",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/tracking_off/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.07297600000129023,
+      "input_sha256": "b68207d3a5b1748689901fadacff9a99f7bad1b489bbdc733dd1b5bf7580aa30",
+      "log_sha256": "64f66161ce56fe7d516edc75b958c6705d4d76c25abb3efddb2719181bfd896d",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "trace_off",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/trace_off/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.18713270800071768,
+      "input_sha256": "fd59bbe65f00236a32843d42c1d0e45da079784cd7cfd66d420145f250d56832",
+      "log_sha256": "7729a5db3eef00938db32e231353096365e387d48a7aedf6e9768b778fb8229c",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "seed_outside",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/seed_outside/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.02014562499971362,
+      "input_sha256": "8622f46aee4f4c3aa47b37bddb4b51a963581b81aee50bae4bf3c17168445c83",
+      "log_sha256": "c240ecb13dc72b71c23b472dd3dba0cf79b6200d05c49c8334096ac8771d4e41",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "resume_outside",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/seed_outside/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=curve_resumed_outside"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.29460679200019513,
+      "input_sha256": "88ccc45938af7094526668904823dd3ef84359235301cc7a68ceb032f38f8fd2",
+      "log_sha256": "21679121d1a6a18712a948dc30c9a606bbd87f56d1e21b23f8a1b44e14ae5bd6",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "574db80d8b63afade0f376a89d6b27409c22a2622141d2e4af9b02fa8281bac4",
+      "generated_input_used": false
+    },
+    {
+      "name": "seed_active",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/seed_active/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.1325870839991694,
+      "input_sha256": "05cd32d9e0e21d1df01863eb49a84efddfd3e500d7e8511be94a8a6fd85b1fd2",
+      "log_sha256": "aa16e7c38c6b6a546e9c26f7d8b3d6447a31d82742b7c4f86eb3da805f06fee1",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "resume_active",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/seed_active/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=curve_resumed_active"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.18741412499912258,
+      "input_sha256": "2e4216be8ab52575cd4fc1e9b8066bf39d760b8dda3478b89e9938f555810aa0",
+      "log_sha256": "d9edeecbd9339014248b74bb8b6c05d29938994161f9185373a6cd3cea7d0dbc",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "aac7280db0b215628c33d442b16c324df05199bf7751b752062ff8abe68482f7",
+      "generated_input_used": false
+    },
+    {
+      "name": "seed_pending",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/seed_pending/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.18748087499989197,
+      "input_sha256": "25033390c0f4943e391df8965ecb8d2dd2a7b3c83ed1fe2118e4fcb0b46838a9",
+      "log_sha256": "cac4f474ef4ff860b40bd99d7f665a48d23e900589b5fed5853d2d89a5e2fa86",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "resume_pending",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/seed_pending/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=curve_resumed_pending"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.18240925000100106,
+      "input_sha256": "024a6d107bf7a722a5a47c7bff0220ebccbb1809b6c562db36c6884c89cae002",
+      "log_sha256": "cf2cc4aa2742bc5e89cc2b475e653d258fc0cafa4908bc39c5574d4869d022b5",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "9c1571b52964a3cd7e6f24c53f345326f656d75ed4d3bbb354cbc5357432a6a6",
+      "generated_input_used": false
+    },
+    {
+      "name": "relative_seed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/relative_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.02060479099964141,
+      "input_sha256": "bde9a89d89cce616e15be4830ab7a83fcf7bba30d004c694277929b558f3c237",
+      "log_sha256": "9672297a685b4041ffa1112659b6e80c7040cb6d903b8eddea4100a685146c59",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "relative_launch",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/relative_seed/rst/curve_shock.00001.rst",
+        "-d",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/relative_seed",
+        "time/nlim=-1",
+        "job/basename=curve_relative_resumed"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.29722087499976624,
+      "input_sha256": "4f5fa48a24f1d8af24e041b0c717b6aa674372dde85cd6c8f15e25a89a27ae6a",
+      "log_sha256": "e85b7fe3992d470fb296185535a5ca8dd67a8643d549bdad1d4ab1f9c172f76d",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "c8db9a72fbc322cc7d80d2cd2c7d8ccef441836cb1ed2ef6b8b450ffdc9a5882",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_missing",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/artifacts_missing/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_missing"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.0051532080015022075,
+      "input_sha256": "241c2ce917a3df984ec08799393ec50e5e1e926eadfb43702f544a10425aa8be",
+      "log_sha256": "bbd1a20ae9c5fbb93cba03d9b22401e7767839c08632325dbd25eed7bcb52330",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "aac7280db0b215628c33d442b16c324df05199bf7751b752062ff8abe68482f7",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_corrupt",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/artifacts_corrupt/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_corrupt"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005071375000625267,
+      "input_sha256": "050e9798ad9450746c089ce5396f46b8c48a28337f00fc0ebf2c8a36e2286bea",
+      "log_sha256": "95cfb5c89b258c6178efc88c2fb545fb83ed1f39f39c221cd07061d08a137e3b",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "aac7280db0b215628c33d442b16c324df05199bf7751b752062ff8abe68482f7",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_future",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/artifacts_future/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_future"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.0051154580014554085,
+      "input_sha256": "890c518849651350d8d475f0dd0dc2edfe6a984ec8af89f14bf3c13bac6c2681",
+      "log_sha256": "bbd1a20ae9c5fbb93cba03d9b22401e7767839c08632325dbd25eed7bcb52330",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "aac7280db0b215628c33d442b16c324df05199bf7751b752062ff8abe68482f7",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_prefix",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/artifacts_prefix/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_prefix",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/artifacts_prefix/shock_events"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.009979582999221748,
+      "input_sha256": "122e628555e88f5cd40c2846fb3dd30e8886fe4a2874466b7c62e8c959bf79e3",
+      "log_sha256": "38e6f1726e4564cee6bd8c310d09f2d283b1a5aeb67d5aeee1bf5385685fe27e",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "aac7280db0b215628c33d442b16c324df05199bf7751b752062ff8abe68482f7",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_oversized_future_chunk",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/artifacts_future_chunk/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=reject_future_chunk",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/artifacts_future_chunk/shock_events"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.010232540998913464,
+      "input_sha256": "6fa1d1e912e12c1b1383fe5177a76e1b9fcdb3c6d49206776f88ea88d8c989a6",
+      "log_sha256": "3ccfba50e83caeb5a7955f82b466ea53f087be605355d5070c2b98fecb1777c1",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "aac7280db0b215628c33d442b16c324df05199bf7751b752062ff8abe68482f7",
+      "generated_input_used": false
+    },
+    {
+      "name": "overflow",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/overflow/input.athinput"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.13197933300034492,
+      "input_sha256": "cd1f4b8a8d451456236e194ffafaa9a8ccd9b67a2f46c613dacaff4f580c8085",
+      "log_sha256": "eba7b1931b0b2b2afdc53852c4baada764cd4840040f48306c702b3702a1d816",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "untracked_curve_seed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/untracked_curve_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.010290208001606516,
+      "input_sha256": "b5a60a2645a01517156581f6201c619337463505c2b526e1b1ee57b6c752dec5",
+      "log_sha256": "71daa70695e03437a3bf01c0262e4805f47dd5daa544e218ea0874a169812919",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "reject_old_untracked_checkpoint",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/untracked_curve_seed/rst/curve_shock.00001.rst",
+        "shock_tracking/enabled=true",
+        "time/nlim=-1",
+        "job/basename=reject_old_untracked_checkpoint"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005150000000867294,
+      "input_sha256": "aca0b2392f5d52798acc3d60c0c421cf3095566a23a633089c0e964184824bc0",
+      "log_sha256": "bbd1a20ae9c5fbb93cba03d9b22401e7767839c08632325dbd25eed7bcb52330",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "7bf25f1acba6e7ca031fea2ebb5708f93450c209ed9706228f9e4d573600ddd8",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_disabled_curves",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/seed_active/rst/curve_shock.00001.rst",
+        "material_curves/enabled=false",
+        "time/nlim=-1",
+        "job/basename=reject_disabled_curves"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.0049023749998013955,
+      "input_sha256": "9bd637d78cf275ef68fcd0bfb8b90ea50693914eaddff47d3640a9e651cc5083",
+      "log_sha256": "7b7c91565c788048623aa513eba63763405bb78e7083ce4083c9e05c8aff2b93",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "aac7280db0b215628c33d442b16c324df05199bf7751b752062ff8abe68482f7",
+      "generated_input_used": false
+    },
+    {
+      "name": "native_source_seed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/native_source_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.010041000001365319,
+      "input_sha256": "9355289c85b7a03942fcdbcb50fb853ce22a8fcb2e9378d729da980cbfe2c4d4",
+      "log_sha256": "22b8d8c211e8a1eaaac8c414e97f38c736b031e51c07f9e008443a6ae281bdbd",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "reject_changed_native_source",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/native_source_seed/rst/curve_shock.00001.rst",
+        "hydro/const_accel_val=.2",
+        "time/nlim=-1",
+        "job/basename=reject_changed_native_source"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005114625000715023,
+      "input_sha256": "d4c645144b8984ba7cdde65ac2de69391ff3c53ba1f29acade9bfdc88674a4a4",
+      "log_sha256": "532853beb359138c4d2cf49e4df33ec61c3a898d076b1f534fbfcad34ca9c3f6",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1",
+      "restart_sha256": "29b298ef608e0d53577907c02b348e80a23210319c8ad5eff3571ddbd8a6b2bf",
+      "generated_input_used": false
+    },
+    {
+      "name": "reject_curveonly_nan_dt_update",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/reject_curveonly_nan_dt_update/input.athinput"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.0050207080003019655,
+      "input_sha256": "5890b8aca1fd74e2eb765bed60142df243b8de002dbd4e842966a2284d1f3be4",
+      "log_sha256": "170171a5a5443c2d82eef2b4fc305fd8a95812dc83896985190a590c32717abc",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "reject_curveonly_nan_tcorr",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/reject_curveonly_nan_tcorr/input.athinput"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.005069749999165651,
+      "input_sha256": "e4e3821539471e9097473b24765aac4d228602edbdeb8c4fd1c4ad466df0311c",
+      "log_sha256": "e80a5602e52ffc66ea7444343e25a02249cf85283709eda88fff286636b9c4a3",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "zero",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/zero/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.07365654100067331,
+      "input_sha256": "12c198ab8413d3c317f99a53e17b976d00165fb127feb80a7e87524c7d21b836",
+      "log_sha256": "214381fc05a097ad0d672d4efe1281e3adc7e7922da18d5d600f547df1d6a3a4",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "translation",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/translation/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.07725137499983248,
+      "input_sha256": "b2af4d83bfe429a3c682fc770b3cbd60b87bab4e9b3594a8f87300d208f59b9e",
+      "log_sha256": "9679de2a51904e9bf47466f1d0f6bb10ad5ff29d10e5926e73e8263e370fbefe",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "shear",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/shear/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.07314166700052738,
+      "input_sha256": "c27b36a5b6faa582977b2db62a9f07071be7c49a7de84c2ed2be702d3caecdc0",
+      "log_sha256": "219cd593515c7c798c11089f3a1d4bc4919da87d4be8a38db76aae883669f90a",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "amr_smooth",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/amr_smooth/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.1323299590003444,
+      "input_sha256": "0f58b677bd347ae44c0f83acd0190cc96a89fb5d69e5b9157b746f3117664548",
+      "log_sha256": "5f4d674eb9a18625ede8ce8f3685473c31eb2b371e9cd29a8e0089d2f251ba16",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "callback_seed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/callback_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.020343041000160156,
+      "input_sha256": "48738d528ea6513a9401bfaccb8a4701fe21f695427460d3f3e74f13b73a7ade",
+      "log_sha256": "ce5cd5763d1eb23a85c2acbfd398f035be1504b50787a617ff857e7c1ef720c0",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "reject_changed_refine_time",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/callback_seed/rst/curve_shock.00001.rst",
+        "problem/refine_time=.2",
+        "time/nlim=-1",
+        "job/basename=reject_changed_refine_time"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 0.01027174999944691,
+      "input_sha256": "87150784ec991771e50d8292f2801688bafb389a7abf6abe3847f366a637eda0",
+      "log_sha256": "cc32c6821b2314281cc3c4922e7d403e2ac3b3d2580ea058d437f7e7389f1b45",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69",
+      "restart_sha256": "cc3342a1c9f4897e9603217998c5a742954fac7b7131132024cfc6fa8618fa82",
+      "generated_input_used": false
+    },
+    {
+      "name": "amr_curveonly_live_shock",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/amr_curveonly_live_shock/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.39368737499899,
+      "input_sha256": "e81f25a771a0ac9adc91784425901a7e6c15c8cd729a268e06099f3318b9ab13",
+      "log_sha256": "3805c91ac018ff877eb411de2d8176ed3bf29b990dd9cd2b0a21f478bc600d0e",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "amr_birth_seed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/amr_birth_seed/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.04064283299885574,
+      "input_sha256": "ce624dbfb90e60447ec101cd48ff39ba6f35cffb7e1cb27928b8177820a148bc",
+      "log_sha256": "497c6e3599c783df76a73f1780559a561fc101ec86f68a8c1977504cf44c3556",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "amr_birth_resumed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/amr_birth_seed/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "job/basename=curve_amr_resumed"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.40500724999947124,
+      "input_sha256": "0c49fb0b5271d13c666f0e9dc8b4070e22810f6b7ab6b7f8c34695c5e4ff491a",
+      "log_sha256": "ceef57796907c47a9eb2aadc33a7516c4be1fa1e947fe8e8525c7f27942559cb",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69",
+      "restart_sha256": "6e17a4dee8118d423a2d8374c649fcdf8f387b336bcf5c290dc50654d04b1801",
+      "generated_input_used": false
+    },
+    {
+      "name": "amr_live_shock",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/core-final-code/amr_live_shock/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.6801894170002925,
+      "input_sha256": "67acf58cc3da280c39d4e0eed120aded3c1da9f64254b3562799f0c0f799b562",
+      "log_sha256": "62571ae5efec6ba115189abbcbf7d1c7a1b54dc1a86d18e32a5b8a8a0d24ab43",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    }
+  ],
+  "checks": [
+    {
+      "id": "CSH02_CSH03_planar",
+      "events": 16,
+      "completed": 16,
+      "suspended": 0,
+      "nodes": 16,
+      "synchronized_observations": 1728,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 16,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "native_density_fronts": [
+        [
+          0,
+          0.0,
+          0.296875
+        ],
+        [
+          1,
+          0.0007685314,
+          0.2970789537009023
+        ],
+        [
+          2,
+          0.001537063,
+          0.2973150534655511
+        ],
+        [
+          3,
+          0.002305594,
+          0.29759432575373673
+        ],
+        [
+          4,
+          0.003074125,
+          0.29792780696273746
+        ],
+        [
+          5,
+          0.003842657,
+          0.298328505029371
+        ],
+        [
+          6,
+          0.004611188,
+          0.2988130774780519
+        ],
+        [
+          7,
+          0.005379719,
+          0.29940404870997916
+        ],
+        [
+          8,
+          0.006148251,
+          0.30013320472629884
+        ],
+        [
+          9,
+          0.006916782,
+          0.3010056096365135
+        ],
+        [
+          10,
+          0.007685314,
+          0.3017362538789698
+        ],
+        [
+          11,
+          0.008453845,
+          0.3023320296590043
+        ],
+        [
+          12,
+          0.009222376,
+          0.30282708070444514
+        ],
+        [
+          13,
+          0.009990908,
+          0.30324038088293637
+        ],
+        [
+          14,
+          0.01075847,
+          0.30358500873670324
+        ],
+        [
+          15,
+          0.01152231,
+          0.30387827164223113
+        ],
+        [
+          16,
+          0.01228263,
+          0.30413887371657605
+        ],
+        [
+          17,
+          0.01303996,
+          0.30438122035801407
+        ],
+        [
+          18,
+          0.01379514,
+          0.30461668313474044
+        ],
+        [
+          19,
+          0.01454923,
+          0.3048545695196902
+        ],
+        [
+          20,
+          0.01530341,
+          0.30510314383611353
+        ],
+        [
+          21,
+          0.01605881,
+          0.30537033212660614
+        ],
+        [
+          22,
+          0.01681072,
+          0.30566194632363264
+        ],
+        [
+          23,
+          0.01755951,
+          0.30598573567864884
+        ],
+        [
+          24,
+          0.01830571,
+          0.3063504815614849
+        ],
+        [
+          25,
+          0.01904992,
+          0.30676685275927434
+        ],
+        [
+          26,
+          0.01979283,
+          0.3072485049029964
+        ],
+        [
+          27,
+          0.02053529,
+          0.3078131429181518
+        ],
+        [
+          28,
+          0.02127814,
+          0.3084845232616969
+        ],
+        [
+          29,
+          0.02202222,
+          0.3091702799162675
+        ],
+        [
+          30,
+          0.02276682,
+          0.3097467664544411
+        ],
+        [
+          31,
+          0.02351002,
+          0.310236614135363
+        ],
+        [
+          32,
+          0.02425235,
+          0.31065755648556165
+        ],
+        [
+          33,
+          0.02499442,
+          0.3110226790895851
+        ],
+        [
+          34,
+          0.02573691,
+          0.3113373673575842
+        ],
+        [
+          35,
+          0.02648035,
+          0.31160876096342777
+        ],
+        [
+          36,
+          0.02722432,
+          0.3118496705702538
+        ],
+        [
+          37,
+          0.02796755,
+          0.3120713408507555
+        ],
+        [
+          38,
+          0.02871036,
+          0.31228355829256077
+        ],
+        [
+          39,
+          0.0294532,
+          0.3124946560075662
+        ],
+        [
+          40,
+          0.03019651,
+          0.3127120809430669
+        ],
+        [
+          41,
+          0.03094065,
+          0.3129428883582809
+        ],
+        [
+          42,
+          0.03168491,
+          0.31319389120702745
+        ],
+        [
+          43,
+          0.03242896,
+          0.3134725066956389
+        ],
+        [
+          44,
+          0.03317322,
+          0.3137874898552432
+        ],
+        [
+          45,
+          0.03391801,
+          0.31414934887039114
+        ],
+        [
+          46,
+          0.03466356,
+          0.31457132910557106
+        ],
+        [
+          47,
+          0.03540938,
+          0.3150698894660179
+        ],
+        [
+          48,
+          0.03615526,
+          0.31566520996218767
+        ],
+        [
+          49,
+          0.0369015,
+          0.31638362907312656
+        ],
+        [
+          50,
+          0.03764821,
+          0.31706791138187473
+        ],
+        [
+          51,
+          0.03839544,
+          0.31764348579252916
+        ],
+        [
+          52,
+          0.03914316,
+          0.3181347353267376
+        ],
+        [
+          53,
+          0.03989108,
+          0.3185583924982556
+        ],
+        [
+          54,
+          0.04063925,
+          0.3189265191942413
+        ],
+        [
+          55,
+          0.0413877,
+          0.3192438429909366
+        ],
+        [
+          56,
+          0.04213639,
+          0.3195188625605432
+        ],
+        [
+          57,
+          0.04288529,
+          0.3197653310603179
+        ],
+        [
+          58,
+          0.04363435,
+          0.3199944966766315
+        ],
+        [
+          59,
+          0.04438354,
+          0.3202151668318006
+        ],
+        [
+          60,
+          0.0451328,
+          0.32043491886416997
+        ],
+        [
+          61,
+          0.04588208,
+          0.32066082792294703
+        ],
+        [
+          62,
+          0.04663135,
+          0.3208995312406477
+        ],
+        [
+          63,
+          0.04738055,
+          0.32115750400017495
+        ],
+        [
+          64,
+          0.04812961,
+          0.3214414662612854
+        ],
+        [
+          65,
+          0.04887849,
+          0.3217588257733596
+        ],
+        [
+          66,
+          0.04962719,
+          0.3221181517571366
+        ],
+        [
+          67,
+          0.05037574,
+          0.3225297834257207
+        ],
+        [
+          68,
+          0.05112423,
+          0.32300663645961475
+        ],
+        [
+          69,
+          0.05187278,
+          0.3235653572848098
+        ],
+        [
+          70,
+          0.05262135,
+          0.3242274056244566
+        ],
+        [
+          71,
+          0.05336964,
+          0.3248842718871231
+        ],
+        [
+          72,
+          0.05411774,
+          0.32543886312463294
+        ],
+        [
+          73,
+          0.05486579,
+          0.3259126652542505
+        ],
+        [
+          74,
+          0.05561391,
+          0.32632170264103283
+        ],
+        [
+          75,
+          0.05636223,
+          0.32667815695442726
+        ],
+        [
+          76,
+          0.0571103,
+          0.326985660362196
+        ],
+        [
+          77,
+          0.05785823,
+          0.32725098913343087
+        ],
+        [
+          78,
+          0.05860613,
+          0.3274874694582124
+        ],
+        [
+          79,
+          0.05935412,
+          0.32770650390485484
+        ],
+        [
+          80,
+          0.06010231,
+          0.32791765810641577
+        ],
+        [
+          81,
+          0.06085039,
+          0.3281290660980522
+        ],
+        [
+          82,
+          0.06159839,
+          0.32834817737916644
+        ],
+        [
+          83,
+          0.0623464,
+          0.3285821632214322
+        ],
+        [
+          84,
+          0.06309449,
+          0.3288384038038735
+        ],
+        [
+          85,
+          0.06384276,
+          0.32912502086100087
+        ],
+        [
+          86,
+          0.06459101,
+          0.3294512926073226
+        ],
+        [
+          87,
+          0.06533924,
+          0.3298286815529559
+        ],
+        [
+          88,
+          0.06608749,
+          0.330271824777009
+        ],
+        [
+          89,
+          0.06683583,
+          0.33079768591776915
+        ],
+        [
+          90,
+          0.06758431,
+          0.3314273620906319
+        ],
+        [
+          91,
+          0.0683328,
+          0.33217236848561793
+        ],
+        [
+          92,
+          0.0690813,
+          0.33283280801777254
+        ],
+        [
+          93,
+          0.06982983,
+          0.3333908501185181
+        ],
+        [
+          94,
+          0.07057846,
+          0.3338679800070989
+        ],
+        [
+          95,
+          0.07132718,
+          0.33428009714491963
+        ],
+        [
+          96,
+          0.0720759,
+          0.3346369173029794
+        ],
+        [
+          97,
+          0.07282466,
+          0.33494418071487947
+        ],
+        [
+          98,
+          0.0735735,
+          0.3352123103199416
+        ],
+        [
+          99,
+          0.07432248,
+          0.33545449935194815
+        ],
+        [
+          100,
+          0.07507142,
+          0.335680976619633
+        ],
+        [
+          101,
+          0.07582038,
+          0.3359003470593532
+        ],
+        [
+          102,
+          0.07656941,
+          0.33612042485184224
+        ],
+        [
+          103,
+          0.0773186,
+          0.33634822585051777
+        ],
+        [
+          104,
+          0.07806782,
+          0.3365902239617871
+        ],
+        [
+          105,
+          0.07881702,
+          0.3368528696462285
+        ],
+        [
+          106,
+          0.07956628,
+          0.3371430800680023
+        ],
+        [
+          107,
+          0.08,
+          0.3373266082616475
+        ],
+        [
+          107,
+          0.08,
+          0.3373266082616475
+        ]
+      ],
+      "density_crossing_brackets": {
+        "30064771073": [
+          0.035409375502100174,
+          0.03615526222668155
+        ],
+        "30064771074": [
+          0.03615526222668155,
+          0.0369014967055269
+        ],
+        "30064771075": [
+          0.03764820887785751,
+          0.03839543503538338
+        ],
+        "30064771076": [
+          0.03839543503538338,
+          0.03914315905723362
+        ],
+        "30064771077": [
+          0.03914315905723362,
+          0.03989108002172968
+        ],
+        "30064771078": [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        "30064771079": [
+          0.04138769965803365,
+          0.04213639407049294
+        ],
+        "30064771080": [
+          0.04213639407049294,
+          0.042885291851948754
+        ],
+        "30064771081": [
+          0.043634350967937,
+          0.04438353730431847
+        ],
+        "30064771082": [
+          0.04513279976240384,
+          0.04588208240370226
+        ],
+        "30064771083": [
+          0.04663134827382395,
+          0.04738054784507752
+        ],
+        "30064771084": [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        "30064771085": [
+          0.0488784940311894,
+          0.04962718966407709
+        ],
+        "30064771086": [
+          0.05037574140587127,
+          0.051124234981376034
+        ],
+        "30064771087": [
+          0.051124234981376034,
+          0.05187278068517021
+        ],
+        "30064771088": [
+          0.05187278068517021,
+          0.05262134828197653
+        ]
+      },
+      "density_brackets_covered_by_event_envelope": 16,
+      "pressure_mach_errors": [
+        0.003360259226112383,
+        0.004744049073434731,
+        0.006226958859918863,
+        0.0074294464442781205,
+        0.008101419706591617,
+        0.008327182873647754,
+        0.008283188635350047,
+        0.0077853307193289645,
+        0.006174733295792656,
+        -0.008939875258685337,
+        -0.008939875258685337,
+        -0.008939875258685337,
+        -0.011005044031481725,
+        -0.013432536693015695,
+        -0.01377318487597945,
+        -0.013564900746482644
+      ],
+      "region_entry_brackets": [
+        [
+          0.027224320915366446,
+          0.02796754807669764
+        ],
+        [
+          0.0287103649612482,
+          0.029453197216177604
+        ],
+        [
+          0.030196506336305103,
+          0.030940646345063987
+        ],
+        [
+          0.03168491025401579,
+          0.03242896024504852
+        ],
+        [
+          0.033173216142501724,
+          0.033918012149504656
+        ],
+        [
+          0.034663559926280285,
+          0.035409375502100174
+        ],
+        [
+          0.03615526222668155,
+          0.0369014967055269
+        ],
+        [
+          0.03764820887785751,
+          0.03839543503538338
+        ],
+        [
+          0.03914315905723362,
+          0.03989108002172968
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.040639251477478405,
+          0.04138769965803365
+        ],
+        [
+          0.04213639407049294,
+          0.042885291851948754
+        ],
+        [
+          0.042885291851948754,
+          0.043634350967937
+        ],
+        [
+          0.04438353730431847,
+          0.04513279976240384
+        ]
+      ],
+      "region_exit_brackets": [
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.0488784940311894,
+          0.04962718966407709
+        ],
+        [
+          0.051124234981376034,
+          0.05187278068517021
+        ],
+        [
+          0.05336963683698513,
+          0.054117742783062334
+        ],
+        [
+          0.0556139139939287,
+          0.05636222501730155
+        ],
+        [
+          0.06533923654753708,
+          0.06608749025426514
+        ]
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CSH02_curve_only_global_enable",
+      "events": 16,
+      "completed": 16,
+      "suspended": 0,
+      "nodes": 16,
+      "synchronized_observations": 1728,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 16,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "native_density_fronts": [
+        [
+          0,
+          0.0,
+          0.296875
+        ],
+        [
+          1,
+          0.0007685314,
+          0.2970789537009023
+        ],
+        [
+          2,
+          0.001537063,
+          0.2973150534655511
+        ],
+        [
+          3,
+          0.002305594,
+          0.29759432575373673
+        ],
+        [
+          4,
+          0.003074125,
+          0.29792780696273746
+        ],
+        [
+          5,
+          0.003842657,
+          0.298328505029371
+        ],
+        [
+          6,
+          0.004611188,
+          0.2988130774780519
+        ],
+        [
+          7,
+          0.005379719,
+          0.29940404870997916
+        ],
+        [
+          8,
+          0.006148251,
+          0.30013320472629884
+        ],
+        [
+          9,
+          0.006916782,
+          0.3010056096365135
+        ],
+        [
+          10,
+          0.007685314,
+          0.3017362538789698
+        ],
+        [
+          11,
+          0.008453845,
+          0.3023320296590043
+        ],
+        [
+          12,
+          0.009222376,
+          0.30282708070444514
+        ],
+        [
+          13,
+          0.009990908,
+          0.30324038088293637
+        ],
+        [
+          14,
+          0.01075847,
+          0.30358500873670324
+        ],
+        [
+          15,
+          0.01152231,
+          0.30387827164223113
+        ],
+        [
+          16,
+          0.01228263,
+          0.30413887371657605
+        ],
+        [
+          17,
+          0.01303996,
+          0.30438122035801407
+        ],
+        [
+          18,
+          0.01379514,
+          0.30461668313474044
+        ],
+        [
+          19,
+          0.01454923,
+          0.3048545695196902
+        ],
+        [
+          20,
+          0.01530341,
+          0.30510314383611353
+        ],
+        [
+          21,
+          0.01605881,
+          0.30537033212660614
+        ],
+        [
+          22,
+          0.01681072,
+          0.30566194632363264
+        ],
+        [
+          23,
+          0.01755951,
+          0.30598573567864884
+        ],
+        [
+          24,
+          0.01830571,
+          0.3063504815614849
+        ],
+        [
+          25,
+          0.01904992,
+          0.30676685275927434
+        ],
+        [
+          26,
+          0.01979283,
+          0.3072485049029964
+        ],
+        [
+          27,
+          0.02053529,
+          0.3078131429181518
+        ],
+        [
+          28,
+          0.02127814,
+          0.3084845232616969
+        ],
+        [
+          29,
+          0.02202222,
+          0.3091702799162675
+        ],
+        [
+          30,
+          0.02276682,
+          0.3097467664544411
+        ],
+        [
+          31,
+          0.02351002,
+          0.310236614135363
+        ],
+        [
+          32,
+          0.02425235,
+          0.31065755648556165
+        ],
+        [
+          33,
+          0.02499442,
+          0.3110226790895851
+        ],
+        [
+          34,
+          0.02573691,
+          0.3113373673575842
+        ],
+        [
+          35,
+          0.02648035,
+          0.31160876096342777
+        ],
+        [
+          36,
+          0.02722432,
+          0.3118496705702538
+        ],
+        [
+          37,
+          0.02796755,
+          0.3120713408507555
+        ],
+        [
+          38,
+          0.02871036,
+          0.31228355829256077
+        ],
+        [
+          39,
+          0.0294532,
+          0.3124946560075662
+        ],
+        [
+          40,
+          0.03019651,
+          0.3127120809430669
+        ],
+        [
+          41,
+          0.03094065,
+          0.3129428883582809
+        ],
+        [
+          42,
+          0.03168491,
+          0.31319389120702745
+        ],
+        [
+          43,
+          0.03242896,
+          0.3134725066956389
+        ],
+        [
+          44,
+          0.03317322,
+          0.3137874898552432
+        ],
+        [
+          45,
+          0.03391801,
+          0.31414934887039114
+        ],
+        [
+          46,
+          0.03466356,
+          0.31457132910557106
+        ],
+        [
+          47,
+          0.03540938,
+          0.3150698894660179
+        ],
+        [
+          48,
+          0.03615526,
+          0.31566520996218767
+        ],
+        [
+          49,
+          0.0369015,
+          0.31638362907312656
+        ],
+        [
+          50,
+          0.03764821,
+          0.31706791138187473
+        ],
+        [
+          51,
+          0.03839544,
+          0.31764348579252916
+        ],
+        [
+          52,
+          0.03914316,
+          0.3181347353267376
+        ],
+        [
+          53,
+          0.03989108,
+          0.3185583924982556
+        ],
+        [
+          54,
+          0.04063925,
+          0.3189265191942413
+        ],
+        [
+          55,
+          0.0413877,
+          0.3192438429909366
+        ],
+        [
+          56,
+          0.04213639,
+          0.3195188625605432
+        ],
+        [
+          57,
+          0.04288529,
+          0.3197653310603179
+        ],
+        [
+          58,
+          0.04363435,
+          0.3199944966766315
+        ],
+        [
+          59,
+          0.04438354,
+          0.3202151668318006
+        ],
+        [
+          60,
+          0.0451328,
+          0.32043491886416997
+        ],
+        [
+          61,
+          0.04588208,
+          0.32066082792294703
+        ],
+        [
+          62,
+          0.04663135,
+          0.3208995312406477
+        ],
+        [
+          63,
+          0.04738055,
+          0.32115750400017495
+        ],
+        [
+          64,
+          0.04812961,
+          0.3214414662612854
+        ],
+        [
+          65,
+          0.04887849,
+          0.3217588257733596
+        ],
+        [
+          66,
+          0.04962719,
+          0.3221181517571366
+        ],
+        [
+          67,
+          0.05037574,
+          0.3225297834257207
+        ],
+        [
+          68,
+          0.05112423,
+          0.32300663645961475
+        ],
+        [
+          69,
+          0.05187278,
+          0.3235653572848098
+        ],
+        [
+          70,
+          0.05262135,
+          0.3242274056244566
+        ],
+        [
+          71,
+          0.05336964,
+          0.3248842718871231
+        ],
+        [
+          72,
+          0.05411774,
+          0.32543886312463294
+        ],
+        [
+          73,
+          0.05486579,
+          0.3259126652542505
+        ],
+        [
+          74,
+          0.05561391,
+          0.32632170264103283
+        ],
+        [
+          75,
+          0.05636223,
+          0.32667815695442726
+        ],
+        [
+          76,
+          0.0571103,
+          0.326985660362196
+        ],
+        [
+          77,
+          0.05785823,
+          0.32725098913343087
+        ],
+        [
+          78,
+          0.05860613,
+          0.3274874694582124
+        ],
+        [
+          79,
+          0.05935412,
+          0.32770650390485484
+        ],
+        [
+          80,
+          0.06010231,
+          0.32791765810641577
+        ],
+        [
+          81,
+          0.06085039,
+          0.3281290660980522
+        ],
+        [
+          82,
+          0.06159839,
+          0.32834817737916644
+        ],
+        [
+          83,
+          0.0623464,
+          0.3285821632214322
+        ],
+        [
+          84,
+          0.06309449,
+          0.3288384038038735
+        ],
+        [
+          85,
+          0.06384276,
+          0.32912502086100087
+        ],
+        [
+          86,
+          0.06459101,
+          0.3294512926073226
+        ],
+        [
+          87,
+          0.06533924,
+          0.3298286815529559
+        ],
+        [
+          88,
+          0.06608749,
+          0.330271824777009
+        ],
+        [
+          89,
+          0.06683583,
+          0.33079768591776915
+        ],
+        [
+          90,
+          0.06758431,
+          0.3314273620906319
+        ],
+        [
+          91,
+          0.0683328,
+          0.33217236848561793
+        ],
+        [
+          92,
+          0.0690813,
+          0.33283280801777254
+        ],
+        [
+          93,
+          0.06982983,
+          0.3333908501185181
+        ],
+        [
+          94,
+          0.07057846,
+          0.3338679800070989
+        ],
+        [
+          95,
+          0.07132718,
+          0.33428009714491963
+        ],
+        [
+          96,
+          0.0720759,
+          0.3346369173029794
+        ],
+        [
+          97,
+          0.07282466,
+          0.33494418071487947
+        ],
+        [
+          98,
+          0.0735735,
+          0.3352123103199416
+        ],
+        [
+          99,
+          0.07432248,
+          0.33545449935194815
+        ],
+        [
+          100,
+          0.07507142,
+          0.335680976619633
+        ],
+        [
+          101,
+          0.07582038,
+          0.3359003470593532
+        ],
+        [
+          102,
+          0.07656941,
+          0.33612042485184224
+        ],
+        [
+          103,
+          0.0773186,
+          0.33634822585051777
+        ],
+        [
+          104,
+          0.07806782,
+          0.3365902239617871
+        ],
+        [
+          105,
+          0.07881702,
+          0.3368528696462285
+        ],
+        [
+          106,
+          0.07956628,
+          0.3371430800680023
+        ],
+        [
+          107,
+          0.08,
+          0.3373266082616475
+        ],
+        [
+          107,
+          0.08,
+          0.3373266082616475
+        ]
+      ],
+      "density_crossing_brackets": {
+        "30064771073": [
+          0.035409375502100174,
+          0.03615526222668155
+        ],
+        "30064771074": [
+          0.03615526222668155,
+          0.0369014967055269
+        ],
+        "30064771075": [
+          0.03764820887785751,
+          0.03839543503538338
+        ],
+        "30064771076": [
+          0.03839543503538338,
+          0.03914315905723362
+        ],
+        "30064771077": [
+          0.03914315905723362,
+          0.03989108002172968
+        ],
+        "30064771078": [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        "30064771079": [
+          0.04138769965803365,
+          0.04213639407049294
+        ],
+        "30064771080": [
+          0.04213639407049294,
+          0.042885291851948754
+        ],
+        "30064771081": [
+          0.043634350967937,
+          0.04438353730431847
+        ],
+        "30064771082": [
+          0.04513279976240384,
+          0.04588208240370226
+        ],
+        "30064771083": [
+          0.04663134827382395,
+          0.04738054784507752
+        ],
+        "30064771084": [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        "30064771085": [
+          0.0488784940311894,
+          0.04962718966407709
+        ],
+        "30064771086": [
+          0.05037574140587127,
+          0.051124234981376034
+        ],
+        "30064771087": [
+          0.051124234981376034,
+          0.05187278068517021
+        ],
+        "30064771088": [
+          0.05187278068517021,
+          0.05262134828197653
+        ]
+      },
+      "density_brackets_covered_by_event_envelope": 16,
+      "pressure_mach_errors": [
+        0.003360259226112383,
+        0.004744049073434731,
+        0.006226958859918863,
+        0.0074294464442781205,
+        0.008101419706591617,
+        0.008327182873647754,
+        0.008283188635350047,
+        0.0077853307193289645,
+        0.006174733295792656,
+        -0.008939875258685337,
+        -0.008939875258685337,
+        -0.008939875258685337,
+        -0.011005044031481725,
+        -0.013432536693015695,
+        -0.01377318487597945,
+        -0.013564900746482644
+      ],
+      "region_entry_brackets": [
+        [
+          0.027224320915366446,
+          0.02796754807669764
+        ],
+        [
+          0.0287103649612482,
+          0.029453197216177604
+        ],
+        [
+          0.030196506336305103,
+          0.030940646345063987
+        ],
+        [
+          0.03168491025401579,
+          0.03242896024504852
+        ],
+        [
+          0.033173216142501724,
+          0.033918012149504656
+        ],
+        [
+          0.034663559926280285,
+          0.035409375502100174
+        ],
+        [
+          0.03615526222668155,
+          0.0369014967055269
+        ],
+        [
+          0.03764820887785751,
+          0.03839543503538338
+        ],
+        [
+          0.03914315905723362,
+          0.03989108002172968
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.03989108002172968,
+          0.040639251477478405
+        ],
+        [
+          0.040639251477478405,
+          0.04138769965803365
+        ],
+        [
+          0.04213639407049294,
+          0.042885291851948754
+        ],
+        [
+          0.042885291851948754,
+          0.043634350967937
+        ],
+        [
+          0.04438353730431847,
+          0.04513279976240384
+        ]
+      ],
+      "region_exit_brackets": [
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.054117742783062334,
+          0.05486579275358624
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.04738054784507752,
+          0.048129610613873865
+        ],
+        [
+          0.0488784940311894,
+          0.04962718966407709
+        ],
+        [
+          0.051124234981376034,
+          0.05187278068517021
+        ],
+        [
+          0.05336963683698513,
+          0.054117742783062334
+        ],
+        [
+          0.0556139139939287,
+          0.05636222501730155
+        ],
+        [
+          0.06533923654753708,
+          0.06608749025426514
+        ]
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CSH04_initial_inside",
+      "events": 16,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 16,
+      "synchronized_observations": 880,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 16,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "status": "pass"
+    },
+    {
+      "id": "CSH05_coexist_passivity",
+      "exact_fluid_tracer_geometry_equal": true,
+      "trace_optional_events_equal": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_restart_actual_phases",
+      "phase_generations": {
+        "outside": 1,
+        "active": 37,
+        "pending": 53
+      },
+      "samepartition_events_nodes_tracer_exact": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_d_relative_prefix",
+      "relative_historyprefix_after_chdir_replayed": true,
+      "checkpoint_argument": "absolute; configured history prefix relative",
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_sidecar_integrity",
+      "missing_and_corrupt_curve_sidecar_rejected": true,
+      "future_version_explicitly_rejected": true,
+      "corrupt_curve_prefix_rejected": true,
+      "oversized_uncommitted_future_chunk_rejected": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH08_overflow",
+      "explicit_overflow_rejection": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH08_old_untracked_checkpoint",
+      "old_untracked_checkpoint_activation_rejected": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_disabled_curve_consumer",
+      "stored_curve_history_cannot_drop_consumer": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_native_hydro_contract",
+      "allowed_native_hydro_settings_bound_to_checkpoint": true,
+      "physics_qualification": "configuration integrity only",
+      "status": "pass"
+    },
+    {
+      "id": "CSH08_curveonly_forcing_input",
+      "curve_only_nonfinite_forcing_rejected_before_evolution": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH01_zero",
+      "events": 0,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 32,
+      "synchronized_observations": 1056,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 32,
+      "maximum_lift_roundoff": 2.220446049250313e-16,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "max_position_error": 0,
+      "roundoff_budget": 2e-12,
+      "status": "pass"
+    },
+    {
+      "id": "CSH01_translation",
+      "events": 0,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 32,
+      "synchronized_observations": 1056,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 32,
+      "maximum_lift_roundoff": 2.220446049250313e-16,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "max_position_error": 8.881784197001252e-16,
+      "roundoff_budget": 2e-12,
+      "status": "pass"
+    },
+    {
+      "id": "CSH01_shear",
+      "events": 0,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 32,
+      "synchronized_observations": 1056,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 32,
+      "maximum_lift_roundoff": 2.220446049250313e-16,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "max_position_error": 8.881784197001252e-16,
+      "roundoff_budget": 2e-12,
+      "status": "pass"
+    },
+    {
+      "id": "CSH07_actual_refine_coarsen",
+      "events": 0,
+      "completed": 0,
+      "suspended": 0,
+      "nodes": 29,
+      "synchronized_observations": 1179,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 29,
+      "maximum_lift_roundoff": 2.220446049250313e-16,
+      "positive_births": 14,
+      "inside_positive_births": 0,
+      "outside_positive_births": 14,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "leaf_counts": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        16,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_changed_callback_contract",
+      "authentic_checkpoint_changed_refinement_callback_rejected": true,
+      "status": "pass"
+    },
+    {
+      "id": "CSH04_CSH07_curveonly_live_amr_births",
+      "events": 63,
+      "completed": 43,
+      "suspended": 0,
+      "nodes": 70,
+      "synchronized_observations": 9644,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 70,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 39,
+      "inside_positive_births": 17,
+      "outside_positive_births": 22,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "leaf_counts": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CSH06_CSH07_amr_newborn_restart",
+      "checkpoint_generation": 13,
+      "active_newborn_exercised": true,
+      "events_censored_views_full_birth_traces_nodes_exact": true,
+      "scope": "curve-only; MC AMR qualification remains blocked",
+      "status": "pass"
+    },
+    {
+      "id": "CSH04_CSH07_coexisting_live_amr_births",
+      "events": 63,
+      "completed": 43,
+      "suspended": 0,
+      "nodes": 70,
+      "synchronized_observations": 9644,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 70,
+      "maximum_lift_roundoff": 6.938893903907228e-18,
+      "positive_births": 39,
+      "inside_positive_births": 17,
+      "outside_positive_births": 22,
+      "extra_episodes": {},
+      "scientific_approval": "pending",
+      "leaf_counts": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "status": "pass"
+    }
+  ],
+  "scientific_approval": "pending",
+  "hardware_scope": "laptop serial only",
+  "criteria_sha256": "2dbf8bc7d01ee30faa366ef0ba0f553d6dc3674c24e115914e756c5b2100d40e",
+  "runner_sha256": "c6440a56dd434083b1767acd7c1cd445272a1f1a837ca0ae98b8a454307cd859",
+  "inspected_worktree_source_sha256_not_binary_binding": {
+    "src/material_curves/curve_shocks.cpp": "da6d965d8c5aaad33b047d33d14ba3105aff5bc53e075cd00705bf687b0a59ff",
+    "src/material_curves/curve_shocks_io.cpp": "619b3cfe087a464529701631ca69e532f8865ed5906d46be644d7578aa0a66be",
+    "src/material_curves/material_curves.cpp": "ff12c68e79f408bd8a40421fcd347c8f2c4441cbb34e2ceea9ea618ae9f0b80b",
+    "src/material_curves/material_curves_io.cpp": "619d7da628d599585d638fdd47ba08cb46c8688416e7f9e89206ba51529e0b5e",
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/shocks/observation.hpp": "aca112ee8c8a7cd32e30275c10ab95649f75d9af3696db2126e9af97e3bb8dca",
+    "src/shocks/store.hpp": "a7db5fa1086a153a075a86ee0a6e68723448e2642d96b3673cbf7bf71ec5fbc4"
+  },
+  "elapsed_seconds": 9.108782667000924,
+  "status": "pass"
+}

@@ -1,0 +1,102 @@
+{
+  "schema": "curve-shocks-acceptance-1",
+  "runs": [
+    {
+      "name": "forced_on",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/forced-final-code/forced_on/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 5.748302500000136,
+      "input_sha256": "f68175af9ba2542a02e25203441889a52330cbacaf077a1e664593a3d5f19c60",
+      "log_sha256": "885876193ce24730058576c298d769fa3144e777c9522821e61e50da089809bf",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "forced_off",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/forced-final-code/forced_off/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.5479038749999745,
+      "input_sha256": "d535eef16f383b45211299357d38c9842c0a1844e7054c5c44fe5d6781e97d70",
+      "log_sha256": "8d2a410d1248d5ff85c27d8c2e0aae5eefb920310d84bfe3bd10f8f1808868d0",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "forced_no_trace",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/forced-final-code/forced_no_trace/input.athinput"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 2.5794932919998246,
+      "input_sha256": "48e982d4c6f46bcbb76b6738b3285a2e9062a120b8557ec30ff3e035b6b449ab",
+      "log_sha256": "49f8424179ae347072ab7331764d167e303e1b1245a234118775440c4a90449f",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "compiled_source_fingerprint": "1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    }
+  ],
+  "checks": [
+    {
+      "id": "CSH09_forced_tracer_curves_passivity",
+      "events": 28,
+      "completed": 28,
+      "suspended": 0,
+      "nodes": 16,
+      "synchronized_observations": 2320,
+      "fulltrace_exact_native_node_sets": true,
+      "earliest_birth_observations_checked": 16,
+      "maximum_lift_roundoff": 5.551115123125783e-17,
+      "positive_births": 0,
+      "inside_positive_births": 0,
+      "outside_positive_births": 0,
+      "extra_episodes": {
+        "30064771073": 2,
+        "30064771074": 2,
+        "30064771077": 3,
+        "30064771078": 2,
+        "30064771079": 4,
+        "30064771083": 3,
+        "30064771084": 2,
+        "30064771085": 2
+      },
+      "scientific_approval": "pending",
+      "exact_fluid_tracer_curve_passivity": true,
+      "trace_optional_events_equal": true,
+      "physical_settings": "inputs/tests/shocks-curves/forced.athinput",
+      "physical_strength_truth": "not asserted",
+      "inherited_RK2_forcing_heat_bias": "unresolved; no scientific approval",
+      "status": "pass"
+    }
+  ],
+  "scientific_approval": "pending",
+  "hardware_scope": "laptop serial only",
+  "criteria_sha256": "2dbf8bc7d01ee30faa366ef0ba0f553d6dc3674c24e115914e756c5b2100d40e",
+  "runner_sha256": "c6440a56dd434083b1767acd7c1cd445272a1f1a837ca0ae98b8a454307cd859",
+  "inspected_worktree_source_sha256_not_binary_binding": {
+    "src/material_curves/curve_shocks.cpp": "da6d965d8c5aaad33b047d33d14ba3105aff5bc53e075cd00705bf687b0a59ff",
+    "src/material_curves/curve_shocks_io.cpp": "619b3cfe087a464529701631ca69e532f8865ed5906d46be644d7578aa0a66be",
+    "src/material_curves/material_curves.cpp": "ff12c68e79f408bd8a40421fcd347c8f2c4441cbb34e2ceea9ea618ae9f0b80b",
+    "src/material_curves/material_curves_io.cpp": "619d7da628d599585d638fdd47ba08cb46c8688416e7f9e89206ba51529e0b5e",
+    "src/shocks/detector.hpp": "b156c9c5623d3c2b9ab1f725c50d422a7e1e78cf43573c812412dfac3e416ef7",
+    "src/shocks/encounter.hpp": "096e5b589c4914d18cd26b87b22968889db89d9785ed1a4ab97f732cca1970b8",
+    "src/shocks/observation.hpp": "aca112ee8c8a7cd32e30275c10ab95649f75d9af3696db2126e9af97e3bb8dca",
+    "src/shocks/store.hpp": "a7db5fa1086a153a075a86ee0a6e68723448e2642d96b3673cbf7bf71ec5fbc4"
+  },
+  "elapsed_seconds": 11.597673542000848,
+  "status": "pass"
+}

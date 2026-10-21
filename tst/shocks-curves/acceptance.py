@@ -323,7 +323,7 @@ def main():
                             'forced fluid metadata/geometry changed')
                     require(all(np.array_equal(fields[k],af[k]) for k in fields),
                             'forcing/tracking changed native fluid arrays')
-                require(thermo(other)==reference_mc,'forced tracking changed native MC trajectories')
+                require(thermo(other)==reference_mc,'forced tracking changed native continuous-tracer trajectories')
                 require(json.dumps(material_curves.read(other/'curve_shock.curves.final.txt'),
                                    sort_keys=True)==json.dumps(reference_nodes,sort_keys=True),
                         'forced tracking changed native material geometry')
@@ -334,12 +334,12 @@ def main():
             require(not list((no/'shock_events/curves').glob('*trace*.csv')),
                     'forced optional trace disabled but files emitted')
             require(not (off/'shock_events').exists(),'forced global disabled writes histories')
-            metrics.update(exact_fluid_mc_curve_passivity=True,trace_optional_events_equal=True,
-                physical_settings='EXACT inputs/tests/shock_mc_forced.athinput',
+            metrics.update(exact_fluid_tracer_curve_passivity=True,trace_optional_events_equal=True,
+                physical_settings='inputs/tests/shocks-curves/forced.athinput',
                 physical_strength_truth='not asserted',
                 inherited_RK2_forcing_heat_bias='unresolved; no scientific approval')
             return metrics
-        check('CSH09_forced_MC_curves_passivity',forced)
+        check('CSH09_forced_tracer_curves_passivity',forced)
         report['status']='pass' if report['checks'][0]['status']=='pass' else 'failed'
         save();print(json.dumps({'status':report['status'],'report':str(work/'report.json')}))
         return 0 if report['status']=='pass' else 1
@@ -393,7 +393,7 @@ def main():
             require(json.dumps(material_curves.read(on/'curve_shock.curves.final.txt'),sort_keys=True)==
                     json.dumps(material_curves.read(other/'curve_shock.curves.final.txt'),sort_keys=True),
                     'tracking changed native curve snapshot')
-            require(thermo(on)==thermo(other), 'tracking changed native MC trajectories')
+            require(thermo(on)==thermo(other), 'tracking changed native continuous-tracer trajectories')
             tables=lambda d:[p.read_bytes() for p in sorted((d/'tab').glob('*.tab'))]
             require(tables(on)==tables(other), 'tracking changed fluid conserved tables')
         reader=importlib.import_module('curve_shock_history')
@@ -403,7 +403,7 @@ def main():
         require(not list((notrace/'shock_events/curves').glob('*trace*.csv')),
                 'disabled optional traces still written')
         require(not (off/'shock_events').exists(), 'tracking disabled still creates events')
-        return {'exact_fluid_mc_geometry_equal':True,'trace_optional_events_equal':True}
+        return {'exact_fluid_tracer_geometry_equal':True,'trace_optional_events_equal':True}
     check('CSH05_coexist_passivity',passivity)
     def restart_phases():
         reader=importlib.import_module('curve_shock_history')
@@ -437,7 +437,7 @@ def main():
             reference=material_curves.read(base/'curve_shock.curves.final.txt')
             require(json.dumps(nodes(final),sort_keys=True)==json.dumps(nodes(reference),sort_keys=True),
                     'continued material node state differs')
-        return {'phase_generations':phases,'samepartition_events_nodes_mc_exact':True}
+        return {'phase_generations':phases,'samepartition_events_nodes_tracer_exact':True}
     check('CSH06_restart_actual_phases',restart_phases)
     def relative_directory_restart():
         reader=importlib.import_module('curve_shock_history')

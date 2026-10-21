@@ -16,6 +16,14 @@ def sha(path):
 
 def edit_input(text, changes):
     remaining = dict(changes)
+    # AthenaK accepts repeated sections. A key defined in a later occurrence must
+    # not be appended early and then silently overridden by its original value.
+    existing=set(); block=None
+    for line in text.splitlines():
+        match=re.fullmatch(r'\s*<([^>]+)>\s*',line)
+        if match:block=match[1]
+        assignment=re.match(r'\s*([^#=]+?)\s*=',line)
+        if block and assignment:existing.add(block+'/'+assignment[1].strip())
     block = None
     lines = []
     for line in text.splitlines():
@@ -23,18 +31,19 @@ def edit_input(text, changes):
         if match:
             if block is not None:
                 for key in list(remaining):
-                    if key.startswith(block + '/'):
+                    if key.startswith(block + '/') and key not in existing:
                         lines.append(key.split('/', 1)[1] + ' = ' + str(remaining.pop(key)))
             block = match[1]
         assignment = re.match(r'\s*([^#=]+?)\s*=', line)
         if assignment and block:
             key = block + '/' + assignment[1].strip()
-            if key in remaining:
-                line = assignment[1].strip() + ' = ' + str(remaining.pop(key))
+            if key in changes:
+                line = assignment[1].strip() + ' = ' + str(changes[key])
+                remaining.pop(key,None)
         lines.append(line)
     if block:
         for key in list(remaining):
-            if key.startswith(block + '/'):
+            if key.startswith(block + '/') and key not in existing:
                 lines.append(key.split('/', 1)[1] + ' = ' + str(remaining.pop(key)))
     sections = {}
     for key, value in remaining.items():

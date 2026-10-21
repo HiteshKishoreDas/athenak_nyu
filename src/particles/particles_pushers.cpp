@@ -10,6 +10,8 @@
 #include "mesh/mesh.hpp"
 #include "driver/driver.hpp"
 #include "particles.hpp"
+#include "particles/fluid_velocity.hpp"
+#include "hydro/hydro.hpp"
 
 namespace particles {
 //----------------------------------------------------------------------------------------
@@ -50,6 +52,36 @@ TaskStatus Particles::Push(Driver *pdriver, int stage) {
       });
 
     break;
+  case ParticlesPusher::lagrangian_tracer: {
+    if (stage != 1 && stage != 2) Kokkos::abort("invalid Lagrangian RK2 stage");
+    auto w = pmy_pack->phydro->w0;
+    const auto ind = indcs;
+    const bool three = three_d;
+    const int nmb = pmy_pack->nmb_thispack;
+    par_for("velocity_following_tracers",DevExeSpace(),0,nprtcl_thispack-1,
+    KOKKOS_LAMBDA(const int p) {
+      const int m = pi(PGID,p)-gids;
+      if (m < 0 || m >= nmb) Kokkos::abort("invalid tracer leaf ownership");
+      Real x[3]={pr(IPX,p),pr(IPY,p),pr(IPZ,p)}, v[3];
+      if (FluidVelocity(w,m,x,mbsize.d_view(m),ind,three,v)) {
+        Kokkos::abort("invalid Lagrangian velocity interpolation stencil");
+      }
+      for (int d=0; d<(three ? 3 : 2); ++d) {
+        // Predictor velocity lives in the native real payload, so interstage MPI
+        // migration carries it. The increment form handles periodic wraps without
+        // averaging coordinates on opposite sides of the domain.
+        if (stage == 1) {
+          pr(2*d+1,p)=v[d];
+          pr(2*d,p) += dt_*v[d];
+        } else {
+          pr(2*d,p) += 0.5*dt_*(v[d]-pr(2*d+1,p));
+          pr(2*d+1,p)=v[d];
+        }
+        if (!Kokkos::isfinite(pr(2*d,p))) Kokkos::abort("nonfinite tracer position");
+      }
+    });
+    break;
+  }
   case ParticlesPusher::lagrangian_mc:
     return PushLagrangianMC(pdriver, stage);
   default:

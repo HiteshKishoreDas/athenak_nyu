@@ -28,7 +28,7 @@ struct Field {
   Real constant_pressure;
 };
 Field field;
-Real refine_time, coarsen_time;
+Real refine_time, coarsen_time, refine_x1max;
 
 void SetField(Mesh *pm, Real time) {
   auto *pack = pm->pmb_pack;
@@ -89,7 +89,12 @@ void TimedRefinement(MeshBlockPack *pack) {
   const int first = mesh->gids_eachrank[global_variable::my_rank];
   const int decision = mesh->time >= coarsen_time ? -1 :
                        (mesh->time >= refine_time ? 1 : 0);
-  for (int m=0; m<pack->nmb_thispack; ++m) flags.h_view(first+m) = decision;
+  pack->pmb->mb_size.template sync<HostMemSpace>();
+  for (int m=0; m<pack->nmb_thispack; ++m) {
+    const auto size=pack->pmb->mb_size.h_view(m);
+    flags.h_view(first+m) = decision > 0 &&
+        0.5*(size.x1min+size.x1max) >= refine_x1max ? 0 : decision;
+  }
   flags.template modify<HostMemSpace>();
   flags.template sync<DevExeSpace>();
 }
@@ -100,6 +105,8 @@ void ProblemGenerator::UserProblem(ParameterInput *pin, const bool restart) {
     std::cerr << "material_curve_test requires Newtonian hydro\n";
     std::exit(EXIT_FAILURE);
   }
+  refine_x1max = pin->DoesParameterExist("problem","refine_x1max") ?
+      pin->GetReal("problem","refine_x1max") : 1.0e30;
   std::string mode = pin->GetOrAddString("problem", "flow", "translation");
   if (mode=="shock_tube") {
     // Native evolved RH fixture with the existing timed AMR callback; no prescribed source.

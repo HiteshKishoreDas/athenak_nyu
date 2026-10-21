@@ -142,10 +142,10 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
     tracer_gamma(5.0/3.0) {
   mkdir("prtcl_thermo_history", 0775);
   if (pm->pmb_pack->ppart == nullptr ||
-      !pm->pmb_pack->ppart->IsLagrangianMC()) {
+      !pm->pmb_pack->ppart->IsFluidTracer()) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
               << std::endl << "file_type=prtcl_thermo_history requires "
-              << "particle_type=lagrangian_mc" << std::endl;
+              << "particle_type=lagrangian_mc or lagrangian_tracer" << std::endl;
     std::exit(EXIT_FAILURE);
   }
 

@@ -1,5 +1,5 @@
 # Periodic RH fixture; analyze only central front before boundary influence.
-# Experimental MC mass-flux tracer shock fixture; human scientific review pending.
+# Experimental continuous velocity-following tracer shock fixture; human scientific review pending.
 # Forward RH M=2, gamma1.4; downstream left, front x=.3+.5t.
 <job>
 basename = curve_shock
@@ -37,8 +37,8 @@ gamma = 1.4
 rsolver = hllc
 reconstruct = plm
 <particles>
-particle_type = lagrangian_mc
-pusher = lagrangian_mc
+particle_type = lagrangian_tracer
+pusher = lagrangian_tracer
 random_seed = 11
 next_tracer_tag = 0
 track_variables = rho,p,v1,v2,v3

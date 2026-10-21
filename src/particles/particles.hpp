@@ -30,7 +30,7 @@ class IOWrapper;
 enum class ParticlesPusher {drift, leap_frog, lagrangian_tracer, lagrangian_mc};
 
 // constants that enumerate ParticleTypes
-enum class ParticleType {cosmic_ray, lagrangian_mc};
+enum class ParticleType {cosmic_ray, lagrangian_mc, lagrangian_tracer};
 
 enum class TracerSeedWeight {mass, volume};
 enum class TracerSeedRegion {all, box, sphere, slab};
@@ -116,6 +116,7 @@ class Particles {
   int shock_highwater = 0;
   Real shock_seconds = 0;
   uint64_t shock_history_digest = UINT64_C(14695981039346656037);
+  void ConfigureShockTracking(ParameterInput *pin);
   void PreflightShockRestart(const std::string &fname);
   bool shock_trace = false;
   std::vector<shocks::Event> shock_pending_exits;
@@ -124,7 +125,6 @@ class Particles {
   void DrainShockEvents(const std::vector<shocks::Event> &events, uint64_t generation);
   void ObserveShocks(Real time, uint64_t generation);
   void ResizeShockState(int nold);
-  void WriteShockTransfers(const HostArray2D<Real> &evidence);
   void WriteShockRestart(const std::string &fname);
   void ReadShockRestart(const std::string &fname);
   void WriteShockSuspended();
@@ -157,13 +157,17 @@ class Particles {
   void WriteRestartData(IOWrapper &resfile, bool single_file_per_rank);
   void ReadRestartData(IOWrapper &resfile, bool single_file_per_rank);
   int GetLagrangianMCScalarCount() const;
+  bool IsLagrangianTracer() const {
+    return particle_type == ParticleType::lagrangian_tracer;
+  }
+  bool IsFluidTracer() const {return IsLagrangianMC() || IsLagrangianTracer();}
   bool IsLagrangianMC() const {return particle_type == ParticleType::lagrangian_mc;}
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles
   std::vector<TracerSeedSchedule> seed_schedules_;
 
-  void ConfigureShockTracking(ParameterInput *pin);
+  int LocateTracerMeshBlock(Real x, Real y, Real z) const;
   void ParseTracerSeedSchedules(ParameterInput *pin);
   void SeedTracersAtTime(Real event_time, bool initial_only);
   void AppendParticles(const HostArray2D<Real> &new_rdata,

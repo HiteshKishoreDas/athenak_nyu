@@ -3,6 +3,7 @@
 // Passive material curves: separate identity/geometry from fluid leaf ownership.
 #include "material_curves.hpp"
 #include "particles/particles.hpp"
+#include "particles/fluid_velocity.hpp"
 #include "shocks/observation.hpp"
 
 #include <algorithm>
@@ -76,10 +77,10 @@ std::int64_t SignedInteger(const std::string &text) {
 MaterialCurves::MaterialCurves(Mesh *pm, ParameterInput *pin) : mesh(pm), pin_(pin) {
   auto pp = mesh->pmb_pack;
   if (pp->phydro == nullptr || pp->pmhd || pp->prad || pp->pionn || pp->pz4c ||
-      pp->pdyngr || pp->padm || (pp->ppart && !pp->ppart->IsLagrangianMC()) ||
+      pp->pdyngr || pp->padm || (pp->ppart && !pp->ppart->IsFluidTracer()) ||
       pp->pcoord->is_special_relativistic || pp->pcoord->is_general_relativistic ||
       pp->pcoord->is_dynamical_relativistic) {
-    Fail("requires passive Newtonian single-fluid HD; only MC particles may coexist");
+    Fail("requires passive Newtonian single-fluid HD; only fluid tracers may coexist");
   }
   if (pin->GetOrAddString("time", "integrator", "rk2") != "rk2" ||
       pin->GetOrAddString("time", "evolution", "dynamic") != "dynamic") {
@@ -491,36 +492,9 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
   par_for("material_curve_velocity", DevExeSpace(), 0, nr-1,
   KOKKOS_LAMBDA(int p) {
     int m=block(p);
-    auto s=sizes(m);
-    Real f[3] = {(q(p,0)-s.x1min)/s.dx1+ind.is-0.5,
-                  (q(p,1)-s.x2min)/s.dx2+ind.js-0.5,
-                  three ? (q(p,2)-s.x3min)/s.dx3+ind.ks-0.5 : 0};
-    int cell[3] = {static_cast<int>(floor(f[0])), static_cast<int>(floor(f[1])),
-                   three ? static_cast<int>(floor(f[2])) : 0};
-    status(p)=0;
-    if (cell[0]<0 || cell[0]+1>=static_cast<int>(w.extent(4)) ||
-        cell[1]<0 || cell[1]+1>=static_cast<int>(w.extent(3)) ||
-        cell[2]<0 || (three && cell[2]+1>=static_cast<int>(w.extent(2)))) {
-      status(p)=1;
-      return;
-    }
-    for (int d=0; d<3; ++d) v(p,d)=0;
-    for (int kz=0; kz<(three ? 2 : 1); ++kz) {
-      for (int jy=0; jy<2; ++jy) {
-        for (int ix=0; ix<2; ++ix) {
-          int i=cell[0]+ix, j=cell[1]+jy, k=cell[2]+kz;
-          Real weight=(ix ? f[0]-cell[0] : 1-f[0]+cell[0])*
-                      (jy ? f[1]-cell[1] : 1-f[1]+cell[1]);
-          if (three) weight *= kz ? f[2]-cell[2] : 1-f[2]+cell[2];
-          if (!(w(m,IDN,k,j,i)>0) || !Kokkos::isfinite(w(m,IDN,k,j,i))) status(p)=2;
-          for (int d=0; d<(three ? 3 : 2); ++d) {
-            Real u=w(m,IVX+d,k,j,i);
-            if (!Kokkos::isfinite(u)) status(p)=2;
-            v(p,d) += weight*u;
-          }
-        }
-      }
-    }
+    Real position[3]={q(p,0),q(p,1),q(p,2)}, velocity[3];
+    status(p)=particles::FluidVelocity(w,m,position,sizes(m),ind,three,velocity);
+    for (int d=0; d<3; ++d) v(p,d)=velocity[d];
   });
   auto vh=Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(),v);
   auto sh=Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(),status);

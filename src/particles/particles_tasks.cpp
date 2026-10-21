@@ -33,6 +33,8 @@ void Particles::AssembleTasks(std::map<std::string, std::shared_ptr<TaskList>> t
     list = tl["after_timeintegrator"];
   }
 
+  if (IsLagrangianTracer()) list = tl["before_stagen"];
+
   id.push   = list->AddTask(&Particles::Push, this, none);
   id.newgid = list->AddTask(&Particles::NewGID, this, id.push);
   id.count  = list->AddTask(&Particles::SendCnt, this, id.newgid);
@@ -46,6 +48,9 @@ void Particles::AssembleTasks(std::map<std::string, std::shared_ptr<TaskList>> t
     id.seed   = list->AddTask(&Particles::SeedDueTracers, this, id.mradj);
   }
 
+  if (IsLagrangianTracer()) {
+    tl["after_timeintegrator"]->AddTask(&Particles::SeedDueTracers, this, none);
+  }
   return;
 }
 
@@ -55,7 +60,7 @@ void Particles::AssembleTasks(std::map<std::string, std::shared_ptr<TaskList>> t
 //! MeshBlocks.
 
 TaskStatus Particles::NewGID(Driver *pdrive, int stage) {
-  TaskStatus tstat = pbval_part->SetNewPrtclGID();
+  TaskStatus tstat = pbval_part->SetNewPrtclGID(stage);
   return tstat;
 }
 
@@ -121,7 +126,7 @@ TaskStatus Particles::ClearRecv(Driver *pdrive, int stage) {
 //----------------------------------------------------------------------------------------
 
 TaskStatus Particles::SeedDueTracers(Driver *pdrive, int stage) {
-  if (particle_type == ParticleType::lagrangian_mc) {
+  if (IsFluidTracer()) {
     SeedTracersAtTime(pmy_pack->pmesh->time + pmy_pack->pmesh->dt, false);
   }
   return TaskStatus::complete;

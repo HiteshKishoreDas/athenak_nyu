@@ -276,7 +276,7 @@ class ParticlesBoundaryValues {
 #endif
 
   //functions
-  TaskStatus SetNewPrtclGID();
+  TaskStatus SetNewPrtclGID(int stage);
   TaskStatus CountSendsAndRecvs();
   TaskStatus InitPrtclRecv();
   TaskStatus ClearPrtclRecv();
@@ -285,7 +285,7 @@ class ParticlesBoundaryValues {
   TaskStatus RecvAndUnpackPrtcls();
 
  protected:
-  TaskStatus SetShockPrtclGID();
+  TaskStatus SetShockPrtclGID(int stage);
   TaskStatus RecvAndUnpackShockPrtcls();
   particles::Particles* pmy_part;
 };

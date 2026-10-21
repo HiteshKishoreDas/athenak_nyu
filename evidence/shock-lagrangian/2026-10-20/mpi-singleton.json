@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "ranks": 1,
+  "checks": {
+    "native_observations_equal": true,
+    "particle_events_equal": true,
+    "particle_terminal_equal": true,
+    "curve_events_equal": true
+  },
+  "command": [
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-mpi/src/athena",
+    "-i",
+    "input.athinput"
+  ],
+  "input_sha256": "962c64b3cc9228ad486ed226b9433d9866f70b5d1580451c78403b0d7837c5c8",
+  "log_sha256": "27075d135c98d336246e3f739f1651945865aa2ba3a2509596b0c594ac194393",
+  "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-mpi/src/athena",
+  "executable_sha256": "ef3b8cabb6e571567146ec6411036d152428d4ea36a30514867d36b4d2bf73fa",
+  "compiled_source_fingerprint": "5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612",
+  "build_cache_sha256": "230243547a032d309be1fe2865b4e1d51d8683f1f9480413e76ad1939d6310bf"
+}

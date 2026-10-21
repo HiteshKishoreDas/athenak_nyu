@@ -265,7 +265,7 @@ void MeshBlockPack::AddPhysics(ParameterInput *pin) {
   }
   if (!ppart && !has_curves && pin->DoesBlockExist("shock_tracking") &&
       pin->GetOrAddBoolean("shock_tracking", "enabled", false)) {
-    std::cerr << "### FATAL ERROR: shock tracking requires lagrangian_mc particles "
+    std::cerr << "### FATAL ERROR: shock tracking requires lagrangian_tracer particles "
               << "or material_curves" << std::endl;
     std::exit(EXIT_FAILURE);
   }

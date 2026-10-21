@@ -351,7 +351,7 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
   }
 
   if (!res_flag && pmesh->pmb_pack->ppart != nullptr &&
-      pmesh->pmb_pack->ppart->IsLagrangianMC()) {
+      pmesh->pmb_pack->ppart->IsFluidTracer()) {
     pmesh->pmb_pack->ppart->SeedInitialTracers();
   }
 
@@ -513,7 +513,8 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
         }
         pmesh->pmb_pack->pcurves->CompleteStep();
       } else if (pmesh->adaptive && pmesh->pmb_pack->ppart &&
-                 pmesh->pmb_pack->ppart->shock_enabled) {
+                 (pmesh->pmb_pack->ppart->shock_enabled ||
+                  pmesh->pmb_pack->ppart->IsLagrangianTracer())) {
         pmesh->pmr->AdaptiveMeshRefinement(this,pin);
       }
       if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
@@ -556,7 +557,8 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
 
       // AMR
       if (pmesh->adaptive && !pmesh->pmb_pack->pcurves &&
-          !(pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled)) {
+          !(pmesh->pmb_pack->ppart && (pmesh->pmb_pack->ppart->shock_enabled ||
+            pmesh->pmb_pack->ppart->IsLagrangianTracer()))) {
         pmesh->pmr->AdaptiveMeshRefinement(this, pin);
       }
       // compute new timestep AFTER all Meshblocks refined/derefined
