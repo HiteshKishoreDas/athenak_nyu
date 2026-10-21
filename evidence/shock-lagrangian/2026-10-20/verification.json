@@ -1,0 +1,12 @@
+{
+  "status": "pass",
+  "source_files_verified": 332,
+  "raw_members_verified": 243054,
+  "final_archived_inputs_logs_reports_verified": 130,
+  "all_final_binary_bindings_match": true,
+  "native_checks_passed": 35,
+  "detector_parity_cases_passed": 53,
+  "mpi_singleton": "pass",
+  "two_rank_runtime": "blocked before AthenaK: PMIx/PRRTE binary mismatch",
+  "scientific_approval": "pending"
+}

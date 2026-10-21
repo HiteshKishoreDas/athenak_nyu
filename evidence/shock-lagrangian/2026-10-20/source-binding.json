@@ -1,0 +1,26 @@
+{
+  "source_commit": "1c325e5a59d64f743ffdaa4f8678a4805b12608f",
+  "branch": "codex/shock-lagrangian",
+  "worktree": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian",
+  "recorded_utc": "2026-10-21T01:25:01.298114+00:00",
+  "kokkos_commit": "08ceff92bcf3a828844480bc1e6137eb74028517",
+  "binaries": {
+    "builtin": {
+      "executable_sha256": "a543768ceb0a7a16f3bf6ffff53adaf6b932af5065bdf382f2471d3f5e106421",
+      "implementation_header": "#ifndef SHOCK_VERSION_HPP_\n#define SHOCK_VERSION_HPP_\n#define SHOCK_IMPLEMENTATION_HASH \"1a8ee8ed78fb74a35234b3ba0417e6e8aba1d5bad37c109992404406bd6e9c56\"\n#endif\n"
+    },
+    "prescribed": {
+      "executable_sha256": "b4a19273ca3064d941ce311a6f7d7908ba17417d1aa50eac0ccca0c4fb6bb52b",
+      "implementation_header": "#ifndef SHOCK_VERSION_HPP_\n#define SHOCK_VERSION_HPP_\n#define SHOCK_IMPLEMENTATION_HASH \"5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612\"\n#endif\n"
+    },
+    "mpi-prescribed": {
+      "executable_sha256": "ef3b8cabb6e571567146ec6411036d152428d4ea36a30514867d36b4d2bf73fa",
+      "implementation_header": "#ifndef SHOCK_VERSION_HPP_\n#define SHOCK_VERSION_HPP_\n#define SHOCK_IMPLEMENTATION_HASH \"5cd55f06bf0498837bb21676a8cbfac11277305be0f106c13f820c8ee0294612\"\n#endif\n"
+    }
+  },
+  "preserved_mc_branch": "2450e1c21b0a97c0f1635da75a20701c7e0852a4",
+  "scientific_approval": "pending",
+  "hardware": "local Serial/double; MPI singleton only; two-rank launcher blocked",
+  "final_native_checks": 35,
+  "detector_parity_cases": 53
+}

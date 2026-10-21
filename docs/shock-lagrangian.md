@@ -261,3 +261,16 @@ before launch; its log is retained. The corrected singleton command passes.
    CPU/MPI scale and performance budgets. Frontier GPU requires separate support.
 4. Full stage-aware outflow trajectory treatment if requested. Current predictor
    guard deliberately prevents silent false encounters or particle loss.
+
+## Sealed exact-code bundle
+
+Implementation commit: `1c325e5a59d64f743ffdaa4f8678a4805b12608f`.
+The subsequent metadata commit changes documentation/evidence only.
+Bundle manifest SHA256:
+`1e1a497fdb640d64393f79d448d0eb9e325fe0967f7cd6dcc8a7f77279bcc090`.
+Verification passes: 332 archived native source files match, 243054 raw archive
+members are readable/safely named, and all 130 final archived input/log/report
+bindings match their reports. All final native reports match the retained exact
+executables. Bundle contains native raw runs, failed attempts, source/dependency
+archives, three runtime builds, compiler configurations and seven explained plots.
+No scientific sign-off supplied. No new branch push performed in this task.
