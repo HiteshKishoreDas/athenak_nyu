@@ -23,6 +23,38 @@
 #include "globals.hpp"
 
 namespace material_curves {
+std::string MaterialCurves::ThermoHistory(
+    const std::vector<particles::TracerField> &fields) {
+  std::vector<Node *> nodes;
+  for (auto &c : curves) for (auto &n : c.nodes) nodes.push_back(&n);
+  std::sort(nodes.begin(),nodes.end(),[](const Node *a,const Node *b) {
+    return a->id<b->id;
+  });
+  std::vector<Real> values;
+  Sample(nodes,nullptr,fields,&values);
+  std::ostringstream out;
+  out.imbue(std::locale::classic());
+  out << std::setprecision(std::numeric_limits<Real>::max_digits10);
+  out << "# ATHK_CURVE_THERMO 1 " << mesh->ncycle << ' ' << mesh->time
+      << ' ' << nodes.size() << ' ' << global_variable::my_rank << ' '
+      << global_variable::nranks << '\n';
+  out << "node_id,curve_id,birth,a,x1,x2,x3,gid,level";
+  for (const auto &field : fields) out << ',' << field.name;
+  out << '\n';
+  for (std::size_t p=0; p<nodes.size(); ++p) {
+    const auto &node=*nodes[p];
+    Vec wrapped;
+    int gid=Locate(node.x,wrapped);
+    out << node.id << ',' << (node.id>>32) << ',' << node.birth << ',' << node.a;
+    for (Real x : node.x) out << ',' << x;
+    out << ',' << gid << ',' << mesh->lloc_eachmb[gid].level;
+    for (std::size_t n=0; n<fields.size(); ++n) out << ',' << values[fields.size()*p+n];
+    out << '\n';
+  }
+  out << "# END " << nodes.size() << '\n';
+  return out.str();
+}
+
 namespace {
 constexpr std::uint64_t kOffset = 14695981039346656037ULL;
 constexpr std::uint64_t kPrime = 1099511628211ULL;

@@ -560,7 +560,7 @@ class ParticleVTKOutput : public BaseTypeOutput {
 
 //----------------------------------------------------------------------------------------
 //! \class ParticleThermoHistoryOutput
-//  \brief append-only binary thermodynamic history for lagrangian_mc particles
+//  \brief shared thermodynamic diagnostics for fluid particles and material curves
 
 class ParticleThermoHistoryOutput : public BaseTypeOutput {
  public:
@@ -568,9 +568,12 @@ class ParticleThermoHistoryOutput : public BaseTypeOutput {
   void LoadOutputData(Mesh *pm) override;
   void WriteOutputFile(Mesh *pm, ParameterInput *pin) override;
  protected:
+  void WriteParticleData(Mesh *pm);
   int npout_thisrank;
   int npout_total;
   Real tracer_gamma;
+  bool sample_particles = true, sample_curves = false;
+  std::string curve_thermo_data;
   std::vector<particles::TracerField> tracer_fields;
   std::vector<std::string> tracer_field_names;
   HostArray2D<Real> outpart_rdata;

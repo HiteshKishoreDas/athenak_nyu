@@ -3,11 +3,13 @@ import hashlib
 import math
 from pathlib import Path
 import re
-import struct
+import sys
 import subprocess
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT/'vis/python'))
+from tracer_thermo_history import read_particles as read_thermo, ThermoRows
 
 
 def sha(path):
@@ -87,56 +89,6 @@ def run(binary, directory, changes=None, restart=None, overrides=(), timeout=30)
             'elapsed_seconds':time.monotonic()-started, 'input_sha256':sha(path),
             'log_sha256':sha(directory/'run.log'), 'executable_sha256':sha(binary)}
 
-
-class ThermoRows(dict):
-    identical_replay_rows = 0
-
-
-def read_thermo(path, allow_identical_replay=False):
-    """Read exact .thp v2 doubles, rejecting truncation and duplicate identities."""
-    data = Path(path).read_bytes(); file_header = struct.Struct('=32s4i')
-    if len(data) < file_header.size:
-        raise ValueError('truncated thermo file header')
-    magic, version, width, fields, namebytes = file_header.unpack_from(data)
-    if magic.rstrip(b'\0') != b'ATHK_PRTCL_THERMO_HISTORY' or version != 2 or width != 8:
-        raise ValueError('unsupported thermo schema or Real size')
-    if fields < 0 or namebytes < 0 or file_header.size+namebytes > len(data):
-        raise ValueError('invalid thermo name table')
-    names = data[file_header.size:file_header.size+namebytes].decode().split('\n')
-    if len(names) != fields:
-        raise ValueError('thermo field count mismatch')
-    offset = file_header.size+namebytes; result = ThermoRows(); times = {}
-    block_header = struct.Struct('=16s5id')  # explicitly serialized, no native padding
-    while offset < len(data):
-        if offset+block_header.size > len(data):
-            raise ValueError('truncated thermo block header')
-        magic, version, count, ni, nr, cycle, time_value = block_header.unpack_from(data, offset)
-        offset += block_header.size
-        if magic.rstrip(b'\0') != b'ATHKTHPBLK' or version != 2 or count < 0 or ni != 4 or nr != 4+fields:
-            raise ValueError('invalid thermo block schema')
-        end = offset + count*(ni*4 + nr*8)
-        if end > len(data):
-            raise ValueError('truncated thermo records')
-        ints = struct.unpack_from('='+str(count*ni)+'i', data, offset)
-        real_offset = offset+count*ni*4
-        reals = struct.unpack_from('='+str(count*nr)+'d', data, real_offset)
-        for p in range(count):
-            c, tag, seed_id, gid = ints[p*ni:(p+1)*ni]
-            values = reals[p*nr:(p+1)*nr]
-            if c != cycle or values[0] != time_value or not all(map(math.isfinite, values)):
-                raise ValueError('invalid thermo observation time or finite value')
-            key = (cycle, tag)
-            observation = {'cycle':cycle, 'tag':tag, 'seed_id':seed_id, 'gid':gid,
-                           'time':time_value, 'x':values[1:4],
-                           'fields':dict(zip(names, values[4:]))}
-            if key in result:
-                if not allow_identical_replay or result[key] != observation:
-                    raise ValueError('duplicate thermo observation identity')
-                result.identical_replay_rows += 1
-            else:
-                result[key] = observation
-        times[cycle] = time_value; offset = end
-    return result, times
 
 
 def thermo(directory):

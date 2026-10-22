@@ -125,3 +125,28 @@ Initial exploratory inspection treated the binary reader's meshblock list as an
 array; corrected by using its existing NumPy conversion pattern. First media check
 used system Python, which lacks Pillow; reran in the already installed visualization
 environment and passed. Neither issue changed numerical data or tolerances.
+
+## Curve thermodynamic capability inspection (2026-10-21)
+
+User asked whether curves can track density/pressure like ordinary tracers.
+Inspected `material_curves.hpp`, `curve_shocks.cpp`, `curve_shocks_io.cpp`,
+`tracer_fields.cpp`, `prtcl_thermo_history.cpp` and the strict history readers.
+Current optional `<shock_tracking>/trace=true` already writes node-local density,
+pressure and temperature proxy P/rho each completed-step observation, including
+outside shocks. Event-only records contain encounter snapshots, not continuous
+thermodynamic histories. Generic selectable fields/cadence independent of shock
+tracking are available for standalone fluid tracers, not wired to curves.
+The minimal future extension reuses the existing field evaluator and leaf-owner
+sampling; no advection/connectivity change is needed. Inserted nodes start at birth.
+These are sampled local fluid values, not independently conserved curve variables.
+
+Plotted existing native data, no solver change or simulation rerun:
+`/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/combined-curve-shock-showcase-20261021/thermo-demonstration/`.
+Run `plot.py` there with `vis/.venv/bin/python` (set writable MPLCONFIGDIR).
+Result: 145 native trace files, 16 nodes, 2320 observations; strict reader,
+unique identities/generations, increasing sample times, validity, birth bounds,
+and P/rho consistency (relative tolerance 2e-14) passed. Three predetermined
+nodes shown (first/middle/last sorted IDs), containing-cell samples in code units.
+Source SHA-256 hashes and selected IDs retained in report.json. This is evidence
+of existing output contents, not a new independent physical validation. Existing
+forcing/convergence/scientific-review limitations remain as above.

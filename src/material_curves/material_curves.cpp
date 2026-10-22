@@ -21,6 +21,7 @@
 #include <unordered_set>
 
 #include "globals.hpp"
+#include "eos/eos.hpp"
 #include "hydro/hydro.hpp"
 #include "srcterms/srcterms.hpp"
 
@@ -372,7 +373,9 @@ Vec MaterialCurves::Edge(const Curve &c, std::size_t i) const {
 }
 
 std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
-                                        std::vector<ShockObservation> *observations) {
+                                        std::vector<ShockObservation> *observations,
+                                        const std::vector<particles::TracerField> &fields,
+                                        std::vector<Real> *values) {
   const int ranks = global_variable::nranks;
   std::vector<std::vector<int>> buckets(ranks);
   std::vector<Vec> wrapped(nodes.size());
@@ -441,6 +444,55 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
   auto sizes=mesh->pmb_pack->pmb->mb_size.d_view;
   auto ind=mesh->mb_indcs;
   bool three=mesh->three_d;
+  if (values) {
+    const std::size_t nf=fields.size();
+    if (!nf || nf>INT_MAX || ns>INT_MAX/nf || nr>INT_MAX/nf) {
+      Fail("thermo field batch exceeds MPI count limit");
+    }
+    // Reuse the particle diagnostic evaluator on the leaf that owns each request.
+    // ponytail: host mirror matches particle output; device evaluation if profiling warrants.
+    HostArray5D<Real> hw=Kokkos::create_mirror_view_and_copy(HostMemSpace(),w);
+    HostArray5D<Real> hb;
+    auto hs=Kokkos::create_mirror_view_and_copy(HostMemSpace(),sizes);
+    std::vector<Real> sampled(nf*nr), returned_values(nf*ns);
+    auto hydro=mesh->pmb_pack->phydro;
+    Real gamma=hydro->peos->eos_data.gamma;
+    for (int p=0; p<nr; ++p) {
+      int m=bh(p);
+      auto size=hs(m);
+      int i=std::clamp(static_cast<int>((qh(p,0)-size.x1min)/size.dx1)+ind.is,
+                       ind.is,ind.ie);
+      int j=std::clamp(static_cast<int>((qh(p,1)-size.x2min)/size.dx2)+ind.js,
+                       ind.js,ind.je);
+      int k=three ? std::clamp(static_cast<int>((qh(p,2)-size.x3min)/size.dx3)+ind.ks,
+                               ind.ks,ind.ke) : ind.ks;
+      for (std::size_t n=0; n<nf; ++n) {
+        Real value=particles::EvaluateTracerFieldHost(fields[n],hw,hb,false,gamma,
+                                                       hydro->nhydro,m,k,j,i);
+        if (!std::isfinite(value)) Fail("nonfinite curve thermo field: "+fields[n].name);
+        sampled[nf*p+n]=value;
+      }
+    }
+#if MPI_PARALLEL_ENABLED
+    for (int r=0; r<ranks; ++r) {
+      sc3[r]=nf*sc[r]; rc3[r]=nf*rc[r]; sd3[r]=nf*sd[r]; rd3[r]=nf*rd[r];
+    }
+    MPI_Alltoallv(sampled.data(),rc3.data(),rd3.data(),MPI_ATHENA_REAL,
+                  returned_values.data(),sc3.data(),sd3.data(),MPI_ATHENA_REAL,
+                  MPI_COMM_WORLD);
+    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_UINT64_T,
+                  backid.data(),sc.data(),sd.data(),MPI_UINT64_T,MPI_COMM_WORLD);
+#else
+    returned_values=std::move(sampled); backid=recvid;
+#endif
+    values->resize(nf*ns);
+    for (int q=0; q<ns; ++q) {
+      int p=order[q];
+      if (backid[q]!=nodes[p]->id) Fail("thermo response identity mismatch");
+      for (std::size_t n=0; n<nf; ++n) (*values)[nf*p+n]=returned_values[nf*q+n];
+    }
+    return {};
+  }
   if (observations) {
     if (ns>INT_MAX/static_cast<int>(sizeof(ShockObservation)) ||
         nr>INT_MAX/static_cast<int>(sizeof(ShockObservation))) {

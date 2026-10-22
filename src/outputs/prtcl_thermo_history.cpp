@@ -4,7 +4,7 @@
 // Licensed under the 3-clause BSD License, see LICENSE file for details
 //========================================================================================
 //! \file prtcl_thermo_history.cpp
-//! \brief append-only binary thermodynamic history output for lagrangian_mc particles
+//! \brief shared thermodynamic history output for fluid particles and material curves
 
 #include <sys/stat.h>
 
@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <filesystem>
 #include <string>
 #include <utility>
 #include <vector>
@@ -22,10 +23,13 @@
 #include "coordinates/cell_locations.hpp"
 #include "globals.hpp"
 #include "hydro/hydro.hpp"
+#include "eos/eos.hpp"
+#include "material_curves/material_curves.hpp"
 #include "mesh/mesh.hpp"
 #include "mhd/mhd.hpp"
 #include "particles/particles.hpp"
 #include "particles/tracer_fields.hpp"
+#include "shocks/store.hpp"
 #include "outputs.hpp"
 
 #if MPI_PARALLEL_ENABLED
@@ -140,22 +144,41 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
     npout_thisrank(0),
     npout_total(0),
     tracer_gamma(5.0/3.0) {
-  mkdir("prtcl_thermo_history", 0775);
-  if (pm->pmb_pack->ppart == nullptr ||
-      !pm->pmb_pack->ppart->IsFluidTracer()) {
-    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
-              << std::endl << "file_type=prtcl_thermo_history requires "
-              << "particle_type=lagrangian_mc or lagrangian_tracer" << std::endl;
-    std::exit(EXIT_FAILURE);
+  const auto source=pin->GetOrAddString(op.block_name,"source","particles");
+  if (source!="particles" && source!="curves" && source!="both") {
+    FatalHistoryOutput("source must be particles, curves, or both");
+  }
+  sample_particles=(source!="curves");
+  sample_curves=(source!="particles");
+  if (sample_particles && (pm->pmb_pack->ppart == nullptr ||
+                          !pm->pmb_pack->ppart->IsFluidTracer())) {
+    FatalHistoryOutput("particle thermo source requires particle_type=lagrangian_mc "
+                       "or lagrangian_tracer");
+  }
+  if (sample_curves && !pm->pmb_pack->pcurves) {
+    FatalHistoryOutput("curve thermo source requires material_curves/enabled=true");
+  }
+  if (sample_curves && !pm->pmb_pack->phydro->peos->eos_data.is_ideal) {
+    FatalHistoryOutput("curve thermo source requires ideal-gas hydro");
+  }
+  for (const auto &entry : {std::make_pair(sample_particles,"prtcl_thermo_history"),
+                            std::make_pair(sample_curves,"curve_thermo_history")}) {
+    if (entry.first) {
+      std::error_code error;
+      std::filesystem::create_directories(entry.second,error);
+      if (error) FatalHistoryOutput("cannot create thermo directory: "+error.message());
+    }
   }
 
   bool has_mhd = (pm->pmb_pack->pmhd != nullptr);
   tracer_gamma = has_mhd ? pin->GetOrAddReal("mhd", "gamma", 5.0/3.0) :
                            pin->GetOrAddReal("hydro", "gamma", 5.0/3.0);
-  int nscalars = pm->pmb_pack->ppart->GetLagrangianMCScalarCount();
+  int nscalars = has_mhd ? pm->pmb_pack->pmhd->nscalars :
+                          pm->pmb_pack->phydro->nscalars;
   std::string field_list = pin->DoesParameterExist(op.block_name, "variables") ?
                            pin->GetString(op.block_name, "variables") :
-                           pin->GetOrAddString("particles", "track_variables", "default");
+                           pin->GetOrAddString(sample_particles ? "particles" :
+                             "material_curves", "track_variables", "default");
   tracer_fields = particles::ParseTracerFieldList(field_list, has_mhd, nscalars,
                                                   op.block_name + "/variables");
   tracer_field_names = particles::TracerFieldNames(tracer_fields);
@@ -165,6 +188,10 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
 // LoadOutputData
 
 void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
+  if (sample_curves) {
+    curve_thermo_data=pm->pmb_pack->pcurves->ThermoHistory(tracer_fields);
+  }
+  if (!sample_particles) return;
   particles::Particles *pp = pm->pmb_pack->ppart;
   npout_thisrank = pm->nprtcl_thisrank;
   npout_total = pm->nprtcl_total;
@@ -236,6 +263,31 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
 // WriteOutputFile
 
 void ParticleThermoHistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
+  if (sample_curves) {
+    const auto path="curve_thermo_history/"+out_params.file_basename+"."+
+        out_params.file_id+".cycle"+std::to_string(pm->ncycle)+shocks::RankName()+".csv";
+    shocks::CommitFile(path,curve_thermo_data,true);
+  }
+  if (sample_particles) WriteParticleData(pm);
+
+  const bool new_cycle=pm->ncycle !=
+      pin->GetOrAddInteger(out_params.block_name,"last_cycle",-1);
+  out_params.file_number++;
+  if (out_params.last_time < 0.0) {
+    out_params.last_time = pm->time;
+  } else if (new_cycle && (out_params.dt == 0.0 ||
+             static_cast<float>(pm->time) >=
+             static_cast<float>(out_params.last_time+out_params.dt))) {
+    // Finalize may repeat a scheduled output or sample between cadence thresholds.
+    // Advance only a reached threshold, or restart would silently skip the next one.
+    out_params.last_time += out_params.dt;
+  }
+  pin->SetInteger(out_params.block_name, "file_number", out_params.file_number);
+  pin->SetReal(out_params.block_name, "last_time", out_params.last_time);
+  pin->SetInteger(out_params.block_name, "last_cycle", pm->ncycle);
+}
+
+void ParticleThermoHistoryOutput::WriteParticleData(Mesh *pm) {
   constexpr int int_per_record = 4;   // cycle, tag, seed_id, gid
   int real_per_record = 4 + static_cast<int>(tracer_fields.size()); // time, x, fields
 
@@ -321,12 +373,4 @@ void ParticleThermoHistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin)
     std::fclose(file);
   }
 
-  out_params.file_number++;
-  if (out_params.last_time < 0.0) {
-    out_params.last_time = pm->time;
-  } else {
-    out_params.last_time += out_params.dt;
-  }
-  pin->SetInteger(out_params.block_name, "file_number", out_params.file_number);
-  pin->SetReal(out_params.block_name, "last_time", out_params.last_time);
 }

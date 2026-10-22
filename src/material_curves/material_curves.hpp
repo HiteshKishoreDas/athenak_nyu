@@ -11,6 +11,7 @@
 
 #include "athena.hpp"
 #include "mesh/mesh.hpp"
+#include "particles/tracer_fields.hpp"
 #include "shocks/detector.hpp"
 #include "shocks/encounter.hpp"
 
@@ -78,6 +79,7 @@ class MaterialCurves {
   void Adapt(Real birth_time, bool initial, Real affected_time = -1);
   void Audit() const;
   void Snapshot(const std::string &path) const;
+  std::string ThermoHistory(const std::vector<particles::TracerField> &fields);
   void Save(const std::string &fluid_path) const;
   void Load(const std::string &fluid_path);
   [[noreturn]] static void Fail(const std::string &message);
@@ -110,7 +112,9 @@ class MaterialCurves {
   int finest_level_ = 0;
   Real mesh_spacing_ = 0;
   std::vector<Vec> Sample(std::vector<Node *> &nodes,
-                          std::vector<ShockObservation> *observations = nullptr);
+                          std::vector<ShockObservation> *observations = nullptr,
+                          const std::vector<particles::TracerField> &fields = {},
+                          std::vector<Real> *values = nullptr);
   int Locate(const Vec &lift, Vec &wrapped) const;
   Vec Edge(const Curve &curve, std::size_t i) const;
   void Links(Curve &curve);
