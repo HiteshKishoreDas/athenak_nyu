@@ -25,12 +25,12 @@ feature_dump and codex/shock-multiphase remain untouched.
 
 ## Gates
 
-- [ ] Shared output source parsing, curve-only and coexistence with shocks off.
-- [ ] Independent thermo/clock/position oracles; shared canonical field aliases.
-- [ ] Adaptive insertion and live AMR, exact identity/birth and restart checks.
-- [ ] Shock+thermo simultaneous clocks/values; passivity and legacy regression.
-- [ ] Local plots with explanations; reproduce commands, exact source/build hashes.
-- [ ] Commit coherent implementation/evidence; scientific sign-off pending.
+- [x] Shared output source parsing, curve-only and coexistence with shocks off.
+- [x] Independent thermo/clock/position oracles; shared canonical field aliases.
+- [x] Adaptive insertion and live AMR, exact identity/birth and restart checks.
+- [x] Shock+thermo simultaneous clocks/values; passivity and legacy regression.
+- [x] Local plots with explanations; reproduce commands, exact source/build hashes.
+- [x] Commit coherent implementation/evidence; scientific sign-off pending.
 
 No numerical tolerances or physical defaults will be adjusted to obtain passes.
 Existing accepted fixtures supply physical parameters; no new science setup needed.
@@ -41,21 +41,21 @@ All implementation decisions above are implemented. Eighteen CT checks pass in
 `build-lagrangian/evidence/curve-thermo-reviewed-code/report.json`; fourteen LT
 checks pass in `build-lagrangian/evidence/thermo-reviewed-LT/report.json`; twenty
 CSH checks pass in `build-lagrangian/evidence/thermo-reviewed-CSH/report.json`.
-The exact detector still passes all53 parity cases at unchanged rtol=atol1e-12.
+The exact detector still passes all 53 parity cases at unchanged rtol=atol1e-12.
 Existing standalone encounter and adversarial particle-reader self-checks pass.
 These are local Serial/double results, not scientific approval or cluster tests.
 
 - [x] Curve-only, particles-only/default, both, and MC+curve thermo with shocks off.
 - [x] Eleven shared canonical fields; alias/order/dedup; passive scalar0 availability.
 - [x] Independent prescribed acceleration and spatial containing-cell oracles.
-- [x] Live refine/coarsen: leaf count4→16→4, fourteen positive-time inserted nodes.
+- [x] Live refine/coarsen: leaf count \(4\to16\to4\), fourteen positive-time inserted nodes.
 - [x] Exact AMR restart records, no duplicate new curve identities.
 - [x] Simultaneous shock/thermo values:1728 curve observations, exact rho/P/T parity.
 - [x] `dcycle` and `dt`; unchanged legacy particle bytes and final curve state.
 - [x] Six explicit unavailable-source/field rejections; strict reader corruptions.
 - [x] Immutable replay/conflict guards, exact IDs above2^53, empty populations.
-- [x] Forced32³ coexistence:4096 particles,16 nodes,16 common sample clocks;
-  65536 particle and256 node observations. Particle bytes, curve geometry and
+- [x] Forced \(32^3\) coexistence:4096 particles, 16 nodes, 16 common sample clocks;
+  65536 particle and 256 node observations. Particle bytes, curve geometry and
   curve shock events equal the legacy-output control.
 - [x] CT16 off/on-cadence stop/resume; CT17 overdue thresholds and zero-step resume.
 - [x] Independent timing and persistence/minimalism reviews (see reviews.md).
@@ -63,16 +63,16 @@ These are local Serial/double results, not scientific approval or cluster tests.
 - [ ] RUSTY/Frontier deployment, genuine multi-rank, GPU/threaded, production budgets.
 - [ ] Human scientific sign-off; inherited forced thermal issue remains open.
 
-Maximum independent thermo error3.552713678800501e-15 against fixed2e-12 budget.
-CT11 checks5039 same-cell comparisons. Curve/particle clocks match exactly.
-CT01 preserves node ID9223372032559808513 and all other exact uint64 identities.
-CT06 compares1179 curve and5760 particle AMR records exactly across continuation.
+Maximum independent thermo error 3.552713678800501e-15 against fixed 2e-12 budget.
+CT11 checks 5039 same-cell comparisons. Curve/particle clocks match exactly.
+CT01 preserves node ID 9223372032559808513 and all other exact uint64 identities.
+CT06 compares 1179 curve and 5760 particle AMR records exactly across continuation.
 
 ## Failures retained, why changes were necessary
 
 1. Initial attempt passed9 of10 checks; CT07 incorrectly compared lifted curve
    coordinates with wrapped shock coordinates bitwise. Corrected the test to
-   compare periodic displacement using the already fixed2e-12 budget. Correct
+   compare periodic displacement using the already fixed 2e-12 budget. Correct
    final discrepancy6.94e-18. Initial exploratory attempt also used the prescribed
    executable for the planar slot; accepted campaigns use the built-in shock code
    and require actual shock membership/events.
@@ -93,7 +93,7 @@ CT06 compares1179 curve and5760 particle AMR records exactly across continuation
 
 No tolerances, initial fluid states, solver settings or detector/encounter rules
 were changed to obtain passes. The shared thermo clock fix intentionally corrects
-continuation cadence for ordinary particles as well as curves; .thp schema staysv2.
+continuation cadence for ordinary particles as well as curves; .thp schema stays v2.
 Old checkpoints without last_cycle do not guarantee zero-step overdue-clock
 idempotence. New checkpoints are qualified by the native CT17 check.
 
@@ -105,3 +105,15 @@ Earlier viewer folders are retained drafts; final-reviewed binds final code.
 Source/configuration/binary bindings and complete commands are sealed alongside
 that viewer. Next external gate: human scientific review and RUSTY CPU/MPI
 qualification, with node/particle scale and performance budget still unspecified.
+
+## Sealed exact-code bundle
+
+Implementation commit `b0d38d28ba6d290bc0c2d1b29b1e7fb600d0df79` binds all 40 compiled fingerprint sources.
+Archive contains 2211 source files including Kokkos and complete local fixtures,
+plus 25236 verified raw files across final campaigns and both timing failure reproducers.
+`bundle-verification.json` independently verifies every archive source member and
+all artifact file hashes. Manifest SHA256:
+`b76d28f162cc6be324a56257f7e59b5c225879d1f01fa1af82e47c026173cd4c`.
+Build fingerprints and exact binary hashes are in that JSON and the sealed packet.
+Earlier unsealed draft directories remain for traceability. No source changes or
+new performance/scientific claims follow from packaging.

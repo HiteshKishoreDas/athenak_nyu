@@ -1,0 +1,27 @@
+{
+  "bundle": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/curve-thermo-synergy-20261022/final-reviewed",
+  "source_commit": "b0d38d28ba6d290bc0c2d1b29b1e7fb600d0df79",
+  "manifest_sha256": "b76d28f162cc6be324a56257f7e59b5c225879d1f01fa1af82e47c026173cd4c",
+  "artifact_files_verified": 36,
+  "archived_source_files_verified": 2211,
+  "compiled_source_files_equal_git_commit": 40,
+  "builds": {
+    "build-lagrangian": {
+      "problem": "built_in_pgens",
+      "compiled_source_fingerprint": "00c59d993425b6a107f97b5640597db0aa533da03a2806683188c5c361fc1a31",
+      "executable_sha256": "d23348f8a9899c48daace2f6f18bb6e2c0b19698d2d5c852bc384999f530c1cb"
+    },
+    "build-lagrangian-prescribed": {
+      "problem": "material_curve_test",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7"
+    }
+  },
+  "native_checks": 52,
+  "detector_parity_cases": 53,
+  "source_fingerprints_recomputed": true,
+  "archived_raw_files_verified": 25236,
+  "source_files": 2211,
+  "scientific_approval": "pending",
+  "hardware": "local Serial/double"
+}

@@ -1,0 +1,701 @@
+{
+  "schema": "curve-thermo-1",
+  "runs": [
+    {
+      "name": "curve_only",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/curve_only/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.3457732499955455,
+      "input_used": true,
+      "input_sha256": "9080f59ed19f4b9788c2572cbe4621ff4a81eec4f9dcd8839195ed542938f394",
+      "restart_sha256": null,
+      "log_sha256": "f1036d3b0a0c5e71d0d8ded926c2b10652cbe812b0f193c80d77f048dbef867b",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "both",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/both/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.04014541600190569,
+      "input_used": true,
+      "input_sha256": "05b4778588d32fbc6024c726471f1b16d86b92c13c885c0abfd3c11932b329c5",
+      "restart_sha256": null,
+      "log_sha256": "7abd97214899e311c6a4ccc8568b1951a66236472b3d8561dfd413fc3ede9421",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "legacy",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/legacy/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.02000204198702704,
+      "input_used": true,
+      "input_sha256": "367eac629f4517b07df5f463f42286c707e94092c822e9a9dd47898b526dcfd7",
+      "restart_sha256": null,
+      "log_sha256": "c09853a522a7e139c435831ea58f86320d3a71aaf85b97d5a34ce960992e0616",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "mc_and_curves",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/mc_and_curves/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.040002291003474966,
+      "input_used": true,
+      "input_sha256": "df2ee59f6b81d920882e709d1bd545a4475ff36c7368c4c90b0557b5b6955687",
+      "restart_sha256": null,
+      "log_sha256": "b8e9e7b1c5fc74350fd981049ab4ad46efd2aa7c552eeb0c944f402a7c0aabab",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "amr",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/amr/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.07700933300657198,
+      "input_used": true,
+      "input_sha256": "4fcff684242531ca27a0ceee032e19673b93abb149418292cabde3505a9183d5",
+      "restart_sha256": null,
+      "log_sha256": "271c2c76aa8a20c7953eaa86f2fb76f13ce4fa4be9379de50a36ce1da0a283f8",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "restart_seed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/restart_seed/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.04013470899371896,
+      "input_used": true,
+      "input_sha256": "9ce7e937b2c74ac25adb6759cbb0e67933ff17410efd8493933d7b5d5851b624",
+      "restart_sha256": null,
+      "log_sha256": "57fb27067676cf390383762b99011edee69371c37c7466d0133c15fbbf6412b6",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "restart_resume",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/restart_seed/rst/material.00002.rst",
+        "time/nlim=-1"
+      ],
+      "exit": 0,
+      "seconds": 0.0696426250069635,
+      "input_used": false,
+      "input_sha256": "f3258413de2ff261e580b1a407a33a928b7531b3c7d834ddd13da5fc7303c054",
+      "restart_sha256": "0d625d700ce84f67d68fff05248875912aa8381f1cceaf12102b7a2d310efd71",
+      "log_sha256": "92178c725e417989f233041e8e9324dab347d7bd8e5b3355297c5618c1ec749f",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "planar",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/planar/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.5682980830024462,
+      "input_used": true,
+      "input_sha256": "bd002d953b480832967c4dd8e818567ef60271ff9bfb93515e99c1674ceed9fb",
+      "restart_sha256": null,
+      "log_sha256": "79d2c385a2a1d014dc5c462f5d66d8217625c50c6cab708a413d668b3ef4c089",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "d23348f8a9899c48daace2f6f18bb6e2c0b19698d2d5c852bc384999f530c1cb",
+      "compiled_source_fingerprint": "00c59d993425b6a107f97b5640597db0aa533da03a2806683188c5c361fc1a31",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "cadence",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/cadence/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.02003991699893959,
+      "input_used": true,
+      "input_sha256": "dc85ec7481c0d14bc0e78d6bfe8d396160024536d80995faea7d914f633a9952",
+      "restart_sha256": null,
+      "log_sha256": "b1878206fccfa32dd44c1a3b5e502d083356e5a1f2dcceea040c4a36e4f2de55",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "bad_source",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/bad_source/input.athinput"
+      ],
+      "exit": 1,
+      "seconds": 0.005011375003959984,
+      "input_used": true,
+      "input_sha256": "2249600abe166261e09f5507a816b5ce7ca4c77826cde0ddcdcb2c39226b6aa1",
+      "restart_sha256": null,
+      "log_sha256": "b064b8ab8302e69780fe4089abdc49b656897ba650dd7f2ea4c39eb2855067cb",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "missing_curves",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/missing_curves/input.athinput"
+      ],
+      "exit": 1,
+      "seconds": 0.005040791991632432,
+      "input_used": true,
+      "input_sha256": "14a51064df178523a9922f209e795c5a68243948610d868ec8a06bb2af1c673d",
+      "restart_sha256": null,
+      "log_sha256": "623d750e9d91a3ea66cc8ac2860ee3ea25f53fc28922ab8894b9307be0c13aec",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "missing_particles",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/missing_particles/input.athinput"
+      ],
+      "exit": 1,
+      "seconds": 0.00505508400965482,
+      "input_used": true,
+      "input_sha256": "f7ebb51339097607ef7167cf0a7e5ec23fa00dd127880ba55e79e80d4ea0aa20",
+      "restart_sha256": null,
+      "log_sha256": "4d1f6f96aaba20348c4cacc66448eed13b15102b38ceb9d2f72356eb7d3350c9",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "bad_field",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/bad_field/input.athinput"
+      ],
+      "exit": 1,
+      "seconds": 0.004845083007239737,
+      "input_used": true,
+      "input_sha256": "8dc2b0a9c05467688cb28731c270d34eba4f0da58aa1e95241f8b2d77ea71911",
+      "restart_sha256": null,
+      "log_sha256": "4c49eb85c66fb265e9bae54a681bb81fdfde2c260b682b382d1b37b019c63c9c",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "bad_mhd",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/bad_mhd/input.athinput"
+      ],
+      "exit": 1,
+      "seconds": 0.004819750000024214,
+      "input_used": true,
+      "input_sha256": "ef3698b85303863df85e0c9f7b4130b62719936c43a9563e0a0b0e2f9cd682b1",
+      "restart_sha256": null,
+      "log_sha256": "e810dc25c9da43e04de3c85a1f5805dffd9f8d92e0e0c704ebd3b58a8a68e55a",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "bad_scalar",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/bad_scalar/input.athinput"
+      ],
+      "exit": 1,
+      "seconds": 0.005021874996600673,
+      "input_used": true,
+      "input_sha256": "ec60731978e0b051deb515cca3dce77bff4028c767836fba9afe55fe87a7a351",
+      "restart_sha256": null,
+      "log_sha256": "df1ad6cd50365b83fdfa0f006b5e0bd0796007aed030bb87900442fe6f722dd5",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "nonuniform",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/nonuniform/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.03840858300100081,
+      "input_used": true,
+      "input_sha256": "1f2889963b6d299b0bc4035075ed6abbf049d5a15ebc0290f36aea18b9c8a1e0",
+      "restart_sha256": null,
+      "log_sha256": "23e67d1e35ea55fd38ad48e5f4be184d9a0d929b5d2544ff4a7eef536f9440e2",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "immutable",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/immutable/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.04010287499113474,
+      "input_used": true,
+      "input_sha256": "29cd4af40b980985033c6b6b5a718937c763e4a2f29b3ada7fcc36846f1305f5",
+      "restart_sha256": null,
+      "log_sha256": "527539b3a8d0e1805f41b2468760729dbb415ff521f94f8b78e154ce9198e550",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "identical_replay",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/immutable/input.athinput"
+      ],
+      "exit": 0,
+      "directory": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/immutable",
+      "log_sha256": "4ba9f9b6243278198505817a209533f875ffa93313139e9bb2d0e1640bbbb305",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "conflicting_replay",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/immutable/input.athinput"
+      ],
+      "exit": 1,
+      "directory": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/immutable",
+      "log_sha256": "1d7c6985271542caff27c79349287ff9573ccde588acfa68c48254842e55c886",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "time_cadence",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/time_cadence/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.03935516699857544,
+      "input_used": true,
+      "input_sha256": "4db4b99a3ea52b9ef569a6dc4fc642c36c9fb35825c99143498aab2854e844a2",
+      "restart_sha256": null,
+      "log_sha256": "8bf42309bce33633f345c5aeac504d8a538a144ba1deb3b470ad18a8cf1c1cdf",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "forced_both",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/forced_both/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 2.691037291995599,
+      "input_used": true,
+      "input_sha256": "1fd543dcf47cc9b3d7f57b5c49f16bdbeff64f16d23fd7e88969ba716b519785",
+      "restart_sha256": null,
+      "log_sha256": "4f6d71e6cd36e0ff85f4c1accc4267db9325ce90c2fad2302a9cdcbc420542b6",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "d23348f8a9899c48daace2f6f18bb6e2c0b19698d2d5c852bc384999f530c1cb",
+      "compiled_source_fingerprint": "00c59d993425b6a107f97b5640597db0aa533da03a2806683188c5c361fc1a31",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "forced_legacy",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/forced_legacy/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 2.684426040999824,
+      "input_used": true,
+      "input_sha256": "2dea678ecbf99c3d46db3d315976d8abf7491bcf5d992ac5343743fdc0b0a60d",
+      "restart_sha256": null,
+      "log_sha256": "ba70bab48cd21d7a91c33dc4212f58eeff8da7cb734ed5a08e005b92441fe881",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "d23348f8a9899c48daace2f6f18bb6e2c0b19698d2d5c852bc384999f530c1cb",
+      "compiled_source_fingerprint": "00c59d993425b6a107f97b5640597db0aa533da03a2806683188c5c361fc1a31",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "passive_scalar",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/passive_scalar/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.005229375005001202,
+      "input_used": true,
+      "input_sha256": "b0c2ddf478ebb2531adae21a2c00f869e4c3f086ee5ac20d42d4368e50356878",
+      "restart_sha256": null,
+      "log_sha256": "15a58c112d9c16a8f159a02f278058068570c832b761042ddcaf397a2ca29e2e",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "d23348f8a9899c48daace2f6f18bb6e2c0b19698d2d5c852bc384999f530c1cb",
+      "compiled_source_fingerprint": "00c59d993425b6a107f97b5640597db0aa533da03a2806683188c5c361fc1a31",
+      "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+    },
+    {
+      "name": "dt_seed_18",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/dt_seed_18/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.02017720900767017,
+      "input_used": true,
+      "input_sha256": "cea98e29579fac0bd7fbd60ffa950a24593270344754f1beb1aebac74d83cf73",
+      "restart_sha256": null,
+      "log_sha256": "d97a81d52cfa1dfe2c27b151e6bc9a554b68d9b2e3961ae4dcfc3f554f9acf7f",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "dt_resume_18",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/dt_seed_18/rst/material.00001.rst",
+        "time/nlim=-1"
+      ],
+      "exit": 0,
+      "seconds": 0.020107332995394245,
+      "input_used": false,
+      "input_sha256": "29cd4af40b980985033c6b6b5a718937c763e4a2f29b3ada7fcc36846f1305f5",
+      "restart_sha256": "3946eea04e1627c6515db4ddf0d012c8381a18b99fe12dc0b6069e350ebc0ff4",
+      "log_sha256": "b250f3cfad15439eb9564819ef59559ceabcd0d7e99ea7fb6bdd840b7790b41e",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "dt_seed_20",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/dt_seed_20/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.020246166008291766,
+      "input_used": true,
+      "input_sha256": "5fc8999f34e8b09f53075a1f25ca75c163da9e041868cfa813f3a90f6a979558",
+      "restart_sha256": null,
+      "log_sha256": "b7b489b20c42a69d8d706690748485f4565625f391b462c3fcdd55a4fca41731",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "dt_resume_20",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/dt_seed_20/rst/material.00001.rst",
+        "time/nlim=-1"
+      ],
+      "exit": 0,
+      "seconds": 0.02010316599626094,
+      "input_used": false,
+      "input_sha256": "29cd4af40b980985033c6b6b5a718937c763e4a2f29b3ada7fcc36846f1305f5",
+      "restart_sha256": "78755dd91b3d3fbb6d5e0097580d655bb11bbe9802d7075f2a5e164db7c0e4fa",
+      "log_sha256": "d2ef402fa1b414bd16389dc3d5d16a84ec3ddaf41e23bb0ae347f801cd39a820",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "overdue",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/overdue/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.04030308299115859,
+      "input_used": true,
+      "input_sha256": "600ab13e2e7a721f7b40bf71205eb3cbba260d0745b44eeed0bf826cf7c5e1f3",
+      "restart_sha256": null,
+      "log_sha256": "f3baa5a91ca38019a7c222a2967ec30442091f496a72966707498c8814e462bb",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "overdue_zero_step",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/overdue/rst/material.00002.rst"
+      ],
+      "exit": 0,
+      "seconds": 0.01014020899310708,
+      "input_used": false,
+      "input_sha256": "29cd4af40b980985033c6b6b5a718937c763e4a2f29b3ada7fcc36846f1305f5",
+      "restart_sha256": "4d0226b48c3e4398873aa4c5dcd8a1a98763e8aa285f9b1334b5b4702a5d048b",
+      "log_sha256": "438460775d18af2af07122d511a491aeea57849a6ab861bc22d620874f640268",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "empty",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-thermo-reviewed-code/empty/input.athinput"
+      ],
+      "exit": 0,
+      "seconds": 0.036858916995697655,
+      "input_used": true,
+      "input_sha256": "70a49023cafa642ae8c2bd11425c7efb07d80bc2586b4e93127f9568daf6155e",
+      "restart_sha256": null,
+      "log_sha256": "5fd44e3275a971f9405af40dd2bcb7216ec68748aa1efb398940df4cfe2dc98f",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "16ecd69798d3978256a43a91860c8a5faece85759797402ce6945aab4928b2b7",
+      "compiled_source_fingerprint": "f7db4b670136b05e6dfa9ae0fa3b135a705f88d95cdc140bae322a975290d329",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    }
+  ],
+  "checks": [
+    {
+      "id": "CT01_curve_only_shocks_off_exact_u64",
+      "observations": 1056,
+      "cycles": 33,
+      "max_thermo_error": 3.552713678800501e-15,
+      "minimum_node_id": 9223372032559808513,
+      "status": "pass"
+    },
+    {
+      "id": "CT02_both_shared_fields_and_clock",
+      "curve_observations": 1056,
+      "particle_observations": 4224,
+      "curve_error": 3.552713678800501e-15,
+      "particle_error": 3.552713678800501e-15,
+      "status": "pass"
+    },
+    {
+      "id": "CT03_passive_legacy_output",
+      "particle_binary_and_curve_state_byte_equal": true,
+      "status": "pass"
+    },
+    {
+      "id": "CT04_MC_and_curves_thermo_without_shocks",
+      "curve_error": 1.7763568394002505e-15,
+      "particle_error": 1.7763568394002505e-15,
+      "status": "pass"
+    },
+    {
+      "id": "CT05_live_AMR_insertion_births",
+      "curve_error": 1.7763568394002505e-15,
+      "particle_error": 1.7763568394002505e-15,
+      "inserted_nodes": 14,
+      "leaf_count_range": [
+        4,
+        16
+      ],
+      "curve_observations": 1179,
+      "particle_observations": 5760,
+      "status": "pass"
+    },
+    {
+      "id": "CT06_live_AMR_restart_exact",
+      "curve_observations": 1179,
+      "particle_observations": 5760,
+      "exact_continuation": true,
+      "restart_cycle": 20,
+      "status": "pass"
+    },
+    {
+      "id": "CT07_shock_thermo_synchronization",
+      "observations": 1728,
+      "max_shared_sample_error": 0,
+      "max_periodic_position_error": 6.938893903907228e-18,
+      "status": "pass"
+    },
+    {
+      "id": "CT08_independent_cadence_final_replay",
+      "saved_cycles": [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        32
+      ],
+      "final_cycle": 32,
+      "status": "pass"
+    },
+    {
+      "id": "CT09_input_guards",
+      "explicit_rejections": 6,
+      "status": "pass"
+    },
+    {
+      "id": "CT10_reader_integrity",
+      "rejected_corruptions": 3,
+      "status": "pass"
+    },
+    {
+      "id": "CT11_nonuniform_containing_cell_oracle",
+      "max_spatial_thermo_error": 3.552713678800501e-15,
+      "same_cell_comparisons": 5039,
+      "status": "pass"
+    },
+    {
+      "id": "CT12_immutable_output_replay",
+      "identical_replay_byte_equal": true,
+      "conflicting_replay_rejected": true,
+      "status": "pass"
+    },
+    {
+      "id": "CT13_shared_time_cadence",
+      "saved_times": [
+        0.0,
+        0.05,
+        0.09999999999999999,
+        0.15,
+        0.20000000000000004,
+        0.25000000000000006,
+        0.3000000000000001,
+        0.35000000000000014,
+        0.4
+      ],
+      "curve_error": 1.7763568394002505e-15,
+      "particle_error": 1.7763568394002505e-15,
+      "status": "pass"
+    },
+    {
+      "id": "CT14_native_forced_box_coexistence",
+      "curve_observations": 256,
+      "particle_observations": 65536,
+      "sampled_cycles": 16,
+      "particle_bytes_geometry_and_events_equal": true,
+      "status": "pass"
+    },
+    {
+      "id": "CT15_shared_passive_scalar",
+      "curve_observations": 16,
+      "particle_observations": 128,
+      "scalar_left_right_exact": true,
+      "status": "pass"
+    },
+    {
+      "id": "CT16_restart_preserves_time_cadence",
+      "cases": [
+        {
+          "stop_cycle": 18,
+          "scheduled_samples_exact": true
+        },
+        {
+          "stop_cycle": 20,
+          "scheduled_samples_exact": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "CT17_overdue_threshold_replay",
+      "scheduled_checkpoint_last_time": 0.09,
+      "final_checkpoint_last_time": 0.09,
+      "output_dt": 0.005,
+      "fluid_dt": 0.0125,
+      "zero_step_clock_exact": true,
+      "status": "pass"
+    },
+    {
+      "id": "CT18_empty_populations",
+      "empty_chunks": 33,
+      "empty_particle_and_node_records": true,
+      "status": "pass"
+    }
+  ],
+  "budget": 2e-12,
+  "hardware": "local Serial/double",
+  "scientific_approval": "pending",
+  "runner_sha256": "ee3cfcba7a9a00f3dedd34cea17241504145e442765c2efbd7f044cbaabe7aef"
+}
