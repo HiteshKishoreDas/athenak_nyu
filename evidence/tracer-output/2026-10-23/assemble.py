@@ -54,13 +54,26 @@ def main():
         assert fingerprint.encode() in (build/'src/athena').read_bytes()
         bindings[directory]=dict(problem=problem,compiled_source_fingerprint=fingerprint,
                                   executable_sha256=sha(build/'src/athena'))
-        destination=out/'runtime'/directory;destination.mkdir(parents=True)
+        destination=out/'runtime'/directory;destination.mkdir(parents=True,exist_ok=True)
         for name in ['src/athena','CMakeCache.txt','config.hpp','shock_version.hpp',
                      'src/CMakeFiles/athena.dir/flags.make']:
             shutil.copy2(build/name,destination/Path(name).name)
     for report in reports.values():
         for run in report['runs']:
-            assert run['executable_sha256'] in {b['executable_sha256'] for b in bindings.values()}
+            if run['executable_sha256'] not in {b['executable_sha256'] for b in bindings.values()}:
+                # The startup passivity check deliberately uses one sealed historical control.
+                assert report is reports['setup'] and run['name']=='baseline'
+                baseline=Path(run['executable'])
+                assert sha(baseline)==run['executable_sha256']
+                prior=baseline.parents[2]/'source-binding.json'
+                prior_binding=json.loads(prior.read_text())
+                assert run['executable_sha256'] in {
+                    b['executable_sha256'] for b in prior_binding['builds'].values()}
+                destination=out/'runtime/startup-baseline';destination.mkdir(parents=True,exist_ok=True)
+                shutil.copy2(baseline,destination/'athena')
+                shutil.copy2(prior,destination/'source-binding.json')
+                write(destination/'provenance.json',dict(role='historical startup passivity control',
+                    executable_sha256=sha(baseline),source_binding_sha256=sha(prior)))
     write(out/'source-binding.json',dict(source_commit=commit,source_order=sources,
         sources_sha256=hashes,builds=bindings,kokkos_commit=subprocess.check_output(
             ['git','rev-parse','HEAD'],cwd=ROOT/'kokkos',text=True).strip()))

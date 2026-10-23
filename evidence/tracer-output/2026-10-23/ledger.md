@@ -119,3 +119,13 @@ harness to audit the earliest real observation across both streams, as the
 existing CSH oracle does; added exact sequence/censoring checks. No simulation
 parameter or tolerance changed. The failed report/input/raw records remain.
 Native positive-time *separate* birthtrace emission is not claimed tested here.
+
+### Evidence assembly control binding
+
+The first assembler stopped before sealing because its current-build assertion
+also encountered the intentionally historical startup passivity baseline. All
+other native runs matched the frozen current executable hashes. The assembler
+now binds that one named baseline separately, checks its exact bytes against
+the prior sealed source binding, and retains its runtime/provenance. Current
+runs still must match a freshly recomputed current-source fingerprint. This is
+an evidence-accounting correction, not a relaxed numerical or runtime gate.
