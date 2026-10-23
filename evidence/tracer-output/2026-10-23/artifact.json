@@ -1,0 +1,12 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/tracer-native-outputs-20261023/qualified",
+  "source_commit": "a91b01c23e9649d9e5f08856a4b53f967ff2d2c3",
+  "manifest_sha256": "7ba7763a498e8cf97a4b89794a1f49cf824045213741f618c5229bf19d9a681e",
+  "manifest_files_verified": 48,
+  "native_check_groups": 82,
+  "source_fingerprints_recomputed": true,
+  "archived_raw_files_verified": 38387,
+  "archived_source_files_verified": 2217,
+  "scientific_approval": "pending",
+  "hardware": "local Serial/double; MPI/GPU/cluster not qualified"
+}

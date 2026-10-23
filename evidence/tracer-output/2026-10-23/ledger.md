@@ -23,7 +23,7 @@ Starting HEAD `66e436e130f39399a201539b3cc108d3cacc126c`; main checkout and
 - [x] Direct encounter state executable and offline curve IO schema/adversarial
   reader checks pass. `git diff --check` and changed Python compilation pass.
 - [x] Render six explained figures from actual stored records; inspect all six.
-- [ ] Seal source/runtime/raw-output evidence bundle after the implementation commit.
+- [x] Seal source/runtime/raw-output evidence bundle after the implementation commit.
 - [ ] Human scientific approval; RUSTY/Frontier/MPI/GPU and production budgets.
   These remain separate existing gates, not a reason to claim this slice untested.
 
@@ -129,3 +129,26 @@ now binds that one named baseline separately, checks its exact bytes against
 the prior sealed source binding, and retains its runtime/provenance. Current
 runs still must match a freshly recomputed current-source fingerprint. This is
 an evidence-accounting correction, not a relaxed numerical or runtime gate.
+
+## Sealed exact-code bundle
+
+Implementation commit: `a8e19214`. Bundle source commit:
+`a91b01c23e9649d9e5f08856a4b53f967ff2d2c3`. No numerical/runtime C++ changes
+followed the frozen builds and final checks.
+
+Artifact directory:
+`/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/tracer-native-outputs-20261023/qualified`
+
+Manifest SHA256:
+`7ba7763a498e8cf97a4b89794a1f49cf824045213741f618c5229bf19d9a681e`.
+The assembler decompressed and individually verified all 38,387 raw files and
+2,217 source files, recomputed both compiled source fingerprints, checked every
+current run executable hash, and bound the single historical startup control
+separately. A subsequent independent pass verified every manifest file hash.
+Six figures, full native raw outputs (including retained failures), current and
+historical-control runtimes, build configuration, exact source, reviews and
+usage documentation are present. `artifact.json` records counts and binding.
+
+Human scientific approval remains pending. RUSTY/Frontier, multi-rank/GPU,
+production scaling/I/O budgets and native separate positive-time birthtrace
+emission remain unqualified. No push was performed.
