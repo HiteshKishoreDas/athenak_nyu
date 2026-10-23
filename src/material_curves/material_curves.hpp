@@ -91,7 +91,7 @@ class MaterialCurves {
   std::uint64_t max_nodes = 1000000;
   Real max_spacing = 0, max_angle = 0.2, chord_error = 0;
   Real spacing_cells = 1;
-  bool adaptive = true;
+  bool adaptive = true, binary_output = false;
   int output_dcycle = 0;
   std::string basename;
 

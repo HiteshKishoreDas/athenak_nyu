@@ -142,10 +142,14 @@ void PrintTracerSetup(Mesh *mesh, ParameterInput *pin, Outputs *outputs, bool re
       << ", curve_shocks=" << (curves && curves->shock_enabled)
       << ", particle_shock_trace=" << (fluid_particles && particles->shock_trace)
       << ", curve_shock_trace=" << (curves && curves->shock_trace) << '\n';
+  out << "  curve/shock format=" <<
+      (pin->DoesParameterExist("job","tracer_output_format") ?
+       pin->GetString("job","tracer_output_format") : "legacy")
+      << "; particle thermo=THP v2\n";
   bool thermo=false;
   for (const auto &output : outputs->pout_list) {
     const auto &p=output->out_params;
-    if (p.file_type!="prtcl_thermo_history" && p.file_type!="trk") continue;
+    if (p.file_type!="prtcl_thermo_history" && p.file_type!="trk" && p.file_type!="curves") continue;
     out << "  " << p.block_name << ": " << p.file_type;
     if (p.file_type=="prtcl_thermo_history") {
       thermo=true;

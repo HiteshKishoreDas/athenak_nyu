@@ -562,6 +562,13 @@ class ParticleVTKOutput : public BaseTypeOutput {
 //! \class ParticleThermoHistoryOutput
 //  \brief shared thermodynamic diagnostics for fluid particles and material curves
 
+class MaterialCurveOutput : public BaseTypeOutput {
+ public:
+  MaterialCurveOutput(ParameterInput *pin, Mesh *pm, OutputParameters op);
+  void LoadOutputData(Mesh *) override {}
+  void WriteOutputFile(Mesh *pm, ParameterInput *pin) override;
+};
+
 class ParticleThermoHistoryOutput : public BaseTypeOutput {
  public:
   ParticleThermoHistoryOutput(ParameterInput *pin, Mesh *pm, OutputParameters oparams);
@@ -572,7 +579,7 @@ class ParticleThermoHistoryOutput : public BaseTypeOutput {
   int npout_thisrank;
   int npout_total;
   Real tracer_gamma;
-  bool sample_particles = true, sample_curves = false;
+  bool sample_particles = true, sample_curves = false, binary_curves = false;
   std::string curve_thermo_data;
   std::vector<particles::TracerField> tracer_fields;
   std::vector<std::string> tracer_field_names;

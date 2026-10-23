@@ -14,6 +14,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <filesystem>
 #include <string>
 #include <utility>
@@ -31,6 +33,7 @@
 #include "particles/tracer_fields.hpp"
 #include "shocks/store.hpp"
 #include "outputs.hpp"
+#include "outputs/tracer_binary.hpp"
 
 #if MPI_PARALLEL_ENABLED
 #include <mpi.h>
@@ -133,6 +136,24 @@ void WriteBlockHeader(FILE *file, const BlockHeader &header) {
   }
 }
 
+void AdvanceTracerClock(OutputParameters &op, Mesh *pm, ParameterInput *pin) {
+  const bool new_cycle=pm->ncycle !=
+      pin->GetOrAddInteger(op.block_name,"last_cycle",-1);
+  op.file_number++;
+  if (op.last_time < 0.0) {
+    op.last_time = pm->time;
+  } else if (new_cycle && (op.dt == 0.0 ||
+             static_cast<float>(pm->time) >=
+             static_cast<float>(op.last_time+op.dt))) {
+    // Finalize may repeat a scheduled output or sample between cadence thresholds.
+    // Advance only a reached threshold, or restart would silently skip the next one.
+    op.last_time += op.dt;
+  }
+  pin->SetInteger(op.block_name, "file_number", op.file_number);
+  pin->SetReal(op.block_name, "last_time", op.last_time);
+  pin->SetInteger(op.block_name, "last_cycle", pm->ncycle);
+}
+
 } // namespace
 
 //----------------------------------------------------------------------------------------
@@ -150,6 +171,7 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
   }
   sample_particles=(source!="curves");
   sample_curves=(source!="particles");
+  binary_curves=tracer_output::Binary(pin);
   if (sample_particles && (pm->pmb_pack->ppart == nullptr ||
                           !pm->pmb_pack->ppart->IsFluidTracer())) {
     FatalHistoryOutput("particle thermo source requires particle_type=lagrangian_mc "
@@ -265,26 +287,13 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
 void ParticleThermoHistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
   if (sample_curves) {
     const auto path="curve_thermo_history/"+out_params.file_basename+"."+
-        out_params.file_id+".cycle"+std::to_string(pm->ncycle)+shocks::RankName()+".csv";
+        out_params.file_id+".cycle"+std::to_string(pm->ncycle)+shocks::RankName()+
+        tracer_output::Extension(binary_curves);
     shocks::CommitFile(path,curve_thermo_data,true);
   }
   if (sample_particles) WriteParticleData(pm);
 
-  const bool new_cycle=pm->ncycle !=
-      pin->GetOrAddInteger(out_params.block_name,"last_cycle",-1);
-  out_params.file_number++;
-  if (out_params.last_time < 0.0) {
-    out_params.last_time = pm->time;
-  } else if (new_cycle && (out_params.dt == 0.0 ||
-             static_cast<float>(pm->time) >=
-             static_cast<float>(out_params.last_time+out_params.dt))) {
-    // Finalize may repeat a scheduled output or sample between cadence thresholds.
-    // Advance only a reached threshold, or restart would silently skip the next one.
-    out_params.last_time += out_params.dt;
-  }
-  pin->SetInteger(out_params.block_name, "file_number", out_params.file_number);
-  pin->SetReal(out_params.block_name, "last_time", out_params.last_time);
-  pin->SetInteger(out_params.block_name, "last_cycle", pm->ncycle);
+  AdvanceTracerClock(out_params,pm,pin);
 }
 
 void ParticleThermoHistoryOutput::WriteParticleData(Mesh *pm) {
@@ -373,4 +382,20 @@ void ParticleThermoHistoryOutput::WriteParticleData(Mesh *pm) {
     std::fclose(file);
   }
 
+}
+
+// Geometry uses the native output scheduler, basename/id and output numbering.
+MaterialCurveOutput::MaterialCurveOutput(ParameterInput *pin, Mesh *pm,
+                                         OutputParameters op) : BaseTypeOutput(pin,pm,op) {
+  if (!pm->pmb_pack->pcurves) FatalHistoryOutput("file_type=curves requires material curves");
+  std::error_code error;
+  std::filesystem::create_directories("curves",error);
+  if (error) FatalHistoryOutput("cannot create curves directory: "+error.message());
+}
+void MaterialCurveOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
+  std::ostringstream path;
+  path << "curves/" << out_params.file_basename << '.' << out_params.file_id << '.'
+       << std::setw(8) << std::setfill('0') << out_params.file_number << ".txt";
+  pm->pmb_pack->pcurves->Snapshot(path.str());
+  AdvanceTracerClock(out_params,pm,pin);
 }

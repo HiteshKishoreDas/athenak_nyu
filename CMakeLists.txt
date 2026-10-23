@@ -238,8 +238,8 @@ endif()
 
 set(shock_source_files src/mesh/mesh_refinement.cpp src/athena.hpp
     src/particles/tracer_fields.hpp src/particles/tracer_fields.cpp src/outputs/outputs.hpp
-    src/outputs/prtcl_thermo_history.cpp src/outputs/vtk_prtcl.cpp
-    src/outputs/track_prtcl.cpp src/particles/fluid_velocity.hpp src/shocks/detector.hpp src/shocks/encounter.hpp
+    src/outputs/prtcl_thermo_history.cpp src/outputs/outputs.cpp src/outputs/vtk_prtcl.cpp
+    src/outputs/track_prtcl.cpp src/outputs/basetype_output.cpp src/particles/fluid_velocity.hpp src/shocks/detector.hpp src/shocks/encounter.hpp
     src/particles/shock_particles.cpp src/particles/particles.cpp
     src/particles/particles.hpp src/particles/particles_tasks.cpp
     src/particles/particles_pushers.cpp src/particles/particles_lagrangian_mc.cpp
@@ -251,7 +251,8 @@ set(shock_source_files src/mesh/mesh_refinement.cpp src/athena.hpp
 list(APPEND shock_source_files src/material_curves/material_curves.cpp
     src/material_curves/material_curves.hpp src/material_curves/material_curves_io.cpp
     src/material_curves/curve_shocks.cpp src/material_curves/curve_shocks_io.cpp
-    src/shocks/observation.hpp src/shocks/store.hpp src/pgen/material_curve_test.cpp)
+    src/shocks/observation.hpp src/shocks/store.hpp src/outputs/tracer_binary.hpp
+    src/pgen/material_curve_test.cpp)
 set(shock_source_hashes "problem:${PROBLEM};")
 foreach(shock_file IN LISTS shock_source_files)
   file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/${shock_file}" shock_hash)

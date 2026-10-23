@@ -17,6 +17,7 @@
 
 #include "material_curves/material_curves.hpp"
 #include "shocks/store.hpp"
+#include "outputs/tracer_binary.hpp"
 
 namespace material_curves {
 namespace {
@@ -63,7 +64,7 @@ uint64_t PrefixDigest(const MaterialCurves &m, uint64_t generation) {
   uint64_t digest = kOffset;
   for (uint64_t g=0; g<=generation; ++g) {
     const auto path = m.shock_directory + "/cycle" + std::to_string(g) +
-                      shocks::RankName() + ".csv";
+                      shocks::RankName() + tracer_output::Extension(m.binary_output);
     if (m.shock_capacity <= 0 || static_cast<uint64_t>(m.shock_capacity) >
         (UINT64_MAX-kContractCap)/8192 ||
         Size(path) > kContractCap+static_cast<uint64_t>(m.shock_capacity)*8192) {
@@ -178,15 +179,28 @@ std::string Records(const MaterialCurves &m, std::vector<ShockEvent> events,
         e.encounter.sequence == previous_sequence)) shocks::Fail("duplicate curve event");
     previous_id = e.encounter.particle_id;
     previous_sequence = e.encounter.sequence;
-    shocks::PutEvent(out,e.encounter,false);
-    out << ',' << e.birth << ',' << e.first_level;
-    for (Real dx : e.first_spacing) out << ',' << dx;
-    out << ',' << e.last_level;
-    for (Real dx : e.last_spacing) out << ',' << dx;
-    out << '\n';
+    if (!m.binary_output) {
+      shocks::PutEvent(out,e.encounter,false);
+      out << ',' << e.birth << ',' << e.first_level;
+      for (Real dx : e.first_spacing) out << ',' << dx;
+      out << ',' << e.last_level;
+      for (Real dx : e.last_spacing) out << ',' << dx;
+      out << '\n';
+    }
   }
   out << "# END " << events.size() << '\n';
-  return out.str();
+  if (!m.binary_output) return out.str();
+  tracer_output::Table table(std::string(kind)=="EVENTS" ? "curve_events" : "curve_suspended",
+      tracer_output::EventColumns(true),events.size(),m.shock_generation,m.shock_time,
+      "position=wrapped\nlineage="+m.shock_lineage+"\ncontract="+m.shock_contract+"\n");
+  for (const auto &e : events) {
+    tracer_output::Event(table,e.encounter); table.Put(e.birth);
+    table.Put(static_cast<int32_t>(e.first_level));
+    for (Real dx : e.first_spacing) table.Put(dx);
+    table.Put(static_cast<int32_t>(e.last_level));
+    for (Real dx : e.last_spacing) table.Put(dx);
+  }
+  return table.Finish();
 }
 }  // namespace
 
@@ -209,7 +223,7 @@ void MaterialCurves::WriteShockChunk(const std::vector<ShockEvent> &events) {
   if (!shock_enabled) return;
   const auto data = Records(*this,events,"EVENTS");
   shocks::CommitFile(shock_directory+"/cycle"+std::to_string(shock_generation)+
-                     shocks::RankName()+".csv",data,true);
+                     shocks::RankName()+tracer_output::Extension(binary_output),data,true);
   shock_history_digest = shocks::Digest(shock_history_digest,data.data(),data.size());
 }
 void MaterialCurves::WriteShockTrace(const std::vector<Node *> &nodes,
@@ -238,15 +252,32 @@ void MaterialCurves::WriteShockTrace(const std::vector<Node *> &nodes,
     }
     previous = node.id;
     const auto &s = found->second.encounter;
-    out << node.id << ',' << s.sequence << ',' << s.phase << ',' << s.flags << ',';
-    shocks::PutObservation(out,samples[i].observation);
-    out << ',' << node.birth << ',' << samples[i].level;
-    for (Real dx : samples[i].spacing) out << ',' << dx;
-    out << '\n';
+    if (!binary_output) {
+      out << node.id << ',' << s.sequence << ',' << s.phase << ',' << s.flags << ',';
+      shocks::PutObservation(out,samples[i].observation);
+      out << ',' << node.birth << ',' << samples[i].level;
+      for (Real dx : samples[i].spacing) out << ',' << dx;
+      out << '\n';
+    }
+  }
+  std::string data=out.str();
+  if (binary_output) {
+    tracer_output::Table table(births_only ? "curve_birthtrace" : "curve_trace",
+        tracer_output::TraceColumns(true),nodes.size(),generation,mesh->time,
+        "position=wrapped\nlineage="+shock_lineage+"\ncontract="+shock_contract+"\n");
+    for (size_t i : order) {
+      const auto &s=shock_states.at(nodes[i]->id).encounter;
+      table.Put(nodes[i]->id); table.Put(s.sequence);
+      table.Put(static_cast<uint32_t>(s.phase)); table.Put(s.flags);
+      tracer_output::Observation(table,samples[i].observation); table.Put(nodes[i]->birth);
+      table.Put(static_cast<int32_t>(samples[i].level));
+      for (Real dx : samples[i].spacing) table.Put(dx);
+    }
+    data=table.Finish();
   }
   shocks::CommitFile(shock_directory+(births_only ? "/birthtrace" : "/trace")+
-                     std::to_string(generation)+shocks::RankName()+".csv",
-                     out.str(),true);
+                     std::to_string(generation)+shocks::RankName()+
+                     tracer_output::Extension(binary_output),data,true);
 }
 void MaterialCurves::PreflightShockRestart(const std::string &fluid_path) const {
   if (!shock_enabled) return;
@@ -387,7 +418,7 @@ void MaterialCurves::WriteShockSuspended() const {
     events.push_back(event);
   }
   shocks::CommitFile(shock_directory+"/suspended"+std::to_string(shock_generation)+
-                     shocks::RankName()+".csv",
+                     shocks::RankName()+tracer_output::Extension(binary_output),
                      Records(*this,std::move(events),"SUSPENDED"),
                      true);
 }

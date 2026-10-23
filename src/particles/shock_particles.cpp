@@ -33,6 +33,7 @@
 #include "particles.hpp"
 #include "shock_version.hpp"
 #include "shocks/store.hpp"
+#include "outputs/tracer_binary.hpp"
 
 namespace {
 using shocks::Digest;
@@ -108,6 +109,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
     shock_lineage = pin->GetString("shock_tracking", "lineage");
     shock_directory = pin->GetOrAddString("shock_tracking", "directory", "shock_events");
     shock_trace = pin->GetOrAddBoolean("shock_tracking", "trace", false);
+    shock_binary = tracer_output::Binary(pin);
     bool ok = c.width >= 1 && c.width <= pmy_pack->pmesh->mb_indcs.ng &&
               shock_capacity > 0 && !shock_lineage.empty() &&
               shock_lineage.size() <= 128 && !shock_directory.empty();
@@ -234,6 +236,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
       pin->SetRealPrecise("problem",name,value);
       contract << ' ' << name << ' ' << value;
     }
+    if (shock_binary) contract << " tracer-binary-v1";
     shock_contract = contract.str();
     if (shock_contract.size()+shock_lineage.size()+1 > 16384) {
       ShockError("Shock restart contract exceeds supported metadata size");
@@ -316,7 +319,7 @@ void Particles::PrepareShockStore(bool restarting) {
     uint64_t digest = UINT64_C(14695981039346656037);
     for (uint64_t g=0; g<=shock_generation; ++g) {
       const std::string path = shock_directory + "/cycle" + std::to_string(g) +
-                               RankName() + ".csv";
+                               RankName() + tracer_output::Extension(shock_binary);
       if (!std::filesystem::exists(path)) {
         ShockError("restart requires complete event chunks through "
                    "checkpoint generation");
@@ -472,14 +475,26 @@ void Particles::ObserveShocks(Real time, uint64_t generation) {
     auto ho = Kokkos::create_mirror_view_and_copy(HostMemSpace(), observations);
     std::ostringstream out;
     out << std::setprecision(std::numeric_limits<Real>::max_digits10);
-    for (int p=0; p<nprtcl_thispack; ++p) {
+    if (!shock_binary) for (int p=0; p<nprtcl_thispack; ++p) {
       out << hs(p).particle_id << ',' << hs(p).sequence << ',' << hs(p).phase << ','
           << hs(p).flags << ',';
       PutObservation(out, ho(p));
       out << '\n';
     }
+    std::string data=out.str();
+    if (shock_binary) {
+      tracer_output::Table table("particle_trace",tracer_output::TraceColumns(false),
+          nprtcl_thispack,generation,time,"position=wrapped\nlineage="+shock_lineage+
+          "\ncontract="+shock_contract+"\n");
+      for (int p=0; p<nprtcl_thispack; ++p) {
+        table.Put(hs(p).particle_id); table.Put(hs(p).sequence);
+        table.Put(static_cast<uint32_t>(hs(p).phase)); table.Put(hs(p).flags);
+        tracer_output::Observation(table,ho(p));
+      }
+      data=table.Finish();
+    }
     CommitFile(shock_directory + "/trace" + std::to_string(generation) + RankName() +
-                 ".csv", out.str(), true);
+                 tracer_output::Extension(shock_binary),data,true);
   }
   shock_seconds += timer.seconds();
 }
@@ -495,11 +510,18 @@ void Particles::DrainShockEvents(const std::vector<shocks::Event> &events,
   out << std::setprecision(std::numeric_limits<Real>::max_digits10)
       << "# AKSHOCK-EVENTS 1 " << shock_lineage << ' ' << generation << ' '
       << ordered.size() << '\n' << "# " << shock_contract << '\n';
-  for (const auto &e : ordered) PutEvent(out,e);
+  if (!shock_binary) for (const auto &e : ordered) PutEvent(out,e);
   out << "# END " << ordered.size() << '\n';
-  const auto data = out.str();
+  std::string data=out.str();
+  if (shock_binary) {
+    tracer_output::Table table("particle_events",tracer_output::EventColumns(false),
+        ordered.size(),generation,pmy_pack->pmesh->time,
+        "position=wrapped\nlineage="+shock_lineage+"\ncontract="+shock_contract+"\n");
+    for (const auto &e : ordered) tracer_output::Event(table,e);
+    data=table.Finish();
+  }
   CommitFile(shock_directory + "/cycle" + std::to_string(generation) + RankName() +
-               ".csv", data, true);
+               tracer_output::Extension(shock_binary), data, true);
   shock_history_digest = Digest(shock_history_digest,data.data(),data.size());
 }
 
@@ -676,10 +698,18 @@ void Particles::WriteShockSuspended() {
   out << std::setprecision(std::numeric_limits<Real>::max_digits10)
       << "# AKSHOCK-SUSPENDED 1 " << shock_lineage << ' ' << shock_generation << ' '
       << records.size() << '\n' << "# " << shock_contract << '\n';
-  for (const auto &e : records) PutEvent(out,e);
+  if (!shock_binary) for (const auto &e : records) PutEvent(out,e);
   out << "# END " << records.size() << '\n';
+  std::string data=out.str();
+  if (shock_binary) {
+    tracer_output::Table table("particle_suspended",tracer_output::EventColumns(false),
+        records.size(),shock_generation,shock_time,
+        "position=wrapped\nlineage="+shock_lineage+"\ncontract="+shock_contract+"\n");
+    for (const auto &e : records) tracer_output::Event(table,e);
+    data=table.Finish();
+  }
   CommitFile(shock_directory + "/suspended" + std::to_string(shock_generation) +
-               RankName() + ".csv", out.str(), true);
+               RankName() + tracer_output::Extension(shock_binary), data, true);
   std::cout << "Shock rank=" << global_variable::my_rank << " sampled=" << shock_sampled
             << " invalid=" << shock_invalid << " complete=" << shock_complete
             << " partial=" << shock_partial << " suspended=" << records.size()

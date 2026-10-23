@@ -75,15 +75,31 @@ def read_curves(directory, stem=None):
     identities = {}
     schema = None
     streams = set()
-    paths = sorted(Path(directory).glob('*.csv'))
+    paths = sorted(Path(directory).glob('*.csv'))+sorted(Path(directory).glob('*.tbin'))
     for path in paths:
-        match = re.fullmatch(r'(.+)\.cycle([0-9]+)\.rank([0-9]+)\.csv', path.name)
+        match = re.fullmatch(r'(.+)\.cycle([0-9]+)\.rank([0-9]+)\.(?:csv|tbin)', path.name)
         _require(match is not None, 'malformed curve thermo chunk filename')
         if stem is not None and match[1] != stem:
             continue
         streams.add(match[1])
         _require(len(streams) == 1, 'multiple curve thermo streams; select stem')
-        lines = path.read_text().splitlines()
+        if path.suffix == '.tbin':
+            from tracer_binary import read
+            table = read(path)
+            fixed = ['node_id','curve_id','birth','a','x1','x2','x3','gid','level']
+            columns = [n for n,_ in table['schema']]
+            _require(table['kind']=='curve_thermo' and
+                     table['schema'][:9]==list(zip(fixed,
+                         ['u64','u64','real','real','real','real','real','i32','i32'])) and
+                     all(t=='real' for _,t in table['schema'][9:]) and
+                     table['metadata'].get('position')=='lifted', 'unsupported native thermo schema')
+            records = table['rows']
+            lines = [f"# ATHK_CURVE_THERMO 1 {table['cycle']} {table['time']} {len(records)} {table['rank']} {table['nranks']}",
+                     ','.join(columns),
+                     *(','.join(str(row[n]) for n in columns) for row in records),
+                     '# END '+str(len(records))]
+        else:
+            lines = path.read_text().splitlines()
         head = lines[0].split() if lines else []
         _require(len(head) == 8 and head[:3] == ['#','ATHK_CURVE_THERMO','1'],
                  'unknown/truncated curve thermo header')
