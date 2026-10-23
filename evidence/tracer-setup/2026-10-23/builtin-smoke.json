@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+    "-i",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/evidence/startup-summary-final-code-20261023/histories/input.athinput"
+  ],
+  "exit": 0,
+  "input_sha256": "24ecd8bfce8369cfa479e693fd34e52c4f9a64b14dd4b60d8f56e943a0c6aac7",
+  "log_sha256": "eec7518913ead655b8ae036cd7b5c28ab4de8fa0c36572843a1bf2858e14578f",
+  "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+  "executable_sha256": "fd5f86e28719446d390a988a2ec3dc9f8457c57e409b80975e94da1975f1d4b5",
+  "compiled_source_fingerprint": "16092853fdd3f8aba1b0f2c2978522a2ce91235bff77797adabb8cea880e609d",
+  "build_cache_sha256": "486ba246e504c6f1ee5a131cd282da728c14692b7bd5ec6767e3d7c8be927eb1"
+}

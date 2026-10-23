@@ -10,6 +10,8 @@
 #include <iomanip>    // std::setprecision()
 #include <limits>
 #include <algorithm>
+#include <cmath>
+#include <sstream>
 #include <string> // string
 
 #include "athena.hpp"
@@ -41,6 +43,123 @@ double GlobalMaxOutputTime(double local_time) {
 #else
   return local_time;
 #endif
+}
+
+// Called collectively after startup seeding/adaptation or checkpoint restoration.
+// Read resolved settings only: reporting must not add defaults or change state.
+void PrintTracerSetup(Mesh *mesh, ParameterInput *pin, Outputs *outputs, bool restart) {
+  auto particles=mesh->pmb_pack->ppart;
+  auto curves=mesh->pmb_pack->pcurves;
+  const bool fluid_particles=particles && particles->IsFluidTracer();
+  if (!fluid_particles && !curves) return;
+  std::uint64_t local[5]={}, total[5]={};
+  if (fluid_particles) local[0]=particles->nprtcl_thispack;
+  if (curves) {
+    local[1]=curves->curves.size();
+    for (const auto &curve : curves->curves) {
+      local[2]+=curve.nodes.size();
+      for (const auto &node : curve.nodes) local[3]+=(node.anchor!=0);
+      local[4]+=(curve.reason!=0);
+    }
+  }
+#if MPI_PARALLEL_ENABLED
+  MPI_Reduce(local,total,5,MPI_UINT64_T,MPI_SUM,0,MPI_COMM_WORLD);
+#else
+  std::copy(local,local+5,total);
+#endif
+  if (global_variable::my_rank!=0) return;
+  std::ostringstream out;
+  out << std::boolalpha << "\nTracer setup summary: " << (restart ? "restart" : "fresh")
+      << ", time=" << mesh->time << " (global counts)\n";
+  if (fluid_particles) {
+    std::uint64_t requested=0;
+    std::ostringstream seeds;
+    for (const auto &block : pin->block) {
+      const auto &name=block.block_name;
+      if (name.compare(0,11,"tracer_seed")!=0) continue;
+      const auto count=pin->GetInteger(name,"count_per_event");
+      if (!restart && !pin->GetBoolean(name,"complete") &&
+          std::abs(pin->GetReal(name,"next_time")-mesh->time)<=
+          64*std::numeric_limits<Real>::epsilon()) requested+=count;
+      seeds << "  " << name << ": requested/event=" << count
+            << ", region=" << pin->GetString(name,"region")
+            << ", weight=" << pin->GetString(name,"weight")
+            << ", seed=" << pin->GetInteger(name,"seed")
+            << ", start=" << pin->GetReal(name,"start_time")
+            << ", end=" << pin->GetReal(name,"end_time") << ", cadence=";
+      Real cadence=pin->GetReal(name,"cadence");
+      if (cadence>0) seeds << cadence; else seeds << "once";
+      if (pin->DoesParameterExist(name,"target")) {
+        seeds << ", filter=" << pin->GetString(name,"target");
+        if (pin->DoesParameterExist(name,"target_min")) {
+          seeds << " min=" << pin->GetReal(name,"target_min");
+        }
+        if (pin->DoesParameterExist(name,"target_max")) {
+          seeds << " max=" << pin->GetReal(name,"target_max");
+        }
+      }
+      seeds << '\n';
+    }
+    out << "Particles: type=" << pin->GetString("particles","particle_type");
+    if (restart) out << ", restored=" << total[0] << " (seed requests not reapplied)\n";
+    else out << ", requested_at_start=" << requested << ", actual=" << total[0] << '\n';
+    out << "  placement=eligible cell centers, draws with replacement; "
+        << "weight controls birth selection\n" << seeds.str();
+  } else {
+    out << "Particles: disabled\n";
+  }
+  if (curves) {
+    if (restart) {
+      out << "Curves: restored=" << total[1] << ", nodes=" << total[2]
+          << " (coordinates restored; seed requests not reapplied)\n";
+    } else {
+      out << "Curves: requested=" << pin->GetInteger("material_curves","ncurves")
+          << ", actual=" << total[1] << ", nodes_requested=" << total[3]
+          << ", nodes_actual=" << total[2] << '\n';
+      for (int i=1; i<=pin->GetInteger("material_curves","ncurves"); ++i) {
+        const auto name="curve"+std::to_string(i);
+        const auto type=pin->GetString(name,"type");
+        out << "  " << name << ": type=" << type
+            << ", closed=" << pin->GetBoolean(name,"closed") << ", placement="
+            << (type=="circle" ? "uniform angles" :
+                type=="line" ? "uniform spacing" : "explicit lifted vertices") << '\n';
+      }
+    }
+    out << "  adaptation=" << curves->adaptive << ", max_nodes=" << curves->max_nodes
+        << ", spacing_cells=" << curves->spacing_cells << ", max_spacing=";
+    if (curves->max_spacing>0) out << curves->max_spacing; else out << "auto(mesh)";
+    out << ", max_angle=" << curves->max_angle << " rad, chord_error=";
+    if (curves->chord_error>0) out << curves->chord_error; else out << "auto(spacing)";
+    out << ", unresolved_curves=" << total[4];
+    if (!curves->adaptive) out << " (adaptation thresholds inactive)";
+    out << "\n  geometry snapshots=" << (restart ? "final" : "initial/final");
+    if (curves->output_dcycle>0) out << ", every " << curves->output_dcycle << " cycles";
+    out << '\n';
+  } else {
+    out << "Curves: disabled\n";
+  }
+  out << "Histories: particle_shocks=" << (fluid_particles && particles->shock_enabled)
+      << ", curve_shocks=" << (curves && curves->shock_enabled)
+      << ", particle_shock_trace=" << (fluid_particles && particles->shock_trace)
+      << ", curve_shock_trace=" << (curves && curves->shock_trace) << '\n';
+  bool thermo=false;
+  for (const auto &output : outputs->pout_list) {
+    const auto &p=output->out_params;
+    if (p.file_type!="prtcl_thermo_history" && p.file_type!="trk") continue;
+    out << "  " << p.block_name << ": " << p.file_type;
+    if (p.file_type=="prtcl_thermo_history") {
+      thermo=true;
+      out << ", source=" << pin->GetString(p.block_name,"source");
+    }
+    if (p.dcycle>0) out << ", every " << p.dcycle << " cycles";
+    else if (p.dt>0) out << ", dt=" << p.dt;
+    else out << ", " << (restart ? "final only" : "initial/final only");
+    if (!p.file_id.empty()) out << ", id=" << p.file_id;
+    out << '\n';
+  }
+  if (!thermo) out << "  thermo histories: disabled\n";
+  out << "End tracer setup summary\n\n";
+  std::cout << out.str();
 }
 
 }  // namespace
@@ -367,6 +486,7 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
     curves->PrepareShockStore(res_flag);
     curves->ObserveShocks();
   }
+  PrintTracerSetup(pmesh,pin,pout,res_flag);
 
   //---- Step 2.  Compute time step (if problem involves time evolution)
   // NOTE: For new simulations (!res_flag), the initial conditions haven't been set yet
