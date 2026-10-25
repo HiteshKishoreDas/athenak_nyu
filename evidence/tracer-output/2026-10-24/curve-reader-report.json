@@ -1,0 +1,174 @@
+{
+  "checks": [
+    {
+      "id": "CR01_legacy_and_binary",
+      "status": "pass",
+      "node_samples": 108,
+      "profile_nodes": 16,
+      "legacy_binary_equal": true
+    },
+    {
+      "id": "CR02_AMR_birth_no_parent_history",
+      "status": "pass",
+      "curve_id": 7,
+      "node_id": 30064771105,
+      "field": "pressure",
+      "geometry_clocks": 162,
+      "node_samples": 149,
+      "first_sample_time": 0.009990907573667196,
+      "node_birth": 0.009990907573667196,
+      "emitted_node_events": 1,
+      "terminal_node_views": 0,
+      "geometry_3d": false,
+      "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-reader-20261024-final/amr-newborn.png"
+    },
+    {
+      "id": "CR03_uint64_CLI",
+      "status": "pass",
+      "exact_id": 18446744069414584321,
+      "cli_exit": 0
+    },
+    {
+      "id": "CR04_geometry_only",
+      "status": "pass",
+      "optional_thermo_and_shocks_absent": true
+    },
+    {
+      "id": "CR05_thermo_only",
+      "status": "pass",
+      "no_invented_geometry": true
+    },
+    {
+      "id": "CR06_particle_IO_opt_out",
+      "status": "pass",
+      "curve_mode_skips_particles": true,
+      "default_still_loads_and_validates_particles": true
+    },
+    {
+      "id": "CR07_winding_closure",
+      "status": "pass",
+      "winding_aware_3d_closure": true
+    },
+    {
+      "id": "CR08_selection_guards",
+      "status": "pass",
+      "invalid_or_ambiguous_selections_rejected": 7
+    },
+    {
+      "id": "CR09_output_preservation",
+      "status": "pass",
+      "existing_plot_preserved": true
+    },
+    {
+      "id": "CR10_corrupt_curve_input",
+      "status": "pass",
+      "corrupt_geometry_rejected": true
+    },
+    {
+      "id": "CR11_existing_3d_run",
+      "status": "pass",
+      "source": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/native-output-frozen-CT/forced_both",
+      "native_3d_geometry": true
+    }
+  ],
+  "plots": [
+    {
+      "curve_id": 7,
+      "node_id": 30064771073,
+      "field": "pressure",
+      "geometry_clocks": 108,
+      "node_samples": 108,
+      "first_sample_time": 0.0,
+      "node_birth": 0.0,
+      "emitted_node_events": 1,
+      "terminal_node_views": 0,
+      "geometry_3d": false,
+      "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-reader-20261024-final/legacy.png"
+    },
+    {
+      "curve_id": 7,
+      "node_id": 30064771073,
+      "field": "pressure",
+      "geometry_clocks": 108,
+      "node_samples": 108,
+      "first_sample_time": 0.0,
+      "node_birth": 0.0,
+      "emitted_node_events": 1,
+      "terminal_node_views": 0,
+      "geometry_3d": false,
+      "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-reader-20261024-final/binary.png"
+    },
+    {
+      "curve_id": 7,
+      "node_id": 30064771105,
+      "field": "pressure",
+      "geometry_clocks": 162,
+      "node_samples": 149,
+      "first_sample_time": 0.009990907573667196,
+      "node_birth": 0.009990907573667196,
+      "emitted_node_events": 1,
+      "terminal_node_views": 0,
+      "geometry_3d": false,
+      "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-reader-20261024-final/amr-newborn.png"
+    },
+    {
+      "curve_id": 4294967295,
+      "node_id": 18446744069414584321,
+      "field": "pressure",
+      "geometry_clocks": 5,
+      "node_samples": 5,
+      "first_sample_time": 0.0,
+      "node_birth": 0.0,
+      "emitted_node_events": 0,
+      "terminal_node_views": 0,
+      "geometry_3d": false,
+      "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-reader-20261024-final/large-id.png"
+    },
+    {
+      "curve_id": 7,
+      "node_id": 30064771073,
+      "field": "pressure",
+      "geometry_clocks": 3,
+      "node_samples": 0,
+      "first_sample_time": null,
+      "node_birth": null,
+      "emitted_node_events": 0,
+      "terminal_node_views": 0,
+      "geometry_3d": false,
+      "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-reader-20261024-final/geometry-only.png"
+    },
+    {
+      "curve_id": 7,
+      "node_id": 30064771073,
+      "field": "pressure",
+      "geometry_clocks": 0,
+      "node_samples": 3,
+      "first_sample_time": 0.0,
+      "node_birth": 0.0,
+      "emitted_node_events": 0,
+      "terminal_node_views": 0,
+      "geometry_3d": false,
+      "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-reader-20261024-final/thermo-only.png"
+    },
+    {
+      "curve_id": 7,
+      "node_id": 30064771073,
+      "field": "pressure",
+      "geometry_clocks": 145,
+      "node_samples": 16,
+      "first_sample_time": 0.0,
+      "node_birth": 0.0,
+      "emitted_node_events": 2,
+      "terminal_node_views": 0,
+      "geometry_3d": true,
+      "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-reader-20261024-final/three-d.png"
+    }
+  ],
+  "simulation_runs": 0,
+  "inputs": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/native-output-qualified-final-20261023",
+  "sources": {
+    "vis/python/plot_curves.py": "7739e81cb60ebc49d9d4d97298e1b33c1d8b3ff715c3cd1284c7379da7949173",
+    "vis/python/tracer_history.py": "1db331cf4fbe0a67d6228de743fa5b74d95bf3e1c3a76f392708caa16a66093e",
+    "tst/tracer-output/curve_reader_check.py": "90db20a741aa04f6f86fc5ea59e3d76af41fdc05d5fb5818163a20b175bfca7e"
+  }
+}

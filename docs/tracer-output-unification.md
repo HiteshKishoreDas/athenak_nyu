@@ -130,6 +130,10 @@ by exact identity plus cycle/time and run lineage as applicable; never join
 particle and node IDs merely because numbers match. The reader preserves actual
 clocks and births, and never copies a parent node's history.
 
+For curve-focused figures and record selection, use `vis/python/plot_curves.py`.
+[Curve reader usage](curve-reader.md) covers legacy/native inputs, exact node IDs,
+3D geometry, field profiles, node histories and shock evidence.
+
 ## Restart and compatibility
 
 Fluid `.rst`, particle restart payloads, curve `.rst.curves` and paired shock

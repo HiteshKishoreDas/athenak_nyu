@@ -14,14 +14,15 @@ import tracer_binary
 from tracer_thermo_history import read_curves, read_particles
 
 
-def read_run(directory, thermo_stem=None, shock_directory='shock_events'):
+def read_run(directory, thermo_stem=None, shock_directory='shock_events', include_particles=True):
+    """Read independent streams; include_particles=False avoids unrelated particle IO."""
     root = Path(directory)
     if not root.is_dir():
         raise ValueError('run directory does not exist')
     result = dict(particles={},curve_nodes={},particle_times={},curve_times={},
                   geometry=[],particle_events=[],curve_events=[],
                   particle_suspended=[],curve_suspended=[],available=[])
-    paths = sorted((root/'prtcl_thermo_history').glob('*.thp'))
+    paths = sorted((root/'prtcl_thermo_history').glob('*.thp')) if include_particles else []
     if thermo_stem is not None:
         paths = [p for p in paths if p.stem == thermo_stem]
     if len(paths)>1:
@@ -35,6 +36,8 @@ def read_run(directory, thermo_stem=None, shock_directory='shock_events'):
         result['available'].append('curve_nodes')
     for carrier, module, where in (('particle',shock_history,root/shock_directory),
                                   ('curve',curve_shock_history,root/shock_directory/'curves')):
+        if carrier=='particle' and not include_particles:
+            continue
         manifests = list(where.glob('manifest.rank*'))
         chunks = [p for pattern in ('cycle*.csv','cycle*.tbin','trace*.csv','trace*.tbin',
                                   'birthtrace*.csv','birthtrace*.tbin','suspended*.csv','suspended*.tbin')
