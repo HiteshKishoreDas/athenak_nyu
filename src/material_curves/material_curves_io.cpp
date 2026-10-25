@@ -34,6 +34,14 @@ void MaterialCurves::ThermoHistory(
   });
   std::vector<Real> values;
   Sample(nodes,nullptr,fields,&values);
+  bool shock_fields=false;
+  for (const auto &field : fields) shock_fields |= particles::IsShockField(field.kind);
+  std::vector<ShockObservation> observations;
+  if (shock_fields) {
+    if (!shock_enabled || shock_generation!=static_cast<std::uint64_t>(mesh->ncycle) ||
+        shock_time!=mesh->time) Fail("stale curve shock output generation");
+    Sample(nodes,&observations);
+  }
   integers.resize(4*nodes.size());
   const std::size_t width=7+fields.size();  // time, x[3], birth, a, level, fields
   reals.resize(width*nodes.size());
@@ -51,7 +59,9 @@ void MaterialCurves::ThermoHistory(
     reals[width*p+5]=node.a;
     reals[width*p+6]=mesh->lloc_eachmb[gid].level;
     for (std::size_t n=0; n<fields.size(); ++n) {
-      reals[width*p+7+n]=values[fields.size()*p+n];
+      reals[width*p+7+n]=particles::IsShockField(fields[n].kind) ?
+          particles::EvaluateShockField(fields[n].kind,observations[p].observation) :
+          values[fields.size()*p+n];
     }
   }
 }

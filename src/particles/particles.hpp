@@ -124,6 +124,7 @@ class Particles {
   void PrepareShockStore(bool restarting);
   void DrainShockEvents(const std::vector<shocks::Event> &events, uint64_t generation);
   void ObserveShocks(Real time, uint64_t generation);
+  void RefreshShockSignals();
   void ResizeShockState(int nold);
   void WriteShockRestart(const std::string &fname);
   void ReadShockRestart(const std::string &fname);

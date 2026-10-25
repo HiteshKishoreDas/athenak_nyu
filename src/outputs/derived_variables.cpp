@@ -28,6 +28,7 @@
 #include "radiation/radiation.hpp"
 #include "radiation/radiation_tetrad.hpp"
 #include "particles/particles.hpp"
+#include "material_curves/material_curves.hpp"
 #include "outputs.hpp"
 #include "utils/current.hpp"
 
@@ -91,6 +92,37 @@ void BaseTypeOutput::ComputeDerivedVariable(std::string name, Mesh *pm) {
   // derived variable index
   int &i_dv = out_params.i_derived;
   int &n_dv = out_params.n_derived;
+
+  if (name=="shock") {
+    auto pp=pm->pmb_pack->ppart;
+    auto curves=pm->pmb_pack->pcurves;
+    const bool cached=pp && pp->shock_enabled;
+    if ((cached && (pp->shock_generation!=static_cast<std::uint64_t>(pm->ncycle) ||
+                    pp->shock_time!=pm->time)) ||
+        (!cached && (curves->shock_generation!=static_cast<std::uint64_t>(pm->ncycle) ||
+                     curves->shock_time!=pm->time))) {
+      std::cout << "### FATAL ERROR: stale mesh shock output generation" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    auto config=cached ? pp->shock_config : curves->shock_config;
+    auto signals=cached ? pp->shock_signal : DvceArray4D<shocks::Signal>();
+    auto w=pm->pmb_pack->phydro->w0;
+    auto sizes=size.d_view;
+    Kokkos::realloc(derived_var,nmb,n_dv,n3,n2,n1);
+    auto dv=derived_var;
+    par_for("shock_output",DevExeSpace(),0,nmb-1,ks,ke,js,je,is,ie,
+    KOKKOS_LAMBDA(int m,int k,int j,int i) {
+      const auto cell=sizes(m);
+      auto signal=cached ? signals(m,k,j,i) : shocks::DetectCell(w,m,k,j,i,
+          cell.dx1,cell.dx2,cell.dx3,three_d,config);
+      for (int n=0; n<6; ++n) {
+        auto kind=static_cast<particles::TracerFieldKind>(
+            static_cast<int>(particles::TracerFieldKind::shock_valid)+n);
+        dv(m,n,k,j,i)=particles::EvaluateShockField(kind,signal);
+      }
+    });
+    i_dv+=6;
+  }
 
   // specific internal energy proxy = eint / density
   if (name.compare("temperature") == 0) {

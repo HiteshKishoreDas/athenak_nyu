@@ -99,6 +99,18 @@ TracerField ParseTracerFieldName(const std::string &field_name, bool has_mhd,
     field = {TracerFieldKind::sound_speed, -1, "sound_speed"};
   } else if (name == "mach" || name == "mach_number") {
     field = {TracerFieldKind::mach, -1, "mach"};
+  } else if (name == "shock_valid") {
+    field = {TracerFieldKind::shock_valid, -1, "shock_valid"};
+  } else if (name == "shock_region") {
+    field = {TracerFieldKind::shock_region, -1, "shock_region"};
+  } else if (name == "shock_mach_pressure") {
+    field = {TracerFieldKind::shock_mach_pressure, -1, "shock_mach_pressure"};
+  } else if (name == "shock_mach_temperature") {
+    field = {TracerFieldKind::shock_mach_temperature, -1, "shock_mach_temperature"};
+  } else if (name == "shock_mach_pressure_valid") {
+    field = {TracerFieldKind::shock_mach_pressure_valid, -1, "shock_mach_pressure_valid"};
+  } else if (name == "shock_mach_temperature_valid") {
+    field = {TracerFieldKind::shock_mach_temperature_valid, -1, "shock_mach_temperature_valid"};
   } else if (name == "b1" || name == "bx") {
     field = {TracerFieldKind::b1, -1, "b1"};
   } else if (name == "b2" || name == "by") {
@@ -152,6 +164,11 @@ std::vector<TracerField> ParseTracerFieldList(const std::string &field_list,
       AppendUnique(fields, ParseTracerFieldName("v1", has_mhd, nscalars, context));
       AppendUnique(fields, ParseTracerFieldName("v2", has_mhd, nscalars, context));
       AppendUnique(fields, ParseTracerFieldName("v3", has_mhd, nscalars, context));
+    } else if (token == "shock") {
+      for (const char *name : {"shock_valid","shock_region","shock_mach_pressure",
+          "shock_mach_temperature","shock_mach_pressure_valid","shock_mach_temperature_valid"}) {
+        AppendUnique(fields,ParseTracerFieldName(name,has_mhd,nscalars,context));
+      }
     } else {
       AppendUnique(fields, ParseTracerFieldName(token, has_mhd, nscalars, context));
     }
@@ -183,6 +200,9 @@ Real EvaluateTracerFieldHost(const TracerField &field, const HostArray5D<Real> &
   const Real cs2 = std::max(gamma*press/rho, 0.0);
   const Real cs = std::sqrt(cs2);
 
+  if (IsShockField(field.kind)) {
+    FatalTracerField(field.name,"requires synchronized detector evidence");
+  }
   switch (field.kind) {
     case TracerFieldKind::density:
       return rho;
@@ -232,6 +252,8 @@ Real EvaluateTracerFieldHost(const TracerField &field, const HostArray5D<Real> &
         }
         return (rho > 0.0) ? bmag/std::sqrt(rho) : 0.0;
       }
+    default:
+      FatalTracerField(field.name,"unknown tracer field kind");
   }
   return 0.0;
 }

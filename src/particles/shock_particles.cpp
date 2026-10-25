@@ -336,12 +336,9 @@ void Particles::PrepareShockStore(bool restarting) {
   }
 }
 
-void Particles::ObserveShocks(Real time, uint64_t generation) {
-  if (!shock_enabled || generation == shock_generation) return;
-  if (shock_generation != UINT64_MAX && generation != shock_generation+1) {
-    ShockError("diagnostic generation gap");
-  }
-  Kokkos::Timer timer;
+// Rebuild derived diagnostics without advancing encounters, counters or journals.
+void Particles::RefreshShockSignals() {
+  if (!shock_enabled) return;
   auto pm = pmy_pack->pmesh;
   auto b = pm->mb_indcs;
   auto size = pmy_pack->pmb->mb_size.d_view;
@@ -381,6 +378,20 @@ void Particles::ObserveShocks(Real time, uint64_t generation) {
     }
     signal(m,k,j,i) = s;
   });
+}
+
+void Particles::ObserveShocks(Real time, uint64_t generation) {
+  if (!shock_enabled || generation == shock_generation) return;
+  if (shock_generation != UINT64_MAX && generation != shock_generation+1) {
+    ShockError("diagnostic generation gap");
+  }
+  Kokkos::Timer timer;
+  RefreshShockSignals();
+  auto pm=pmy_pack->pmesh;
+  auto b=pm->mb_indcs;
+  auto size=pmy_pack->pmb->mb_size.d_view;
+  auto signal=shock_signal;
+  const bool td=pm->three_d;
   auto state = shock_state;
   const bool trace = shock_trace;
   DvceArray1D<shocks::Observation> observations;

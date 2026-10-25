@@ -8,10 +8,10 @@
 4. That node's emitted shock episodes and separate censored terminal views,
    retaining validity flags and available entry/exit brackets.
 
-No simulation is launched. There are no changes to C++, file formats, particle
-transport, detection or restart state. Existing reader calls retain their default
-behavior; this script selects `include_particles=False` to avoid loading unrelated
-particle streams. Existing CSV/text curve outputs are read directly; no format change or conversion is needed.
+The plotting script launches no simulation and changes no runtime state. Existing
+reader calls retain their defaults; this script selects `include_particles=False`
+to avoid loading unrelated particle streams. Current THP curve samples, retained
+CSV samples and text geometry are read directly, with no conversion step.
 
 ## Laptop example
 
@@ -103,3 +103,17 @@ current signed32, previous unsigned32 and historical uint64 CLI IDs, optional mi
 default strictness, winding closure, invalid selections, input corruption and
 figure preservation. No simulation is launched by the reader checks. See
 `evidence/tracer-output/2026-10-24/curve-reader-ledger.md` for the original reader results; `existing-formats-ledger.md` records the format-removal checks and new plots.
+
+## Current binary curve thermo
+
+`read_run` and `read_curves` discover native THP v2 chunks automatically:
+`curve_thermo_history/<basename>.<id>.cycle<C>.rank<R>of<N>.bits<B>.thp`.
+The same four signed integer slots hold cycle/node ID/curve ID/GID; birth, a and
+refinement level are named metadata fields. The filename declares layout and the
+rank set even for empty chunks. Historical CSV is still read directly.
+
+The returned curve observation interface and plot_curves CLI are unchanged.
+When shock properties were selected, they are available under fields using the
+same canonical names as regular particle THP and mesh BIN output. Only the two
+named shock Mach estimates may be NaN; flags and clocks are validated. Plots use
+actual saved clocks/positions and do not invent pre-birth samples or crossing times.

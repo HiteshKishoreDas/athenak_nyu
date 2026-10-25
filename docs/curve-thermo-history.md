@@ -155,3 +155,15 @@ RUSTY CPU/MPI, Frontier, GPU/threaded execution and multi-rank persistence remai
 separate deployment gates. The short forced box is an engineering demonstration,
 not converged turbulence or scientific approval. The inherited forcing thermal
 oracle issue remains open. Human scientific sign-off stays pending.
+
+## Optional synchronized shock properties
+
+Use `variables=rho,p,mach,shock` with enabled shock tracking. The six shock fields
+and native mesh output configuration are documented in
+[tracer-output-unification.md](tracer-output-unification.md#native-binary-shock-properties).
+Pressure/temperature jump estimates retain NaN for unavailable evidence; their
+explicit validity flags distinguish missing estimates. Regular fluid Mach keeps
+its existing meaning. The supplied readers validate and preserve these values,
+including identical terminal replay. Full encounter journals remain independent
+of thermo sampling cadence. Zero-step restart refreshes derived detector signals
+without creating a new observation or encounter.

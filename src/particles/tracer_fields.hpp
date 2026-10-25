@@ -18,8 +18,31 @@ namespace particles {
 enum class TracerFieldKind {
   density, pressure, temperature, entropy, internal_energy,
   v1, v2, v3, vmag, sound_speed, mach, scalar,
-  b1, b2, b3, bmag, magnetic_pressure, beta, alfven_speed
+  b1, b2, b3, bmag, magnetic_pressure, beta, alfven_speed,
+  shock_valid, shock_region, shock_mach_pressure, shock_mach_temperature,
+  shock_mach_pressure_valid, shock_mach_temperature_valid
 };
+
+KOKKOS_INLINE_FUNCTION
+bool IsShockField(TracerFieldKind kind) {
+  return kind>=TracerFieldKind::shock_valid && kind<=TracerFieldKind::shock_mach_temperature_valid;
+}
+
+// Signal and completed-step Observation share these evidence fields.
+template<typename Sample> KOKKOS_INLINE_FUNCTION
+Real EvaluateShockField(TracerFieldKind kind, const Sample &sample) {
+  switch (kind) {
+    case TracerFieldKind::shock_valid: return sample.valid;
+    case TracerFieldKind::shock_region: return sample.inside;
+    case TracerFieldKind::shock_mach_pressure: return sample.mach_pressure;
+    case TracerFieldKind::shock_mach_temperature: return sample.mach_temperature;
+    case TracerFieldKind::shock_mach_pressure_valid:
+      return sample.valid && Kokkos::isfinite(sample.mach_pressure);
+    case TracerFieldKind::shock_mach_temperature_valid:
+      return sample.valid && Kokkos::isfinite(sample.mach_temperature);
+    default: return 0;
+  }
+}
 
 struct TracerField {
   TracerFieldKind kind = TracerFieldKind::density;

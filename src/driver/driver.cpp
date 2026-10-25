@@ -480,6 +480,9 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
     auto pp = pmesh->pmb_pack->ppart;
     pp->ValidateShockPhysics();
     pp->PrepareShockStore(res_flag);
+    // Checkpoints persist encounters, not the derived mesh cache. A same-generation
+    // observation is deliberately a no-op, so restore its diagnostics separately.
+    if (res_flag) pp->RefreshShockSignals();
     pp->ObserveShocks(pmesh->time, pmesh->ncycle);
   }
 

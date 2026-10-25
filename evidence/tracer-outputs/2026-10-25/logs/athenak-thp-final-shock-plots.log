@@ -1,0 +1,21 @@
+{
+  "figures": 5,
+  "storage": [
+    {
+      "case": "planar",
+      "samples": 1728,
+      "csv_bytes": 348342,
+      "thp_bytes": 237492,
+      "csv_files": 108,
+      "thp_files": 108
+    },
+    {
+      "case": "amr_shock",
+      "samples": 9644,
+      "csv_bytes": 2014134,
+      "thp_bytes": 1258894,
+      "csv_files": 162,
+      "thp_files": 162
+    }
+  ]
+}

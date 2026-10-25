@@ -256,6 +256,9 @@ void Particles::ParseTracerSeedSchedules(ParameterInput *pin) {
       sched.has_target = true;
       sched.target_field = ParseTracerFieldName(pin->GetString(block, "target"),
                                                 has_mhd, nscalars, block + "/target");
+      if (IsShockField(sched.target_field.kind)) {
+        FatalParticleInput(block+": shock fields are output diagnostics, not seed targets");
+      }
       sched.has_target_min = pin->DoesParameterExist(block, "target_min");
       sched.has_target_max = pin->DoesParameterExist(block, "target_max");
       if (sched.has_target_min) sched.target_min = pin->GetReal(block, "target_min");

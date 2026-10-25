@@ -1,0 +1,45 @@
+[
+  {
+    "id": "SHOUT01_IO03_planar_THP_BIN_trace_exact",
+    "status": "pass",
+    "particle_samples": 13824,
+    "curve_samples": 1728,
+    "mesh_cycles": 108,
+    "unavailable_estimates": 29762,
+    "all_fields_exact": true,
+    "fluid_and_histories_unchanged": true
+  },
+  {
+    "id": "SHOUT02_AMR04_IO03_negative_AMR_THP_BIN_trace_exact",
+    "status": "pass",
+    "particle_samples": 20736,
+    "curve_samples": 9644,
+    "mesh_cycles": 162,
+    "unavailable_estimates": 57523,
+    "all_fields_exact": true,
+    "fluid_and_histories_unchanged": true
+  },
+  {
+    "id": "SHOUT03_curve_only_mesh_and_THP",
+    "status": "pass",
+    "mesh_fields_exact_without_particles": true,
+    "curve_samples": 1728
+  },
+  {
+    "id": "SHOUT04_RST02_active_restart",
+    "status": "pass",
+    "active_AMR_checkpoint_cycle": 13,
+    "full_shock_properties_and_histories_exact": true
+  },
+  {
+    "id": "SHOUT05_CFG_guards",
+    "status": "pass",
+    "explicit_rejections": 3
+  },
+  {
+    "id": "THP01_IO04_existing_reader_and_exact_signed_slots",
+    "status": "pass",
+    "existing_THP_v2_reader_records": 9644,
+    "negative_IDs_exact": true
+  }
+]

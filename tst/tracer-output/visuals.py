@@ -60,8 +60,8 @@ def main():
     axes[1,1].axhline(2,color='gray',ls=':',label='prescribed shock-frame Mach')
     axes[1,1].set(xlabel='first inside sample time [code units]',ylabel='pressure-jump Mach')
     for ax in axes.flat:ax.grid(alpha=.2);ax.legend(fontsize=8)
-    fig.suptitle('Existing THP and CSV: particles and curves crossing the planar shock')
-    save(fig,'shared-histories','The unchanged 128 × 4 translating planar shock. Lines read existing THP/CSV records; open markers read a control without scheduled geometry. Density differences are exactly zero. Dotted lines show independent Rankine–Hugoniot downstream states and the prescribed Mach 2. Finite shock width and spatial strength estimates remain visible; no exact crossing time is inferred.')
+    fig.suptitle('Native THP thermo: particles and curves crossing the planar shock')
+    save(fig,'shared-histories','The unchanged 128 × 4 translating planar shock. Lines read native THP v2 particle/curve records; open markers read a control without scheduled geometry. Density differences are exactly zero. Dotted lines show independent Rankine–Hugoniot downstream states and the prescribed Mach 2. Event strengths come from durable CSV journals. Finite shock width and spatial strength estimates remain visible; no exact crossing time is inferred.')
 
     reference=read_run(run/'amr_shock')
     prefix=read_run(run/'amr_shock_seed',shock_directory=str(run/'amr-shock-restart-journal'))

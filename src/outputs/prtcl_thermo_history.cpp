@@ -208,6 +208,11 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
   tracer_fields = particles::ParseTracerFieldList(field_list, has_mhd, nscalars,
                                                   op.block_name + "/variables");
   tracer_field_names = particles::TracerFieldNames(tracer_fields);
+  for (const auto &field : tracer_fields) sample_shocks |= particles::IsShockField(field.kind);
+  if (sample_shocks && ((sample_particles && !pm->pmb_pack->ppart->shock_enabled) ||
+                       (sample_curves && !pm->pmb_pack->pcurves->shock_enabled))) {
+    FatalHistoryOutput("shock fields require enabled shock tracking for each selected source");
+  }
 }
 
 //----------------------------------------------------------------------------------------
@@ -263,6 +268,12 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
   int nmb = pm->pmb_pack->nmb_thispack;
   int gids = pm->pmb_pack->gids;
 
+  HostArray4D<shocks::Signal> signals;
+  if (sample_shocks) {
+    if (pp->shock_generation!=static_cast<std::uint64_t>(pm->ncycle) ||
+        pp->shock_time!=pm->time) FatalHistoryOutput("stale particle shock output generation");
+    signals=Kokkos::create_mirror_view_and_copy(HostMemSpace(),pp->shock_signal);
+  }
   for (int p=0; p<npout_thisrank; ++p) {
     int m = outpart_idata(PGID,p) - gids;
     if (m < 0 || m >= nmb) {
@@ -278,7 +289,9 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
     j = std::max(js, std::min(js + indcs.nx2 - 1, j));
     k = std::max(ks, std::min(ks + indcs.nx3 - 1, k));
     for (int n=0; n<static_cast<int>(tracer_fields.size()); ++n) {
-      outfield_data(n,p) = particles::EvaluateTracerFieldHost(tracer_fields[n], h_w0,
+      outfield_data(n,p) = particles::IsShockField(tracer_fields[n].kind) ?
+          particles::EvaluateShockField(tracer_fields[n].kind,signals(m,k,j,i)) :
+          particles::EvaluateTracerFieldHost(tracer_fields[n], h_w0,
                                                               h_bcc, has_mhd,
                                                               tracer_gamma,
                                                               nfluid, m, k, j, i);
@@ -374,7 +387,8 @@ void ParticleThermoHistoryOutput::WriteParticleData(Mesh *pm) {
     const auto header=ThermoBlockHeader(npout_total,tracer_fields.size(),pm->ncycle,pm->time);
     if (std::fwrite(header.data(),1,header.size(),file)!=header.size() ||
         (!all_i.empty() && std::fwrite(all_i.data(),sizeof(int),all_i.size(),file)!=all_i.size()) ||
-        (!all_r.empty() && std::fwrite(all_r.data(),sizeof(Real),all_r.size(),file)!=all_r.size())) {
+        (!all_r.empty() &&
+         std::fwrite(all_r.data(),sizeof(Real),all_r.size(),file)!=all_r.size())) {
       FatalHistoryOutput("failed to write particle thermo history block");
     }
     std::fclose(file);

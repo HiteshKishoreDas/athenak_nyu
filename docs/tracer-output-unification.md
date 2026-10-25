@@ -114,7 +114,7 @@ User request: synergise output files and formats. Writer changes have not starte
 The previous startup-summary change is committed locally, one commit ahead of
 the remote-tracking branch; no push was performed during this inspection.
 
-## Current files and reusable readers
+## Files and readers at the 2026-10-23 inspection
 
 | Data | Native representation | Existing reader |
 | --- | --- | --- |
@@ -211,3 +211,67 @@ inspection. Next: implement the selected scope, round-trip actual native
 records through it, test exact IDs/flags/clock and replay semantics, and plot
 the same particle and curve signals from the common representation against
 the native reference.
+
+## Native binary shock properties
+
+With existing shock tracking enabled, add `shock` to the normal thermo variables
+for particles, curves, or both. Keep the existing particle/curve setup and lineage.
+
+```ini
+<output2>
+file_type = prtcl_thermo_history
+source = both
+id = thermo
+variables = rho,p,mach,shock
+dcycle = 1
+
+<output5>
+file_type = bin
+variable = shock
+id = shock
+data_precision = real
+dcycle = 1
+```
+
+The thermo group expands to the same six named fields written by the mesh group:
+
+| Field | Meaning |
+| --- | --- |
+| shock_valid | Native touched-state/stencil and physical-endpoint validity |
+| shock_region | Unreduced accepted shock-region membership |
+| shock_mach_pressure | Native pressure-jump Mach estimate |
+| shock_mach_temperature | Native temperature-jump Mach estimate |
+| shock_mach_pressure_valid | Valid native sample and finite pressure estimate |
+| shock_mach_temperature_valid | Valid native sample and finite temperature estimate |
+
+`mach` retains its original fluid speed/sound-speed definition. Raw jump estimates
+can exist on candidates outside the accepted region; use shock_region when
+selecting accepted shock samples. An unavailable estimate is NaN and its validity
+flag is zero. Other thermo fields must remain finite. Partial field selections
+still validate every available prerequisite. No episode ID or sequence is stored
+in a floating-point field.
+
+Particle THP v2 retains its file path, headers and record layout. Curve THP uses
+that same layout in immutable cycle/rank chunks under curve_thermo_history; the
+supplied read_curves/read_run and plot_curves interfaces load them directly.
+Historical curve CSV remains readable. A changed variable list needs a new output
+id/directory, as before. No format selector or conversion command is required.
+
+Mesh diagnostics use the existing binary writer and reader, including its default
+float32 storage. Set data_precision=real for native Real precision. The shock mesh
+group currently requires file_type=bin, ghost_zones=false and enabled qualified
+shock tracking. It uses the synchronized particle detector cache, or the same
+native detector for the qualified periodic curve-only case. No ghost-zone shock
+values are fabricated. Zero-step restarts rebuild this derived cache after native
+primitive initialization, without advancing encounters or journals.
+
+Thermo fields follow their configured output cadence. Complete per-passage events,
+timing brackets, censoring/validity flags and restart state remain in the durable
+encounter journals/checkpoint sidecars. Curve connectivity/ancestry remain in the
+geometry snapshots and sidecars. These independent products are joined by exact
+population/node identity and generation; sparse thermo samples do not replace
+complete encounter records.
+
+Supported runtime evidence remains local Serial/double ideal Newtonian Cartesian
+hydro on qualified uniform/live-AMR fixtures. MPI compile is checked separately;
+MPI runtime, GPU/cluster performance and human scientific approval remain pending.

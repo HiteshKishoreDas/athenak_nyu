@@ -25,7 +25,7 @@
     #error NHISTORY > NREDUCTION in outputs.hpp
 #endif
 
-#define NOUTPUT_CHOICES 219
+#define NOUTPUT_CHOICES 220
 // choices for output variables used in <ouput> blocks in input file
 // TO ADD MORE CHOICES:
 //   - add more strings to array below, change NOUTPUT_CHOICES above appropriately
@@ -136,6 +136,8 @@ static const char *var_choice[NOUTPUT_CHOICES] = {
 
   // Particle history output (218)
   "prtcl_thermo_history",
+  // Synchronized native shock diagnostics (219)
+  "shock",
 };
 
 
@@ -579,7 +581,7 @@ class ParticleThermoHistoryOutput : public BaseTypeOutput {
   int npout_thisrank;
   int npout_total;
   Real tracer_gamma;
-  bool sample_particles = true, sample_curves = false;
+  bool sample_particles = true, sample_curves = false, sample_shocks = false;
   std::vector<int> curve_thermo_integers;
   std::vector<Real> curve_thermo_reals;
   std::vector<particles::TracerField> tracer_fields;

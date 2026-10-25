@@ -127,3 +127,16 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
   verified, 175 native executable digests; artifact.json records the manifest.
 - [ ] MPI runtime/GPU/cluster budgets and human scientific approval remain pending.
 - [ ] Curve THP writer and mesh shock BIN variables remain separate next work.
+
+### 2026-10-25 — native THP/BIN output integration
+
+- [x] U1: curve thermo uses literal THP v2, exact signed integer slots, metadata and immutable chunks.
+- [x] U2: optional six-field shock group shared by particle and curve thermo; full journals retained.
+- [x] U3: variables=shock uses native BIN, active zones, standard precision options.
+- [x] Zero-step restart rebuilds derived signals independently of encounter/journal advancement.
+- [x] Header clocks, partial validity flags, empty metadata, replay and historical CSV checks.
+- [x] 119 local Serial/double groups plus21 THP reader cases and additional standalone checks.
+- [x] Independent timing/persistence/ponytail review findings applied and source-bound suites rerun.
+- [x] Accepted short32³ forced box: exact sampled property parity and passivity.
+- [ ] Seal18-figure exact-code/runtime/raw-hash bundle and commit artifact manifest.
+- [ ] MPI runtime, GPU/cluster production budgets and scientific sign-off remain pending.

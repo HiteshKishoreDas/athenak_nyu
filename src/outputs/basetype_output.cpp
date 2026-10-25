@@ -28,6 +28,8 @@
 #include "z4c/z4c.hpp"
 #include "srcterms/srcterms.hpp"
 #include "srcterms/turb_driver.hpp"
+#include "particles/particles.hpp"
+#include "material_curves/material_curves.hpp"
 #include "outputs.hpp"
 
 #if MPI_PARALLEL_ENABLED
@@ -164,6 +166,23 @@ BaseTypeOutput::BaseTypeOutput(ParameterInput *pin, Mesh *pm, OutputParameters o
 
   // Now load STL vector of output variables
   outvars.clear();
+
+  if (out_params.variable=="shock") {
+    auto pp=pm->pmb_pack->ppart;
+    auto curves=pm->pmb_pack->pcurves;
+    if (out_params.file_type!="bin" || out_params.include_gzs ||
+        !((pp && pp->shock_enabled) || (curves && curves->shock_enabled))) {
+      std::cout << "### FATAL ERROR: variable=shock requires file_type=bin, active zones "
+                   "and enabled shock tracking" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    const auto fields=particles::ParseTracerFieldList("shock",false,0,out_params.block_name);
+    out_params.contains_derived=true;
+    out_params.n_derived=fields.size();
+    for (std::size_t n=0; n<fields.size(); ++n) {
+      outvars.emplace_back(fields[n].name,n,&derived_var);
+    }
+  }
 
   // make a vector of out_params.variables
   std::vector<std::string> variables;

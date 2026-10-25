@@ -1,0 +1,72 @@
+[
+  {
+    "id": "CR01_existing_outputs_scheduled_and_control",
+    "status": "pass",
+    "node_samples": 108,
+    "profile_nodes": 16,
+    "control_scheduled_equal": true
+  },
+  {
+    "id": "CR02_AMR_birth_no_parent_history",
+    "status": "pass",
+    "curve_id": 7,
+    "node_id": 117440545,
+    "field": "pressure",
+    "geometry_clocks": 162,
+    "node_samples": 149,
+    "first_sample_time": 0.009990907573667196,
+    "node_birth": 0.009990907573667196,
+    "emitted_node_events": 1,
+    "terminal_node_views": 0,
+    "geometry_3d": false,
+    "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/thp-qualified-reader-20261025/amr-newborn.png"
+  },
+  {
+    "id": "CR03_signed32_CLI",
+    "status": "pass",
+    "exact_id": -16777215,
+    "cli_exit": 0
+  },
+  {
+    "id": "CR04_geometry_only",
+    "status": "pass",
+    "optional_thermo_and_shocks_absent": true
+  },
+  {
+    "id": "CR05_thermo_only",
+    "status": "pass",
+    "no_invented_geometry": true
+  },
+  {
+    "id": "CR06_particle_IO_opt_out",
+    "status": "pass",
+    "curve_mode_skips_particles": true,
+    "default_still_loads_and_validates_particles": true
+  },
+  {
+    "id": "CR07_winding_closure",
+    "status": "pass",
+    "winding_aware_3d_closure": true
+  },
+  {
+    "id": "CR08_selection_guards",
+    "status": "pass",
+    "invalid_or_ambiguous_selections_rejected": 7
+  },
+  {
+    "id": "CR09_output_preservation",
+    "status": "pass",
+    "existing_plot_preserved": true
+  },
+  {
+    "id": "CR10_corrupt_curve_input",
+    "status": "pass",
+    "corrupt_geometry_rejected": true
+  },
+  {
+    "id": "CR11_existing_3d_run",
+    "status": "pass",
+    "source": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/thp-qualified-CT-20261025/forced_both",
+    "stored_3d_geometry": true
+  }
+]

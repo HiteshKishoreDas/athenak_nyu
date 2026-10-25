@@ -1,0 +1,38 @@
+{
+  "empty_inf": {
+    "path": "reader-regressions/empty_inf/run.thermo.cycle0.rank0of1.bits8.thp",
+    "sha256": "039efec10765176a68c00b72847c70f11f9fb04504efd725e389025c4b757afa",
+    "outcome": "rejected",
+    "message": "invalid thermo block clock"
+  },
+  "empty_nan": {
+    "path": "reader-regressions/empty_nan/run.thermo.cycle0.rank0of1.bits8.thp",
+    "sha256": "ab6cb26ac61c35bdd0c8d53ea86a8bd1f4d6000d9af676b1eadca5419b5033b4",
+    "outcome": "rejected",
+    "message": "invalid thermo block clock"
+  },
+  "empty_negative_time": {
+    "path": "reader-regressions/empty_negative_time/run.thermo.cycle0.rank0of1.bits8.thp",
+    "sha256": "64c029ccdf38d93502c3fa6e998d5eaaee57adfd7f5c4a682cceb63e24b5ebb3",
+    "outcome": "rejected",
+    "message": "invalid thermo block clock"
+  },
+  "empty_negative_cycle": {
+    "path": "reader-regressions/empty_negative_cycle/run.thermo.cycle0.rank0of1.bits8.thp",
+    "sha256": "b38d74821eb25afe5f4dd202c85f5c5974e08da63bd8cf935c4f49eedab63734",
+    "outcome": "rejected",
+    "message": "invalid thermo block clock"
+  },
+  "conflicting_empty_clock": {
+    "path": "reader-regressions/conflicting_empty_clock/run.thermo.cycle0.rank0of1.bits8.thp",
+    "sha256": "8f5e6c3cc347615ba1169272694fc03569671c31d57d8a3c0ccd6c02920d68e8",
+    "outcome": "rejected",
+    "message": "conflicting same-cycle thermo clocks"
+  },
+  "NaN_claimed_valid": {
+    "path": "reader-regressions/NaN_claimed_valid/run.thermo.cycle0.rank0of1.bits8.thp",
+    "sha256": "370d1e4f05e3ccefcd5aaf19aa656d85e730e8e35824efaa977c6ceecb5a2614",
+    "outcome": "rejected",
+    "message": "shock estimate validity mismatch"
+  }
+}

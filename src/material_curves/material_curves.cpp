@@ -480,7 +480,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
       int k=three ? std::clamp(static_cast<int>((qh(p,2)-size.x3min)/size.dx3)+ind.ks,
                                ind.ks,ind.ke) : ind.ks;
       for (std::size_t n=0; n<nf; ++n) {
-        Real value=particles::EvaluateTracerFieldHost(fields[n],hw,hb,false,gamma,
+        Real value=particles::IsShockField(fields[n].kind) ? 0 :
+            particles::EvaluateTracerFieldHost(fields[n],hw,hb,false,gamma,
                                                        hydro->nhydro,m,k,j,i);
         if (!std::isfinite(value)) Fail("nonfinite curve thermo field: "+fields[n].name);
         sampled[nf*p+n]=value;

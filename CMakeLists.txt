@@ -238,7 +238,8 @@ endif()
 
 set(shock_source_files src/mesh/mesh_refinement.cpp src/athena.hpp
     src/particles/tracer_fields.hpp src/particles/tracer_fields.cpp src/outputs/outputs.hpp
-    src/outputs/prtcl_thermo_history.cpp src/outputs/outputs.cpp src/outputs/vtk_prtcl.cpp
+    src/outputs/prtcl_thermo_history.cpp src/outputs/derived_variables.cpp
+    src/outputs/binary.cpp src/outputs/outputs.cpp src/outputs/vtk_prtcl.cpp
     src/outputs/track_prtcl.cpp src/outputs/basetype_output.cpp src/particles/fluid_velocity.hpp src/shocks/detector.hpp src/shocks/encounter.hpp
     src/particles/shock_particles.cpp src/particles/particles.cpp
     src/particles/particles.hpp src/particles/particles_tasks.cpp

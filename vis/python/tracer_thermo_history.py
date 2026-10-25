@@ -1,4 +1,4 @@
-"""Native thermo readers for particles (.thp v2) and material curves (CSV v1/v2/v3/v4).
+"""Native THP v2 thermo readers for particles and material curves; historical curve CSV retained.
 
 Both return {(cycle, exact_id): observation}, {cycle: time}; quantities live in
 observation['fields']. Curve positions are continuous lifts, particle positions
@@ -18,6 +18,35 @@ class ThermoRows(dict):
     identical_replay_rows = 0
 
 
+def _same_sample(left,right):
+    if isinstance(left,dict) and isinstance(right,dict):
+        return left.keys()==right.keys() and all(_same_sample(left[k],right[k]) for k in left)
+    return left==right or (isinstance(left,float) and isinstance(right,float) and
+                           math.isnan(left) and math.isnan(right))
+
+
+def _sample_fields(names,values):
+    result=dict(zip(names,values))
+    estimates=('shock_mach_pressure','shock_mach_temperature')
+    for name,value in result.items():
+        if not math.isfinite(value) and not (name in estimates and math.isnan(value)):
+            raise ValueError('nonfinite thermo field: '+name)
+        if name in estimates and math.isfinite(value) and value<1:
+            raise ValueError('invalid shock Mach estimate')
+        if name in ('shock_valid','shock_region','shock_mach_pressure_valid','shock_mach_temperature_valid') and value not in (0,1):
+            raise ValueError('invalid sampled shock validity flag')
+    if result.get('shock_region')==1 and result.get('shock_valid')==0:
+        raise ValueError('inside shock sample is invalid')
+    for name in estimates:
+        if result.get(name+'_valid')==1:
+            if result.get('shock_valid')==0 or (name in result and not math.isfinite(result[name])):
+                raise ValueError('shock estimate validity mismatch')
+        if all(k in result for k in (name,name+'_valid','shock_valid')):
+            if result[name+'_valid']!=bool(result['shock_valid'] and math.isfinite(result[name])):
+                raise ValueError('shock estimate validity mismatch')
+    return result
+
+
 def read_particles(path, allow_identical_replay=False):
     """Read exact .thp v2 doubles, rejecting truncation and duplicate identities."""
     data = Path(path).read_bytes(); file_header = struct.Struct('=32s4i')
@@ -33,6 +62,7 @@ def read_particles(path, allow_identical_replay=False):
         raise ValueError('thermo field count mismatch')
     offset = file_header.size+namebytes; result = ThermoRows(); times = {}
     result.field_names = names
+    result.block_count = 0
     block_header = struct.Struct('=16s5id')  # explicitly serialized, no native padding
     while offset < len(data):
         if offset+block_header.size > len(data):
@@ -41,6 +71,11 @@ def read_particles(path, allow_identical_replay=False):
         offset += block_header.size
         if magic.rstrip(b'\0') != b'ATHKTHPBLK' or version != 2 or count < 0 or ni != 4 or nr != 4+fields:
             raise ValueError('invalid thermo block schema')
+        if cycle<0 or not math.isfinite(time_value) or time_value<0:
+            raise ValueError('invalid thermo block clock')
+        if cycle in times and times[cycle]!=time_value:
+            raise ValueError('conflicting same-cycle thermo clocks')
+        result.block_count += 1
         end = offset + count*(ni*4 + nr*8)
         if end > len(data):
             raise ValueError('truncated thermo records')
@@ -50,14 +85,14 @@ def read_particles(path, allow_identical_replay=False):
         for p in range(count):
             c, tag, seed_id, gid = ints[p*ni:(p+1)*ni]
             values = reals[p*nr:(p+1)*nr]
-            if c != cycle or values[0] != time_value or not all(map(math.isfinite, values)):
+            if c != cycle or values[0] != time_value or not all(map(math.isfinite, values[:4])):
                 raise ValueError('invalid thermo observation time or finite value')
             key = (cycle, tag)
             observation = {'cycle':cycle, 'tag':tag, 'seed_id':seed_id, 'gid':gid,
                            'time':time_value, 'x':values[1:4],
-                           'fields':dict(zip(names, values[4:]))}
+                           'fields':_sample_fields(names,values[4:])}
             if key in result:
-                if not allow_identical_replay or result[key] != observation:
+                if not allow_identical_replay or not _same_sample(result[key],observation):
                     raise ValueError('duplicate thermo observation identity')
                 result.identical_replay_rows += 1
             else:
@@ -172,7 +207,7 @@ def read_curves(directory, stem=None):
         _require(rows.id_layout is None or rows.id_layout==layout,'curve thermo ID encoding changed')
         rows.id_layout=layout
         raw,clocks=read_particles(path)
-        _require(len(clocks)==1 and cycle in clocks,'curve THP chunk clock mismatch')
+        _require(raw.block_count==1 and len(clocks)==1 and cycle in clocks,'curve THP chunk clock mismatch')
         time=clocks[cycle]
         _require(time>=0 and (cycle not in times or times[cycle]==time),'rank clocks disagree')
         times[cycle]=time
@@ -201,7 +236,7 @@ def read_curves(directory, stem=None):
                 time=time,x=o['x'],gid=o['gid'],level=int(level),
                 fields={name:meta[name] for name in names})
             if key in rows:
-                _require(rows[key]==observation,'conflicting curve thermo observation')
+                _require(_same_sample(rows[key],observation),'conflicting curve thermo observation')
                 rows.identical_replay_rows+=1
             else:rows[key]=observation
     _require(times,'no curve thermo chunks')
