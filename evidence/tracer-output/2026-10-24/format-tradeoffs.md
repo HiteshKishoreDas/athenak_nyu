@@ -121,3 +121,25 @@ and immutable on restart; current readers do not guess it from numeric IDs.
 Evidence, compatibility rules and 107 passing local groups are consolidated in
 `evidence/curve-ids/2026-10-24/variable-ledger.md`. Existing global node/MPI batch
 limits still apply. This does not itself implement THP curve/event output.
+
+## 2026-10-25: return to output integration
+
+User returned to the output question after configurable uint32 IDs were completed.
+Verified current source: particle thermo remains THP v2, curve thermo CSV, curve
+geometry ASCII, and durable encounter journals CSV. The desired next mappings
+remain curve thermo to THP, sampled particle shock properties to THP, and mesh
+shock diagnostics through the existing mesh binary writer. None of those three
+writer extensions has been implemented by the ID changes.
+
+The former uint64 curve-ID obstacle is removed, but existing THP v2 identity
+slots are signed int fields. Full unsigned32 curve identities must be explicitly
+declared and decoded; they cannot silently be treated as signed particle tags
+or converted to Real. Preserve existing particle files/readers. Connectivity
+and complete encounters still require their own records: sampled thermo output
+cannot replace birth/links, timing brackets, censored outcomes or event identities.
+
+Recommended next increment: curve thermo within the THP family, preserving
+particle v2 behavior and explicit unsigned curve identity/layout metadata; then
+sampled shock fields and mesh binary variables. No code, simulation or scientific
+validation changed in this discussion. Reused historical memory only to locate
+context; current source and the latest ledger take precedence.
