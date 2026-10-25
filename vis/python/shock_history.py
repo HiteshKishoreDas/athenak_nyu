@@ -86,14 +86,10 @@ def parse_event(row, lineage, generation):
     return event
 
 
-def read_chunk(path, lineage, contract, generation, suspended=False, expected_ranks=None):
+def read_chunk(path, lineage, contract, generation, suspended=False):
     try:
-        if Path(path).suffix == '.tbin':
-            from tracer_binary import event_lines
-            lines = event_lines(path,lineage,contract,generation,suspended=suspended,expected_ranks=expected_ranks)
-        else:
-            lines = Path(path).read_text().splitlines()
-    except (OSError, UnicodeError, ValueError) as exc:
+        lines = Path(path).read_text().splitlines()
+    except (OSError, UnicodeError) as exc:
         raise HistoryError('Cannot read chunk: ' + str(path)) from exc
     kind = 'AKSHOCK-SUSPENDED' if suspended else 'AKSHOCK-EVENTS'
     if len(lines) < 3:
@@ -143,8 +139,8 @@ def read_history(directory, through_cycle=None):
     root = Path(directory)
     metadata = manifests(root)
     chunks = {}
-    for path in sorted(root.glob('cycle*.rank*.csv'))+sorted(root.glob('cycle*.rank*.tbin')):
-        match = re.fullmatch(r'cycle(\d+)\.rank(\d+)\.(?:csv|tbin)', path.name)
+    for path in root.glob('cycle*.rank*.csv'):
+        match = re.fullmatch(r'cycle(\d+)\.rank(\d+)\.csv', path.name)
         if not match:
             raise HistoryError('Malformed chunk filename')
         generation, rank = map(int, match.groups())
@@ -165,7 +161,7 @@ def read_history(directory, through_cycle=None):
             path = chunks.get((rank, generation))
             if path is None:
                 raise HistoryError(f'Missing generation {generation} on rank {rank}')
-            for event in read_chunk(path, lineage, contract, generation, expected_ranks=len(metadata)):
+            for event in read_chunk(path, lineage, contract, generation):
                 if event['identity'] in identities:
                     raise HistoryError('Duplicate event identity')
                 identities.add(event['identity'])
@@ -179,8 +175,8 @@ def read_suspended(directory, generation=None):
     root = Path(directory)
     metadata = manifests(root)
     paths = {}
-    for path in sorted(root.glob('suspended*.rank*.csv'))+sorted(root.glob('suspended*.rank*.tbin')):
-        match = re.fullmatch(r'suspended(\d+)\.rank(\d+)\.(?:csv|tbin)', path.name)
+    for path in root.glob('suspended*.rank*.csv'):
+        match = re.fullmatch(r'suspended(\d+)\.rank(\d+)\.csv', path.name)
         if not match:
             raise HistoryError('Malformed suspended filename')
         g, rank = map(int, match.groups())
@@ -196,7 +192,7 @@ def read_suspended(directory, generation=None):
         path = paths.get((rank, generation))
         if path is None:
             raise HistoryError('Missing rank suspended view')
-        for event in read_chunk(path, lineage, contract, generation, suspended=True, expected_ranks=len(metadata)):
+        for event in read_chunk(path, lineage, contract, generation, suspended=True):
             if event['identity'] in identities:
                 raise HistoryError('Duplicate suspended identity')
             identities.add(event['identity'])
@@ -208,21 +204,12 @@ def read_suspended(directory, generation=None):
 def read_trace(path):
     """Read one particle trace, preserving raw inside flags and encounter phase."""
     path = Path(path)
-    match = re.fullmatch(r'trace(\d+)\.rank(\d+)\.(?:csv|tbin)',path.name)
+    match = re.fullmatch(r'trace(\d+)\.rank(\d+)\.csv',path.name)
     if not match:
         raise HistoryError('Malformed particle trace filename')
     generation,rank = map(int,match.groups())
-    if path.suffix=='.tbin':
-        from tracer_binary import shock_rows
-        metadata = manifests(path.parent)
-        if rank not in metadata:
-            raise HistoryError('Particle trace has no rank manifest')
-        table,rows = shock_rows(path,*metadata[rank],generation,trace=True)
-        if table['rank']!=rank or table['nranks']!=len(metadata):
-            raise HistoryError('Particle trace rank mismatch')
-    else:
-        with path.open() as stream:
-            rows = list(csv.reader(stream))
+    with path.open() as stream:
+        rows = list(csv.reader(stream))
     result = {}
     for row in rows:
         if len(row)!=28:

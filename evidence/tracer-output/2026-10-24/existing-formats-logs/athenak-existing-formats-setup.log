@@ -1,0 +1,48 @@
+[
+  {
+    "id": "SUM01_fresh_and_passivity",
+    "status": "pass",
+    "particle_history_and_curve_state_byte_equal": true
+  },
+  {
+    "id": "SUM02_initial_adaptation",
+    "status": "pass",
+    "requested_nodes": 8,
+    "actual_nodes": 15
+  },
+  {
+    "id": "SUM03_no_eligible_cells",
+    "status": "pass"
+  },
+  {
+    "id": "SUM04_future_birth",
+    "status": "pass"
+  },
+  {
+    "id": "SUM05_loop_placement",
+    "status": "pass"
+  },
+  {
+    "id": "SUM06_polyline_placement",
+    "status": "pass"
+  },
+  {
+    "id": "SUM07_restart_restored_counts",
+    "status": "pass"
+  },
+  {
+    "id": "SUM08_enabled_histories",
+    "status": "pass"
+  },
+  {
+    "id": "SUM09_empty_separate_and_absent",
+    "status": "pass"
+  }
+]
+Traceback (most recent call last):
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-setup/check.py", line 207, in <module>
+    if __name__=='__main__':raise SystemExit(main())
+                                             ~~~~^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-setup/check.py", line 177, in main
+    import matplotlib
+ModuleNotFoundError: No module named 'matplotlib'

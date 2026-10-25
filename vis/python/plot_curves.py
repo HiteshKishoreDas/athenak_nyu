@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Plot a curve's geometry, thermo profile, node history and shock evidence.
 
-Uses existing legacy/native readers, with particle loading disabled. Samples
+Uses existing supplied readers, with particle loading disabled. Samples
 retain their own clocks. No resampling, parent-history inheritance or inferred
 shock crossing times. Requires the existing NumPy/Matplotlib environment.
 """

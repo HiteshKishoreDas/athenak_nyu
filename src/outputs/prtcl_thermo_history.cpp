@@ -33,7 +33,6 @@
 #include "particles/tracer_fields.hpp"
 #include "shocks/store.hpp"
 #include "outputs.hpp"
-#include "outputs/tracer_binary.hpp"
 
 #if MPI_PARALLEL_ENABLED
 #include <mpi.h>
@@ -171,7 +170,6 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
   }
   sample_particles=(source!="curves");
   sample_curves=(source!="particles");
-  binary_curves=tracer_output::Binary(pin);
   if (sample_particles && (pm->pmb_pack->ppart == nullptr ||
                           !pm->pmb_pack->ppart->IsFluidTracer())) {
     FatalHistoryOutput("particle thermo source requires particle_type=lagrangian_mc "
@@ -287,8 +285,7 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
 void ParticleThermoHistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
   if (sample_curves) {
     const auto path="curve_thermo_history/"+out_params.file_basename+"."+
-        out_params.file_id+".cycle"+std::to_string(pm->ncycle)+shocks::RankName()+
-        tracer_output::Extension(binary_curves);
+        out_params.file_id+".cycle"+std::to_string(pm->ncycle)+shocks::RankName()+".csv";
     shocks::CommitFile(path,curve_thermo_data,true);
   }
   if (sample_particles) WriteParticleData(pm);

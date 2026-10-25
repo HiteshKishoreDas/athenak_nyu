@@ -94,7 +94,6 @@ void MaterialCurves::ConfigureShocks(ParameterInput *pin) {
                << entry.second.size() << ':' << entry.second;
     }
   }
-  if (binary_output) contract << " tracer-binary-v1";
   shock_contract=contract.str();
   if (shock_contract.size()+shock_lineage.size()+1>16384) {
     Fail("curve shock contract exceeds bounded metadata");

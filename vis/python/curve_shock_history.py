@@ -46,7 +46,7 @@ def manifests(directory):
             raise HistoryError('Duplicate curve manifest rank alias')
         try:
             lines = path.read_text().splitlines()
-        except (OSError, UnicodeError, ValueError) as exc:
+        except (OSError, UnicodeError) as exc:
             raise HistoryError('Cannot read curve manifest') from exc
         if len(lines) != 3 or lines[0] != 'AKCURVE-SHOCK-EVENTS 1':
             raise HistoryError('Unknown curve history schema')
@@ -62,8 +62,8 @@ def manifests(directory):
 
 def _files(directory, prefix):
     result = {}
-    for path in sorted(Path(directory).glob(prefix+'*.rank*.csv'))+sorted(Path(directory).glob(prefix+'*.rank*.tbin')):
-        match = re.fullmatch(prefix+r'(\d+)\.rank(\d+)\.(?:csv|tbin)', path.name)
+    for path in Path(directory).glob(prefix+'*.rank*.csv'):
+        match = re.fullmatch(prefix+r'(\d+)\.rank(\d+)\.csv', path.name)
         if not match:
             raise HistoryError('Malformed curve chunk filename')
         generation, rank = (integer(value) for value in match.groups())
@@ -73,14 +73,10 @@ def _files(directory, prefix):
     return result
 
 
-def _read_chunk(path, lineage, contract, generation, suspended=False, expected_ranks=None):
+def _read_chunk(path, lineage, contract, generation, suspended=False):
     try:
-        if Path(path).suffix == '.tbin':
-            from tracer_binary import event_lines
-            lines = event_lines(path,lineage,contract,generation,curve=True,suspended=suspended,expected_ranks=expected_ranks)
-        else:
-            lines = Path(path).read_text().splitlines()
-    except (OSError, UnicodeError, ValueError) as exc:
+        lines = Path(path).read_text().splitlines()
+    except (OSError, UnicodeError) as exc:
         raise HistoryError('Cannot read curve chunk') from exc
     kind = 'AKCURVE-SHOCK-SUSPENDED' if suspended else 'AKCURVE-SHOCK-EVENTS'
     header = lines[0].split() if lines else []
@@ -133,7 +129,7 @@ def read_history(directory, through_cycle=None):
             path = paths.get((rank, generation))
             if path is None:
                 raise HistoryError(f'Missing curve generation{generation} rank{rank}')
-            for event in _read_chunk(path, lineage, contract, generation, expected_ranks=len(metadata)):
+            for event in _read_chunk(path, lineage, contract, generation):
                 if event['identity'] in identities:
                     raise HistoryError('Duplicate curve event identity')
                 identities.add(event['identity'])
@@ -159,7 +155,7 @@ def read_suspended(directory, generation=None):
         path = paths.get((rank, generation))
         if path is None:
             raise HistoryError('Missing rank curve suspended view')
-        for event in _read_chunk(path, lineage, contract, generation, suspended=True, expected_ranks=len(metadata)):
+        for event in _read_chunk(path, lineage, contract, generation, suspended=True):
             if event['identity'] in identities:
                 raise HistoryError('Duplicate curve suspended identity')
             identities.add(event['identity'])
@@ -171,24 +167,14 @@ def read_suspended(directory, generation=None):
 def read_trace(path):
     """Read one raw33-column trace/birthtrace file, keyed by exact node ID."""
     path = Path(path)
-    match = re.fullmatch(r'(?:birthtrace|trace)(\d+)\.rank(\d+)\.(?:csv|tbin)', path.name)
+    match = re.fullmatch(r'(?:birthtrace|trace)(\d+)\.rank(\d+)\.csv', path.name)
     if not match:
         raise HistoryError('Malformed curve trace filename')
     generation, rank = (integer(value) for value in match.groups())
     result = {}
     try:
-        if path.suffix == '.tbin':
-            from tracer_binary import shock_rows
-            metadata = manifests(path.parent)
-            if rank not in metadata:
-                raise HistoryError('Curve trace has no rank manifest')
-            table, rows = shock_rows(path,*metadata[rank],generation,curve=True,trace=True)
-            if table['rank'] != rank or table['nranks'] != len(metadata):
-                raise HistoryError('Curve trace header rank mismatch')
-            lines = [','.join(row) for row in rows]
-        else:
-            lines = path.read_text().splitlines()
-    except (OSError, UnicodeError, ValueError) as exc:
+        lines = path.read_text().splitlines()
+    except (OSError, UnicodeError) as exc:
         raise HistoryError('Cannot read curve trace') from exc
     for row in csv.reader(lines):
         if len(row) != 33:

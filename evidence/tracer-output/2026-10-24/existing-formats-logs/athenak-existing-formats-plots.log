@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/visuals.py", line 87, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/visuals.py", line 77, in main
+    a=sorted(e['first']['time'] for e in events);b=sorted(e['first']['time'] for e in other)
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/visuals.py", line 77, in <genexpr>
+    a=sorted(e['first']['time'] for e in events);b=sorted(e['first']['time'] for e in other)
+             ~^^^^^^^^^
+TypeError: tuple indices must be integers or slices, not str

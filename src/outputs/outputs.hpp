@@ -579,7 +579,7 @@ class ParticleThermoHistoryOutput : public BaseTypeOutput {
   int npout_thisrank;
   int npout_total;
   Real tracer_gamma;
-  bool sample_particles = true, sample_curves = false, binary_curves = false;
+  bool sample_particles = true, sample_curves = false;
   std::string curve_thermo_data;
   std::vector<particles::TracerField> tracer_fields;
   std::vector<std::string> tracer_field_names;

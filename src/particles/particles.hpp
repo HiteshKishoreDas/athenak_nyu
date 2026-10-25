@@ -103,7 +103,7 @@ class Particles {
   std::int64_t random_seed = 0;
   std::int64_t next_tracer_tag = 0;
 
-  bool shock_enabled = false, shock_binary = false;
+  bool shock_enabled = false;
   shocks::DetectorConfig shock_config;
   DvceArray4D<shocks::Signal> shock_signal;
   DvceArray1D<shocks::EncounterState> shock_state;

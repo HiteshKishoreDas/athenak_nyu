@@ -1,16 +1,14 @@
-"""Native/legacy output parity, exact IDs, AMR births, restart and corrupt files.
+"""Existing-output scheduling, exact IDs, AMR births, restart and reader integrity.
 
 Reuses accepted CT/CSH physics fixtures. No detector or physical tolerance tuning.
 Run directories must be new; failed runs and exact commands are retained.
 """
 import argparse
-import hashlib
 import json
 import math
 import re
 from pathlib import Path
 import shutil
-import struct
 import subprocess
 import sys
 import time
@@ -20,9 +18,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT/'vis/python'),str(ROOT/'tst/shocks-mc')]
 from common import edit_input, provenance, sha
 from tracer_history import read_run
-import tracer_binary
 import curve_shock_history
 import shock_history
+import material_curves
 
 
 def require(condition, message):
@@ -55,6 +53,7 @@ def main():
     parser.add_argument('--executable',type=Path,required=True)
     parser.add_argument('--prescribed-executable',type=Path,required=True)
     parser.add_argument('--workdir',type=Path,required=True)
+    parser.add_argument('--reference-runs',type=Path,help='optional retained pre-removal text/CSV runs')
     args = parser.parse_args()
     work = args.workdir.resolve(); work.mkdir(parents=True,exist_ok=False)
     report = dict(schema='tracer-output-check-1',runs=[],checks=[],
@@ -72,10 +71,10 @@ def main():
             row.update(status='fail',error=repr(exc),traceback=traceback.format_exc())
         report['checks'].append(row); save()
 
-    def run(name, fixture='planar', format='binary', changes=None, restart=None, overrides=(), reject=None, curve_only=False, prescribed=False):
+    def run(name, fixture='planar', changes=None, restart=None, overrides=(), reject=None, curve_only=False, prescribed=False):
         directory = work/name; directory.mkdir()
         binary = (args.executable if fixture=='planar' and not prescribed else args.prescribed_executable).resolve()
-        options = {'job/tracer_output_format':format,'output2/file_type':'prtcl_thermo_history',
+        options = {'output2/file_type':'prtcl_thermo_history',
                    'output2/source':'both','output2/variables':'rho,p,t,s,v1,v2,v3',
                    'output2/dcycle':1,'output4/file_type':'curves','output4/id':'shape',
                    'output4/dcycle':4}
@@ -109,17 +108,31 @@ def main():
 
     data = {}
     def pair(fixture):
-        legacy = run(fixture+'_legacy',fixture,'legacy')
-        native = run(fixture+'_binary',fixture)
+        legacy = run(fixture+'_control',fixture,changes={'output4/dcycle':0})
+        native = run(fixture,fixture)
         a,b = read_run(legacy),read_run(native)
         data[fixture] = (a,b)
+        require(not list(native.rglob('*.tbin')),'removed format emitted')
+        if args.reference_runs:
+            historical=read_run(args.reference_runs/(fixture+'_legacy'))
+            for key in ('particles','curve_nodes','particle_times','curve_times',
+                        'particle_events','curve_events','particle_suspended','curve_suspended'):
+                require(normalized(historical[key])==normalized(b[key]),'historical '+key+' changed')
+            require(geometry_by_cycle(historical)==geometry_by_cycle(b),'historical geometry changed')
+            old=next((args.reference_runs/(fixture+'_legacy')/'prtcl_thermo_history').glob('*.thp'))
+            current=next((native/'prtcl_thermo_history').glob('*.thp'))
+            require(old.read_bytes()==current.read_bytes(),'historical THP bytes changed')
+            if fixture=='planar':
+                for path in (native/'tab').glob('*.tab'):
+                    require(path.read_bytes()==(args.reference_runs/'planar_legacy/tab'/path.name).read_bytes(),
+                            'historical fluid bytes changed')
         for key in ('particles','curve_nodes','particle_times','curve_times',
                     'particle_events','curve_events','particle_suspended','curve_suspended'):
             require(normalized(a[key])==normalized(b[key]),fixture+': '+key+' changed')
         require(geometry_by_cycle(a)==geometry_by_cycle(b),fixture+': geometry changed')
         thp_a=next((legacy/'prtcl_thermo_history').glob('*.thp'))
         thp_b=next((native/'prtcl_thermo_history').glob('*.thp'))
-        require(thp_a.read_bytes()==thp_b.read_bytes(), 'pre-feature THP bytes changed')
+        require(thp_a.read_bytes()==thp_b.read_bytes(), 'scheduled geometry changed THP bytes')
         if fixture=='planar':
             tabs=sorted((legacy/'tab').glob('*.tab'))
             require(tabs and all(p.read_bytes()==(native/'tab'/p.name).read_bytes() for p in tabs),
@@ -146,8 +159,8 @@ def main():
             births.setdefault(node,sample)
         inserted=[s for s in births.values() if s['birth']>0]
         require(inserted and all(s['birth']==s['time'] for s in inserted), 'inserted-node histories missing or predate birth')
-        tables=[tracer_binary.read(p) for p in (work/'amr_binary').glob('*.tbin')]
-        leaves=[int(t['metadata']['leaf_count']) for t in tables]
+        tables=[material_curves.read(p) for p in (work/'amr').glob('*.curves.*.txt')]
+        leaves=[len(t['amr']['leaves']) for t in tables]
         require(min(leaves)<max(leaves), 'no live AMR change exercised')
         return dict(maximum_thermo_error=maximum,budget=2e-12,inserted_nodes=len(inserted),leaf_count_range=[min(leaves),max(leaves)])
     check('TO03_independent_thermo_oracle_and_births',physical_oracle)
@@ -182,58 +195,17 @@ def main():
         zero=run('restart_zero',restart=checkpoint,overrides=('time/nlim=20',))
         after={str(p.relative_to(shared)):sha(p) for p in shared.rglob('*') if p.is_file()}
         require(before==after, 'zero-step replay changed durable event files')
-        # Source format is in the existing paired checkpoint contract.
-        run('restart_wrong_format',restart=checkpoint,overrides=('job/tracer_output_format=legacy',),
-            reject='contract')
         return dict(restart_cycle=20,exact_continuation=True,zero_step_exit=0,
                     particle_events=len(b['particle_events']),curve_events=len(b['curve_events']))
     check('TO05_IO06_IO07_RST02_restart_replay',restart)
 
-    def corrupt():
-        source=next((work/'planar_binary/shock_events').glob('cycle*.tbin'))
-        payload=source.read_bytes(); cases={}
-        cases['truncated']=payload[:-1]
-        changed=bytearray(payload); changed[-9]^=1; cases['checksum']=changed
-        changed=bytearray(payload); struct.pack_into('=I',changed,32,99); cases['version']=changed
-        changed=bytearray(payload); changed[36:40]=b'XXXX'; cases['endian']=changed
-        changed=bytearray(payload); struct.pack_into('=d',changed,64,math.nan); cases['clock']=changed
-        errors={}
-        for name,blob in cases.items():
-            path=work/(name+'.tbin');path.write_bytes(blob)
-            try: tracer_binary.read(path)
-            except ValueError as exc: errors[name]=str(exc)
-            else: raise ValueError('accepted corrupt '+name)
-        return dict(rejected=errors)
-    check('TO06_IO09_corruption_version_endian_clock',corrupt)
-
     def aliases():
-        folder=work/'duplicate'; shutil.copytree(work/'planar_binary/shock_events',folder)
-        source=next(folder.glob('cycle*.tbin')); shutil.copyfile(source,folder/source.name.replace('cycle','cycle0',1))
+        folder=work/'duplicate'; shutil.copytree(work/'planar/shock_events',folder)
+        source=next(folder.glob('cycle*.csv')); shutil.copyfile(source,folder/source.name.replace('cycle','cycle0',1))
         try:shock_history.read_history(folder)
         except ValueError:return dict(duplicate_generation_rejected=True)
         raise ValueError('accepted duplicate generation alias')
     check('TO07_IO08_duplicate_generation_rejected',aliases)
-
-    def ranks():
-        folder=work/'missing-rank';folder.mkdir()
-        source=next((work/'amr_binary/curve_thermo_history').glob('*.tbin'))
-        payload=bytearray(source.read_bytes());struct.pack_into('=i',payload,76,2)
-        checksum=tracer_binary.OFFSET
-        for byte in payload[:-8]:checksum=((checksum^byte)*tracer_binary.PRIME)&tracer_binary.MASK
-        struct.pack_into('=Q',payload,len(payload)-8,checksum)
-        (folder/source.name).write_bytes(payload)
-        from tracer_thermo_history import read_curves
-        try:read_curves(folder)
-        except ValueError as exc:
-            require('rank' in str(exc),'wrong missing-rank failure')
-            return dict(missing_rank_rejected=True)
-        raise ValueError('accepted missing rank')
-    check('TO08_IO04_missing_rank_rejected',ranks)
-
-    def bad_format():
-        run('bad_format',format='hdf5',reject='tracer_output_format')
-        return dict(invalid_format_rejected=True)
-    check('TO09_CFG_invalid_format',bad_format)
 
     def cadence():
         d=run('cadence','smooth',changes={'time/nlim':10,'material_curves/output_dcycle':0,
@@ -244,34 +216,12 @@ def main():
         return dict(thermo_cycles=sorted(a['curve_times']),geometry_cycles=sorted(geometry_by_cycle(a)))
     check('TO10_PROP06_independent_output_clocks',cadence)
 
-    def sizes():
-        totals={}
-        for mode in ('legacy','binary'):
-            directory=work/('planar_'+mode)
-            files=[p for p in directory.rglob('*') if p.is_file() and p.suffix in ('.csv','.tbin','.txt')]
-            totals[mode]=dict(bytes=sum(p.stat().st_size for p in files),files=len(files))
-        return dict(measured_output=totals,performance_budget='not supplied; no qualification claim')
-    check('TO11_measured_file_sizes',sizes)
-
-    def repaired_checksum(payload):
-        checksum=tracer_binary.OFFSET
-        for byte in payload[:-8]:checksum=((checksum^byte)*tracer_binary.PRIME)&tracer_binary.MASK
-        struct.pack_into('=Q',payload,len(payload)-8,checksum)
-        return payload
-
     def manifest_checks():
         results={}
-        for carrier,module in (('particle',shock_history),('curve',curve_shock_history)):
-            source=work/'planar_binary/shock_events'
+        for carrier in ('particle','curve'):
+            source=work/'planar/shock_events'
             if carrier=='curve':source=source/'curves'
-            folder=work/('rank-manifest-'+carrier);folder.mkdir()
-            shutil.copyfile(source/'manifest.rank0',folder/'manifest.rank0')
-            chunk=source/'cycle0.rank0.tbin'
-            payload=bytearray(chunk.read_bytes());struct.pack_into('=i',payload,76,2)
-            (folder/chunk.name).write_bytes(repaired_checksum(payload))
-            try:module.read_history(folder)
-            except ValueError:results[carrier+'_missing_rank']=True
-            else:raise ValueError('accepted missing event rank')
+            chunk=source/'cycle0.rank0.csv'
             orphan=work/('orphan-'+carrier);where=orphan/'shock_events'
             if carrier=='curve':where=where/'curves'
             where.mkdir(parents=True);shutil.copyfile(chunk,where/chunk.name)
@@ -280,56 +230,16 @@ def main():
                 require('orphan' in str(exc),'wrong orphan rejection');results[carrier+'_orphan']=True
             else:raise ValueError('silently hid orphan event files')
         return results
-    check('TO12_IO04_IO09_review_rank_manifest_regressions',manifest_checks)
-
-    def semantic_corruption():
-        folder=work/'semantic-corruption';folder.mkdir()
-        source=work/'planar_binary/shock_events'
-        for path in sorted(source.glob('cycle*.tbin')):
-            table=tracer_binary.read(path)
-            if table['rows']:break
-        else:raise ValueError('fixture emitted no event to corrupt')
-        payload=bytearray(path.read_bytes())
-        header_bytes=struct.unpack_from('=I',payload,44)[0]
-        struct.pack_into('=I',payload,80+header_bytes+20,1<<31)
-        broken=folder/path.name;broken.write_bytes(repaired_checksum(payload))
-        lineage,contract=shock_history.manifests(source)[0]
-        try:shock_history.read_chunk(broken,lineage,contract,table['cycle'],expected_ranks=1)
-        except ValueError as exc:
-            require('flag' in str(exc),'wrong semantic corruption failure')
-            return dict(unknown_event_flag_rejected=True,checksum_repaired=True)
-        raise ValueError('accepted unknown event validity flag')
-    check('TO13_IO09_semantic_flags_after_valid_checksum',semantic_corruption)
-
-    def wire_fixture():
-        result={}
-        # Independent hand-packed wire fixtures; not a claim about executing on
-        # big-endian hardware or a supported single-precision simulation.
-        for endian,label in (('<','little'),('>','big')):
-            for width,code in ((4,'f'),(8,'d')):
-                header=b'kind=wire_fixture\ncolumns=id:u64,value:real\n'
-                blob=bytearray(struct.pack(endian+'32s4I2Q'+code+'ii',tracer_binary.MAGIC,
-                    1,0x12345678,width,len(header),1,7,.5,0,1))
-                blob+=header+struct.pack(endian+'Q'+code,2**64-1,1.25)+b'00000000'
-                path=work/f'wire-{label}-{width}.tbin';path.write_bytes(repaired_checksum(blob) if endian=='<' else blob)
-                # Footer has the file's byte order.
-                checksum=tracer_binary.OFFSET
-                for byte in blob[:-8]:checksum=((checksum^byte)*tracer_binary.PRIME)&tracer_binary.MASK
-                struct.pack_into(endian+'Q',blob,len(blob)-8,checksum);path.write_bytes(blob)
-                table=tracer_binary.read(path)
-                require(table['rows']==[dict(id=2**64-1,value=1.25)],'wire integer/Real/endian changed')
-                result[label+'_'+str(width)]=True
-        return result
-    check('TO14_IO04_handpacked_wire_fixtures',wire_fixture)
+    check('TO12_IO09_missing_manifest_regressions',manifest_checks)
 
     def traces():
         counts={}
         for carrier,module in (('particle',shock_history),('curve',curve_shock_history)):
             relative=Path('shock_events')/('curves' if carrier=='curve' else '')
-            native=work/'planar_binary'/relative
+            native=work/'planar'/relative
             count=0
-            for path in native.glob('*trace*.tbin'):
-                legacy=work/'planar_legacy'/relative/path.with_suffix('.csv').name
+            for path in native.glob('*trace*.csv'):
+                legacy=work/'planar_control'/relative/path.with_suffix('.csv').name
                 a,b=module.read_trace(legacy),module.read_trace(path)
                 require(normalized(a)==normalized(b),carrier+' trace changed')
                 count+=len(b)
@@ -345,21 +255,15 @@ def main():
 
     def mc():
         options={'particles/particle_type':'lagrangian_mc','particles/pusher':'lagrangian_mc','time/nlim':4}
-        a=read_run(run('mc_legacy','smooth','legacy',options))
-        b=read_run(run('mc_binary','smooth','binary',options))
-        require(a['particles']==b['particles'] and a['curve_nodes']==b['curve_nodes'] and
-                geometry_by_cycle(a)==geometry_by_cycle(b),'fixed-mesh MC thermo changed')
+        b=read_run(run('mc','smooth',changes=options))
+        require(b['particles'] and b['curve_nodes'] and not b['particle_events'],'MC thermo fixture missing')
         return dict(particle_samples=len(b['particles']),shock_tracking=False)
     check('TO17_fixed_mesh_MC_thermo_only',mc)
 
     def curve_only():
-        a=read_run(run('curve_only_legacy',format='legacy',curve_only=True))
-        b=read_run(run('curve_only_binary',curve_only=True))
+        b=read_run(run('curve_only',curve_only=True))
         require(not b['particles'] and not b['particle_events'] and b['curve_events'],
                 'curve-only shock fixture not exercised')
-        require(a['curve_nodes']==b['curve_nodes'] and
-                normalized(a['curve_events'])==normalized(b['curve_events']) and
-                geometry_by_cycle(a)==geometry_by_cycle(b),'curve-only native records changed')
         return dict(curve_events=len(b['curve_events']),particle_module=False)
     check('TO18_curve_only_shocks_thermo_geometry',curve_only)
 
@@ -369,8 +273,6 @@ def main():
         data=read_run(d)
         require(not data['particles'] and data['curve_nodes'] and not data['particle_events'],
                 'empty particle population not exercised')
-        require(all(not tracer_binary.read(p)['rows'] for p in (d/'shock_events').glob('cycle*.tbin')),
-                'empty particle journal fabricated records')
         return dict(particle_samples=0,curve_samples=len(data['curve_nodes']),empty_tables=True,
                     note='single rank with zero particles; not MPI empty-rank qualification')
     check('TO19_IO02_empty_particle_population',empty)
@@ -397,16 +299,16 @@ def main():
             'material_curves/spacing_cells':1,'material_curves/max_spacing':0,
             'material_curves/max_angle':3,'material_curves/chord_error':0,
             'curve1/x1':.28,'curve1/end1':.45,'curve1/x2':.03,'curve1/end2':.07,'curve1/count':16}
-        a=read_run(run('amr_shock_legacy',format='legacy',changes=options,prescribed=True))
-        directory=run('amr_shock_binary',changes=options,prescribed=True)
+        a=read_run(run('amr_shock_control',changes=dict(options,**{'output4/dcycle':0}),prescribed=True))
+        directory=run('amr_shock',changes=options,prescribed=True)
         b=read_run(directory)
         for key in ('particles','curve_nodes','particle_events','curve_events','particle_suspended','curve_suspended'):
             require(normalized(a[key])==normalized(b[key]),'live shock AMR changed '+key)
         require(geometry_by_cycle(a)==geometry_by_cycle(b),'live shock AMR geometry differs')
         earliest={}
-        for pattern in ('trace*.tbin','birthtrace*.tbin'):
+        for pattern in ('trace*.csv','birthtrace*.csv'):
             for path in (directory/'shock_events/curves').glob(pattern):
-                generation=tracer_binary.read(path)['cycle']
+                generation=int(re.fullmatch(r'(?:birthtrace|trace)([0-9]+)\.rank[0-9]+\.csv',path.name)[1])
                 for node,o in curve_shock_history.read_trace(path).items():
                     if node not in earliest or o['time']<earliest[node][1]['time']:
                         earliest[node]=(generation,o)
@@ -432,13 +334,13 @@ def main():
         require(geometry_by_cycle(suffix)[max(suffix['curve_times'])]==geometry_by_cycle(b)[max(b['curve_times'])],
                 'AMR newborn restart changed final geometry')
         def birth_rows(folder):
-            return normalized({(tracer_binary.read(p)['cycle'],node):row
-                for p in folder.glob('birthtrace*.tbin')
+            return normalized({(int(re.fullmatch(r'birthtrace([0-9]+)\.rank[0-9]+\.csv',p.name)[1]),node):row
+                for p in folder.glob('birthtrace*.csv')
                 for node,row in curve_shock_history.read_trace(p).items()})
         require(birth_rows(shared/'curves')==birth_rows(directory/'shock_events/curves'),
                 'AMR newborn restart changed complete birth traces')
         return dict(inside_births=len(inside),outside_births=len(outside),checkpoint_cycle=generation,
-                    separate_birthtrace_files=len(list((directory/'shock_events/curves').glob('birthtrace*.tbin'))),
+                    separate_birthtrace_files=len(list((directory/'shock_events/curves').glob('birthtrace*.csv'))),
                     all_records_exact=True,newborn_restart_exact=True)
     check('TO21_AMR04_RST02_live_shocks_insertion_restart',live_shock_birth_restart)
     save()

@@ -1,6 +1,6 @@
 # Read and plot material curves
 
-`vis/python/plot_curves.py` uses the supplied native/legacy readers to draw:
+`vis/python/plot_curves.py` uses the supplied existing readers to draw:
 
 1. Initial, middle and final stored curve geometry, with 3D axes for 3D runs.
 2. The selected thermo field versus immutable material label at its latest saved clock.
@@ -11,7 +11,7 @@
 No simulation is launched. There are no changes to C++, file formats, particle
 transport, detection or restart state. Existing reader calls retain their default
 behavior; this script selects `include_particles=False` to avoid loading unrelated
-particle streams. Both legacy CSV/text and opt-in `.tbin` curve outputs work.
+particle streams. Existing CSV/text curve outputs are read directly; no format change or conversion is needed.
 
 ## Laptop example
 
@@ -22,7 +22,7 @@ existing scientific environment:
 MPLCONFIGDIR=/private/tmp/athenak-lagrangian-mpl \
   /Users/hitesh/hitesh/git/athenak_nyu/vis/.venv/bin/python \
   vis/python/plot_curves.py \
-  build-lagrangian/evidence/native-output-qualified-final-20261023/planar_binary \
+  build-lagrangian/evidence/existing-output-final-20261024/planar \
   --curve-id 7 --field pressure --output /private/tmp/curve7-pressure.png
 ```
 
@@ -87,13 +87,13 @@ per-step flags remain accessible through `curve_shock_history.read_trace`.
 MPLCONFIGDIR=/private/tmp/athenak-lagrangian-mpl \
   /Users/hitesh/hitesh/git/athenak_nyu/vis/.venv/bin/python \
   tst/tracer-output/curve_reader_check.py \
-  --runs build-lagrangian/evidence/native-output-qualified-final-20261023 \
-  --three-d-run build-lagrangian/evidence/native-output-frozen-CT/forced_both \
+  --runs build-lagrangian/evidence/existing-output-final-20261024 \
+  --three-d-run build-lagrangian/evidence/existing-output-CT-20261024/forced_both \
   --output build-lagrangian/evidence/curve-reader-NEW
 ```
 
-This checks actual saved planar/AMR/3D datasets, legacy/native equality, exact
+This checks actual saved planar/AMR/3D datasets, scheduled/control equality, exact
 uint64 CLI IDs, optional missing diagnostics, particle IO opt-out with unchanged
 default strictness, winding closure, invalid selections, input corruption and
-figure preservation. No native simulation is rerun. See
-`evidence/tracer-output/2026-10-24/curve-reader-ledger.md` for results and the gallery.
+figure preservation. No simulation is launched by the reader checks. See
+`evidence/tracer-output/2026-10-24/curve-reader-ledger.md` for the original reader results; `existing-formats-ledger.md` records the format-removal checks and new plots.

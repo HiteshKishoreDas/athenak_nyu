@@ -21,7 +21,6 @@
 #include <vector>
 
 #include "globals.hpp"
-#include "outputs/tracer_binary.hpp"
 
 namespace material_curves {
 std::string MaterialCurves::ThermoHistory(
@@ -33,10 +32,6 @@ std::string MaterialCurves::ThermoHistory(
   });
   std::vector<Real> values;
   Sample(nodes,nullptr,fields,&values);
-  std::string columns="node_id:u64,curve_id:u64,birth:real,a:real,x1:real,x2:real,x3:real,gid:i32,level:i32";
-  for (const auto &field : fields) columns += ','+field.name+":real";
-  tracer_output::Table table("curve_thermo",columns,binary_output ? nodes.size() : 0,
-      mesh->ncycle,mesh->time,"position=lifted\n");
   std::ostringstream out;
   out.imbue(std::locale::classic());
   out << std::setprecision(std::numeric_limits<Real>::max_digits10);
@@ -50,14 +45,6 @@ std::string MaterialCurves::ThermoHistory(
     const auto &node=*nodes[p];
     Vec wrapped;
     int gid=Locate(node.x,wrapped);
-    if (binary_output) {
-      table.Put(node.id); table.Put(node.id>>32); table.Put(node.birth); table.Put(node.a);
-      for (Real x : node.x) table.Put(x);
-      table.Put(static_cast<int32_t>(gid));
-      table.Put(static_cast<int32_t>(mesh->lloc_eachmb[gid].level));
-      for (std::size_t n=0; n<fields.size(); ++n) table.Put(values[fields.size()*p+n]);
-      continue;
-    }
     out << node.id << ',' << (node.id>>32) << ',' << node.birth << ',' << node.a;
     for (Real x : node.x) out << ',' << x;
     out << ',' << gid << ',' << mesh->lloc_eachmb[gid].level;
@@ -65,7 +52,7 @@ std::string MaterialCurves::ThermoHistory(
     out << '\n';
   }
   out << "# END " << nodes.size() << '\n';
-  return binary_output ? table.Finish() : out.str();
+  return out.str();
 }
 
 namespace {
@@ -124,8 +111,7 @@ Vec Difference(const Curve &curve, std::size_t i, const std::array<Real, 6> &d) 
   return result;
 }
 Real Norm(const Vec &x) { return std::hypot(x[0], x[1], x[2]); }
-std::string Encode(const Curve &curve, const std::array<Real, 6> &domain,
-                   tracer_output::Table *binary=nullptr) {
+std::string Encode(const Curve &curve, const std::array<Real, 6> &domain) {
   auto out = Stream();
   std::vector<Vec> edges(curve.nodes.size());
   Real length = 0;
@@ -133,29 +119,23 @@ std::string Encode(const Curve &curve, const std::array<Real, 6> &domain,
     edges[i] = Difference(curve, i, domain);
     length += Norm(edges[i]);
   }
-  if (!binary) {
-    out << "curve " << curve.id << ' ' << curve.closed;
-    for (auto winding : curve.winding) out << ' ' << winding;
-    out << ' ' << curve.period << ' ' << curve.unresolved_since << ' ' << curve.reason
-        << ' ' << curve.next_sequence << ' ' << curve.inserted << ' ' << curve.migrations
-        << ' ' << curve.samples << ' ' << curve.nodes.size() << ' ' << length << '\n';
-  }
+  out << "curve " << curve.id << ' ' << curve.closed;
+  for (auto winding : curve.winding) out << ' ' << winding;
+  out << ' ' << curve.period << ' ' << curve.unresolved_since << ' ' << curve.reason
+      << ' ' << curve.next_sequence << ' ' << curve.inserted << ' ' << curve.migrations
+      << ' ' << curve.samples << ' ' << curve.nodes.size() << ' ' << length << '\n';
   for (std::size_t i = 0; i < curve.nodes.size(); ++i) {
     const auto &node = curve.nodes[i];
-    if (!binary) {
-      out << "node " << node.id << ' ' << node.prev << ' ' << node.next << ' '
-          << node.parent_left << ' ' << node.parent_right << ' ' << node.a << ' '
-          << node.birth << ' ' << node.anchor << ' ' << node.placement;
-      for (auto x : node.x) out << ' ' << x;
-    }
-    std::array<int64_t,3> images;
+    out << "node " << node.id << ' ' << node.prev << ' ' << node.next << ' '
+        << node.parent_left << ' ' << node.parent_right << ' ' << node.a << ' '
+        << node.birth << ' ' << node.anchor << ' ' << node.placement;
+    for (auto x : node.x) out << ' ' << x;
     for (int axis = 0; axis < 3; ++axis) {
       long double image = std::floor((static_cast<long double>(node.x[axis])
           - domain[2*axis]) / (domain[2*axis+1] - domain[2*axis]));
       Require(std::isfinite(image) && image >= INT64_MIN && image <= INT64_MAX,
               "periodic image diagnostic overflow");
-      images[axis]=static_cast<std::int64_t>(image);
-      if (!binary) out << ' ' << images[axis];
+      out << ' ' << static_cast<std::int64_t>(image);
     }
     Real edge_length = Norm(edges[i]), stretch = 0;
     if (curve.closed || i + 1 < curve.nodes.size()) {
@@ -185,22 +165,7 @@ std::string Encode(const Curve &curve, const std::array<Real, 6> &domain,
     if (mask != 0) curvature = std::numeric_limits<Real>::quiet_NaN();
     Require(std::isfinite(length) && std::isfinite(edge_length)
             && std::isfinite(stretch), "nonfinite geometry diagnostics");
-    if (binary) {
-      auto &b=*binary;
-      b.Put(curve.id); b.Put(static_cast<int32_t>(curve.closed));
-      for (int64_t w : curve.winding) b.Put(w);
-      b.Put(curve.period); b.Put(curve.unresolved_since);
-      b.Put(static_cast<int32_t>(curve.reason)); b.Put(curve.next_sequence);
-      b.Put(curve.inserted); b.Put(curve.migrations); b.Put(curve.samples);
-      b.Put(static_cast<uint64_t>(curve.nodes.size())); b.Put(length);
-      for (uint64_t id : {node.id,node.prev,node.next,node.parent_left,node.parent_right}) b.Put(id);
-      b.Put(node.a); b.Put(node.birth); b.Put(static_cast<int32_t>(node.anchor));
-      b.Put(static_cast<int32_t>(node.placement));
-      for (Real x : node.x) b.Put(x);
-      for (int64_t image : images) b.Put(image);
-      b.Put(edge_length); b.Put(stretch); b.Put(curvature); b.Put(static_cast<int32_t>(mask));
-    }
-    if (!binary) out << ' ' << edge_length << ' ' << stretch << ' ' << curvature << ' ' << mask
+    out << ' ' << edge_length << ' ' << stretch << ' ' << curvature << ' ' << mask
         << '\n';
   }
   return out.str();
@@ -676,36 +641,7 @@ void WriteFile(const MaterialCurves &m, const std::string &path,
 void MaterialCurves::Snapshot(const std::string &path) const {
   try {
     Audit();
-    if (!binary_output) {WriteFile(*this,path,""); return;}
-    uint64_t count=0;
-    for (const auto &curve : curves) count += curve.nodes.size();
-    auto meta=Stream();
-    meta << "position=lifted\ndomain=";
-    for (Real x : Domain(mesh)) meta << x << ' ';
-    meta << "\nbcs=";
-    for (auto bc : mesh->mesh_bcs) meta << static_cast<int>(bc) << ' ';
-    meta << "\nmax_nodes=" << max_nodes << "\nmax_spacing=" << max_spacing
-         << "\nspacing_cells=" << spacing_cells << "\nmax_angle=" << max_angle
-         << "\nchord_error=" << chord_error << "\n";
-    meta << "dimensions=" << mesh->mesh_indcs.nx1 << ' ' << mesh->mesh_indcs.nx2
-         << ' ' << mesh->mesh_indcs.nx3 << "\nbasename=" << basename
-         << "\nleaf_count=" << mesh->nmb_total << "\nadaptive=" << adaptive << "\n";
-    tracer_output::Table table("curve_geometry",
-        "curve_id:u64,closed:i32,winding1:i64,winding2:i64,winding3:i64,"
-        "period:real,unresolved_since:real,reason:i32,next_sequence:u64,inserted:u64,"
-        "migrations:u64,samples:u64,node_count:u64,length:real,"
-        "node_id:u64,prev:u64,next:u64,parent_left:u64,parent_right:u64,a:real,birth:real,"
-        "anchor:i32,placement:i32,x1:real,x2:real,x3:real,image1:i64,image2:i64,image3:i64,"
-        "edge_length:real,stretch:real,curvature:real,curvature_mask:i32",
-        count,mesh->ncycle,mesh->time,meta.str());
-    // Reuse the audited diagnostic calculations; no second geometry estimator.
-    for (const auto &curve : curves) Encode(curve,Domain(mesh),&table);
-    const auto stem=path.size()>=4 && path.substr(path.size()-4)==".txt" ?
-        path.substr(0,path.size()-4) : path;
-    const auto cycle=(stem.size()>=6 && stem.substr(stem.size()-6)==".final") ||
-        (stem.size()>=8 && stem.substr(stem.size()-8)==".initial") ?
-        ".cycle"+std::to_string(mesh->ncycle) : "";
-    shocks::CommitFile(stem+cycle+shocks::RankName()+".tbin",table.Finish(),true);
+    WriteFile(*this, path, "");
   } catch (const std::exception &error) {
     Fail(error.what());
   }

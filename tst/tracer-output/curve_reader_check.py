@@ -1,4 +1,4 @@
-"""Check the curve plotting script against existing native/legacy simulation data.
+"""Check the curve plotting script against existing text/CSV/THP simulation data.
 
 No simulations are launched. Use the existing scientific Python environment.
 --runs is the output of tst/tracer-output/check.py; --output must be new.
@@ -51,20 +51,20 @@ def main():
             assert needle in str(exc),str(exc)
         else:raise AssertionError('invalid input was accepted')
 
-    old=read_run(runs/'planar_legacy',include_particles=False)
-    new=read_run(runs/'planar_binary',include_particles=False)
+    old=read_run(runs/'planar_control',include_particles=False)
+    new=read_run(runs/'planar',include_particles=False)
     a,b=select_curve(old),select_curve(new)
     def parity():
         assert a['curve_id']==b['curve_id']==7
         assert a['history']==b['history'] and len(b['history'])==108
         assert a['profile']==b['profile'] and len(b['profile'])==16
-        x=render(a,'legacy');y=render(b,'binary')
+        x=render(a,'control');y=render(b,'scheduled')
         assert {k:v for k,v in x.items() if k!='output'}=={k:v for k,v in y.items() if k!='output'}
-        return dict(node_samples=108,profile_nodes=16,legacy_binary_equal=True)
-    check('CR01_legacy_and_binary',parity)
+        return dict(node_samples=108,profile_nodes=16,control_scheduled_equal=True)
+    check('CR01_existing_outputs_scheduled_and_control',parity)
 
     def newborn():
-        data=read_run(runs/'amr_shock_binary',include_particles=False)
+        data=read_run(runs/'amr_shock',include_particles=False)
         events=[e for key in ('curve_events','curve_suspended') for e in data[key]
                 if e['birth']>0 and e['flags']&1]
         event=min(events,key=lambda e:(e['birth'],e['node_id']))
@@ -91,7 +91,7 @@ def main():
 
     def geometry_only():
         directory=out/'geometry-only';directory.mkdir()
-        for path in sorted((runs/'planar_binary').glob('*.curves.*.tbin'))[:3]:
+        for path in sorted((runs/'planar').glob('*.curves.*.txt'))[:3]:
             shutil.copy2(path,directory/path.name)
         data=read_run(directory,include_particles=False)
         selected=select_curve(data);assert selected['frames'] and not selected['history']
@@ -100,7 +100,7 @@ def main():
 
     def thermo_only():
         directory=out/'thermo-only/curve_thermo_history';directory.mkdir(parents=True)
-        for path in sorted((runs/'planar_binary/curve_thermo_history').glob('*.tbin'))[:3]:
+        for path in sorted((runs/'planar/curve_thermo_history').glob('*.csv'))[:3]:
             shutil.copy2(path,directory/path.name)
         selected=select_curve(read_run(directory.parent,include_particles=False))
         assert not selected['frames'] and len(selected['history'])==3
@@ -112,7 +112,7 @@ def main():
         (folder/'bad.thp').write_bytes(b'invalid unrelated particle stream')
         assert read_run(directory,include_particles=False)['geometry']
         rejected(lambda:read_run(directory),'truncated thermo file header')
-        full=read_run(runs/'planar_binary')
+        full=read_run(runs/'planar')
         assert len(full['particles'])==13824
         return dict(curve_mode_skips_particles=True,default_still_loads_and_validates_particles=True)
     check('CR06_particle_IO_opt_out',particle_skip)
@@ -143,15 +143,15 @@ def main():
     check('CR08_selection_guards',invalid)
 
     def overwrite():
-        before=sha(out/'binary.png')
-        rejected(lambda:plot_curve(b,out/'binary.png'),'already exists')
-        assert sha(out/'binary.png')==before
+        before=sha(out/'scheduled.png')
+        rejected(lambda:plot_curve(b,out/'scheduled.png'),'already exists')
+        assert sha(out/'scheduled.png')==before
         return dict(existing_plot_preserved=True)
     check('CR09_output_preservation',overwrite)
 
     def malformed():
         directory=out/'corrupt';directory.mkdir()
-        path=next((runs/'planar_binary').glob('*.curves.*.tbin'))
+        path=next((runs/'planar').glob('*.curves.*.txt'))
         (directory/path.name).write_bytes(path.read_bytes()[:-8])
         rejected(lambda:read_run(directory,include_particles=False),'truncated')
         return dict(corrupt_geometry_rejected=True)
@@ -162,7 +162,7 @@ def main():
             selected=select_curve(read_run(args.three_d_run,include_particles=False))
             result=render(selected,'three-d')
             assert result['geometry_3d']
-            return dict(source=str(args.three_d_run.resolve()),native_3d_geometry=True)
+            return dict(source=str(args.three_d_run.resolve()),stored_3d_geometry=True)
         check('CR11_existing_3d_run',three_d)
     save();print(json.dumps(report['checks'],indent=2))
     return int(any(c['status']!='pass' for c in report['checks']))

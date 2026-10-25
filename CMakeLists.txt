@@ -251,7 +251,7 @@ set(shock_source_files src/mesh/mesh_refinement.cpp src/athena.hpp
 list(APPEND shock_source_files src/material_curves/material_curves.cpp
     src/material_curves/material_curves.hpp src/material_curves/material_curves_io.cpp
     src/material_curves/curve_shocks.cpp src/material_curves/curve_shocks_io.cpp
-    src/shocks/observation.hpp src/shocks/store.hpp src/outputs/tracer_binary.hpp
+    src/shocks/observation.hpp src/shocks/store.hpp
     src/pgen/material_curve_test.cpp)
 set(shock_source_hashes "problem:${PROBLEM};")
 foreach(shock_file IN LISTS shock_source_files)

@@ -2,7 +2,6 @@
 // Licensed under the 3-clause BSD License (the "LICENSE").
 // Passive material curves: separate identity/geometry from fluid leaf ownership.
 #include "material_curves.hpp"
-#include "outputs/tracer_binary.hpp"
 #include "particles/particles.hpp"
 #include "particles/fluid_velocity.hpp"
 #include "shocks/observation.hpp"
@@ -132,7 +131,6 @@ MaterialCurves::MaterialCurves(Mesh *pm, ParameterInput *pin) : mesh(pm), pin_(p
   adaptive = pin->GetOrAddBoolean("material_curves", "adaptive", true);
   output_dcycle = pin->GetOrAddInteger("material_curves", "output_dcycle", 0);
   basename = pin->GetString("job", "basename");
-  binary_output = tracer_output::Binary(pin);
   if (!(spacing_cells > 0) || !std::isfinite(spacing_cells) ||
       max_spacing < 0 || !std::isfinite(max_spacing) ||
       !(max_angle > 0 && max_angle < M_PI) || !std::isfinite(max_angle) ||
