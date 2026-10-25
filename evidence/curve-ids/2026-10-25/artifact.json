@@ -1,0 +1,10 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/signed-curve-ids-20261025",
+  "source_commit": "b48ed76cbad85189a3d4990cb14f78e218e1d6f4",
+  "checks_passed": 110,
+  "figures": 14,
+  "raw_files_verified": 35396,
+  "native_run_digests_verified": 175,
+  "manifest_sha256": "59116cd61e9bbb714be7d9f6baf7f18c1af5fc4cdb569044e51f2dff96dac8de",
+  "scope": "local Serial/double runtime; MPI compile only; no push; scientific approval pending"
+}

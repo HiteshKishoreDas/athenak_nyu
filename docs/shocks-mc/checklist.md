@@ -123,6 +123,7 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
   `evidence/curve-ids/2026-10-25/ledger.md`.
 - [x] Independent signed persistence/simplicity review; checkpoint-key conversion fixed;
   optional legacy v4/B0 full-width restart regression added and passed.
-- [ ] Seal signed-ID source/runtime/plots artifact (record manifest after packaging).
+- [x] Sealed signed-ID source/runtime/plots artifact: 14 figures, 35396 raw files
+  verified, 175 native executable digests; artifact.json records the manifest.
 - [ ] MPI runtime/GPU/cluster budgets and human scientific approval remain pending.
 - [ ] Curve THP writer and mesh shock BIN variables remain separate next work.

@@ -179,3 +179,12 @@ Independent signed persistence/simplicity review is recorded in review.md.
 Seal exact source, binaries/cache/configuration, raw hashes and plots after
 reviewed-code validation completes. No push requested. Separate next scope: reuse THP for curve
 thermo, followed by sampled shock fields and mesh BIN diagnostics.
+
+## Sealed artifact
+
+Source commit: `b48ed76cbad85189a3d4990cb14f78e218e1d6f4`. Gallery: `/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/signed-curve-ids-20261025/index.html`.
+Fourteen explained plots, exact source archive, three executables with
+cache/config/fingerprint headers, Kokkos source and report/log snapshots retained.
+Verified 35396 raw-file hashes and 175 native executable digests.
+Manifest SHA256: `59116cd61e9bbb714be7d9f6baf7f18c1af5fc4cdb569044e51f2dff96dac8de`.
+Artifact metadata is in artifact.json. No push; original branches preserved.
