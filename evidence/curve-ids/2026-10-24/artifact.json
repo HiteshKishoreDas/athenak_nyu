@@ -1,0 +1,10 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/curve-id32-20261024",
+  "source_commit": "73d47c9b08bb326139c59a62b6367bf0c3fe7934",
+  "checks_passed": 93,
+  "figures": 10,
+  "raw_files_verified": 29369,
+  "manifest_sha256": "4b8f20c7aa3ab3611d39bea8654dc9590a8cde68740219d0a239c579d899e0ca",
+  "runtime_binaries_retained": 3,
+  "kokkos_commit": "08ceff92bcf3a828844480bc1e6137eb74028517"
+}
