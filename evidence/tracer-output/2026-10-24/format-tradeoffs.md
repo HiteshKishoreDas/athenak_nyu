@@ -73,3 +73,25 @@ Inspected `src/outputs/prtcl_thermo_history.cpp`, `src/outputs/outputs.hpp`,
 `src/material_curves/material_curves_io.cpp`, `src/driver/driver.cpp` and
 `vis/python/tracer_thermo_history.py` at `a560920b`. No benchmark or new scientific
 approval is implied. These are proposed mappings, not already available options.
+
+## Why current curve-node IDs are 64-bit
+
+Source verification: `MaterialCurves::NewID` in
+`src/material_curves/material_curves.cpp:144` checks curve ID and monotonically
+allocated node sequence against UINT32_MAX, then packs the two components:
+
+\[
+\mathrm{nodeID}=2^{32}\,\mathrm{curveID}+\mathrm{sequence}.
+\]
+
+This is an identity design choice, not a physical requirement or a statement
+that a run contains billions of nodes. Even curve 1, sequence 1 is already
+larger than an unsigned 32-bit integer. Nodes retain this identity as positions,
+owning mesh leaves and curve resolution change; allocation sequence persists
+across restarts. A single 32-bit global ID scheme is possible but would change
+allocation, identity limits and persisted link/history contracts. Storing two
+32-bit components separately preserves the information but still needs explicit
+curve semantics in the writer/reader; it is not the existing particle-tag schema.
+The previous statement that curves "require" 64-bit IDs should be read as:
+current packed IDs must be preserved exactly, not that every curve design needs
+64-bit IDs. No code changes or new tests made for this explanation.
