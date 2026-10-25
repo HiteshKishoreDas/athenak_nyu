@@ -24,18 +24,18 @@ def _real(text):
 
 def id_layout(contract):
     """Contract prefixes are authoritative even when journals have no events."""
-    if contract.startswith('curve-node-history-v3 '):
+    if contract.startswith(('curve-node-history-v3 ','curve-node-history-v4 ')):
         fields=contract.split(maxsplit=2)
         if len(fields)!=3 or not re.fullmatch(r'[0-9]+',fields[1]) or int(fields[1])>30:
             raise HistoryError('Invalid curve_id_bits contract')
-        return (32,int(fields[1]))
+        return (32,int(fields[1]),True) if contract.startswith('curve-node-history-v4 ') else (32,int(fields[1]))
     return (32,8) if contract.startswith('curve-node-history-v2 ') else (64,32)
 
 
 def _node_id(text, layout=None):
-    node_id = integer(text)
+    node_id = integer(text,32,signed=True) if layout and len(layout)==3 else integer(text)
     try:
-        curve = (node_curve_id(node_id,curve_id_bits=layout[1]) if layout and layout[0]==32
+        curve = (node_curve_id(node_id,curve_id_bits=layout[1],signed=len(layout)==3) if layout and layout[0]==32
                  else node_curve_id(node_id,32) if layout else node_curve_id(node_id))
     except ValueError as exc:
         raise HistoryError('Invalid curve node ID namespace') from exc
@@ -109,8 +109,8 @@ def _read_chunk(path, lineage, contract, generation, suspended=False):
     for row in csv.reader(lines[2:-1]):
         if len(row) != 133:
             raise HistoryError('Curve event requires133fields')
-        event = parse_event(row[:124], lineage, generation)
         node_id,curve = _node_id(row[0],layout)
+        event = parse_event(row[:124], lineage, generation, signed_id=len(layout)==3)
         birth = _real(row[124])
         first_level = integer(row[125], 32, signed=True)
         last_level = integer(row[129], 32, signed=True)
@@ -180,7 +180,7 @@ def read_suspended(directory, generation=None):
     return sorted(result, key=lambda event: event['identity'])
 
 
-def read_trace(path, curve_id_bits=None):
+def read_trace(path, curve_id_bits=None, signed=False):
     """Read one raw33-column trace/birthtrace file, keyed by exact node ID."""
     path = Path(path)
     match = re.fullmatch(r'(?:birthtrace|trace)(\d+)\.rank(\d+)\.csv', path.name)
@@ -190,7 +190,7 @@ def read_trace(path, curve_id_bits=None):
     result = {}
     if curve_id_bits is not None and (type(curve_id_bits) is not int or not 0<=curve_id_bits<=30):
         raise HistoryError('Invalid curve_id_bits')
-    layout = None if curve_id_bits is None else (32,curve_id_bits)
+    layout = None if curve_id_bits is None else (32,curve_id_bits,True) if signed else (32,curve_id_bits)
     if (path.parent/f'manifest.rank{rank}').exists():
         contract = manifests(path.parent)[rank][1]
         declared = id_layout(contract)

@@ -106,14 +106,17 @@ int main(int argc, char **argv) {
         const int open_sequence[3]{1, 3, 2};
         const int closed_sequence[4]{1, 2, 3, 4};
         const int *sequence = curve.closed ? closed_sequence : open_sequence;
-        node.id = (id << material_curves::SequenceBits(curves.curve_id_bits)) | sequence[i];
+        node.id = material_curves::SignedID(
+            (material_curves::IDBits(id) << material_curves::SequenceBits(curves.curve_id_bits)) | sequence[i]);
         node.a = curve.closed ? (i == 3 ? 2.5 : i) : (i == 2 ? 3 : i);
         if (i == 0) node.a = 0;
         node.x = {2*node.a, 0, 0};
         node.old = node.x;
         if (i == (curve.closed ? 3 : 1)) {
-          node.parent_left = (id << material_curves::SequenceBits(curves.curve_id_bits)) | (curve.closed ? 3 : 1);
-          node.parent_right = (id << material_curves::SequenceBits(curves.curve_id_bits)) | (curve.closed ? 1 : 2);
+          node.parent_left = material_curves::SignedID(
+              (material_curves::IDBits(id) << material_curves::SequenceBits(curves.curve_id_bits)) | (curve.closed ? 3 : 1));
+          node.parent_right = material_curves::SignedID(
+              (material_curves::IDBits(id) << material_curves::SequenceBits(curves.curve_id_bits)) | (curve.closed ? 1 : 2));
           node.birth = 1;
           node.anchor = 0;
           node.placement = 2;

@@ -1,0 +1,9 @@
+Observed commands/results in this turn:
+./build-lagrangian/shock_detector_test --self-check
+8 device numerical/support self-checks PASS
+./build-lagrangian/shock_encounter_test
+EVT01-08, EVT11-14 state checks PASS; seed72941; large typed IDs
+python3 -m py_compile vis/python/material_curves.py vis/python/curve_shock_history.py vis/python/shock_history.py vis/python/tracer_thermo_history.py vis/python/plot_curves.py tst/tracer-output/variable_id_check.py tst/tracer-output/id_check.py
+exit0
+git diff --check
+exit0

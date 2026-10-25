@@ -1,6 +1,7 @@
-"""Read AthenaK material-curve v2/v3/v4 ASCII snapshots/checkpoint sidecars.
+"""Read AthenaK material-curve v2/v3/v4/v5 ASCII snapshots/checkpoint sidecars.
 
-Current v4 IDs are unsigned 32-bit with a declared curve-bit split; v3 uses 8/24.
+Current v5 IDs/links are signed32 with a declared curve-bit split; negative IDs
+are valid and zero is missing. Previous v4 IDs are unsigned32; v3 uses unsigned 8/24.
 Historical v2 IDs
 retain their exact unsigned 64-bit values. IDs never pass through floats; winding/images
 are signed 64-bit and flags signed 32-bit. Reals declare IEEE width 32 or 64,
@@ -55,7 +56,7 @@ NODE_COLUMNS = ("node_columns id:u64 prev:u64 next:u64 parent_left:u64 "
                 "curvature_mask:i32")
 
 
-def node_curve_id(node_id, sequence_bits=None, *, curve_id_bits=None):
+def node_curve_id(node_id, sequence_bits=None, *, curve_id_bits=None, signed=False):
     """Decode declared current splits, or historical fixed-width identities."""
     if curve_id_bits is not None:
         if type(curve_id_bits) is not int or not 0 <= curve_id_bits <= 30:
@@ -67,6 +68,10 @@ def node_curve_id(node_id, sequence_bits=None, *, curve_id_bits=None):
         if sequence_bits not in (24,32):
             raise ValueError('invalid historical ID encoding')
         width = 32 if sequence_bits == 24 else 64
+    if signed:
+        if type(node_id) is not int or not -(1 << 31) <= node_id < 1 << 31:
+            raise ValueError('invalid signed32 curve node ID')
+        node_id &= (1 << 32)-1
     if (type(node_id) is not int or not 0 < node_id < 1 << width or
             not node_id & ((1 << sequence_bits)-1)):
         raise ValueError('invalid curve node ID namespace/width')
@@ -139,7 +144,7 @@ class _Reader:
         return fields
 
 
-def _audit(curve, time, domain, dimensions, sequence_bits=32, curve_id_bits=None):
+def _audit(curve, time, domain, dimensions, sequence_bits=32, curve_id_bits=None, signed=False):
     nodes = curve["nodes"]
     nodes.sort(key=lambda node: node["a"])
     _require(nodes[0]["a"] == 0 and
@@ -151,6 +156,7 @@ def _audit(curve, time, domain, dimensions, sequence_bits=32, curve_id_bits=None
              "winding exceeds reliable lift range")
     _require(dimensions[2] != 1 or curve["winding"][2] == 0,
              "2D curve has transverse winding")
+    id_mask = (1 << 32)-1 if signed else MASK64
     inserted = 0
     for i, node in enumerate(nodes):
         _require(all(abs((node["x"][axis]-domain[2*axis]) /
@@ -158,7 +164,7 @@ def _audit(curve, time, domain, dimensions, sequence_bits=32, curve_id_bits=None
                      for axis in range(3)), "node coordinate exceeds reliable lift range")
         _require(dimensions[2] != 1 or node["x"][2] == nodes[0]["x"][2],
                  "2D curve is not planar")
-        _require(node_curve_id(node["id"],sequence_bits,curve_id_bits=curve_id_bits) == curve["id"] and
+        _require(node_curve_id(node["id"],sequence_bits,curve_id_bits=curve_id_bits,signed=signed) == curve["id"] and
                  0 < (node["id"] & ((1 << sequence_bits)-1)) < curve["next_sequence"],
                  "node namespace/allocator mismatch")
         _require(0 <= node["a"] <= curve["period"] and
@@ -179,7 +185,8 @@ def _audit(curve, time, domain, dimensions, sequence_bits=32, curve_id_bits=None
             left, right = node["parent_left"], node["parent_right"]
             _require(node["placement"] in (1, 2, 3) and left in by_id and right in by_id
                      and left != right and
-                     left < node["id"] and right < node["id"] and
+                     (left & id_mask) < (node["id"] & id_mask) and
+                     (right & id_mask) < (node["id"] & id_mask) and
                      max(by_id[left]["birth"], by_id[right]["birth"]) <= node["birth"],
                      "invalid insertion provenance")
             lower, upper = by_id[left]["a"], by_id[right]["a"]
@@ -241,12 +248,12 @@ def read(path, max_nodes=1000000, fluid_path=None, max_mesh_leaves=1000000):
         bits = 32 if version >= 3 else 64
         curve_bits = 8 if version == 3 else None
         sequence_bits = 24 if version == 3 else 32
-        _require(version in (2,3,4) and f[2] == "ASCII" and
-                 f[4:] == ["U32" if version >= 3 else "U64", "I64", "I32"],
+        _require(version in (2,3,4,5) and f[2] == "ASCII" and
+                 f[4:] == ["I32" if version == 5 else "U32" if version >= 3 else "U64", "I64", "I32"],
                  "unsupported version/encoding/widths")
         precision = _integer(f[3], 32)
         _require(precision in (32, 64), "unsupported Real precision")
-        if version == 4:
+        if version >= 4:
             curve_bits = _integer(reader.fields(2,"id_bits")[1],32)
             _require(curve_bits <= 30,'invalid curve_id_bits metadata')
             sequence_bits = 32-curve_bits
@@ -255,7 +262,8 @@ def read(path, max_nodes=1000000, fluid_path=None, max_mesh_leaves=1000000):
         state = {"kind": f[1], "time": _real(f[2]), "cycle": _integer(f[3], 32, True),
                  "curve_count": _integer(f[4]), "node_count": _integer(f[5]),
                  "precision": precision,"version":version,
-                 "id_layout":(bits,curve_bits if version>=3 else 32)}
+                 "id_layout":(bits,curve_bits,True) if version == 5 else
+                 (bits,curve_bits if version>=3 else 32)}
         _require(state["kind"] in ("snapshot", "checkpoint") and state["time"] >= 0
                  and state["cycle"] >= 0 and state["curve_count"] <= min(max_curve,100000)
                  and state["node_count"] <= max_nodes, "invalid state/count cap")
@@ -313,6 +321,9 @@ def read(path, max_nodes=1000000, fluid_path=None, max_mesh_leaves=1000000):
         if version >= 3:
             curve_columns = curve_columns.replace('id:u64','id:u32')
             node_columns = node_columns.replace(':u64',':u32')
+            if version == 5:
+                curve_columns = curve_columns.replace('id:u32','id:i32')
+                node_columns = node_columns.replace(':u32',':i32')
             if version == 3:
                 curve_columns = curve_columns.replace('next_sequence:u64','next_sequence:u32')
         _require(reader.line() == curve_columns and reader.line() == node_columns,
@@ -320,10 +331,10 @@ def read(path, max_nodes=1000000, fluid_path=None, max_mesh_leaves=1000000):
         curves, ids, total = [], set(), 0
         for _ in range(state["curve_count"]):
             f = reader.fields(15, "curve")
-            curve = {"id": _integer(f[1],bits), "closed": _integer(f[2], 32, True),
+            curve = {"id": _integer(f[1],bits,version == 5), "closed": _integer(f[2], 32, True),
                      "winding": [_integer(value, 64, True) for value in f[3:6]],
                      "period": _real(f[6]), "unresolved_since": _real(f[7]),
-                     "reason": _integer(f[8], 32, True), "next_sequence": _integer(f[9],64 if version == 4 else bits),
+                     "reason": _integer(f[8], 32, True), "next_sequence": _integer(f[9],64 if version >= 4 else bits),
                      "inserted": _integer(f[10]), "migrations": _integer(f[11]),
                      "samples": _integer(f[12]), "nodes": [], "length": _real(f[14])}
             count = _integer(f[13])
@@ -342,7 +353,7 @@ def read(path, max_nodes=1000000, fluid_path=None, max_mesh_leaves=1000000):
             ids.add(curve["id"])
             for _ in range(count):
                 f = reader.fields(20, "node")
-                node = {key: _integer(f[i+1],bits) for i, key in enumerate(
+                node = {key: _integer(f[i+1],bits,version == 5) for i, key in enumerate(
                     ("id", "prev", "next", "parent_left", "parent_right"))}
                 node.update(a=_real(f[6]), birth=_real(f[7]),
                             anchor=_integer(f[8], 32, True),
@@ -357,7 +368,7 @@ def read(path, max_nodes=1000000, fluid_path=None, max_mesh_leaves=1000000):
                          ((mask == 0 and math.isfinite(value) and value >= 0) or
                           (mask in (1, 2) and math.isnan(value))), "invalid diagnostics")
                 curve["nodes"].append(node)
-            _audit(curve, state["time"], state["domain"], state["dimensions"],sequence_bits,curve_bits)
+            _audit(curve, state["time"], state["domain"], state["dimensions"],sequence_bits,curve_bits,version == 5)
             curve["reconstructed"] = geometry(curve, state["domain"])
             curves.append(curve)
             total += count

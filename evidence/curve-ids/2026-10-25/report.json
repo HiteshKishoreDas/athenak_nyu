@@ -1,0 +1,581 @@
+{
+  "schema": "signed-curve-ids-1",
+  "storage": "int32_t",
+  "packed_bits": 32,
+  "zero": "missing link only",
+  "negative_IDs": "valid",
+  "curve_id_bits_default": 8,
+  "curve_id_bits_range": [
+    0,
+    30
+  ],
+  "scope": "local Serial/double runtime",
+  "scientific_approval": "pending",
+  "suites": {
+    "output": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-reviewed-output-20261025/report.json",
+      "sha256": "0cce6b2ac0b707a84a9b7a251aed1772c79648bec3de6f09e10d719033e1c4bb",
+      "count": 15,
+      "checks": [
+        {
+          "id": "TO01_IO03_IO04_planar_all_records_exact",
+          "curve_samples": 1728,
+          "curve_events": 16,
+          "status": "pass"
+        },
+        {
+          "id": "TO02_AMR04_PROP06_AMR_all_records_exact",
+          "curve_samples": 1179,
+          "curve_events": 0,
+          "status": "pass"
+        },
+        {
+          "id": "TO03_independent_thermo_oracle_and_births",
+          "status": "pass"
+        },
+        {
+          "id": "TO04_IO04_exact_signed32_high_bit",
+          "status": "pass"
+        },
+        {
+          "id": "TO05_IO06_IO07_RST02_restart_replay",
+          "curve_events": 16,
+          "status": "pass"
+        },
+        {
+          "id": "TO07_IO08_duplicate_generation_rejected",
+          "status": "pass"
+        },
+        {
+          "id": "TO10_PROP06_independent_output_clocks",
+          "status": "pass"
+        },
+        {
+          "id": "TO12_IO09_missing_manifest_regressions",
+          "status": "pass"
+        },
+        {
+          "id": "TO15_IO03_raw_flags_phase_trace_parity",
+          "status": "pass"
+        },
+        {
+          "id": "TO16_CFG_geometry_without_curves_rejected",
+          "status": "pass"
+        },
+        {
+          "id": "TO17_fixed_mesh_MC_thermo_only",
+          "status": "pass"
+        },
+        {
+          "id": "TO18_curve_only_shocks_thermo_geometry",
+          "curve_events": 16,
+          "status": "pass"
+        },
+        {
+          "id": "TO19_IO02_empty_particle_population",
+          "curve_samples": 1728,
+          "status": "pass"
+        },
+        {
+          "id": "TO20_native_geometry_discovery_with_shared_journal_directory",
+          "status": "pass"
+        },
+        {
+          "id": "TO21_AMR04_RST02_live_shocks_insertion_restart",
+          "status": "pass"
+        }
+      ]
+    },
+    "CT": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-reviewed-CT-20261025/report.json",
+      "sha256": "be88ba108b5b2b01721bc1873812c4673404b81d07ba0e5c91a19cf1ac9d0fa6",
+      "count": 18,
+      "checks": [
+        {
+          "id": "CT01_curve_only_shocks_off_exact_u32",
+          "status": "pass"
+        },
+        {
+          "id": "CT02_both_shared_fields_and_clock",
+          "status": "pass"
+        },
+        {
+          "id": "CT03_passive_legacy_output",
+          "status": "pass"
+        },
+        {
+          "id": "CT04_MC_and_curves_thermo_without_shocks",
+          "status": "pass"
+        },
+        {
+          "id": "CT05_live_AMR_insertion_births",
+          "status": "pass"
+        },
+        {
+          "id": "CT06_live_AMR_restart_exact",
+          "status": "pass"
+        },
+        {
+          "id": "CT07_shock_thermo_synchronization",
+          "status": "pass"
+        },
+        {
+          "id": "CT08_independent_cadence_final_replay",
+          "status": "pass"
+        },
+        {
+          "id": "CT09_input_guards",
+          "status": "pass"
+        },
+        {
+          "id": "CT10_reader_integrity",
+          "status": "pass"
+        },
+        {
+          "id": "CT11_nonuniform_containing_cell_oracle",
+          "status": "pass"
+        },
+        {
+          "id": "CT12_immutable_output_replay",
+          "status": "pass"
+        },
+        {
+          "id": "CT13_shared_time_cadence",
+          "status": "pass"
+        },
+        {
+          "id": "CT14_native_forced_box_coexistence",
+          "status": "pass"
+        },
+        {
+          "id": "CT15_shared_passive_scalar",
+          "status": "pass"
+        },
+        {
+          "id": "CT16_restart_preserves_time_cadence",
+          "status": "pass"
+        },
+        {
+          "id": "CT17_overdue_threshold_replay",
+          "status": "pass"
+        },
+        {
+          "id": "CT18_empty_populations",
+          "status": "pass"
+        }
+      ]
+    },
+    "CSH": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-reviewed-CSH-20261025/report.json",
+      "sha256": "a47074aa676865be5f686ae0d25455de84aa7f86c586f3ea1361bdf90d717994",
+      "count": 20,
+      "checks": [
+        {
+          "id": "CSH02_CSH03_planar",
+          "status": "pass"
+        },
+        {
+          "id": "CSH02_curve_only_global_enable",
+          "status": "pass"
+        },
+        {
+          "id": "CSH04_initial_inside",
+          "status": "pass"
+        },
+        {
+          "id": "CSH05_coexist_passivity",
+          "status": "pass"
+        },
+        {
+          "id": "CSH06_restart_actual_phases",
+          "status": "pass"
+        },
+        {
+          "id": "CSH06_d_relative_prefix",
+          "status": "pass"
+        },
+        {
+          "id": "CSH06_sidecar_integrity",
+          "status": "pass"
+        },
+        {
+          "id": "CSH08_overflow",
+          "status": "pass"
+        },
+        {
+          "id": "CSH08_old_untracked_checkpoint",
+          "status": "pass"
+        },
+        {
+          "id": "CSH06_disabled_curve_consumer",
+          "status": "pass"
+        },
+        {
+          "id": "CSH06_native_hydro_contract",
+          "status": "pass"
+        },
+        {
+          "id": "CSH08_curveonly_forcing_input",
+          "status": "pass"
+        },
+        {
+          "id": "CSH01_zero",
+          "status": "pass"
+        },
+        {
+          "id": "CSH01_translation",
+          "status": "pass"
+        },
+        {
+          "id": "CSH01_shear",
+          "status": "pass"
+        },
+        {
+          "id": "CSH07_actual_refine_coarsen",
+          "status": "pass"
+        },
+        {
+          "id": "CSH06_changed_callback_contract",
+          "status": "pass"
+        },
+        {
+          "id": "CSH04_CSH07_curveonly_live_amr_births",
+          "status": "pass"
+        },
+        {
+          "id": "CSH06_CSH07_amr_newborn_restart",
+          "status": "pass"
+        },
+        {
+          "id": "CSH04_CSH07_coexisting_live_amr_births",
+          "status": "pass"
+        }
+      ]
+    },
+    "LT": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-reviewed-LT-20261025/report.json",
+      "sha256": "6b52e8f262c54d022c87cc83317c1443f075f4f358b2577ea8f9f7f747a2b8d6",
+      "count": 14,
+      "checks": [
+        {
+          "id": "LT01_uniform_periodic2d",
+          "status": "pass"
+        },
+        {
+          "id": "LT01_uniform_periodic3d",
+          "status": "pass"
+        },
+        {
+          "id": "LT02_acceleration_RK_stage_time",
+          "status": "pass"
+        },
+        {
+          "id": "LT02_affine_shear",
+          "status": "pass"
+        },
+        {
+          "id": "LT04_refine_coarsen_position",
+          "status": "pass"
+        },
+        {
+          "id": "LT04_mixed_level_diagonal_crossing",
+          "status": "pass"
+        },
+        {
+          "id": "LT05_PHY08_INT06_RH_passage",
+          "status": "pass"
+        },
+        {
+          "id": "LT06_IO01_IO06_restart_phases",
+          "status": "pass"
+        },
+        {
+          "id": "LT04_LT06_live_AMR_active_restart",
+          "status": "pass"
+        },
+        {
+          "id": "LT08_CFG01_MC_excluded",
+          "status": "pass"
+        },
+        {
+          "id": "LT07_EVT02_delayed_birth",
+          "status": "pass"
+        },
+        {
+          "id": "LT09_CFG06_empty",
+          "status": "pass"
+        },
+        {
+          "id": "LT10_IO08_bounded_output_integrity",
+          "status": "pass"
+        },
+        {
+          "id": "LT11_predictor_outflow_guard",
+          "status": "pass"
+        }
+      ]
+    },
+    "setup": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-reviewed-setup-20261025/report.json",
+      "sha256": "814e4519f563bd445498e7379468c03ca113c3ccf6bfdd80412597c7a3c9f570",
+      "count": 9,
+      "checks": [
+        {
+          "id": "SUM01_fresh_and_passivity",
+          "status": "pass"
+        },
+        {
+          "id": "SUM02_initial_adaptation",
+          "status": "pass"
+        },
+        {
+          "id": "SUM03_no_eligible_cells",
+          "status": "pass"
+        },
+        {
+          "id": "SUM04_future_birth",
+          "status": "pass"
+        },
+        {
+          "id": "SUM05_loop_placement",
+          "status": "pass"
+        },
+        {
+          "id": "SUM06_polyline_placement",
+          "status": "pass"
+        },
+        {
+          "id": "SUM07_restart_restored_counts",
+          "status": "pass"
+        },
+        {
+          "id": "SUM08_enabled_histories",
+          "status": "pass"
+        },
+        {
+          "id": "SUM09_empty_separate_and_absent",
+          "status": "pass"
+        }
+      ]
+    },
+    "reader": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-reviewed-reader-20261025/report.json",
+      "sha256": "42912dc0e8a3fe3879740bca3abefb5c143ae9c218491bc088143fcc4a12c617",
+      "count": 11,
+      "checks": [
+        {
+          "id": "CR01_existing_outputs_scheduled_and_control",
+          "status": "pass"
+        },
+        {
+          "id": "CR02_AMR_birth_no_parent_history",
+          "status": "pass"
+        },
+        {
+          "id": "CR03_signed32_CLI",
+          "status": "pass"
+        },
+        {
+          "id": "CR04_geometry_only",
+          "status": "pass"
+        },
+        {
+          "id": "CR05_thermo_only",
+          "status": "pass"
+        },
+        {
+          "id": "CR06_particle_IO_opt_out",
+          "status": "pass"
+        },
+        {
+          "id": "CR07_winding_closure",
+          "status": "pass"
+        },
+        {
+          "id": "CR08_selection_guards",
+          "status": "pass"
+        },
+        {
+          "id": "CR09_output_preservation",
+          "status": "pass"
+        },
+        {
+          "id": "CR10_corrupt_curve_input",
+          "status": "pass"
+        },
+        {
+          "id": "CR11_existing_3d_run",
+          "status": "pass"
+        }
+      ]
+    },
+    "boundary0": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-sealed-boundary0-20261025/report.json",
+      "sha256": "4b1a48c1ea3e5265ec1bd1da3871d56785ead9a4c0765131606bde95e772903b",
+      "count": 8,
+      "checks": [
+        {
+          "id": "ID01_last_sequence_signed_minus1_and_links",
+          "status": "pass",
+          "node_ids": [
+            1,
+            3,
+            -1,
+            2
+          ],
+          "last_id": -1,
+          "next_sequence": 4294967296
+        },
+        {
+          "id": "ID02_atomic_split_batch_exhaustion",
+          "status": "pass",
+          "next_sequence": 4294967295
+        },
+        {
+          "id": "ID03_exhausted_allocator_no_wrap",
+          "status": "pass"
+        },
+        {
+          "id": "ID04_config_reject_before_narrowing",
+          "status": "pass"
+        },
+        {
+          "id": "ID05_persistent_link_overflow_rejected",
+          "status": "pass"
+        },
+        {
+          "id": "ID06_legacy_analysis_and_explicit_restart_rejection",
+          "status": "pass"
+        },
+        {
+          "id": "ID07_INT32_MIN_insertion_with_positive_parents",
+          "status": "pass",
+          "node_ids": [
+            1,
+            3,
+            -2147483648,
+            2
+          ],
+          "next_sequence": 2147483649
+        },
+        {
+          "id": "ID08_legacy_unsigned_v4_B0_full_width_restart",
+          "status": "pass",
+          "next_sequence": 4294967296
+        }
+      ]
+    },
+    "boundary8": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-sealed-boundary8-20261025/report.json",
+      "sha256": "8d83af3f55e75f75c4b84e6ad325d4e01fae8155362b4d2c63c082a62d8a4640",
+      "count": 6,
+      "checks": [
+        {
+          "id": "ID01_last_sequence_signed_minus1_and_links",
+          "status": "pass",
+          "node_ids": [
+            -16777215,
+            -16777213,
+            -1,
+            -16777214
+          ],
+          "last_id": -1,
+          "next_sequence": 16777216
+        },
+        {
+          "id": "ID02_atomic_split_batch_exhaustion",
+          "status": "pass",
+          "next_sequence": 16777215
+        },
+        {
+          "id": "ID03_exhausted_allocator_no_wrap",
+          "status": "pass"
+        },
+        {
+          "id": "ID04_config_reject_before_narrowing",
+          "status": "pass"
+        },
+        {
+          "id": "ID05_persistent_link_overflow_rejected",
+          "status": "pass"
+        },
+        {
+          "id": "ID06_legacy_analysis_and_explicit_restart_rejection",
+          "status": "pass"
+        }
+      ]
+    },
+    "cases": {
+      "report": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/signed-id-reviewed-cases-20261025/report.json",
+      "sha256": "3e8a9c4b259c323296fa19aaa4654ebb3534861d331f55e39acc25b5c4c5d24e",
+      "count": 9,
+      "checks": [
+        {
+          "id": "VB01_declared_layouts_0_1_4_8_16_30_empty_events",
+          "status": "pass"
+        },
+        {
+          "id": "VB02_checked_input_and_single_curve_guards",
+          "status": "pass"
+        },
+        {
+          "id": "VB03_zero_bit_planar_particles_and_real_encounters",
+          "status": "pass",
+          "curve_samples": 1728,
+          "curve_events": 16,
+          "all_records_exact_after_ID_remap": true
+        },
+        {
+          "id": "VB04_zero_bit_live_AMR_births_and_histories",
+          "status": "pass",
+          "curve_samples": 9644,
+          "curve_events": 63,
+          "all_records_exact_after_ID_remap": true
+        },
+        {
+          "id": "VB05_zero_bit_active_AMR_restart_split_guard",
+          "status": "pass"
+        },
+        {
+          "id": "VB06_cross_stream_layout_consistency",
+          "status": "pass"
+        },
+        {
+          "id": "VB07_fixed_8bit_geometry_compatibility",
+          "status": "pass"
+        },
+        {
+          "id": "VB08_corrupt_layout_metadata",
+          "status": "pass"
+        },
+        {
+          "id": "VB09_signed_negative_ID_live_AMR_events_and_restart",
+          "status": "pass",
+          "curve_samples": 9644,
+          "curve_events": 63,
+          "negative_IDs": true,
+          "all_records_exact_after_ID_remap": true,
+          "restart_exact": true
+        }
+      ]
+    }
+  },
+  "passed": 110,
+  "additional_checks": [
+    "12 Python historical/current/signed geometry reader checks",
+    "strict signed32/unsigned32/historical64 encounter and trace reader checks",
+    "Serial isolated C++ IO save/load, exact metadata and malformed/pair rejection",
+    "8 detector device/support self-checks",
+    "encounter state checks",
+    "Python compilation",
+    "git diff --check"
+  ],
+  "mpi": "Current MPI compile passes. No MPI runtime retried: previous PMIx runtime 0x60100 vs PRRTE build 0x50009 remains unqualified.",
+  "limitations": [
+    "No GPU/cluster/production performance qualification",
+    "No scientific sign-off",
+    "Synthetic allocator-limit fixtures do not populate billions of nodes",
+    "This change does not implement curve THP output or mesh shock BIN variables",
+    "Shared encounter core retains its uint64 identity slot containing the canonical uint32 bit pattern; curve-facing IDs and links are signed32"
+  ]
+}

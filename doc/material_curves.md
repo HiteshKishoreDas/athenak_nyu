@@ -141,11 +141,16 @@ not demonstrate recovery of a previously unspecified smooth curve.
 
 ## Identity, time integration and refinement
 
-A node ID is `uint32_t`. Set `material_curves/curve_id_bits` to $B$ (default 8,
+A node ID and each neighbour/parent link is `int32_t`. Set `material_curves/curve_id_bits` to $B$ (default 8,
 allowed 0–30): the high $B$ bits hold the curve ID and the remaining $32-B$ bits
 hold the creation sequence. For $B>0$, curve IDs range from 1 through $2^B-1$.
-For $B=0$, only logical curve ID 1 is allowed and the full ID is the sequence.
+For $B=0$, only logical curve ID 1 is allowed and the full bit pattern holds the sequence.
 Sequences range from 1 through $2^{32-B}-1$; zero remains a missing-link sentinel.
+Packing/decoding uses unsigned bit arithmetic; stored IDs use the corresponding
+signed representation. For packed bits $u$, the displayed ID is $u$ below $2^{31}$,
+and $u-2^{32}$ otherwise. Negative IDs, including $-1$, are valid; only zero is
+missing. Parent creation order is checked using sequence bits, not signed numerical
+order. The full namespace is retained; no sign bit is discarded.
 The separate uint64 allocator counter safely represents the exhausted sentinel,
 including $2^{32}$ for $B=0$. No IDs wrap or get reused. At least two nodes are
 required, so allocating 31 or 32 bits to the curve field is invalid.
@@ -211,7 +216,7 @@ Snapshots are `BASENAME.curves.initial.txt`, `BASENAME.curves.CYCLE8.txt`, and
 atomically replaced through a temporary file; native fluid files retain their
 legacy write behavior, and incomplete/mixed pairs fail validation. Checksummed
 ASCII has explicit
-U32 IDs/links, U64 counters, I64 winding/images and I32 flags, with declared Real width. Reals use `max_digits10`.
+I32 IDs/links, U64 counters, I64 winding/images and I32 flags, with declared Real width. Reals use `max_digits10`.
 The sidecar fingerprints the complete fluid file plus time/cycle/domain/config;
 copying an unrelated fluid restart with a matching timestamp does not make a pair.
 Checksums detect accidental corruption, not malicious modification.

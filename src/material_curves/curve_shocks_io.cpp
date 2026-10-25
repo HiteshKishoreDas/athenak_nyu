@@ -124,7 +124,7 @@ void CheckState(const ShockNode &node, const Node &geometry,
                 uint64_t generation, Real time, bool three_d) {
   const auto &s = node.encounter;
   const auto bytes = reinterpret_cast<const unsigned char *>(&s);
-  if (s.particle_id != geometry.id || !std::isfinite(node.birth) ||
+  if (s.particle_id != IDBits(geometry.id) || !std::isfinite(node.birth) ||
       node.birth != geometry.birth || node.birth < 0 || node.birth > time ||
       s.last_generation != generation || s.phase < shocks::outside ||
       s.phase > shocks::pending_exit || s.clean < 0 || s.clean > 1 ||
@@ -178,7 +178,8 @@ std::string Records(const MaterialCurves &m, std::vector<ShockEvent> events,
         e.encounter.sequence == previous_sequence)) shocks::Fail("duplicate curve event");
     previous_id = e.encounter.particle_id;
     previous_sequence = e.encounter.sequence;
-    shocks::PutEvent(out,e.encounter,false);
+    shocks::PutEvent(out,e.encounter,false,
+                     SignedID(static_cast<std::uint32_t>(e.encounter.particle_id)));
     out << ',' << e.birth << ',' << e.first_level;
     for (Real dx : e.first_spacing) out << ',' << dx;
     out << ',' << e.last_level;
@@ -227,7 +228,7 @@ void MaterialCurves::WriteShockTrace(const std::vector<Node *> &nodes,
   });
   std::ostringstream out;
   out << std::setprecision(std::numeric_limits<Real>::max_digits10);
-  uint64_t previous = 0;
+  NodeID previous = 0;
   for (size_t i : order) {
     const auto &node = *nodes[i];
     auto found = shock_states.find(node.id);
@@ -290,12 +291,12 @@ void MaterialCurves::SaveShockRestart(const std::string &fluid_path) const {
   h.history_digest = shock_history_digest;
   const auto contract = shock_lineage+"\n"+shock_contract;
   h.contract_bytes = contract.size();
-  std::vector<uint64_t> order;
+  std::vector<NodeID> order;
   for (const auto &entry : geometry) order.push_back(entry.first);
   std::sort(order.begin(),order.end());
   std::string data(reinterpret_cast<const char *>(&h),sizeof(h));
   data += contract;
-  for (uint64_t id : order) {
+  for (NodeID id : order) {
     const auto &state = shock_states.at(id);
     CheckState(state,*geometry.at(id),shock_generation,shock_time,mesh->three_d);
     data.append(reinterpret_cast<const char *>(&state),sizeof(state));
@@ -352,7 +353,7 @@ void MaterialCurves::LoadShockRestart(const std::string &fluid_path) {
     if (state.encounter.particle_id > UINT32_MAX) {
       shocks::Fail("curve shock node ID exceeds 32 bits");
     }
-    auto node = geometry.find(static_cast<NodeID>(state.encounter.particle_id));
+    auto node = geometry.find(SignedID(static_cast<std::uint32_t>(state.encounter.particle_id)));
     if (!in || node == geometry.end()) {
       shocks::Fail("unknown node in curve shock sidecar");
     }

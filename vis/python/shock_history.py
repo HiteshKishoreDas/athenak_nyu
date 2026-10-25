@@ -56,11 +56,11 @@ def parse_observation(fields):
     return result
 
 
-def parse_event(row, lineage, generation):
+def parse_event(row, lineage, generation, signed_id=False):
     """Parse the unchanged 124-column event core shared by both carriers."""
     if len(row) != 124:
         raise HistoryError('Event requires 124 fields')
-    event = dict(lineage=lineage, particle_id=integer(row[0]),
+    event = dict(lineage=lineage, particle_id=integer(row[0],32 if signed_id else 64,signed=signed_id),
                  sequence=integer(row[1]), status=integer(row[2], 1),
                  flags=integer(row[3], 32), emission_generation=generation)
     event['identity'] = (lineage, event['particle_id'], event['sequence'])

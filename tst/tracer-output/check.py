@@ -193,11 +193,11 @@ def main():
         directory=run('large_ids','smooth',changes={'curve1/id':255,'time/nlim':4})
         d=read_run(directory)
         ids={node for cycle,node in d['curve_nodes']}
-        require(2**31<min(ids) and max(ids)<2**32,'unsigned 32-bit fixture not exercised')
+        require(-(1<<31)<=min(ids) and max(ids)<0 and min(p&((1<<32)-1) for p in ids)>1<<31,'signed high-bit fixture not exercised')
         geometry_ids={n['id'] for s in d['geometry'] for c in s['curves'] for n in c['nodes']}
-        require(ids==geometry_ids,'uint32 thermo/geometry identity mismatch')
+        require(ids==geometry_ids,'signed32 thermo/geometry identity mismatch')
         return dict(minimum_id=min(ids),maximum_id=max(ids),nodes=len(ids))
-    check('TO04_IO04_exact_uint32_above_2pow31',large_ids)
+    check('TO04_IO04_exact_signed32_high_bit',large_ids)
 
     def restart():
         # Use an absolute journal location exactly as the existing shock-restart tests do.

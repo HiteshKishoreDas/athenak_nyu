@@ -100,7 +100,7 @@ def main():
         directory=run('curve_only',{'curve1/id':255,'problem/flow':'acceleration',
                                    'problem/a1':.3,'problem/a2':.2})
         rows,times=read_curves(directory/'curve_thermo_history')
-        require(rows and 2**31 < min(p for g,p in rows) < 2**32,'unsigned 32-bit node IDs not exercised')
+        require(rows and -(1<<31) <= min(p for g,p in rows) and max(p for g,p in rows)<0,'signed high-bit node IDs not exercised')
         require(not (directory/'prtcl_thermo_history').exists(),'curve-only output requires particles')
         require(not (directory/'shock_events').exists(),'thermo unexpectedly depends on shocks')
         error=oracle(rows,True)
@@ -225,7 +225,7 @@ def main():
         source=next((work/'curve_only/curve_thermo_history').glob('*.csv'))
         directory=work/'reader_corruption';directory.mkdir(); path=directory/source.name
         text=source.read_text()
-        variants=[text.rsplit('\n',2)[0]+'\n',text.replace('ATHK_CURVE_THERMO 3','ATHK_CURVE_THERMO 9'),
+        variants=[text.rsplit('\n',2)[0]+'\n',text.replace('ATHK_CURVE_THERMO 4','ATHK_CURVE_THERMO 9'),
                   text.replace('node_id,curve_id','node_id,node_id')]
         for changed in variants:
             require(changed != text,'ineffective reader corruption fixture')

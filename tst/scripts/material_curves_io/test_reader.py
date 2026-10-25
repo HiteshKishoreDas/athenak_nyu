@@ -93,6 +93,32 @@ class ReaderTests(unittest.TestCase):
         broken=body.replace(str((255<<24)|1),str(1<<32))
         with self.assertRaises(ValueError):self.parse(complete(broken))
 
+    def test_signed32_sign_crossing_and_width(self):
+        rows=[]
+        for line in fixture().splitlines():
+            f=line.split()
+            if f[0]=='MATERIAL_CURVES':
+                line='MATERIAL_CURVES 5 ASCII 64 I32 I64 I32\nid_bits 0'
+            elif f[0]=='curve_columns':line=line.replace('id:u64','id:i32')
+            elif f[0]=='node_columns':line=line.replace(':u64',':i32')
+            elif f[0]=='curve':
+                f[1]='1';f[9]=str((1<<31)+1);line=' '.join(f)
+            elif f[0]=='node':
+                for j in range(1,6):
+                    value=int(f[j])&((1<<32)-1)
+                    f[j]=str(-(1<<31) if value==3 else value)
+                line=' '.join(f)
+            rows.append(line)
+        body='\n'.join(rows)+'\n';data=self.parse(complete(body))
+        self.assertEqual(data['id_layout'],(32,0,True))
+        self.assertEqual([n['id'] for n in data['curves'][0]['nodes']],[1,-(1<<31),2])
+        self.assertEqual(reader.node_curve_id(-(1<<31),curve_id_bits=0,signed=True),1)
+        self.assertEqual(reader.node_curve_id(-1,curve_id_bits=8,signed=True),255)
+        for value in (-(1<<31)-1,1<<31,0):
+            with self.assertRaises(ValueError):reader.node_curve_id(value,curve_id_bits=0,signed=True)
+        for text in (str(1<<31),str(-(1<<31)-1)):
+            with self.assertRaises(ValueError):self.parse(complete(body.replace(str(-(1<<31)),text)))
+
     def test_open_birth_large_ids_and_geometry(self):
         data = self.parse(complete(fixture()))
         curve = data["curves"][0]

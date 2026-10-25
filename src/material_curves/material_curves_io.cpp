@@ -35,7 +35,7 @@ std::string MaterialCurves::ThermoHistory(
   std::ostringstream out;
   out.imbue(std::locale::classic());
   out << std::setprecision(std::numeric_limits<Real>::max_digits10);
-  out << "# ATHK_CURVE_THERMO 3 " << mesh->ncycle << ' ' << mesh->time
+  out << "# ATHK_CURVE_THERMO 4 " << mesh->ncycle << ' ' << mesh->time
       << ' ' << nodes.size() << ' ' << global_variable::my_rank << ' '
       << global_variable::nranks << ' ' << curve_id_bits << '\n';
   out << "node_id,curve_id,birth,a,x1,x2,x3,gid,level";
@@ -61,11 +61,11 @@ constexpr std::uint64_t kOffset = 14695981039346656037ULL;
 constexpr std::uint64_t kPrime = 1099511628211ULL;
 constexpr std::uint64_t kCurveCap = 100000;
 constexpr std::uint64_t kMeshLeafCap = 10000000;
-const char *kCurveColumns = "curve_columns id:u32 closed:i32 winding:i64[3] "
+const char *kCurveColumns = "curve_columns id:i32 closed:i32 winding:i64[3] "
     "period:real unresolved_since:real reason:i32 next_sequence:u64 inserted:u64 "
     "migrations:u64 samples:u64 count:u64 length:real";
-const char *kNodeColumns = "node_columns id:u32 prev:u32 next:u32 parent_left:u32 "
-    "parent_right:u32 a:real birth:real anchor:i32 placement:i32 x:real[3] image:i64[3] "
+const char *kNodeColumns = "node_columns id:i32 prev:i32 next:i32 parent_left:i32 "
+    "parent_right:i32 a:real birth:real anchor:i32 placement:i32 x:real[3] image:i64[3] "
     "edge_length:real stretch:real curvature:real curvature_mask:i32";
 
 void Require(bool condition, const std::string &message) {
@@ -212,13 +212,16 @@ Curve DecodeCurve(const std::vector<std::string> &f) {
   return curve;
 }
 
-Node DecodeNode(const std::vector<std::string> &f) {
+Node DecodeNode(const std::vector<std::string> &f, bool unsigned_ids = false) {
+  auto id = [unsigned_ids](const std::string &text) {
+    return unsigned_ids ? SignedID(Integer<std::uint32_t>(text)) : Integer<NodeID>(text);
+  };
   Node node;
-  node.id = Integer<NodeID>(f[1]);
-  node.prev = Integer<NodeID>(f[2]);
-  node.next = Integer<NodeID>(f[3]);
-  node.parent_left = Integer<NodeID>(f[4]);
-  node.parent_right = Integer<NodeID>(f[5]);
+  node.id = id(f[1]);
+  node.prev = id(f[2]);
+  node.next = id(f[3]);
+  node.parent_left = id(f[4]);
+  node.parent_right = id(f[5]);
   node.a = Number(f[6]);
   node.birth = Number(f[7]);
   node.anchor = Integer<std::int32_t>(f[8]);
@@ -246,14 +249,15 @@ class Reader {
       input_(path, std::ios::binary) {
     Require(input_.is_open(), "cannot open curve file " + path);
     auto fields = Fields(7, "MATERIAL_CURVES");
-    Require((fields[1] == "3" || fields[1] == "4") && fields[2] == "ASCII"
-            && fields[4] == "U32" && fields[5] == "I64" && fields[6] == "I32",
-            "unsupported curve schema; restart requires v3/v4 compact IDs");
+    Require((fields[1] == "3" || fields[1] == "4" || fields[1] == "5") && fields[2] == "ASCII"
+            && fields[4] == (fields[1] == "5" ? "I32" : "U32")
+            && fields[5] == "I64" && fields[6] == "I32",
+            "unsupported curve schema; restart requires v3/v4/v5 compact IDs");
     header.precision = Integer<int>(fields[3]);
     Require(header.precision == 32 || header.precision == 64,
             "unsupported Real precision");
     header.version = Integer<int>(fields[1]);
-    if (header.version==4) {
+    if (header.version>=4) {
       auto bits=Fields(2,"id_bits");
       header.curve_id_bits=Integer<unsigned>(bits[1]);
       Require(header.curve_id_bits<=30,"invalid curve_id_bits metadata");
@@ -338,12 +342,20 @@ class Reader {
       if (mesh) Require(loc == mesh->lloc_eachmb[i], "AMR fluid leaf identity mismatch");
       header.amr_clocks.push_back(clock);
     }
-    std::string curve_columns=kCurveColumns;
+    std::string curve_columns=kCurveColumns, node_columns=kNodeColumns;
+    if (header.version<5) {
+      curve_columns.replace(curve_columns.find("id:i32"),6,"id:u32");
+      for (const auto *name : {"id", "prev", "next", "parent_left", "parent_right"}) {
+        std::string column=std::string(name)+":i32";
+        node_columns.replace(node_columns.find(column),column.size(),
+                             std::string(name)+":u32");
+      }
+    }
     if (header.version==3) {
       const auto pos=curve_columns.find("next_sequence:u64");
       curve_columns.replace(pos,17,"next_sequence:u32");
     }
-    Require(Line() == curve_columns && Line() == kNodeColumns,
+    Require(Line() == curve_columns && Line() == node_columns,
             "unsupported column schema");
   }
   Curve Next() {
@@ -375,7 +387,7 @@ class Reader {
     curve.nodes.reserve(static_cast<std::size_t>(count));
     for (std::uint64_t i = 0; i < count; ++i) {
       f = Fields(20, "node");
-      Node node = DecodeNode(f);
+      Node node = DecodeNode(f,header.version<5);
       for (int j = 0; j < 3; ++j) {
         long double lift = (static_cast<long double>(node.x[j])-header.domain[2*j])
             / (static_cast<long double>(header.domain[2*j+1])-header.domain[2*j]);
@@ -394,8 +406,8 @@ class Reader {
               && curvature >= 0) || (mask != 0 && std::isnan(curvature))),
               "invalid curvature diagnostic/mask");
       Require(CurveID(node.id,header.curve_id_bits) == curve.id
-              && (node.id & MaxSequence(header.curve_id_bits)) != 0
-              && (node.id & MaxSequence(header.curve_id_bits)) < curve.next_sequence,
+              && (IDBits(node.id) & MaxSequence(header.curve_id_bits)) != 0
+              && (IDBits(node.id) & MaxSequence(header.curve_id_bits)) < curve.next_sequence,
               "node ID namespace or allocator mismatch");
       Require(node.a >= 0 && node.a <= curve.period
               && (!curve.closed || node.a < curve.period)
@@ -433,7 +445,8 @@ class Reader {
                 && left != nodes.end() && right != nodes.end()
                 && n.parent_left != n.id && n.parent_right != n.id
                 && n.parent_left != n.parent_right
-                && n.parent_left < n.id && n.parent_right < n.id
+                && IDBits(n.parent_left) < IDBits(n.id)
+                && IDBits(n.parent_right) < IDBits(n.id)
                 && left->second->birth <= n.birth
                 && right->second->birth <= n.birth, "invalid insertion provenance");
         Real lower = left->second->a, upper = right->second->a;
@@ -596,7 +609,7 @@ void WriteFile(const MaterialCurves &m, const std::string &path,
     file.open(path+".tmp", std::ios::binary | std::ios::trunc);
     Require(file.is_open(), "cannot create curve output " + path);
     auto out = Stream();
-    out << "MATERIAL_CURVES 4 ASCII " << 8*sizeof(Real) << " U32 I64 I32\nid_bits "
+    out << "MATERIAL_CURVES 5 ASCII " << 8*sizeof(Real) << " I32 I64 I32\nid_bits "
         << m.curve_id_bits << "\nstate "
         << (fluid.empty() ? "snapshot" : "checkpoint") << ' ' << m.mesh->time << ' '
         << m.mesh->ncycle << ' ' << counts[0] << ' ' << counts[1] << "\ndomain";

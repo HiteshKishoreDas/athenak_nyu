@@ -59,7 +59,7 @@ void MaterialCurves::ConfigureShocks(ParameterInput *pin) {
   if (!valid) Fail("invalid curve shock detector, lineage, capacity or ghost width");
   std::ostringstream contract;
   contract << std::setprecision(std::numeric_limits<Real>::max_digits10)
-           << "curve-node-history-v3 " << curve_id_bits << ' '
+           << "curve-node-history-v4 " << curve_id_bits << ' '
            << SHOCK_IMPLEMENTATION_HASH << ' '
            << sizeof(ShockNode) << ' ' << c.gamma << ' ' << c.width << ' '
            << c.min_mach << ' ' << c.mach_max << ' ' << c.grad_floor << ' '
@@ -126,7 +126,7 @@ void MaterialCurves::ObserveShocks(bool births_only) {
     auto &state=entry.encounter;
     auto &o=samples[p].observation;
     if (state.last_generation==UINT64_MAX) {
-      state.particle_id=node.id;
+      state.particle_id=IDBits(node.id);
       entry.birth=node.birth;
     }
     if (o.time<entry.birth || state.sequence==UINT64_MAX ||

@@ -18,10 +18,10 @@ def select_curve(data, curve_id=None, node_id=None, field='pressure'):
     if node_id is not None:
         try:
             layout=data.get('curve_id_layout')
-            inferred = (node_curve_id(node_id,curve_id_bits=layout[1]) if layout and layout[0]==32
+            inferred = (node_curve_id(node_id,curve_id_bits=layout[1],signed=len(layout)==3) if layout and layout[0]==32
                         else node_curve_id(node_id,32) if layout else node_curve_id(node_id))
         except ValueError as exc:
-            raise ValueError('node ID must be an exact valid current uint32 or historical uint64 ID') from exc
+            raise ValueError('node ID must be an exact valid declared curve node ID') from exc
         if curve_id is not None and inferred != curve_id:
             raise ValueError('node ID belongs to a different curve')
         curve_id = inferred
@@ -59,7 +59,8 @@ def select_curve(data, curve_id=None, node_id=None, field='pressure'):
     ids.update(o['node_id'] for o in samples)
     ids.update(e['node_id'] for records in events.values() for e in records)
     if node_id is None:
-        node_id = min(ids)
+        layout=data.get('curve_id_layout')
+        node_id = min(ids,key=lambda n:n & ((1<<32)-1)) if layout and len(layout)==3 else min(ids)
     if node_id not in ids:
         raise ValueError('node ID not found in selected curve')
     history = sorted((o for o in samples if o['node_id']==node_id),key=lambda o:o['cycle'])

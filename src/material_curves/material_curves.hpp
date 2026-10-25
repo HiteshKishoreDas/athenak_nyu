@@ -17,7 +17,13 @@
 
 namespace material_curves {
 using Vec = std::array<Real, 3>;
-using NodeID = std::uint32_t;
+using NodeID = std::int32_t;
+// Pack with unsigned arithmetic; expose the same 32 bits as a signed identity.
+inline std::uint32_t IDBits(NodeID id) { return static_cast<std::uint32_t>(id); }
+inline NodeID SignedID(std::uint32_t bits) {
+  return bits <= INT32_MAX ? static_cast<NodeID>(bits) :
+      static_cast<NodeID>(static_cast<std::int64_t>(bits)-(INT64_C(1) << 32));
+}
 inline unsigned SequenceBits(unsigned curve_bits) { return 32-curve_bits; }
 inline std::uint64_t MaxSequence(unsigned curve_bits) {
   return (UINT64_C(1) << SequenceBits(curve_bits))-1;
@@ -26,7 +32,7 @@ inline NodeID MaxCurveID(unsigned curve_bits) {
   return curve_bits ? (NodeID{1} << curve_bits)-1 : 1;
 }
 inline NodeID CurveID(NodeID node, unsigned curve_bits) {
-  return curve_bits ? node >> SequenceBits(curve_bits) : 1;
+  return curve_bits ? IDBits(node) >> SequenceBits(curve_bits) : 1;
 }
 
 // IDs never pass through Real. The (curve, sequence) namespace is bounded explicitly.

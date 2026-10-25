@@ -154,3 +154,20 @@ not the original author's undocumented motivation. Binary output itself does
 not require signed IDs; a declared unsigned curve identity can occupy the same
 four bytes without changing existing particle-v2 interpretation. No source or
 test changes in this explanation.
+
+## 2026-10-25: signed curve identities implemented
+
+User requested signed curve IDs too. Node/curve/link/parent storage is int32;
+the configurable 32-bit packing is retained, so high-bit node IDs are negative.
+Zero alone remains missing. Explicit unsigned arithmetic decodes namespaces and
+creation order; no sign bit or capacity is discarded. Existing particle THP v2
+is unchanged. This removes the signed-ID interpretation issue for future curve
+THP integration but does not implement that writer or mesh shock BIN variables.
+
+Independent persistence/simplicity review found/fixed an unsigned temporary
+checkpoint-key vector. Reviewed source passed110 local Serial/double check groups,
+including signed-ID live AMR/restart, INT32_MIN insertion, -1 exhaustion and an
+unsigned v4/B0 full-width geometry restart. Historical analysis retains original
+unsigned identities. Evidence, commands and limitations are consolidated in
+`evidence/curve-ids/2026-10-25/ledger.md`; scientific review and MPI/GPU/cluster
+runtime qualification remain pending. Fourteen actual plots accompany the bundle.

@@ -94,13 +94,18 @@ inline void PutObservation(std::ostream &out, const shocks::Observation &o) {
   for (Real x : o.downstream) out << ',' << x;
 }
 
-inline void PutEvent(std::ostream &out, const shocks::Event &e, bool newline = true) {
-  out << e.particle_id << ',' << e.sequence << ',' << e.status << ',' << e.flags;
+template<typename ID>
+inline void PutEvent(std::ostream &out, const shocks::Event &e, bool newline, ID id) {
+  out << id << ',' << e.sequence << ',' << e.status << ',' << e.flags;
   for (const auto *o : {&e.pre, &e.first, &e.last, &e.post, &e.representative}) {
     out << ',';
     PutObservation(out,*o);
   }
   if (newline) out << '\n';
+}
+
+inline void PutEvent(std::ostream &out, const shocks::Event &e, bool newline = true) {
+  PutEvent(out,e,newline,e.particle_id);
 }
 
 }  // namespace shocks

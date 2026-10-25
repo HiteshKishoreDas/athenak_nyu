@@ -151,7 +151,29 @@ def main():
         path.write_text(path.read_text().replace('exact-config','curve-node-history-v3 31 HASH'))
         rejected(lambda:read_history(empty))
         rejected(lambda:read_suspended(empty))
-    print('Curve IO current uint32/historical uint64, metadata, censoring and adversarial checks PASS')
+    with tempfile.TemporaryDirectory() as directory:
+        root=Path(directory);contract='curve-node-history-v4 8 HASH'
+        (root/'manifest.rank0').write_text('AKCURVE-SHOCK-EVENTS 1\ntest\n'+contract+'\n')
+        signed=row();signed[0]='-1'
+        for generation in range(4):
+            path=write_chunk(root,generation,[signed] if generation==3 else [])
+            path.write_text(path.read_text().replace('exact-config',contract))
+        event=read_history(root)[0]
+        assert event['node_id']==event['particle_id']==-1 and event['curve_id']==255
+        assert event['identity']==('curve_node','test',-1,SEQUENCE)
+        rejected(lambda:parse_event(signed[:124],'test',3))  # particle reader remains unsigned
+        trace=['-1','0','1','21']+observation(2,2,True)+['1','4','.0625','.0625','.0625']
+        path=root/'trace2.rank0.csv';path.write_text(csv_line(trace))
+        assert read_trace(path)[-1]['curve_id']==255
+        (root/'manifest.rank0').unlink()
+        rejected(lambda:read_trace(path))
+        assert read_trace(path,curve_id_bits=8,signed=True)[-1]['curve_id']==255
+        (root/'manifest.rank0').write_text('AKCURVE-SHOCK-EVENTS 1\ntest\n'+contract+'\n')
+        for value in ('2147483648','-2147483649','4294967295','0'):
+            broken=signed.copy();broken[0]=value
+            path=write_chunk(root,3,[broken]);path.write_text(path.read_text().replace('exact-config',contract))
+            rejected(lambda:read_history(root))
+    print('Curve IO signed32/unsigned32/historical64, metadata, censoring and adversarial checks PASS')
 
 
 if __name__ == '__main__':

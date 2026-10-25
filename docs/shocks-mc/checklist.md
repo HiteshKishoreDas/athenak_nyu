@@ -108,3 +108,21 @@ Current evidence: `evidence/curve-ids/2026-10-24/ledger.md`.
 - [ ] MPI/GPU/cluster/runtime-budget and human scientific gates remain pending.
 
 Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
+
+### 2026-10-25 — signed32 curve IDs (user-directed)
+
+- [x] Curve/node/link/parent storage signed32; full32-bit namespace retained.
+- [x] Negative IDs valid; zero alone missing; unsigned arithmetic for packing/ancestry.
+- [x] MPI_INT32_T identity transport; shared encounter algorithm/ABI unchanged.
+- [x] Versioned interpretation in existing geometry/thermo/event file families.
+- [x] Historical analysis preserves unsigned identities; mixed layouts reject.
+- [x] 110 local Serial/double groups plus isolated readers/IO and state checks pass.
+- [x] Positive-parent/negative-child insertion and -1 exhaustion fixtures retained.
+- [x] Negative-ID live AMR events and active restart match exactly after ID remap.
+- [x] Actual signed-ID/pressure/restart plots produced; evidence ledger in
+  `evidence/curve-ids/2026-10-25/ledger.md`.
+- [x] Independent signed persistence/simplicity review; checkpoint-key conversion fixed;
+  optional legacy v4/B0 full-width restart regression added and passed.
+- [ ] Seal signed-ID source/runtime/plots artifact (record manifest after packaging).
+- [ ] MPI runtime/GPU/cluster budgets and human scientific approval remain pending.
+- [ ] Curve THP writer and mesh shock BIN variables remain separate next work.

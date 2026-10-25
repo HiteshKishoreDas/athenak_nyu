@@ -77,7 +77,7 @@ def main():
     check('CR02_AMR_birth_no_parent_history',newborn)
 
     def large():
-        directory=runs/'large_ids';node=(255<<24)|1
+        directory=runs/'large_ids';node=((255<<24)|1)-(1<<32)
         command=[sys.executable,str(ROOT/'vis/python/plot_curves.py'),str(directory),
                  '--node-id',str(node),'--output',str(out/'large-id.png')]
         result=subprocess.run(command,capture_output=True,text=True,timeout=60)
@@ -87,7 +87,7 @@ def main():
         row=json.loads(result.stdout);assert row['node_id']==node and row['curve_id']==255
         report['plots'].append(row)
         return dict(exact_id=row['node_id'],cli_exit=0)
-    check('CR03_uint32_CLI',large)
+    check('CR03_signed32_CLI',large)
 
     def geometry_only():
         directory=out/'geometry-only';directory.mkdir()
@@ -130,7 +130,7 @@ def main():
     def invalid():
         rejected(lambda:select_curve(new,curve_id=0),'curve ID')
         rejected(lambda:select_curve(new,curve_id=8),'not found')
-        rejected(lambda:select_curve(new,node_id=2**64),'uint64')
+        rejected(lambda:select_curve(new,node_id=2**64),'valid declared curve node ID')
         rejected(lambda:select_curve(new,curve_id=7,node_id=(8<<24)|1),'different curve')
         rejected(lambda:select_curve(new,node_id=(7<<24)|999999),'not found')
         rejected(lambda:select_curve(new,field='not_saved'),'available fields')

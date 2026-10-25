@@ -72,7 +72,7 @@ def main():
     checkpoint=next((seed/'rst').glob('*.rst'))
     sidecar=Path(str(checkpoint)+'.curves')
     original=sidecar.read_bytes();state=material_curves.read(sidecar)
-    require(state['version']==4 and len(state['curves'][0]['nodes'])==3,'seed not compact/adapted')
+    require(state['version']==5 and len(state['curves'][0]['nodes'])==3,'seed not compact/adapted')
 
     def patch(counter,mode):
         rows=original[:original.rfind(b'commit ')].decode().splitlines()
@@ -91,13 +91,13 @@ def main():
         directory=run('last_id',restart=checkpoint,overrides=('time/nlim=1',))
         result=material_curves.read(directory/'material.curves.final.txt');curve=result['curves'][0]
         ids=[n['id'] for n in curve['nodes']]
-        require(len(ids)==4 and max(ids)==(1<<32)-1,'last uint32 ID not allocated exactly')
+        require(len(ids)==4 and -1 in ids,'last 32-bit bit pattern not allocated as signed -1')
         require(curve['next_sequence']==limit+1,'exhausted allocator sentinel missing')
         for n in curve['nodes']:
-            require(node_curve_id(n['id'],curve_id_bits=args.curve_bits)==curve_id,'wrong high byte')
+            require(node_curve_id(n['id'],curve_id_bits=args.curve_bits,signed=True)==curve_id,'wrong high byte')
         report['last_id_state']=str(directory/'material.curves.final.txt')
-        return dict(node_ids=ids,last_id=max(ids),next_sequence=curve['next_sequence'])
-    check('ID01_last_sequence_UINT32_MAX_and_links',last_id)
+        return dict(node_ids=ids,last_id=-1,next_sequence=curve['next_sequence'])
+    check('ID01_last_sequence_signed_minus1_and_links',last_id)
     def batch():
         patch(limit,'batch')
         directory=run('batch_limit',restart=checkpoint,overrides=('time/nlim=1',))
@@ -130,8 +130,8 @@ def main():
         return dict(UINT32_overflow_rejected=True)
     check('ID05_persistent_link_overflow_rejected',corrupt_links)
     def legacy():
-        sidecar.write_bytes(original.replace(b'MATERIAL_CURVES 4 ASCII',b'MATERIAL_CURVES 2 ASCII',1))
-        run('old_checkpoint',restart=checkpoint,overrides=('time/nlim=1',),reject='restart requires v3/v4 compact IDs')
+        sidecar.write_bytes(original.replace(b'MATERIAL_CURVES 5 ASCII',b'MATERIAL_CURVES 2 ASCII',1))
+        run('old_checkpoint',restart=checkpoint,overrides=('time/nlim=1',),reject='restart requires v3/v4/v5 compact IDs')
         if args.historical_run:
             geometry=next(args.historical_run.glob('*.curves.*.txt'))
             old=material_curves.read(geometry)
@@ -139,6 +139,45 @@ def main():
             require(old['version']==2 and rows and all(p>1<<32 for g,p in rows),'historical readers lost 64-bit IDs')
         return dict(old_restart_rejected=True,historical_analysis=bool(args.historical_run))
     check('ID06_legacy_analysis_and_explicit_restart_rejection',legacy)
+    if args.curve_bits==0:
+        def sign_crossing():
+            patch(1<<31,'single')
+            directory=run('sign_crossing',restart=checkpoint,overrides=('time/nlim=1',))
+            curve=material_curves.read(directory/'material.curves.final.txt')['curves'][0]
+            ids=[n['id'] for n in curve['nodes']]
+            require(len(ids)==4 and -(1<<31) in ids and curve['next_sequence']==(1<<31)+1,
+                    'sign crossing lost allocation, ancestry or links')
+            report['sign_crossing_state']=str(directory/'material.curves.final.txt')
+            return dict(node_ids=ids,next_sequence=curve['next_sequence'])
+        check('ID07_INT32_MIN_insertion_with_positive_parents',sign_crossing)
+        def legacy_v4_full_sequence():
+            checkpoint=next((work/'last_id/rst').glob('*.rst'))
+            path=Path(str(checkpoint)+'.curves');original=path.read_bytes()
+            rows=original[:original.rfind(b'commit ')].decode().splitlines()
+            for i,line in enumerate(rows):
+                f=line.split()
+                if f[0]=='MATERIAL_CURVES':rows[i]='MATERIAL_CURVES 4 ASCII 64 U32 I64 I32'
+                elif f[0]=='curve_columns':rows[i]=line.replace('id:i32','id:u32')
+                elif f[0]=='node_columns':
+                    for name in ('id','prev','next','parent_left','parent_right'):line=line.replace(name+':i32',name+':u32')
+                    rows[i]=line
+                elif f[0]=='node':
+                    for j in range(1,6):f[j]=str(int(f[j])&((1<<32)-1))
+                    rows[i]=' '.join(f)
+            try:
+                path.write_bytes(seal('\n'.join(rows)+'\n'))
+                legacy=material_curves.read(path,fluid_path=checkpoint)
+                require(legacy['id_layout']==(32,0) and legacy['curves'][0]['next_sequence']==1<<32,
+                        'legacy v4 fixture missing wide exhausted counter')
+                require((1<<32)-1 in [n['id'] for n in legacy['curves'][0]['nodes']],
+                        'legacy v4 fixture missing UINT32_MAX')
+                directory=run('legacy_v4_full_sequence',restart=checkpoint,overrides=('time/nlim=2',))
+                curve=material_curves.read(directory/'material.curves.final.txt')['curves'][0]
+                require(-1 in [n['id'] for n in curve['nodes']] and curve['next_sequence']==1<<32,
+                        'legacy v4 full-width identity/counter changed on restart')
+                return dict(legacy_uint32_max=-1,next_sequence=curve['next_sequence'],geometry_restart_exact_ID_bits=True)
+            finally:path.write_bytes(original)
+        check('ID08_legacy_unsigned_v4_B0_full_width_restart',legacy_v4_full_sequence)
     sidecar.write_bytes(original);save();print(json.dumps(report['checks'],indent=2))
     return int(any(c['status']!='pass' for c in report['checks']))
 

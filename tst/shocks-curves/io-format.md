@@ -26,9 +26,11 @@ nodes receive fresh state, never copied parent histories. No particle schema cha
   `read_suspended(directory,generation=None)`, `read_trace(path)` keyed by node ID.
   Events retain `particle_id` as the shared core field and add `node_id`; curve ID
   uses the declared layout of the 32-bit packed ID. Current contracts start with
-  `curve-node-history-v3 B`, where B is the configured curve-bit count (zero means
+  `curve-node-history-v4 B`, where B is the configured curve-bit count (zero means
   one logical curve ID 1). Historical v2 means fixed 8/24; v1 means 32/32.
-  Traces use their manifests or explicit `curve_id_bits` argument; 32-bit trace
+  Current IDs are signed32; negative values are valid and zero is missing.
+  Packing and namespace decoding retain all bits. Historical v3 is unsigned32.
+  Traces use their manifests or explicit `curve_id_bits` and `signed=True` arguments; 32-bit trace
   IDs are never guessed from their numeric value. Python curve identities include the carrier:
   `('curve_node',lineage,node_id,sequence)`, distinct from the unchanged MC triple
   even when both carriers use identical numeric IDs. Censored views stay separate

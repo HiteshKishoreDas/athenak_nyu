@@ -147,7 +147,7 @@ def analyze(directory, physical=False):
     final_nodes = nodes(states[max(states)])
     for e in events+suspended:
         n = final_nodes[e['node_id']]
-        require(e['node_id'] >> 24 == e['curve_id'], 'curve/node namespace mismatch')
+        require((e['node_id'] & ((1<<32)-1)) >> 24 == e['curve_id'], 'curve/node namespace mismatch')
         require(e['birth'] == n['birth'], 'event birth provenance mismatch')
         for name in ('pre','first','last','post','representative'):
             if e[name]['valid']:

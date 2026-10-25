@@ -55,10 +55,12 @@ Particle output stays `.thp` v2, with unchanged record layout. Curve output is:
 
 `curve_thermo_history/<basename>.<id>.cycle<C>.rank<R>.csv`
 
-Each current curve chunk declares version 3, cycle, time, row count, rank and rank
-count, followed by `curve_id_bits`. IDs remain unsigned 32-bit; zero curve bits
+Each current curve chunk declares version 4, cycle, time, row count, rank and rank
+count, followed by `curve_id_bits`. IDs and links use signed 32-bit storage; zero curve bits
 use all 32 bits for a single curve's sequence. The reader retains historical v1
-(64-bit IDs) and v2 (fixed 8/24 IDs), and rejects mixed encodings in a stream.
+(64-bit IDs), v2 (fixed unsigned 8/24 IDs), and v3 (variable unsigned32 IDs), and rejects mixed encodings in a stream.
+Negative node IDs are valid; the reader decodes the declared bit pattern. Zero
+is reserved. Existing particle THP v2 interpretation is unchanged.
 Columns are `node_id,curve_id,birth,a,x1,x2,x3,gid,level`, followed by canonical
 field names. Integers retain full decimal width; never load node IDs through a
 float. `a` is the immutable material label, positions are continuous periodic
@@ -128,7 +130,7 @@ viewer and four explained scientific figures from actual native records. Add
 actual failed and corrected restart clocks. NumPy
 and Matplotlib use the existing environment; no dependency was added.
 
-The gates cover curve-only unsigned 32-bit IDs above the signed range, aliases/shared clocks, unchanged
+The gates cover curve-only signed 32-bit IDs with the high bit set, aliases/shared clocks, unchanged
 particle bytes and geometry, MC coexistence without shocks, live refinement and
 coarsening, fresh node births, exact restart, simultaneous shock sampling, cycle
 and time cadence, unavailable fields, corrupt chunks, an independent spatial cell

@@ -67,8 +67,8 @@ def main():
             cid=(1<<bits)-1 if bits else 1
             directory=run('bits_'+str(bits),bits,cid)
             data=read_run(directory);nodes={p for g,p in data['curve_nodes']}
-            require(data['curve_id_layout']==(32,bits),'missing or wrong declared layout')
-            require(len(nodes)==2 and all(material_curves.node_curve_id(p,curve_id_bits=bits)==cid for p in nodes),'wrong identity decoding')
+            require(data['curve_id_layout']==(32,bits,True),'missing or wrong declared layout')
+            require(len(nodes)==2 and all(material_curves.node_curve_id(p,curve_id_bits=bits,signed=True)==cid for p in nodes),'wrong identity decoding')
             require(select_curve(data,node_id=min(nodes))['curve_id']==cid,'CLI selection inferred wrong curve')
             require(not data['curve_events'] and len(data['geometry'])>0,'empty-journal fixture missing')
             require('node ID bits: curve='+str(bits) in (directory/'run.log').read_text(),'startup split summary missing')
@@ -85,29 +85,32 @@ def main():
         return dict(rejected_inputs=8)
     check('VB02_checked_input_and_single_curve_guards',guards)
     zero={}
-    def remapped(data):
+    def remapped(data,bits=0,cid=1):
         data=copy.deepcopy(data)
-        def node(old):return old&((1<<24)-1) if old else 0
-        data['curve_nodes']={(g,node(p)):dict(o,node_id=node(p),curve_id=1) for (g,p),o in data['curve_nodes'].items()}
+        def node(old):
+            if not old:return 0
+            value=((cid<<(32-bits)) if bits else 0)|(old&((1<<24)-1))
+            return value if value<1<<31 else value-(1<<32)
+        data['curve_nodes']={(g,node(p)):dict(o,node_id=node(p),curve_id=cid) for (g,p),o in data['curve_nodes'].items()}
         for key in ('curve_events','curve_suspended'):
             for e in data[key]:
-                e['particle_id']=e['node_id']=node(e['node_id']);e['curve_id']=1
+                e['particle_id']=e['node_id']=node(e['node_id']);e['curve_id']=cid
                 e['identity']=(*e['identity'][:2],e['node_id'],e['identity'][3])
         for state in data['geometry']:
             for curve in state['curves']:
-                curve['id']=1
+                curve['id']=cid
                 for n in curve['nodes']:
                     for key in ('id','prev','next','parent_left','parent_right'):n[key]=node(n[key])
         return data
     def physical(fixture):
         directory=run('zero_'+fixture,fixture=fixture)
         data=read_run(directory);baseline=read_run(reference/fixture)
-        require(baseline['curve_id_layout']==(32,8),'reference must use default eight curve bits')
+        require(baseline['curve_id_layout'] in ((32,8),(32,8,True)),'reference must use default eight curve bits')
         expected=remapped(baseline)
         for key in ('particles','curve_nodes','particle_times','curve_times','particle_events','curve_events','particle_suspended','curve_suspended'):
             require(normalized(data[key])==normalized(expected[key]),fixture+' changed '+key)
         require(geometry_by_cycle(data)==geometry_by_cycle(expected),fixture+' geometry changed')
-        require(data['curve_id_layout']==(32,0),'zero layout not preserved')
+        require(data['curve_id_layout']==(32,0,True),'zero layout not preserved')
         zero[fixture]=directory
         return dict(curve_samples=len(data['curve_nodes']),curve_events=len(data['curve_events']),all_records_exact_after_ID_remap=True)
     check('VB03_zero_bit_planar_particles_and_real_encounters',lambda:physical('planar'))
@@ -155,7 +158,19 @@ def main():
         plain_cp=next((plain/'rst').glob('*.rst'));plain_side=Path(str(plain_cp)+'.curves')
         shutil.copy2(plain_side,plain/'original-v4.curves')
         body=plain_side.read_bytes();lines=body[:body.rfind(b'commit ')].decode().splitlines()
-        lines=[line.replace('MATERIAL_CURVES 4','MATERIAL_CURVES 3').replace('next_sequence:u64','next_sequence:u32') for line in lines if not line.startswith('id_bits ')]
+        converted=[]
+        for line in lines:
+            f=line.split()
+            if f[0]=='id_bits':continue
+            if f[0]=='MATERIAL_CURVES':line='MATERIAL_CURVES 3 ASCII 64 U32 I64 I32'
+            elif f[0]=='curve_columns':line=line.replace('id:i32','id:u32').replace('next_sequence:u64','next_sequence:u32')
+            elif f[0]=='node_columns':
+                for name in ('id','prev','next','parent_left','parent_right'):line=line.replace(name+':i32',name+':u32')
+            elif f[0]=='node':
+                for j in range(1,6):f[j]=str(int(f[j])&((1<<32)-1))
+                line=' '.join(f)
+            converted.append(line)
+        lines=converted
         plain_side.write_bytes(seal('\n'.join(lines)+'\n'))
         run('plain_v3_resume',restart=plain_cp,overrides=('time/nlim=5',))
         return dict(default_v3_geometry_restart=True)
@@ -178,6 +193,25 @@ def main():
         else:raise ValueError('invalid thermo layout accepted')
         return dict(repaired_checksum_checkpoint_and_thermo_layout_rejected=True)
     check('VB08_corrupt_layout_metadata',corrupt_layout_metadata)
+    def signed_shock_restart():
+        directory=run('signed_amr_shock',bits=8,curve=255,fixture='amr_shock')
+        data=read_run(directory);expected=remapped(read_run(reference/'amr_shock'),bits=8,cid=255)
+        for key in ('particles','curve_nodes','particle_times','curve_times','particle_events','curve_events','particle_suspended','curve_suspended'):
+            require(normalized(data[key])==normalized(expected[key]),'signed AMR changed '+key)
+        require(geometry_by_cycle(data)==geometry_by_cycle(expected),'signed AMR geometry changed')
+        require(all(p<0 for g,p in data['curve_nodes']) and data['curve_events'], 'negative-ID shock fixture ineffective')
+        shared=work/'signed-restart-journal'
+        seed=run('signed_restart_seed',bits=8,curve=255,fixture='amr_shock',changes={'time/nlim':13,'output1/dcycle':-1,'shock_tracking/directory':str(shared)})
+        cp=next((seed/'rst').glob('*.rst'))
+        resumed=run('signed_restart_resume',bits=8,curve=255,fixture='amr_shock',restart=cp,overrides=('time/nlim=-1',))
+        a=read_run(seed,shock_directory=str(shared));b=read_run(resumed,shock_directory=str(shared))
+        for key in ('particles','curve_nodes','particle_times','curve_times'):
+            require(normalized(a[key]|b[key])==normalized(data[key]),'negative-ID restart changed '+key)
+        for key in ('particle_events','curve_events','particle_suspended','curve_suspended'):
+            require(normalized(b[key])==normalized(data[key]),'negative-ID restart changed '+key)
+        require(select_curve(data,node_id=min(p for g,p in data['curve_nodes']))['curve_id']==255,'negative CLI decoding failed')
+        return dict(curve_samples=len(data['curve_nodes']),curve_events=len(data['curve_events']),negative_IDs=True,all_records_exact_after_ID_remap=True,restart_exact=True)
+    check('VB09_signed_negative_ID_live_AMR_events_and_restart',signed_shock_restart)
     save();print(json.dumps(report['checks'],indent=2));return int(any(c['status']!='pass' for c in report['checks']))
 
 

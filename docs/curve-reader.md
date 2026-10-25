@@ -83,7 +83,9 @@ The script loads curve data into memory using the existing reader caps; it is no
 a streaming analysis tool or a production memory qualification. Optional raw
 per-step flags remain accessible through `curve_shock_history.read_trace`. Keep
 the rank manifest alongside a trace for automatic layout decoding. For an isolated
-32-bit trace, explicitly pass `curve_id_bits=B`; missing layout is rejected.
+32-bit trace, explicitly pass `curve_id_bits=B` and `signed=True` for current signed IDs;
+missing layout is rejected. `id_layout=(32,B,True)` declares signed storage; older
+unsigned layouts retain `(32,B)`. Never discard negative IDs as missing.
 
 ## Reproduce checks
 
@@ -97,7 +99,7 @@ MPLCONFIGDIR=/private/tmp/athenak-lagrangian-mpl \
 ```
 
 This checks actual saved planar/AMR/3D datasets, scheduled/control equality, exact
-current uint32 and historical uint64 CLI IDs, optional missing diagnostics, particle IO opt-out with unchanged
+current signed32, previous unsigned32 and historical uint64 CLI IDs, optional missing diagnostics, particle IO opt-out with unchanged
 default strictness, winding closure, invalid selections, input corruption and
 figure preservation. No simulation is launched by the reader checks. See
 `evidence/tracer-output/2026-10-24/curve-reader-ledger.md` for the original reader results; `existing-formats-ledger.md` records the format-removal checks and new plots.

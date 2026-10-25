@@ -149,8 +149,8 @@ NodeID MaterialCurves::NewID(Curve &c) {
       c.next_sequence > MaxSequence(curve_id_bits)) {
     Fail("curve/sequence ID namespace exhausted");
   }
-  const NodeID prefix=curve_id_bits ? c.id << SequenceBits(curve_id_bits) : 0;
-  return prefix | static_cast<NodeID>(c.next_sequence++);
+  const auto prefix=curve_id_bits ? IDBits(c.id) << SequenceBits(curve_id_bits) : 0;
+  return SignedID(prefix | static_cast<std::uint32_t>(c.next_sequence++));
 }
 
 void MaterialCurves::Links(Curve &c) {
@@ -436,8 +436,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
                 recv.data(), rc3.data(), rd3.data(), MPI_DOUBLE, MPI_COMM_WORLD);
   MPI_Alltoallv(sendg.data(), sc.data(), sd.data(), MPI_INT,
                 recvg.data(), rc.data(), rd.data(), MPI_INT, MPI_COMM_WORLD);
-  MPI_Alltoallv(sendid.data(), sc.data(), sd.data(), MPI_UINT32_T,
-                recvid.data(), rc.data(), rd.data(), MPI_UINT32_T, MPI_COMM_WORLD);
+  MPI_Alltoallv(sendid.data(), sc.data(), sd.data(), MPI_INT32_T,
+                recvid.data(), rc.data(), rd.data(), MPI_INT32_T, MPI_COMM_WORLD);
 #else
   recv=send; recvg=sendg; recvid=sendid;
 #endif
@@ -493,8 +493,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
     MPI_Alltoallv(sampled.data(),rc3.data(),rd3.data(),MPI_ATHENA_REAL,
                   returned_values.data(),sc3.data(),sd3.data(),MPI_ATHENA_REAL,
                   MPI_COMM_WORLD);
-    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_UINT32_T,
-                  backid.data(),sc.data(),sd.data(),MPI_UINT32_T,MPI_COMM_WORLD);
+    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_INT32_T,
+                  backid.data(),sc.data(),sd.data(),MPI_INT32_T,MPI_COMM_WORLD);
 #else
     returned_values=std::move(sampled); backid=recvid;
 #endif
@@ -540,8 +540,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
     }
     MPI_Alltoallv(host.data(),rc3.data(),rd3.data(),MPI_BYTE,
                   returned_samples.data(),sc3.data(),sd3.data(),MPI_BYTE,MPI_COMM_WORLD);
-    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_UINT32_T,
-                  backid.data(),sc.data(),sd.data(),MPI_UINT32_T,MPI_COMM_WORLD);
+    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_INT32_T,
+                  backid.data(),sc.data(),sd.data(),MPI_INT32_T,MPI_COMM_WORLD);
 #else
     for (int p=0; p<nr; ++p) returned_samples[p]=host(p);
     backid=recvid;
@@ -571,8 +571,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
 #if MPI_PARALLEL_ENABLED
   MPI_Alltoallv(velocity.data(), rc3.data(), rd3.data(), MPI_DOUBLE,
                 returned.data(), sc3.data(), sd3.data(), MPI_DOUBLE, MPI_COMM_WORLD);
-  MPI_Alltoallv(recvid.data(), rc.data(), rd.data(), MPI_UINT32_T,
-                backid.data(), sc.data(), sd.data(), MPI_UINT32_T, MPI_COMM_WORLD);
+  MPI_Alltoallv(recvid.data(), rc.data(), rd.data(), MPI_INT32_T,
+                backid.data(), sc.data(), sd.data(), MPI_INT32_T, MPI_COMM_WORLD);
 #else
   returned=velocity; backid=recvid;
 #endif
@@ -669,8 +669,8 @@ void MaterialCurves::Audit() const {
     std::unordered_map<NodeID, const Node *> by_id;
     for (std::size_t i=0; i<c.nodes.size(); ++i) {
       const auto &n=c.nodes[i];
-      if (CurveID(n.id,curve_id_bits)!=c.id || (n.id&MaxSequence(curve_id_bits))==0 ||
-          (n.id&MaxSequence(curve_id_bits))>=c.next_sequence ||
+      if (CurveID(n.id,curve_id_bits)!=c.id || (IDBits(n.id)&MaxSequence(curve_id_bits))==0 ||
+          (IDBits(n.id)&MaxSequence(curve_id_bits))>=c.next_sequence ||
           !by_id.emplace(n.id, &n).second ||
           !std::isfinite(n.a) || n.a<0 || n.a>c.period ||
           (c.closed && n.a>=c.period) || (i && n.a<=c.nodes[i-1].a) ||
@@ -694,8 +694,8 @@ void MaterialCurves::Audit() const {
           Fail("invalid anchor provenance");
         }
       } else if (!by_id.count(n.parent_left) || !by_id.count(n.parent_right) ||
-                 n.parent_left==n.parent_right || n.parent_left>=n.id ||
-                 n.parent_right>=n.id || !n.placement) {
+                 n.parent_left==n.parent_right || IDBits(n.parent_left)>=IDBits(n.id) ||
+                 IDBits(n.parent_right)>=IDBits(n.id) || !n.placement) {
         Fail("invalid insertion parents/method");
       } else {
         const auto &left=*by_id.at(n.parent_left), &right=*by_id.at(n.parent_right);

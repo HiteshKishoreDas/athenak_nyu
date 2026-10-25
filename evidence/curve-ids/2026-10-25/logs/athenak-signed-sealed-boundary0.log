@@ -1,0 +1,65 @@
+[
+  {
+    "id": "ID01_last_sequence_signed_minus1_and_links",
+    "status": "pass",
+    "node_ids": [
+      1,
+      3,
+      -1,
+      2
+    ],
+    "last_id": -1,
+    "next_sequence": 4294967296
+  },
+  {
+    "id": "ID02_atomic_split_batch_exhaustion",
+    "status": "pass",
+    "node_count": 3,
+    "next_sequence": 4294967295,
+    "reason": 2
+  },
+  {
+    "id": "ID03_exhausted_allocator_no_wrap",
+    "status": "pass",
+    "no_wrap_or_reuse": true
+  },
+  {
+    "id": "ID04_config_reject_before_narrowing",
+    "status": "pass",
+    "out_of_range_values": [
+      0,
+      256,
+      4294967297
+    ],
+    "curve_count_limit": 1
+  },
+  {
+    "id": "ID05_persistent_link_overflow_rejected",
+    "status": "pass",
+    "UINT32_overflow_rejected": true
+  },
+  {
+    "id": "ID06_legacy_analysis_and_explicit_restart_rejection",
+    "status": "pass",
+    "old_restart_rejected": true,
+    "historical_analysis": true
+  },
+  {
+    "id": "ID07_INT32_MIN_insertion_with_positive_parents",
+    "status": "pass",
+    "node_ids": [
+      1,
+      3,
+      -2147483648,
+      2
+    ],
+    "next_sequence": 2147483649
+  },
+  {
+    "id": "ID08_legacy_unsigned_v4_B0_full_width_restart",
+    "status": "pass",
+    "legacy_uint32_max": -1,
+    "next_sequence": 4294967296,
+    "geometry_restart_exact_ID_bits": true
+  }
+]
