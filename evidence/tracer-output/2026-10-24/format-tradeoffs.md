@@ -143,3 +143,14 @@ particle v2 behavior and explicit unsigned curve identity/layout metadata; then
 sampled shock fields and mesh binary variables. No code, simulation or scientific
 validation changed in this discussion. Reused historical memory only to locate
 context; current source and the latest ledger take precedence.
+
+### Why THP currently uses signed integers
+
+Verified pre-feature multiphase_turb writer: it copies the particle module's
+signed int properties (cycle, tag, seed_id, gid) into std::vector<int>, gathers
+them with MPI_INT, and writes sizeof(int) bytes. The Python reader decodes these
+as signed integers with struct code i. This establishes implementation lineage,
+not the original author's undocumented motivation. Binary output itself does
+not require signed IDs; a declared unsigned curve identity can occupy the same
+four bytes without changing existing particle-v2 interpretation. No source or
+test changes in this explanation.
