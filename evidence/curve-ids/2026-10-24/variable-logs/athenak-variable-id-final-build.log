@@ -1,0 +1,32 @@
+-- Setting build type to 'Release' as none was specified.
+-- Setting default Kokkos CXX standard to 17
+-- Kokkos version: 4.4.0
+-- The project name is: Kokkos
+-- Using internal gtest for testing
+-- Using -std=c++17 for C++17 standard as feature
+-- Built-in Execution Spaces:
+--     Device Parallel: NoTypeDefined
+--     Host Parallel: NoTypeDefined
+--       Host Serial: SERIAL
+-- 
+-- Architectures:
+-- Using internal desul_atomics copy
+-- Experimental mdspan support is enabled
+-- Using internal mdspan directory /Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/kokkos/core/src/../../tpls/mdspan/include
+-- Kokkos Backends: SERIAL
+-- Configuring done (0.5s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian
+[  1%] Built target kokkossimd
+[  1%] Built target AlwaysCheckGit
+[  2%] Built target impl_git_version
+[ 11%] Built target kokkoscore
+[ 12%] Built target kokkoscontainers
+[ 15%] Built target shock_detector_test
+[ 15%] Built target shock_encounter_test
+[ 16%] Building CXX object src/CMakeFiles/athena.dir/material_curves/material_curves.cpp.o
+[ 17%] Building CXX object src/CMakeFiles/athena.dir/particles/shock_particles.cpp.o
+[ 17%] Building CXX object src/CMakeFiles/athena.dir/material_curves/material_curves_io.cpp.o
+[ 18%] Building CXX object src/CMakeFiles/athena.dir/material_curves/curve_shocks.cpp.o
+[ 19%] Linking CXX executable athena
+[100%] Built target athena

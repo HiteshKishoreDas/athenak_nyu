@@ -18,7 +18,7 @@ def read_run(directory, thermo_stem=None, shock_directory='shock_events', includ
         raise ValueError('run directory does not exist')
     result = dict(particles={},curve_nodes={},particle_times={},curve_times={},
                   geometry=[],particle_events=[],curve_events=[],
-                  particle_suspended=[],curve_suspended=[],available=[])
+                  particle_suspended=[],curve_suspended=[],available=[],curve_id_layout=None)
     paths = sorted((root/'prtcl_thermo_history').glob('*.thp')) if include_particles else []
     if thermo_stem is not None:
         paths = [p for p in paths if p.stem == thermo_stem]
@@ -30,6 +30,7 @@ def read_run(directory, thermo_stem=None, shock_directory='shock_events', includ
     curve_thermo = root/'curve_thermo_history'
     if curve_thermo.is_dir():
         result['curve_nodes'],result['curve_times'] = read_curves(curve_thermo,stem=thermo_stem)
+        result['curve_id_layout']=result['curve_nodes'].id_layout
         result['available'].append('curve_nodes')
     for carrier, module, where in (('particle',shock_history,root/shock_directory),
                                   ('curve',curve_shock_history,root/shock_directory/'curves')):
@@ -41,13 +42,22 @@ def read_run(directory, thermo_stem=None, shock_directory='shock_events', includ
         if chunks and not manifests:
             raise ValueError('orphan '+carrier+' shock chunks: missing manifests')
         if manifests:
+            if carrier=='curve':
+                layout=module.id_layout(next(iter(module.manifests(where).values()))[1])
+                if result['curve_id_layout'] is not None and result['curve_id_layout']!=layout:
+                    raise ValueError('curve ID layout differs across streams')
+                result['curve_id_layout']=layout
             result[carrier+'_events'] = module.read_history(where)
             result[carrier+'_suspended'] = module.read_suspended(where)
             result['available'].append(carrier+'_events')
     for folder in (root,root/'curves'):
         pattern = '*.curves.*.txt' if folder == root else '*.txt'
         for path in sorted(folder.glob(pattern)):
-            result['geometry'].append(dict(path=str(path),**material_curves.read(path)))
+            state=material_curves.read(path)
+            if result['curve_id_layout'] is not None and result['curve_id_layout']!=state['id_layout']:
+                raise ValueError('curve ID layout differs across streams')
+            result['curve_id_layout']=state['id_layout']
+            result['geometry'].append(dict(path=str(path),**state))
     result['geometry'].sort(key=lambda s:(s['cycle'],s['path']))
     if result['geometry']:
         result['available'].append('geometry')

@@ -55,10 +55,10 @@ Particle output stays `.thp` v2, with unchanged record layout. Curve output is:
 
 `curve_thermo_history/<basename>.<id>.cycle<C>.rank<R>.csv`
 
-Each curve chunk declares version 2, cycle, time, row count, rank and rank count.
-Version 2 uses unsigned 32-bit node IDs (high 8 bits curve ID, low 24 bits sequence).
-The reader also accepts historical version 1 with its original 64-bit IDs; mixed
-ID encodings in one stream are rejected.
+Each current curve chunk declares version 3, cycle, time, row count, rank and rank
+count, followed by `curve_id_bits`. IDs remain unsigned 32-bit; zero curve bits
+use all 32 bits for a single curve's sequence. The reader retains historical v1
+(64-bit IDs) and v2 (fixed 8/24 IDs), and rejects mixed encodings in a stream.
 Columns are `node_id,curve_id,birth,a,x1,x2,x3,gid,level`, followed by canonical
 field names. Integers retain full decimal width; never load node IDs through a
 float. `a` is the immutable material label, positions are continuous periodic

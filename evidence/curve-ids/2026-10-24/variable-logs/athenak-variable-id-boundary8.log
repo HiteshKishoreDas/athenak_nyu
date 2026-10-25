@@ -1,0 +1,47 @@
+[
+  {
+    "id": "ID01_last_sequence_UINT32_MAX_and_links",
+    "status": "pass",
+    "node_ids": [
+      4278190081,
+      4278190083,
+      4294967295,
+      4278190082
+    ],
+    "last_id": 4294967295,
+    "next_sequence": 16777216
+  },
+  {
+    "id": "ID02_atomic_split_batch_exhaustion",
+    "status": "pass",
+    "node_count": 3,
+    "next_sequence": 16777215,
+    "reason": 2
+  },
+  {
+    "id": "ID03_exhausted_allocator_no_wrap",
+    "status": "pass",
+    "no_wrap_or_reuse": true
+  },
+  {
+    "id": "ID04_config_reject_before_narrowing",
+    "status": "pass",
+    "out_of_range_values": [
+      0,
+      256,
+      4294967297
+    ],
+    "curve_count_limit": 255
+  },
+  {
+    "id": "ID05_persistent_link_overflow_rejected",
+    "status": "pass",
+    "UINT32_overflow_rejected": true
+  },
+  {
+    "id": "ID06_legacy_analysis_and_explicit_restart_rejection",
+    "status": "pass",
+    "old_restart_rejected": true,
+    "historical_analysis": false
+  }
+]

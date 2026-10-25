@@ -1,0 +1,41 @@
+[
+  {
+    "id": "SUM01_fresh_and_passivity",
+    "status": "pass",
+    "particle_history_bytes_and_curve_state_exact_after_ID_remap": true
+  },
+  {
+    "id": "SUM02_initial_adaptation",
+    "status": "pass",
+    "requested_nodes": 8,
+    "actual_nodes": 15
+  },
+  {
+    "id": "SUM03_no_eligible_cells",
+    "status": "pass"
+  },
+  {
+    "id": "SUM04_future_birth",
+    "status": "pass"
+  },
+  {
+    "id": "SUM05_loop_placement",
+    "status": "pass"
+  },
+  {
+    "id": "SUM06_polyline_placement",
+    "status": "pass"
+  },
+  {
+    "id": "SUM07_restart_restored_counts",
+    "status": "pass"
+  },
+  {
+    "id": "SUM08_enabled_histories",
+    "status": "pass"
+  },
+  {
+    "id": "SUM09_empty_separate_and_absent",
+    "status": "pass"
+  }
+]

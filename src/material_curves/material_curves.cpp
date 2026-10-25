@@ -119,6 +119,9 @@ MaterialCurves::MaterialCurves(Mesh *pm, ParameterInput *pin) : mesh(pm), pin_(p
     std::cout << "Material curve sampling/push execution space: "
               << DevExeSpace::name() << "; topology/adaptation: host" << std::endl;
   }
+  const auto bits=Integer(pin->GetOrAddString("material_curves", "curve_id_bits", "8"));
+  if (bits>30) Fail("curve_id_bits must lie in [0,30]");
+  curve_id_bits=static_cast<unsigned>(bits);
   max_nodes = Integer(pin->GetOrAddString("material_curves", "max_nodes", "1000000"));
   if (max_nodes == 0 ||
       max_nodes > static_cast<std::uint64_t>(std::numeric_limits<int>::max()/3)) {
@@ -142,9 +145,12 @@ MaterialCurves::MaterialCurves(Mesh *pm, ParameterInput *pin) : mesh(pm), pin_(p
 }
 
 NodeID MaterialCurves::NewID(Curve &c) {
-  if (c.id == 0 || c.id > kMaxCurveID || c.next_sequence == 0 ||
-      c.next_sequence > kMaxSequence) Fail("curve/sequence ID namespace exhausted");
-  return (c.id << kSequenceBits) | c.next_sequence++;
+  if (c.id == 0 || c.id > MaxCurveID(curve_id_bits) || c.next_sequence == 0 ||
+      c.next_sequence > MaxSequence(curve_id_bits)) {
+    Fail("curve/sequence ID namespace exhausted");
+  }
+  const NodeID prefix=curve_id_bits ? c.id << SequenceBits(curve_id_bits) : 0;
+  return prefix | static_cast<NodeID>(c.next_sequence++);
 }
 
 void MaterialCurves::Links(Curve &c) {
@@ -157,19 +163,22 @@ void MaterialCurves::Links(Curve &c) {
 
 void MaterialCurves::Initialize() {
   int nc = pin_->GetOrAddInteger("material_curves", "ncurves", 1);
-  if (nc < 0 || nc > static_cast<int>(kMaxCurveID)) Fail("ncurves must lie in [0,255]");
+  if (nc < 0 || static_cast<std::uint64_t>(nc) > MaxCurveID(curve_id_bits) || nc>100000) {
+    Fail("ncurves exceeds curve_id_bits namespace or 100000-curve IO cap");
+  }
   std::uint64_t total = 0;
   std::unordered_set<NodeID> ids;
   for (int k=1; k<=nc; ++k) {
     const std::string block = "curve" + std::to_string(k);
     Curve c;
-    const auto requested_id = Integer(pin_->GetOrAddString(block, "id", std::to_string(k)));
-    if (requested_id == 0 || requested_id > kMaxCurveID) {
-      Fail("curve IDs must be unique in [1,255]");
+    const auto requested_id = Integer(
+        pin_->GetOrAddString(block, "id", std::to_string(k)));
+    if (requested_id == 0 || requested_id > MaxCurveID(curve_id_bits)) {
+      Fail("curve IDs must be unique within curve_id_bits namespace");
     }
     c.id = static_cast<NodeID>(requested_id);
-    if (c.id == 0 || c.id > kMaxCurveID || !ids.insert(c.id).second) {
-      Fail("curve IDs must be unique in [1,255]");
+    if (c.id == 0 || c.id > MaxCurveID(curve_id_bits) || !ids.insert(c.id).second) {
+      Fail("curve IDs must be unique within curve_id_bits namespace");
     }
     auto type = pin_->GetOrAddString(block, "type", "line");
     c.closed = pin_->GetOrAddBoolean(block, "closed", type == "circle");
@@ -637,11 +646,11 @@ void MaterialCurves::Audit() const {
   std::uint64_t count=0;
   std::unordered_set<NodeID> curve_ids;
   for (const auto &c : curves) {
-    if (c.id==0 || c.id>kMaxCurveID || !curve_ids.insert(c.id).second ||
+    if (c.id==0 || c.id>MaxCurveID(curve_id_bits) || !curve_ids.insert(c.id).second ||
         c.id%global_variable::nranks!=static_cast<unsigned>(global_variable::my_rank) ||
         c.nodes.size()<(c.closed ? 3u : 2u) || !(c.period>0) ||
         !std::isfinite(c.period) || c.next_sequence==0 ||
-        c.next_sequence>static_cast<NodeID>(kMaxSequence)+1) {
+        c.next_sequence>MaxSequence(curve_id_bits)+1) {
       Fail("invalid curve identity, owner, period, count, or allocator");
     }
     if ((c.reason==0)!=(c.unresolved_since==-1) || c.reason<0 || c.reason>4 ||
@@ -660,8 +669,9 @@ void MaterialCurves::Audit() const {
     std::unordered_map<NodeID, const Node *> by_id;
     for (std::size_t i=0; i<c.nodes.size(); ++i) {
       const auto &n=c.nodes[i];
-      if ((n.id>>kSequenceBits)!=c.id || (n.id&kMaxSequence)==0 ||
-          (n.id&kMaxSequence)>=c.next_sequence || !by_id.emplace(n.id, &n).second ||
+      if (CurveID(n.id,curve_id_bits)!=c.id || (n.id&MaxSequence(curve_id_bits))==0 ||
+          (n.id&MaxSequence(curve_id_bits))>=c.next_sequence ||
+          !by_id.emplace(n.id, &n).second ||
           !std::isfinite(n.a) || n.a<0 || n.a>c.period ||
           (c.closed && n.a>=c.period) || (i && n.a<=c.nodes[i-1].a) ||
           !std::isfinite(n.birth) || n.birth<0 || n.birth>mesh->time ||
@@ -769,7 +779,7 @@ void MaterialCurves::Adapt(Real birth_time, bool initial, Real affected_time) {
         }
         Real a=c.nodes[i].a+0.5*da;
         if (!(a>c.nodes[i].a && a<(j ? c.nodes[j].a : c.period)) ||
-            c.next_sequence>kMaxSequence) {
+            c.next_sequence>MaxSequence(curve_id_bits)) {
           if (!c.reason) {c.reason=2; c.unresolved_since=birth_time;}
           continue;
         }
@@ -814,7 +824,7 @@ void MaterialCurves::Adapt(Real birth_time, bool initial, Real affected_time) {
       std::size_t begin=cursor;
       while (cursor<splits.size() && splits[cursor].curve==ci) ++cursor;
       if (begin==cursor) continue;
-      if (cursor-begin > static_cast<NodeID>(kMaxSequence)+1-c.next_sequence) {
+      if (cursor-begin > MaxSequence(curve_id_bits)+1-c.next_sequence) {
         if (!c.reason) {c.reason=2; c.unresolved_since=birth_time;}
         continue;
       }

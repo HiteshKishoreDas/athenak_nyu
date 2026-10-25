@@ -92,3 +92,19 @@ See ledger.md for commands/results/failures and README.md for supported behavior
   RUSTY/Frontier/GPU, production budgets and scientific review remain pending.
 
 Current evidence: `evidence/curve-ids/2026-10-24/ledger.md`.
+
+## 2026-10-24 configurable curve-bit follow-up
+
+- [x] `material_curves/curve_id_bits` defaults to 8, accepts 0–30 with checked
+  integer parsing; zero keeps logical curve 1 and uses all 32 ID bits for sequence.
+- [x] ID/link storage remains uint32; the allocator counter safely holds the
+  exhausted full-width sentinel. Existing node/batch caps remain in force.
+- [x] Geometry, thermo and journal metadata declare the split; all supplied
+  readers reject missing/inconsistent layouts rather than guessing new IDs.
+- [x] Split changes reject on restart; fixed-eight-bit geometry v3 compatibility
+  and old analysis decoding are retained under their declared formats.
+- [x] Independent persistence/simplicity review completed; 107 local groups pass,
+  including zero-bit real-shock, AMR birth, exact restart and limit fixtures.
+- [ ] MPI/GPU/cluster/runtime-budget and human scientific gates remain pending.
+
+Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.

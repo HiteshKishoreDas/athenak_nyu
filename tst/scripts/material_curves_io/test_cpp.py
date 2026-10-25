@@ -102,7 +102,7 @@ def main():
             return SCHEMA.complete("\n".join(rows) + "\n")
 
         malformed = [original[:-1], original[:-30], original + b"extra\n",
-                     SCHEMA.complete(body.replace("MATERIAL_CURVES 3",
+                     SCHEMA.complete(body.replace("MATERIAL_CURVES 4",
                                                   "MATERIAL_CURVES 1")),
                      SCHEMA.complete(body.replace("ASCII 64", "ASCII 32")),
                      alter_record("config", 3, 2),

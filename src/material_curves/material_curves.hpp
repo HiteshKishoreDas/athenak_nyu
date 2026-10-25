@@ -18,9 +18,16 @@
 namespace material_curves {
 using Vec = std::array<Real, 3>;
 using NodeID = std::uint32_t;
-constexpr unsigned kSequenceBits = 24;
-constexpr NodeID kMaxCurveID = 255;
-constexpr NodeID kMaxSequence = (NodeID{1} << kSequenceBits)-1;
+inline unsigned SequenceBits(unsigned curve_bits) { return 32-curve_bits; }
+inline std::uint64_t MaxSequence(unsigned curve_bits) {
+  return (UINT64_C(1) << SequenceBits(curve_bits))-1;
+}
+inline NodeID MaxCurveID(unsigned curve_bits) {
+  return curve_bits ? (NodeID{1} << curve_bits)-1 : 1;
+}
+inline NodeID CurveID(NodeID node, unsigned curve_bits) {
+  return curve_bits ? node >> SequenceBits(curve_bits) : 1;
+}
 
 // IDs never pass through Real. The (curve, sequence) namespace is bounded explicitly.
 struct Node {
@@ -34,7 +41,8 @@ struct Node {
 };
 
 struct Curve {
-  NodeID id = 0, next_sequence = 1;
+  NodeID id = 0;
+  std::uint64_t next_sequence = 1;
   bool closed = false;
   std::array<std::int64_t, 3> winding{};
   Real period = 0;  // initial arc length; labels are never renumbered
@@ -92,6 +100,7 @@ class MaterialCurves {
   // requests go to current leaf owners. No whole-curve replication across ranks.
   Mesh *mesh;
   std::vector<Curve> curves;
+  unsigned curve_id_bits = 8;
   std::uint64_t max_nodes = 1000000;
   Real max_spacing = 0, max_angle = 0.2, chord_error = 0;
   Real spacing_cells = 1;

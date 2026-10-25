@@ -1,4 +1,4 @@
-"""Native thermo readers for particles (.thp v2) and material curves (CSV v1/v2).
+"""Native thermo readers for particles (.thp v2) and material curves (CSV v1/v2/v3).
 
 Both return {(cycle, exact_id): observation}, {cycle: time}; quantities live in
 observation['fields']. Curve positions are continuous lifts, particle positions
@@ -71,7 +71,8 @@ def read_curves(directory, stem=None):
     Set stem='basename.output_id' when the directory contains multiple streams.
     Field changes during continuation require a different output id/directory.
     """
-    rows, times, ranks, expected_ranks = {}, {}, {}, {}
+    rows, times, ranks, expected_ranks = ThermoRows(), {}, {}, {}
+    rows.id_layout = None
     identities = {}
     schema = None
     streams = set()
@@ -86,11 +87,14 @@ def read_curves(directory, stem=None):
         _require(len(streams) == 1, 'multiple curve thermo streams; select stem')
         lines = path.read_text().splitlines()
         head = lines[0].split() if lines else []
-        _require(len(head) == 8 and head[:2] == ['#','ATHK_CURVE_THERMO'] and head[2] in ('1','2'),
+        _require(len(head) in (8,9) and head[:2] == ['#','ATHK_CURVE_THERMO'] and head[2] in ('1','2','3') and len(head) == (9 if head[2]=='3' else 8),
                  'unknown/truncated curve thermo header')
-        sequence_bits = 24 if head[2]=='2' else 32
-        _require(encoding is None or encoding == sequence_bits,'curve thermo ID encoding changed')
-        encoding = sequence_bits
+        curve_bits = _integer(head[8],32) if head[2]=='3' else 8 if head[2]=='2' else None
+        _require(curve_bits is None or curve_bits <= 30,'invalid curve_id_bits metadata')
+        sequence_bits = 32-curve_bits if curve_bits is not None else 32
+        layout = (32,curve_bits) if curve_bits is not None else (64,32)
+        _require(encoding is None or encoding == layout,'curve thermo ID encoding changed')
+        encoding = rows.id_layout = layout
         cycle, count, rank, nranks = (_integer(head[n], 32) for n in (3,5,6,7))
         time = _real(head[4])
         _require(time >= 0 and cycle == int(match[2]) and rank == int(match[3])
@@ -114,7 +118,7 @@ def read_curves(directory, stem=None):
             _require(len(values) == len(columns), 'curve thermo row width mismatch')
             node, curve = _integer(values[0]), _integer(values[1],32)
             birth, a = _real(values[2]), _real(values[3])
-            _require(curve > 0 and node_curve_id(node,sequence_bits) == curve
+            _require(curve > 0 and node_curve_id(node,sequence_bits,curve_id_bits=curve_bits) == curve
                      and 0 <= birth <= time and a >= 0, 'invalid node identity/birth/label')
             _require(curve % nranks == rank, 'curve thermo home rank mismatch')
             identity = curve, birth, a

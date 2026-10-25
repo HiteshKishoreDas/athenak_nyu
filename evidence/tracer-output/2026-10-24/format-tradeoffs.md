@@ -111,3 +111,13 @@ birth, material label, positions, leaf metadata and fields, but not neighbour
 links. Adopting THP for thermo alone would not replace geometry/connectivity
 output. Verified in `material_curves.hpp:24`, `material_curves.cpp:150`, and
 `material_curves_io.cpp:129,217,649`. No source changes or tests needed.
+
+## Latest identity choice: configurable split
+
+The fixed 8/24 implementation is now the default of the user-requested
+`material_curves/curve_id_bits` option (0–30). Zero means one logical curve ID1
+and the entire unsigned32 node ID holds the sequence. Layout metadata is explicit
+and immutable on restart; current readers do not guess it from numeric IDs.
+Evidence, compatibility rules and 107 passing local groups are consolidated in
+`evidence/curve-ids/2026-10-24/variable-ledger.md`. Existing global node/MPI batch
+limits still apply. This does not itself implement THP curve/event output.

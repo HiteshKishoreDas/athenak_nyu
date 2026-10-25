@@ -1,6 +1,6 @@
 """Strict curve-node shock histories; censored views remain separate from events.
 
-Node IDs use curve8/sequence24; historical curve32/sequence32 remains readable.
+Node IDs use a declared curve/sequence split; fixed 8/24 and historical 32/32 remain readable.
 AMR level/spacing describe the sampled cells, not a fixed physical detector scale.
 """
 import csv
@@ -22,13 +22,24 @@ def _real(text):
     return value
 
 
-def _node_id(text, sequence_bits=None):
+def id_layout(contract):
+    """Contract prefixes are authoritative even when journals have no events."""
+    if contract.startswith('curve-node-history-v3 '):
+        fields=contract.split(maxsplit=2)
+        if len(fields)!=3 or not re.fullmatch(r'[0-9]+',fields[1]) or int(fields[1])>30:
+            raise HistoryError('Invalid curve_id_bits contract')
+        return (32,int(fields[1]))
+    return (32,8) if contract.startswith('curve-node-history-v2 ') else (64,32)
+
+
+def _node_id(text, layout=None):
     node_id = integer(text)
     try:
-        node_curve_id(node_id,sequence_bits)
+        curve = (node_curve_id(node_id,curve_id_bits=layout[1]) if layout and layout[0]==32
+                 else node_curve_id(node_id,32) if layout else node_curve_id(node_id))
     except ValueError as exc:
         raise HistoryError('Invalid curve node ID namespace') from exc
-    return node_id
+    return node_id,curve
 
 
 def _spacing(fields):
@@ -55,6 +66,7 @@ def manifests(directory):
             raise HistoryError('Unknown curve history schema')
         if not re.fullmatch(r'[A-Za-z0-9_-]{1,128}', lines[1]) or not lines[2]:
             raise HistoryError('Invalid curve lineage/contract')
+        id_layout(lines[2])
         result[rank] = (lines[1], lines[2])
     if not result or sorted(result) != list(range(len(result))):
         raise HistoryError('Missing/noncontiguous curve rank manifests')
@@ -92,12 +104,13 @@ def _read_chunk(path, lineage, contract, generation, suspended=False):
         raise HistoryError('Curve contract/END mismatch')
     if len(lines) != count+3:
         raise HistoryError('Curve row count mismatch')
+    layout=id_layout(contract)
     events = []
     for row in csv.reader(lines[2:-1]):
         if len(row) != 133:
             raise HistoryError('Curve event requires133fields')
         event = parse_event(row[:124], lineage, generation)
-        node_id = _node_id(row[0],24 if contract.startswith("curve-node-history-v2 ") else 32)
+        node_id,curve = _node_id(row[0],layout)
         birth = _real(row[124])
         first_level = integer(row[125], 32, signed=True)
         last_level = integer(row[129], 32, signed=True)
@@ -105,7 +118,7 @@ def _read_chunk(path, lineage, contract, generation, suspended=False):
             raise HistoryError('Curve birth/refinement metadata mismatch')
         event.update(carrier='curve_node',
                      identity=('curve_node',lineage,node_id,event['sequence']),
-                     node_id=node_id, curve_id=node_curve_id(node_id), birth=birth,
+                     node_id=node_id, curve_id=curve, birth=birth,
                      first_level=first_level, first_spacing=_spacing(row[126:129]),
                      last_level=last_level, last_spacing=_spacing(row[130:133]))
         if suspended and (event['status'] != 1 or not event['flags'] & 64):
@@ -167,7 +180,7 @@ def read_suspended(directory, generation=None):
     return sorted(result, key=lambda event: event['identity'])
 
 
-def read_trace(path):
+def read_trace(path, curve_id_bits=None):
     """Read one raw33-column trace/birthtrace file, keyed by exact node ID."""
     path = Path(path)
     match = re.fullmatch(r'(?:birthtrace|trace)(\d+)\.rank(\d+)\.csv', path.name)
@@ -175,10 +188,15 @@ def read_trace(path):
         raise HistoryError('Malformed curve trace filename')
     generation, rank = (integer(value) for value in match.groups())
     result = {}
-    sequence_bits = None
+    if curve_id_bits is not None and (type(curve_id_bits) is not int or not 0<=curve_id_bits<=30):
+        raise HistoryError('Invalid curve_id_bits')
+    layout = None if curve_id_bits is None else (32,curve_id_bits)
     if (path.parent/f'manifest.rank{rank}').exists():
         contract = manifests(path.parent)[rank][1]
-        sequence_bits = 24 if contract.startswith("curve-node-history-v2 ") else 32
+        declared = id_layout(contract)
+        if layout is not None and layout!=declared:
+            raise HistoryError('Curve trace layout differs from manifest')
+        layout = declared
     try:
         lines = path.read_text().splitlines()
     except (OSError, UnicodeError) as exc:
@@ -186,7 +204,9 @@ def read_trace(path):
     for row in csv.reader(lines):
         if len(row) != 33:
             raise HistoryError('Curve trace requires33fields')
-        node_id = _node_id(row[0],sequence_bits)
+        if layout is None and integer(row[0]) < 1<<32:
+            raise HistoryError('32-bit curve trace requires manifest or curve_id_bits')
+        node_id,curve = _node_id(row[0],layout or (64,32))
         sequence, phase, flags = integer(row[1]), integer(row[2], 32), integer(row[3], 32)
         if node_id in result or phase > 2 or flags & ~1023:
             raise HistoryError('Duplicate/invalid curve trace identity/state')
@@ -194,7 +214,7 @@ def read_trace(path):
         birth, level = _real(row[28]), integer(row[29], 32, signed=True)
         if observation['generation'] != generation or birth < 0 or birth > observation['time'] or level < 0:
             raise HistoryError('Curve trace generation/birth/refinement mismatch')
-        result[node_id] = dict(observation, node_id=node_id, curve_id=node_curve_id(node_id),
+        result[node_id] = dict(observation, node_id=node_id, curve_id=curve,
                                particle_id=node_id, sequence=sequence, phase=phase,
                                flags=flags, birth=birth, level=level,
                                spacing=_spacing(row[30:33]), rank=rank)

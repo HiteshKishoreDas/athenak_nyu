@@ -22,7 +22,7 @@ existing scientific environment:
 MPLCONFIGDIR=/private/tmp/athenak-lagrangian-mpl \
   /Users/hitesh/hitesh/git/athenak_nyu/vis/.venv/bin/python \
   vis/python/plot_curves.py \
-  build-lagrangian/evidence/curve-id32-reviewed-output-20261024/planar \
+  build-lagrangian/evidence/variable-id-qualified-output-20261024/planar \
   --curve-id 7 --field pressure --output /private/tmp/curve7-pressure.png
 ```
 
@@ -34,7 +34,9 @@ produce an error listing available names. Proxy quantities retain the existing
 code-unit conventions described in `curve-thermo-history.md`.
 
 `--node-id 117440545` selects a particular node and infers its curve ID. Enter
-IDs as decimal integers, never floats. Without a node selection the smallest
+IDs as decimal integers, never floats. Current files declare their configured
+curve-bit split, including zero-bit single-curve runs; the CLI does not guess
+that split from the number. Without a node selection the smallest
 recorded node ID is used, normally the first anchor. A single curve is selected
 automatically; multiple curves require `--curve-id`. Conflicting selections fail.
 
@@ -79,7 +81,9 @@ terminal views are distinct. Numeric flags preserve the existing shock schema.
 
 The script loads curve data into memory using the existing reader caps; it is not
 a streaming analysis tool or a production memory qualification. Optional raw
-per-step flags remain accessible through `curve_shock_history.read_trace`.
+per-step flags remain accessible through `curve_shock_history.read_trace`. Keep
+the rank manifest alongside a trace for automatic layout decoding. For an isolated
+32-bit trace, explicitly pass `curve_id_bits=B`; missing layout is rejected.
 
 ## Reproduce checks
 
@@ -87,8 +91,8 @@ per-step flags remain accessible through `curve_shock_history.read_trace`.
 MPLCONFIGDIR=/private/tmp/athenak-lagrangian-mpl \
   /Users/hitesh/hitesh/git/athenak_nyu/vis/.venv/bin/python \
   tst/tracer-output/curve_reader_check.py \
-  --runs build-lagrangian/evidence/curve-id32-reviewed-output-20261024 \
-  --three-d-run build-lagrangian/evidence/curve-id32-reviewed-CT-20261024/forced_both \
+  --runs build-lagrangian/evidence/variable-id-qualified-output-20261024 \
+  --three-d-run build-lagrangian/evidence/variable-id-qualified-CT-20261024/forced_both \
   --output build-lagrangian/evidence/curve-reader-NEW
 ```
 

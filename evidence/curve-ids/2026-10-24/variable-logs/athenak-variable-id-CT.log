@@ -1,0 +1,155 @@
+[
+  {
+    "id": "CT01_curve_only_shocks_off_exact_u32",
+    "observations": 1056,
+    "cycles": 33,
+    "max_thermo_error": 3.552713678800501e-15,
+    "minimum_node_id": 4278190081,
+    "status": "pass"
+  },
+  {
+    "id": "CT02_both_shared_fields_and_clock",
+    "curve_observations": 1056,
+    "particle_observations": 4224,
+    "curve_error": 3.552713678800501e-15,
+    "particle_error": 3.552713678800501e-15,
+    "status": "pass"
+  },
+  {
+    "id": "CT03_passive_legacy_output",
+    "particle_binary_and_curve_state_byte_equal": true,
+    "status": "pass"
+  },
+  {
+    "id": "CT04_MC_and_curves_thermo_without_shocks",
+    "curve_error": 1.7763568394002505e-15,
+    "particle_error": 1.7763568394002505e-15,
+    "status": "pass"
+  },
+  {
+    "id": "CT05_live_AMR_insertion_births",
+    "curve_error": 1.7763568394002505e-15,
+    "particle_error": 1.7763568394002505e-15,
+    "inserted_nodes": 14,
+    "leaf_count_range": [
+      4,
+      16
+    ],
+    "curve_observations": 1179,
+    "particle_observations": 5760,
+    "status": "pass"
+  },
+  {
+    "id": "CT06_live_AMR_restart_exact",
+    "curve_observations": 1179,
+    "particle_observations": 5760,
+    "exact_continuation": true,
+    "restart_cycle": 20,
+    "status": "pass"
+  },
+  {
+    "id": "CT07_shock_thermo_synchronization",
+    "observations": 1728,
+    "max_shared_sample_error": 0,
+    "max_periodic_position_error": 6.938893903907228e-18,
+    "status": "pass"
+  },
+  {
+    "id": "CT08_independent_cadence_final_replay",
+    "saved_cycles": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      32
+    ],
+    "final_cycle": 32,
+    "status": "pass"
+  },
+  {
+    "id": "CT09_input_guards",
+    "explicit_rejections": 6,
+    "status": "pass"
+  },
+  {
+    "id": "CT10_reader_integrity",
+    "rejected_corruptions": 3,
+    "status": "pass"
+  },
+  {
+    "id": "CT11_nonuniform_containing_cell_oracle",
+    "max_spatial_thermo_error": 3.552713678800501e-15,
+    "same_cell_comparisons": 5039,
+    "status": "pass"
+  },
+  {
+    "id": "CT12_immutable_output_replay",
+    "identical_replay_byte_equal": true,
+    "conflicting_replay_rejected": true,
+    "status": "pass"
+  },
+  {
+    "id": "CT13_shared_time_cadence",
+    "saved_times": [
+      0.0,
+      0.05,
+      0.09999999999999999,
+      0.15,
+      0.20000000000000004,
+      0.25000000000000006,
+      0.3000000000000001,
+      0.35000000000000014,
+      0.4
+    ],
+    "curve_error": 1.7763568394002505e-15,
+    "particle_error": 1.7763568394002505e-15,
+    "status": "pass"
+  },
+  {
+    "id": "CT14_native_forced_box_coexistence",
+    "curve_observations": 256,
+    "particle_observations": 65536,
+    "sampled_cycles": 16,
+    "particle_bytes_geometry_and_events_equal": true,
+    "status": "pass"
+  },
+  {
+    "id": "CT15_shared_passive_scalar",
+    "curve_observations": 16,
+    "particle_observations": 128,
+    "scalar_left_right_exact": true,
+    "status": "pass"
+  },
+  {
+    "id": "CT16_restart_preserves_time_cadence",
+    "cases": [
+      {
+        "stop_cycle": 18,
+        "scheduled_samples_exact": true
+      },
+      {
+        "stop_cycle": 20,
+        "scheduled_samples_exact": true
+      }
+    ],
+    "status": "pass"
+  },
+  {
+    "id": "CT17_overdue_threshold_replay",
+    "scheduled_checkpoint_last_time": 0.09,
+    "final_checkpoint_last_time": 0.09,
+    "output_dt": 0.005,
+    "fluid_dt": 0.0125,
+    "zero_step_clock_exact": true,
+    "status": "pass"
+  },
+  {
+    "id": "CT18_empty_populations",
+    "empty_chunks": 33,
+    "empty_particle_and_node_records": true,
+    "status": "pass"
+  }
+]

@@ -1,0 +1,23 @@
+/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/scripts/style/cpplint.py:6485: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(cfg_file, 'r', 'utf8', 'replace') as file_handle:
+/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/scripts/style/cpplint.py:6587: DeprecationWarning: codecs.open() is deprecated. Use open() instead.
+  with codecs.open(filename, 'r', 'utf8', 'replace') as target_file:
+src/driver/driver.cpp:150:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/curve_shocks.cpp:62:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves.cpp:149:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves.cpp:172:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves.cpp:463:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves.cpp:670:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves_io.cpp:48:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves_io.cpp:267:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves_io.cpp:343:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves_io.cpp:351:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves_io.cpp:356:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves_io.cpp:390:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+src/material_curves/material_curves_io.cpp:592:  Lines should be <= 90 characters long  [whitespace/line_length] [2]
+Done processing src/driver/driver.cpp
+Done processing src/material_curves/curve_shocks.cpp
+Done processing src/material_curves/material_curves.cpp
+Done processing src/material_curves/material_curves.hpp
+Done processing src/material_curves/material_curves_io.cpp
+Total errors found: 13

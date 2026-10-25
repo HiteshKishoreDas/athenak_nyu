@@ -35,9 +35,9 @@ std::string MaterialCurves::ThermoHistory(
   std::ostringstream out;
   out.imbue(std::locale::classic());
   out << std::setprecision(std::numeric_limits<Real>::max_digits10);
-  out << "# ATHK_CURVE_THERMO 2 " << mesh->ncycle << ' ' << mesh->time
+  out << "# ATHK_CURVE_THERMO 3 " << mesh->ncycle << ' ' << mesh->time
       << ' ' << nodes.size() << ' ' << global_variable::my_rank << ' '
-      << global_variable::nranks << '\n';
+      << global_variable::nranks << ' ' << curve_id_bits << '\n';
   out << "node_id,curve_id,birth,a,x1,x2,x3,gid,level";
   for (const auto &field : fields) out << ',' << field.name;
   out << '\n';
@@ -45,7 +45,8 @@ std::string MaterialCurves::ThermoHistory(
     const auto &node=*nodes[p];
     Vec wrapped;
     int gid=Locate(node.x,wrapped);
-    out << node.id << ',' << (node.id>>kSequenceBits) << ',' << node.birth << ',' << node.a;
+    out << node.id << ',' << CurveID(node.id,curve_id_bits)
+        << ',' << node.birth << ',' << node.a;
     for (Real x : node.x) out << ',' << x;
     out << ',' << gid << ',' << mesh->lloc_eachmb[gid].level;
     for (std::size_t n=0; n<fields.size(); ++n) out << ',' << values[fields.size()*p+n];
@@ -58,10 +59,10 @@ std::string MaterialCurves::ThermoHistory(
 namespace {
 constexpr std::uint64_t kOffset = 14695981039346656037ULL;
 constexpr std::uint64_t kPrime = 1099511628211ULL;
-constexpr std::uint64_t kCurveCap = kMaxCurveID;
+constexpr std::uint64_t kCurveCap = 100000;
 constexpr std::uint64_t kMeshLeafCap = 10000000;
 const char *kCurveColumns = "curve_columns id:u32 closed:i32 winding:i64[3] "
-    "period:real unresolved_since:real reason:i32 next_sequence:u32 inserted:u64 "
+    "period:real unresolved_since:real reason:i32 next_sequence:u64 inserted:u64 "
     "migrations:u64 samples:u64 count:u64 length:real";
 const char *kNodeColumns = "node_columns id:u32 prev:u32 next:u32 parent_left:u32 "
     "parent_right:u32 a:real birth:real anchor:i32 placement:i32 x:real[3] image:i64[3] "
@@ -204,7 +205,7 @@ Curve DecodeCurve(const std::vector<std::string> &f) {
   curve.period = Number(f[6]);
   curve.unresolved_since = Number(f[7]);
   curve.reason = Integer<std::int32_t>(f[8]);
-  curve.next_sequence = Integer<NodeID>(f[9]);
+  curve.next_sequence = Integer<std::uint64_t>(f[9]);
   curve.inserted = Integer<std::uint64_t>(f[10]);
   curve.migrations = Integer<std::uint64_t>(f[11]);
   curve.samples = Integer<std::uint64_t>(f[12]);
@@ -229,7 +230,8 @@ Node DecodeNode(const std::vector<std::string> &f) {
 
 struct Header {
   std::string kind, basename;
-  int precision = 0, cycle = 0, adaptive = 0, dcycle = 0;
+  int precision = 0, cycle = 0, adaptive = 0, dcycle = 0, version = 0;
+  unsigned curve_id_bits = 8;
   Real time = 0, spacing = 0, spacing_cells = 1, angle = 0, error = 0;
   std::uint64_t count = 0, nodes = 0, cap = 0, fluid_size = 0, fluid_hash = 0;
   int amr = 0, check_interval = 0, refinement_interval = 0, prolong = 0;
@@ -244,12 +246,18 @@ class Reader {
       input_(path, std::ios::binary) {
     Require(input_.is_open(), "cannot open curve file " + path);
     auto fields = Fields(7, "MATERIAL_CURVES");
-    Require(fields[1] == "3" && fields[2] == "ASCII"
+    Require((fields[1] == "3" || fields[1] == "4") && fields[2] == "ASCII"
             && fields[4] == "U32" && fields[5] == "I64" && fields[6] == "I32",
-            "unsupported curve schema; restart requires v3 curve8-seq24 IDs");
+            "unsupported curve schema; restart requires v3/v4 compact IDs");
     header.precision = Integer<int>(fields[3]);
     Require(header.precision == 32 || header.precision == 64,
             "unsupported Real precision");
+    header.version = Integer<int>(fields[1]);
+    if (header.version==4) {
+      auto bits=Fields(2,"id_bits");
+      header.curve_id_bits=Integer<unsigned>(bits[1]);
+      Require(header.curve_id_bits<=30,"invalid curve_id_bits metadata");
+    }
     fields = Fields(6, "state");
     header.kind = fields[1];
     Require(header.kind == "snapshot" || header.kind == "checkpoint", "invalid kind");
@@ -257,7 +265,9 @@ class Reader {
     header.cycle = Integer<int>(fields[3]);
     header.count = Integer<std::uint64_t>(fields[4]);
     header.nodes = Integer<std::uint64_t>(fields[5]);
-    Require(header.time >= 0 && header.cycle >= 0 && header.count <= kCurveCap,
+    Require(header.time >= 0 && header.cycle >= 0 &&
+            header.count <= std::min<std::uint64_t>(
+                kCurveCap,MaxCurveID(header.curve_id_bits)),
             "invalid time, cycle or curve count");
     fields = Fields(16, "domain");
     for (int i = 0; i < 6; ++i) header.domain[i] = Number(fields[i+1]);
@@ -328,7 +338,12 @@ class Reader {
       if (mesh) Require(loc == mesh->lloc_eachmb[i], "AMR fluid leaf identity mismatch");
       header.amr_clocks.push_back(clock);
     }
-    Require(Line() == kCurveColumns && Line() == kNodeColumns,
+    std::string curve_columns=kCurveColumns;
+    if (header.version==3) {
+      const auto pos=curve_columns.find("next_sequence:u64");
+      curve_columns.replace(pos,17,"next_sequence:u32");
+    }
+    Require(Line() == curve_columns && Line() == kNodeColumns,
             "unsupported column schema");
   }
   Curve Next() {
@@ -337,12 +352,14 @@ class Reader {
     Curve curve = DecodeCurve(f);
     auto count = Integer<std::uint64_t>(f[13]);
     Require(Number(f[14]) >= 0, "negative diagnostic length");
-    Require(curve.id > 0 && curve.id <= kMaxCurveID && ids_.insert(curve.id).second,
+    Require(curve.id > 0 && curve.id <= MaxCurveID(header.curve_id_bits)
+            && ids_.insert(curve.id).second,
             "duplicate or invalid curve ID");
     Require(count >= (curve.closed ? 3u : 2u) && count <= header.nodes-nodes_,
             "invalid node count");
     Require(curve.period > 0 && curve.next_sequence > 0
-            && curve.next_sequence <= (NodeID{1} << kSequenceBits) && curve.reason >= 0
+            && curve.next_sequence <= MaxSequence(header.curve_id_bits)+1
+            && curve.reason >= 0
             && curve.reason <= 4 && ((curve.reason == 0 && curve.unresolved_since == -1)
                 || (curve.reason != 0 && curve.unresolved_since >= 0
                     && curve.unresolved_since <= header.time)), "invalid curve metadata");
@@ -376,8 +393,9 @@ class Reader {
       Require(mask >= 0 && mask <= 2 && ((mask == 0 && std::isfinite(curvature)
               && curvature >= 0) || (mask != 0 && std::isnan(curvature))),
               "invalid curvature diagnostic/mask");
-      Require((node.id >> kSequenceBits) == curve.id && (node.id & kMaxSequence) != 0
-              && (node.id & kMaxSequence) < curve.next_sequence,
+      Require(CurveID(node.id,header.curve_id_bits) == curve.id
+              && (node.id & MaxSequence(header.curve_id_bits)) != 0
+              && (node.id & MaxSequence(header.curve_id_bits)) < curve.next_sequence,
               "node ID namespace or allocator mismatch");
       Require(node.a >= 0 && node.a <= curve.period
               && (!curve.closed || node.a < curve.period)
@@ -494,6 +512,7 @@ std::string Receive(int rank, std::uint64_t cap) {
 #endif
 void ValidateHeader(const Header &h, const MaterialCurves &m,
                     const std::pair<std::uint64_t, std::uint64_t> &identity) {
+  Require(h.curve_id_bits == m.curve_id_bits,"restart curve_id_bits mismatch");
   Require(h.kind == "checkpoint" && h.precision == 8*sizeof(Real),
           "checkpoint kind or precision mismatch");
   Require(h.time == m.mesh->time && h.cycle == m.mesh->ncycle,
@@ -577,7 +596,8 @@ void WriteFile(const MaterialCurves &m, const std::string &path,
     file.open(path+".tmp", std::ios::binary | std::ios::trunc);
     Require(file.is_open(), "cannot create curve output " + path);
     auto out = Stream();
-    out << "MATERIAL_CURVES 3 ASCII " << 8*sizeof(Real) << " U32 I64 I32\nstate "
+    out << "MATERIAL_CURVES 4 ASCII " << 8*sizeof(Real) << " U32 I64 I32\nid_bits "
+        << m.curve_id_bits << "\nstate "
         << (fluid.empty() ? "snapshot" : "checkpoint") << ' ' << m.mesh->time << ' '
         << m.mesh->ncycle << ' ' << counts[0] << ' ' << counts[1] << "\ndomain";
     for (auto value : Domain(m.mesh)) out << ' ' << value;

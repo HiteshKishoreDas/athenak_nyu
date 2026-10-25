@@ -125,6 +125,8 @@ void PrintTracerSetup(Mesh *mesh, ParameterInput *pin, Outputs *outputs, bool re
                 type=="line" ? "uniform spacing" : "explicit lifted vertices") << '\n';
       }
     }
+    out << "  node ID bits: curve=" << curves->curve_id_bits
+        << ", sequence=" << material_curves::SequenceBits(curves->curve_id_bits) << '\n';
     out << "  adaptation=" << curves->adaptive << ", max_nodes=" << curves->max_nodes
         << ", spacing_cells=" << curves->spacing_cells << ", max_spacing=";
     if (curves->max_spacing>0) out << curves->max_spacing; else out << "auto(mesh)";

@@ -12,17 +12,19 @@ the withdrawn experiment, not the current interface.
 | --- | --- | --- |
 | Particle thermo | `.thp` v2, unchanged binary records | `tracer_thermo_history.read_particles` |
 | Curve thermo | `.csv` cycle/rank chunks | `tracer_thermo_history.read_curves` |
-| Curve geometry/connectivity | ASCII v3 `.txt` snapshots | `material_curves.read` |
+| Curve geometry/connectivity | ASCII v4 `.txt` snapshots | `material_curves.read` |
 | Particle encounters and optional traces | `.csv` journals | `shock_history` |
 | Curve encounters and optional traces/birth traces | `.csv` journals | `curve_shock_history` |
 
-Curve geometry is ASCII v3; it is not VTK. Particle `.pvtk` output is a separate
-existing visualization path. No particle thermo IDs, fields or byte layouts change.
-Curve nodes use unsigned 32-bit IDs (curve8/sequence24). The full namespace includes
-values above the signed THP v2 tag range; future THP integration must preserve those
-bits explicitly. Existing particle THP bytes are unchanged by this ID change.
-Current geometry checkpoints require v3; analysis also reads old v2 geometry and
-v1 curve thermo without reinterpreting historical IDs.
+Curve geometry is ASCII v4. Set `material_curves/curve_id_bits` (default 8,
+allowed 0–30) to choose the split of the unsigned 32-bit node identity. Zero means
+one logical curve, with all 32 bits used for node sequence. Current files declare
+the layout; the supplied reader and curve CLI use it automatically. Existing
+particle THP bytes are unchanged. Future THP curve integration must still handle
+the unsigned range explicitly. Historical geometry/thermo/event analysis retains
+its original IDs, and fixed-8-bit geometry v3 remains readable for compatible
+geometry restarts. Tracked restarts retain exact-source guards. Changing the
+split on restart is rejected.
 
 ## Same configuration pattern
 

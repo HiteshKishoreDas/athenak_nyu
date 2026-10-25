@@ -17,7 +17,9 @@ def select_curve(data, curve_id=None, node_id=None, field='pressure'):
     """Select exact integer identities and independent recorded streams."""
     if node_id is not None:
         try:
-            inferred = node_curve_id(node_id)
+            layout=data.get('curve_id_layout')
+            inferred = (node_curve_id(node_id,curve_id_bits=layout[1]) if layout and layout[0]==32
+                        else node_curve_id(node_id,32) if layout else node_curve_id(node_id))
         except ValueError as exc:
             raise ValueError('node ID must be an exact valid current uint32 or historical uint64 ID') from exc
         if curve_id is not None and inferred != curve_id:

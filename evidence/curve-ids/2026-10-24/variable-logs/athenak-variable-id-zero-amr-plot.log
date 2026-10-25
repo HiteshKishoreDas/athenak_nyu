@@ -1,0 +1,13 @@
+{
+  "curve_id": 1,
+  "node_id": 33,
+  "field": "pressure",
+  "geometry_clocks": 162,
+  "node_samples": 149,
+  "first_sample_time": 0.009990907573667196,
+  "node_birth": 0.009990907573667196,
+  "emitted_node_events": 1,
+  "terminal_node_views": 0,
+  "geometry_3d": false,
+  "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/variable-id-zero-amr-node33-20261024.png"
+}

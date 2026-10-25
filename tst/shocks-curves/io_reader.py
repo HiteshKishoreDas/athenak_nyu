@@ -134,6 +134,23 @@ def main():
         compact=row();compact[0]=str((1<<32)-1)
         path=write_chunk(root,3,[compact]);path.write_text(path.read_text().replace('exact-config',current))
         assert read_history(root)[0]['curve_id']==255
+        # Variable-width IDs are never guessed from their numeric value.
+        (root/'manifest.rank0').write_text('AKCURVE-SHOCK-EVENTS 1\ntest\ncurve-node-history-v3 4 HASH\n')
+        trace=list(map(str,[(15<<28)|1,0,1,21]))+observation(2,2,True)
+        trace+=['1','4','.0625','.0625','.0625']
+        path=root/'trace2.rank0.csv';path.write_text(csv_line(trace))
+        assert read_trace(path)[(15<<28)|1]['curve_id']==15
+        rejected(lambda:read_trace(path,curve_id_bits=8))
+        (root/'manifest.rank0').unlink()
+        rejected(lambda:read_trace(path))
+        assert read_trace(path,curve_id_bits=4)[(15<<28)|1]['curve_id']==15
+        # Empty histories must validate layout metadata too.
+        empty=root/'empty';empty.mkdir()
+        (empty/'manifest.rank0').write_text('AKCURVE-SHOCK-EVENTS 1\ntest\ncurve-node-history-v3 31 HASH\n')
+        path=write_chunk(empty,0,[])
+        path.write_text(path.read_text().replace('exact-config','curve-node-history-v3 31 HASH'))
+        rejected(lambda:read_history(empty))
+        rejected(lambda:read_suspended(empty))
     print('Curve IO current uint32/historical uint64, metadata, censoring and adversarial checks PASS')
 
 

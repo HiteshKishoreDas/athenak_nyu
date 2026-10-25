@@ -1,0 +1,84 @@
+[
+  {
+    "id": "VB01_declared_layouts_0_1_4_8_16_30_empty_events",
+    "status": "pass",
+    "0": {
+      "curve_id": 1,
+      "node_ids": [
+        1,
+        2
+      ]
+    },
+    "1": {
+      "curve_id": 1,
+      "node_ids": [
+        2147483649,
+        2147483650
+      ]
+    },
+    "4": {
+      "curve_id": 15,
+      "node_ids": [
+        4026531841,
+        4026531842
+      ]
+    },
+    "8": {
+      "curve_id": 255,
+      "node_ids": [
+        4278190081,
+        4278190082
+      ]
+    },
+    "16": {
+      "curve_id": 65535,
+      "node_ids": [
+        4294901761,
+        4294901762
+      ]
+    },
+    "30": {
+      "curve_id": 1073741823,
+      "node_ids": [
+        4294967293,
+        4294967294
+      ]
+    }
+  },
+  {
+    "id": "VB02_checked_input_and_single_curve_guards",
+    "status": "pass",
+    "rejected_inputs": 8
+  },
+  {
+    "id": "VB03_zero_bit_planar_particles_and_real_encounters",
+    "status": "pass",
+    "curve_samples": 1728,
+    "curve_events": 16,
+    "all_records_exact_after_ID_remap": true
+  },
+  {
+    "id": "VB04_zero_bit_live_AMR_births_and_histories",
+    "status": "pass",
+    "curve_samples": 9644,
+    "curve_events": 63,
+    "all_records_exact_after_ID_remap": true
+  },
+  {
+    "id": "VB05_zero_bit_active_AMR_restart_split_guard",
+    "status": "pass",
+    "checkpoint_cycle": 13,
+    "exact_continuation": true,
+    "changed_split_rejected": true
+  },
+  {
+    "id": "VB06_cross_stream_layout_consistency",
+    "status": "pass",
+    "geometry_thermo_and_empty_journal_mismatch_rejected": true
+  },
+  {
+    "id": "VB07_fixed_8bit_geometry_compatibility",
+    "status": "pass",
+    "default_v3_geometry_restart": true
+  }
+]

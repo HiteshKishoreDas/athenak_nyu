@@ -225,7 +225,7 @@ def main():
         source=next((work/'curve_only/curve_thermo_history').glob('*.csv'))
         directory=work/'reader_corruption';directory.mkdir(); path=directory/source.name
         text=source.read_text()
-        variants=[text.rsplit('\n',2)[0]+'\n',text.replace('ATHK_CURVE_THERMO 2','ATHK_CURVE_THERMO 9'),
+        variants=[text.rsplit('\n',2)[0]+'\n',text.replace('ATHK_CURVE_THERMO 3','ATHK_CURVE_THERMO 9'),
                   text.replace('node_id,curve_id','node_id,node_id')]
         for changed in variants:
             require(changed != text,'ineffective reader corruption fixture')

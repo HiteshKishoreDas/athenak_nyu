@@ -103,6 +103,7 @@ Absence of `<material_curves>` disables the feature. An existing block defaults
 | --- | --- | --- |
 | `enabled` | true when block exists | Allocate the separate passive-curve module |
 | `ncurves` | 1 | Number of `<curve1>`... blocks; zero is legal |
+| `curve_id_bits` | 8 | Integer 0–30; high curve bits in a 32-bit node ID; zero selects one logical curve |
 | `max_nodes` | 1000000 | Global node cap; must be in `[1,INT_MAX/3]` |
 | `adaptive` | true | Insertion-only geometric refinement |
 | `spacing_cells` | 1 | Maximum spacing relative to the globally finest current active-cell width |
@@ -118,7 +119,8 @@ both endpoint samples remain coarse. It can oversample curves far from that patc
 Fixed sampling ignores spacing/bending thresholds; quality reason zero then means
 structural/degeneracy checks succeeded, rather than certifying geometric accuracy.
 
-Each `<curveN>` accepts a unique integer `id` in $[1,255]$, `type`, `closed`, and
+Each `<curveN>` accepts a unique integer `id` within its configured curve-bit
+namespace, `type`, `closed`, and
 integer `winding1/2/3` (default zero). Open strings cannot have winding. In 2D, x3
 is constant and transverse winding is zero. Seed coordinates are continuous lifts.
 
@@ -139,10 +141,26 @@ not demonstrate recovery of a previously unspecified smooth curve.
 
 ## Identity, time integration and refinement
 
-A node ID is `uint32_t`: its high 8 bits hold the curve ID and low 24 bits hold
-a monotonically allocated creation sequence. Zero is reserved for missing links.
-Curve IDs range from 1 to 255; sequences range from 1 to $2^{24}-1$ per curve.
-The allocator may hold $2^{24}$ as its exhausted sentinel; no IDs wrap or get reused. Neither IDs nor winding pass through `Real`. Immutable `a`
+A node ID is `uint32_t`. Set `material_curves/curve_id_bits` to $B$ (default 8,
+allowed 0–30): the high $B$ bits hold the curve ID and the remaining $32-B$ bits
+hold the creation sequence. For $B>0$, curve IDs range from 1 through $2^B-1$.
+For $B=0$, only logical curve ID 1 is allowed and the full ID is the sequence.
+Sequences range from 1 through $2^{32-B}-1$; zero remains a missing-link sentinel.
+The separate uint64 allocator counter safely represents the exhausted sentinel,
+including $2^{32}$ for $B=0$. No IDs wrap or get reused. At least two nodes are
+required, so allocating 31 or 32 bits to the curve field is invalid.
+The existing global `max_nodes`, MPI batch bounds and 100000-curve IO cap still
+apply; ID capacity is not a resident-memory or throughput qualification.
+
+```ini
+<material_curves>
+ncurves = 1
+curve_id_bits = 0
+```
+
+Keep `curve_id_bits` fixed during a run and restart. Current files declare the
+split; the normal readers and curve CLI decode it automatically.
+Neither IDs nor winding pass through `Real`. Immutable `a`
 is an initial arc-length material label. Reciprocal `prev`/`next` IDs and sorted
 material labels define connectivity, independently of storage/rank ownership.
 No nearest-neighbor spatial reconnection, deletion, smoothing or
@@ -209,9 +227,11 @@ C++ preflight streams one curve at a time before changing live state. Unknown
 versions, corruption/truncation, mixed pairs, malformed integer widths, duplicate
 IDs, invalid links, bad ancestry/birth/labels/geometry/config or AMR clocks fail
 clearly. Checkpoint schema versions from development are not a stable compatibility
-promise; current restarts require schema 3 (curve8/sequence24). Python analysis still reads
-historical schema 2 without changing its original IDs. Old checkpoints are rejected
-rather than silently remapped.
+promise; current output is schema 4 with explicit curve-bit metadata. Geometry restarts
+also accept fixed-8-bit schema 3 when the configured split is 8. Python analysis
+retains historical schemas 2 and 3 without changing their IDs. Tracked restarts
+retain their separate exact-source/contract guards; schema compatibility alone
+does not permit continuation from different code. Split changes reject explicitly.
 
 Length sums each lifted edge once, including winding closure. Edge stretch is
 current chord length divided by its immutable initial material interval `da`.
