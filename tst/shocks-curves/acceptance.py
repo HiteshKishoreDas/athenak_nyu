@@ -147,7 +147,7 @@ def analyze(directory, physical=False):
     final_nodes = nodes(states[max(states)])
     for e in events+suspended:
         n = final_nodes[e['node_id']]
-        require(e['node_id'] >> 32 == e['curve_id'], 'curve/node namespace mismatch')
+        require(e['node_id'] >> 24 == e['curve_id'], 'curve/node namespace mismatch')
         require(e['birth'] == n['birth'], 'event birth provenance mismatch')
         for name in ('pre','first','last','post','representative'):
             if e[name]['valid']:
@@ -460,19 +460,34 @@ def main():
         seed=work/'seed_active'; cp=sorted((seed/'rst').glob('*.rst'))[-1]
         original=Path(str(cp)+'.curves.shock.rank0')
         require(original.is_file(),'curve shock sidecar absent')
-        for name in ('missing','corrupt','future'):
+        for name in ('missing','corrupt','future','wide_id'):
             copied=work/('artifacts_'+name);shutil.copytree(seed/'rst',copied)
             checkpoint=copied/cp.name;sidecar=Path(str(checkpoint)+'.curves.shock.rank0')
             if name=='missing':sidecar.unlink()
             elif name=='corrupt':
                 raw=bytearray(sidecar.read_bytes());raw[-1]^=1;sidecar.write_bytes(raw)
+            elif name=='wide_id':
+                raw=bytearray(sidecar.read_bytes())
+                header=struct.Struct('@8s5I2i8Qd')  # current native-ABI double header
+                h=header.unpack_from(raw)
+                require(h[0]==b'AKCSHCK1' and h[3]==8 and h[5]==4 and h[9]>0 and
+                        header.size+h[10]+h[9]*h[4]+8==len(raw),'unexpected sidecar ABI')
+                offset=header.size+h[10]
+                node=struct.unpack_from('=Q',raw,offset)[0]
+                require(node<1<<32,'source node not compact')
+                struct.pack_into('=Q',raw,offset,node+(1<<32))
+                digest=14695981039346656037
+                for byte in raw[:-8]:digest=((digest^byte)*1099511628211)&((1<<64)-1)
+                struct.pack_into('=Q',raw,len(raw)-8,digest)
+                sidecar.write_bytes(raw)
             else:
                 # Frozen native header: AKCSHCK1 then uint32 version at offset8.
                 raw=bytearray(sidecar.read_bytes())
                 require(raw[:8]==b'AKCSHCK1','unexpected curve checkpoint magic')
                 struct.pack_into('=I',raw,8,2);sidecar.write_bytes(raw)
             run('reject_'+name,args.executable,restart=checkpoint,
-                overrides=('time/nlim=-1','job/basename=reject_'+name),reject='shock')
+                overrides=('time/nlim=-1','job/basename=reject_'+name),
+                reject='curve shock node ID exceeds 32 bits' if name=='wide_id' else 'shock')
         copied=work/'artifacts_prefix';shutil.copytree(seed,copied)
         checkpoint=copied/'rst'/cp.name
         chunk=copied/'shock_events/curves/cycle0.rank0.csv'
@@ -492,7 +507,8 @@ def main():
                        'shock_tracking/directory='+str(copied/'shock_events')),
             reject='existing file differs')
         return {'missing_and_corrupt_curve_sidecar_rejected':True,
-                'future_version_explicitly_rejected':True,'corrupt_curve_prefix_rejected':True,
+                'future_version_explicitly_rejected':True,'wide_ID_alias_with_repaired_checksum_rejected':True,
+                'corrupt_curve_prefix_rejected':True,
                 'oversized_uncommitted_future_chunk_rejected':True}
     check('CSH06_sidecar_integrity',sidecar_rejections)
     def overflow():

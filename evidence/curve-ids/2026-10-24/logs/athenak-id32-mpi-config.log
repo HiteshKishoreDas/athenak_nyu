@@ -1,0 +1,20 @@
+-- Setting build type to 'Release' as none was specified.
+-- Including user-specified problem generator file: material_curve_test
+-- Setting default Kokkos CXX standard to 17
+-- Kokkos version: 4.4.0
+-- The project name is: Kokkos
+-- Using internal gtest for testing
+-- Using -std=c++17 for C++17 standard as feature
+-- Built-in Execution Spaces:
+--     Device Parallel: NoTypeDefined
+--     Host Parallel: NoTypeDefined
+--       Host Serial: SERIAL
+-- 
+-- Architectures:
+-- Using internal desul_atomics copy
+-- Experimental mdspan support is enabled
+-- Using internal mdspan directory /Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/kokkos/core/src/../../tpls/mdspan/include
+-- Kokkos Backends: SERIAL
+-- Configuring done (0.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: /Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-mpi

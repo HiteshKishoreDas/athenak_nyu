@@ -77,17 +77,17 @@ def main():
     check('CR02_AMR_birth_no_parent_history',newborn)
 
     def large():
-        directory=runs/'large_ids';node=18446744069414584321
+        directory=runs/'large_ids';node=(255<<24)|1
         command=[sys.executable,str(ROOT/'vis/python/plot_curves.py'),str(directory),
                  '--node-id',str(node),'--output',str(out/'large-id.png')]
         result=subprocess.run(command,capture_output=True,text=True,timeout=60)
         (out/'large-id-command.json').write_text(json.dumps(dict(command=command,exit=result.returncode,
             stdout=result.stdout,stderr=result.stderr),indent=2)+'\n')
         assert result.returncode==0,result.stderr
-        row=json.loads(result.stdout);assert row['node_id']==node and row['curve_id']==4294967295
+        row=json.loads(result.stdout);assert row['node_id']==node and row['curve_id']==255
         report['plots'].append(row)
         return dict(exact_id=row['node_id'],cli_exit=0)
-    check('CR03_uint64_CLI',large)
+    check('CR03_uint32_CLI',large)
 
     def geometry_only():
         directory=out/'geometry-only';directory.mkdir()
@@ -131,12 +131,12 @@ def main():
         rejected(lambda:select_curve(new,curve_id=0),'curve ID')
         rejected(lambda:select_curve(new,curve_id=8),'not found')
         rejected(lambda:select_curve(new,node_id=2**64),'uint64')
-        rejected(lambda:select_curve(new,curve_id=7,node_id=(8<<32)|1),'different curve')
-        rejected(lambda:select_curve(new,node_id=(7<<32)|999999),'not found')
+        rejected(lambda:select_curve(new,curve_id=7,node_id=(8<<24)|1),'different curve')
+        rejected(lambda:select_curve(new,node_id=(7<<24)|999999),'not found')
         rejected(lambda:select_curve(new,field='not_saved'),'available fields')
         many=copy.deepcopy(new)
         node=copy.deepcopy(next(iter(many['curve_nodes'].values())))
-        node.update(curve_id=8,node_id=(8<<32)|1)
+        node.update(curve_id=8,node_id=(8<<24)|1)
         many['curve_nodes'][0,node['node_id']]=node
         rejected(lambda:select_curve(many),'choose --curve-id')
         return dict(invalid_or_ambiguous_selections_rejected=7)

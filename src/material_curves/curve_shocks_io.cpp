@@ -79,8 +79,8 @@ uint64_t PrefixDigest(const MaterialCurves &m, uint64_t generation) {
   }
   return digest;
 }
-std::unordered_map<uint64_t, const Node *> Geometry(const MaterialCurves &m) {
-  std::unordered_map<uint64_t, const Node *> nodes;
+std::unordered_map<NodeID, const Node *> Geometry(const MaterialCurves &m) {
+  std::unordered_map<NodeID, const Node *> nodes;
   for (const auto &curve : m.curves) {
     if (curve.id % global_variable::nranks !=
         static_cast<uint64_t>(global_variable::my_rank)) {
@@ -345,11 +345,14 @@ void MaterialCurves::LoadShockRestart(const std::string &fluid_path) {
   if (PrefixDigest(*this,h.generation) != h.history_digest) {
     shocks::Fail("curve shock committed prefix missing or corrupted");
   }
-  std::unordered_map<uint64_t, ShockNode> restored;
+  std::unordered_map<NodeID, ShockNode> restored;
   for (uint64_t n=0; n<h.count; ++n) {
     ShockNode state;
     in.read(reinterpret_cast<char *>(&state),sizeof(state));
-    auto node = geometry.find(state.encounter.particle_id);
+    if (state.encounter.particle_id > UINT32_MAX) {
+      shocks::Fail("curve shock node ID exceeds 32 bits");
+    }
+    auto node = geometry.find(static_cast<NodeID>(state.encounter.particle_id));
     if (!in || node == geometry.end()) {
       shocks::Fail("unknown node in curve shock sidecar");
     }

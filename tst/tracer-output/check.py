@@ -4,6 +4,7 @@ Reuses accepted CT/CSH physics fixtures. No detector or physical tolerance tunin
 Run directories must be new; failed runs and exact commands are retained.
 """
 import argparse
+import copy
 import json
 import math
 import re
@@ -46,6 +47,29 @@ def geometry_by_cycle(data):
                 'same-cycle geometry differs across output streams')
         result[state['cycle']] = row
     return result
+
+
+def compact_previous_curve_ids(data):
+    """Compare historical controls after the explicit, bijective encoding change."""
+    data=copy.deepcopy(data)
+    def packed(old):
+        if not old:return 0
+        curve,sequence=old>>32,old&((1<<32)-1)
+        require(0<curve<=255 and 0<sequence<1<<24,'historical ID outside new namespace')
+        return (curve<<24)|sequence
+    data['curve_nodes']={(g,packed(node)):dict(o,node_id=packed(node))
+                         for (g,node),o in data['curve_nodes'].items()}
+    for key in ('curve_events','curve_suspended'):
+        for e in data[key]:
+            e['particle_id']=e['node_id']=packed(e['node_id'])
+            e['identity']=(*e['identity'][:2],e['node_id'],e['identity'][3])
+    for state in data['geometry']:
+        for curve in state['curves']:
+            require(curve['id']<=255,'historical curve outside new namespace')
+            for node in curve['nodes']:
+                for key in ('id','prev','next','parent_left','parent_right'):
+                    node[key]=packed(node[key])
+    return data
 
 
 def main():
@@ -114,7 +138,7 @@ def main():
         data[fixture] = (a,b)
         require(not list(native.rglob('*.tbin')),'removed format emitted')
         if args.reference_runs:
-            historical=read_run(args.reference_runs/(fixture+'_legacy'))
+            historical=compact_previous_curve_ids(read_run(args.reference_runs/(fixture+'_legacy')))
             for key in ('particles','curve_nodes','particle_times','curve_times',
                         'particle_events','curve_events','particle_suspended','curve_suspended'):
                 require(normalized(historical[key])==normalized(b[key]),'historical '+key+' changed')
@@ -166,14 +190,14 @@ def main():
     check('TO03_independent_thermo_oracle_and_births',physical_oracle)
 
     def large_ids():
-        directory=run('large_ids','smooth',changes={'curve1/id':4294967295,'time/nlim':4})
+        directory=run('large_ids','smooth',changes={'curve1/id':255,'time/nlim':4})
         d=read_run(directory)
         ids={node for cycle,node in d['curve_nodes']}
-        require(min(ids)>2**63 and max(ids)<2**64,'large uint64 fixture not exercised')
+        require(2**31<min(ids) and max(ids)<2**32,'unsigned 32-bit fixture not exercised')
         geometry_ids={n['id'] for s in d['geometry'] for c in s['curves'] for n in c['nodes']}
-        require(ids==geometry_ids,'uint64 thermo/geometry identity mismatch')
+        require(ids==geometry_ids,'uint32 thermo/geometry identity mismatch')
         return dict(minimum_id=min(ids),maximum_id=max(ids),nodes=len(ids))
-    check('TO04_IO04_exact_uint64_above_2pow63',large_ids)
+    check('TO04_IO04_exact_uint32_above_2pow31',large_ids)
 
     def restart():
         # Use an absolute journal location exactly as the existing shock-restart tests do.

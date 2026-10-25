@@ -10,16 +10,19 @@ import json
 from pathlib import Path
 
 from tracer_history import read_run
+from material_curves import node_curve_id
 
 
 def select_curve(data, curve_id=None, node_id=None, field='pressure'):
     """Select exact integer identities and independent recorded streams."""
     if node_id is not None:
-        if not 0 < node_id < 1 << 64 or not node_id & ((1 << 32)-1):
-            raise ValueError('node ID must be an exact valid uint64 curve-node ID')
-        if curve_id is not None and node_id >> 32 != curve_id:
+        try:
+            inferred = node_curve_id(node_id)
+        except ValueError as exc:
+            raise ValueError('node ID must be an exact valid current uint32 or historical uint64 ID') from exc
+        if curve_id is not None and inferred != curve_id:
             raise ValueError('node ID belongs to a different curve')
-        curve_id = node_id >> 32
+        curve_id = inferred
     if curve_id is not None and not 0 < curve_id < 1 << 32:
         raise ValueError('curve ID must be in [1, 4294967295]')
     available = {c['id'] for s in data['geometry'] for c in s['curves']}

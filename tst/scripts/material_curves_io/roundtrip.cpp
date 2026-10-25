@@ -25,6 +25,14 @@ namespace material_curves {
 MaterialCurves::MaterialCurves(Mesh *m, ParameterInput *p) : mesh(m), pin_(p) {}
 void MaterialCurves::Audit() const {}
 void MaterialCurves::RebuildMesh() {}
+std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &,
+    std::vector<ShockObservation> *, const std::vector<particles::TracerField> &,
+    std::vector<Real> *) {
+  Fail("unexpected sampling in persistence-only check");
+}
+int MaterialCurves::Locate(const Vec &, Vec &) const {
+  Fail("unexpected cell lookup in persistence-only check");
+}
 [[noreturn]] void MaterialCurves::Fail(const std::string &text) {
   std::cerr << text << '\n';
 #if MPI_PARALLEL_ENABLED
@@ -35,6 +43,11 @@ void MaterialCurves::RebuildMesh() {}
 }
 
 int main(int argc, char **argv) {
+  static_assert(sizeof(material_curves::Node::id)==4);
+  static_assert(sizeof(material_curves::Node::prev)==4);
+  static_assert(sizeof(material_curves::Node::next)==4);
+  static_assert(sizeof(material_curves::Node::parent_left)==4);
+  static_assert(sizeof(material_curves::Node::parent_right)==4);
 #if MPI_PARALLEL_ENABLED
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &global_variable::my_rank);
@@ -73,7 +86,7 @@ int main(int argc, char **argv) {
 #if MPI_PARALLEL_ENABLED
     MPI_Barrier(MPI_COMM_WORLD);
 #endif
-    for (std::uint64_t id : {UINT64_C(1), UINT64_C(4294967295)}) {
+    for (material_curves::NodeID id : {1u,255u}) {
       if (id % global_variable::nranks !=
           static_cast<std::uint64_t>(global_variable::my_rank)) continue;
       material_curves::Curve curve;
@@ -92,14 +105,14 @@ int main(int argc, char **argv) {
         const int open_sequence[3]{1, 3, 2};
         const int closed_sequence[4]{1, 2, 3, 4};
         const int *sequence = curve.closed ? closed_sequence : open_sequence;
-        node.id = (id << 32) | sequence[i];
+        node.id = (id << material_curves::kSequenceBits) | sequence[i];
         node.a = curve.closed ? (i == 3 ? 2.5 : i) : (i == 2 ? 3 : i);
         if (i == 0) node.a = 0;
         node.x = {2*node.a, 0, 0};
         node.old = node.x;
         if (i == (curve.closed ? 3 : 1)) {
-          node.parent_left = (id << 32) | (curve.closed ? 3 : 1);
-          node.parent_right = (id << 32) | (curve.closed ? 1 : 2);
+          node.parent_left = (id << material_curves::kSequenceBits) | (curve.closed ? 3 : 1);
+          node.parent_right = (id << material_curves::kSequenceBits) | (curve.closed ? 1 : 2);
           node.birth = 1;
           node.anchor = 0;
           node.placement = 2;

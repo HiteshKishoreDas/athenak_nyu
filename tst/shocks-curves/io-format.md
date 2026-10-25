@@ -25,7 +25,9 @@ nodes receive fresh state, never copied parent histories. No particle schema cha
 - Reader functions: `read_history(directory,through_cycle=None)`,
   `read_suspended(directory,generation=None)`, `read_trace(path)` keyed by node ID.
   Events retain `particle_id` as the shared core field and add `node_id`; curve ID
-  derives exactly from the high32bits. Python curve identities include the carrier:
+  derives exactly from the high 8 bits of the 32-bit packed ID. The contract
+  starts with `curve-node-history-v2` for this encoding; historical v1 contracts
+  retain their original high-32-bit decoding. Python curve identities include the carrier:
   `('curve_node',lineage,node_id,sequence)`, distinct from the unchanged MC triple
   even when both carriers use identical numeric IDs. Censored views stay separate
   from events.

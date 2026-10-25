@@ -22,7 +22,7 @@ existing scientific environment:
 MPLCONFIGDIR=/private/tmp/athenak-lagrangian-mpl \
   /Users/hitesh/hitesh/git/athenak_nyu/vis/.venv/bin/python \
   vis/python/plot_curves.py \
-  build-lagrangian/evidence/existing-output-final-20261024/planar \
+  build-lagrangian/evidence/curve-id32-reviewed-output-20261024/planar \
   --curve-id 7 --field pressure --output /private/tmp/curve7-pressure.png
 ```
 
@@ -33,7 +33,7 @@ canonical saved field name, such as `density`, `pressure`, `temperature`, `entro
 produce an error listing available names. Proxy quantities retain the existing
 code-unit conventions described in `curve-thermo-history.md`.
 
-`--node-id 30064771105` selects a particular node and infers its curve ID. Enter
+`--node-id 117440545` selects a particular node and infers its curve ID. Enter
 IDs as decimal integers, never floats. Without a node selection the smallest
 recorded node ID is used, normally the first anchor. A single curve is selected
 automatically; multiple curves require `--curve-id`. Conflicting selections fail.
@@ -87,13 +87,13 @@ per-step flags remain accessible through `curve_shock_history.read_trace`.
 MPLCONFIGDIR=/private/tmp/athenak-lagrangian-mpl \
   /Users/hitesh/hitesh/git/athenak_nyu/vis/.venv/bin/python \
   tst/tracer-output/curve_reader_check.py \
-  --runs build-lagrangian/evidence/existing-output-final-20261024 \
-  --three-d-run build-lagrangian/evidence/existing-output-CT-20261024/forced_both \
+  --runs build-lagrangian/evidence/curve-id32-reviewed-output-20261024 \
+  --three-d-run build-lagrangian/evidence/curve-id32-reviewed-CT-20261024/forced_both \
   --output build-lagrangian/evidence/curve-reader-NEW
 ```
 
 This checks actual saved planar/AMR/3D datasets, scheduled/control equality, exact
-uint64 CLI IDs, optional missing diagnostics, particle IO opt-out with unchanged
+current uint32 and historical uint64 CLI IDs, optional missing diagnostics, particle IO opt-out with unchanged
 default strictness, winding closure, invalid selections, input corruption and
 figure preservation. No simulation is launched by the reader checks. See
 `evidence/tracer-output/2026-10-24/curve-reader-ledger.md` for the original reader results; `existing-formats-ledger.md` records the format-removal checks and new plots.

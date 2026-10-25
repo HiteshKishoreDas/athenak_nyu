@@ -8,9 +8,10 @@ import subprocess
 import sys
 
 ROOT=Path(__file__).resolve().parents[2]
-sys.path[:0]=[str(ROOT/'tst/shocks-mc'),str(ROOT/'vis/python')]
+sys.path[:0]=[str(ROOT/'tst/shocks-mc'),str(ROOT/'vis/python'),str(ROOT/'tst/tracer-output')]
 from common import edit_input, provenance, sha, thermo
 import material_curves
+from check import compact_previous_curve_ids, normalized
 
 
 def main():
@@ -90,9 +91,13 @@ def main():
         require(next((directory/'prtcl_thermo_history').glob('*.thp')).read_bytes()==
                 next((old/'prtcl_thermo_history').glob('*.thp')).read_bytes(),'summary changed particle history bytes')
         for filename in ['material.curves.initial.txt','material.curves.final.txt']:
-            require((directory/filename).read_bytes()==(old/filename).read_bytes(),'summary changed curve state')
+            a=material_curves.read(directory/filename)
+            b=material_curves.read(old/filename)
+            if b['version']==2:
+                b=compact_previous_curve_ids(dict(curve_nodes={},curve_events=[],curve_suspended=[],geometry=[b]))['geometry'][0]
+            require(normalized(a['curves'])==normalized(b['curves']),'summary changed curve state')
         cases['fresh']=counts(text)
-        return dict(particle_history_and_curve_state_byte_equal=True)
+        return dict(particle_history_bytes_and_curve_state_exact_after_ID_remap=True)
     check('SUM01_fresh_and_passivity',fresh)
 
     def adaptive():

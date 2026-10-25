@@ -59,7 +59,7 @@ void MaterialCurves::ConfigureShocks(ParameterInput *pin) {
   if (!valid) Fail("invalid curve shock detector, lineage, capacity or ghost width");
   std::ostringstream contract;
   contract << std::setprecision(std::numeric_limits<Real>::max_digits10)
-           << "curve-node-history-v1 " << SHOCK_IMPLEMENTATION_HASH << ' '
+           << "curve-node-history-v2 " << SHOCK_IMPLEMENTATION_HASH << ' '
            << sizeof(ShockNode) << ' ' << c.gamma << ' ' << c.width << ' '
            << c.min_mach << ' ' << c.mach_max << ' ' << c.grad_floor << ' '
            << c.div_limit << ' ' << c.density_floor << ' ' << c.temperature_floor << ' '

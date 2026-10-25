@@ -102,7 +102,7 @@ def main():
             return SCHEMA.complete("\n".join(rows) + "\n")
 
         malformed = [original[:-1], original[:-30], original + b"extra\n",
-                     SCHEMA.complete(body.replace("MATERIAL_CURVES 2",
+                     SCHEMA.complete(body.replace("MATERIAL_CURVES 3",
                                                   "MATERIAL_CURVES 1")),
                      SCHEMA.complete(body.replace("ASCII 64", "ASCII 32")),
                      alter_record("config", 3, 2),
@@ -112,10 +112,10 @@ def main():
                      alter_record("curve", 3, 2**40+1, lambda f: f[2] == "1"),
                      alter_record("node", 12, 0.25, lambda f: f[8] == "0"),
                      alter_record("node", 10, 2**40+1),
-                     alter_record("node", (4, 5), ((1 << 32) | 2, (1 << 32) | 1),
-                                  lambda f: f[8] == "0" and int(f[1]) >> 32 == 1),
-                     alter_record("node", 5, (4294967295 << 32) | 2,
-                                  lambda f: f[8] == "0" and int(f[1]) >> 32 != 1),
+                     alter_record("node", (4, 5), ((1 << 24) | 2, (1 << 24) | 1),
+                                  lambda f: f[8] == "0" and int(f[1]) >> 24 == 1),
+                     alter_record("node", 5, (255 << 24) | 2,
+                                  lambda f: f[8] == "0" and int(f[1]) >> 24 != 1),
                      alter_record("amr", 5, 1), alter_record("amr", 3, 6),
                      alter_record("leaf", 2, 10), alter_record("leaf", 5, -1),
                      alter_record("leaf", 5, 18),

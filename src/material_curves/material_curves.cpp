@@ -141,10 +141,10 @@ MaterialCurves::MaterialCurves(Mesh *pm, ParameterInput *pin) : mesh(pm), pin_(p
   ConfigureShocks(pin);
 }
 
-std::uint64_t MaterialCurves::NewID(Curve &c) {
-  if (c.id == 0 || c.id > UINT32_MAX || c.next_sequence == 0 ||
-      c.next_sequence > UINT32_MAX) Fail("curve/sequence ID namespace exhausted");
-  return (c.id << 32) | c.next_sequence++;
+NodeID MaterialCurves::NewID(Curve &c) {
+  if (c.id == 0 || c.id > kMaxCurveID || c.next_sequence == 0 ||
+      c.next_sequence > kMaxSequence) Fail("curve/sequence ID namespace exhausted");
+  return (c.id << kSequenceBits) | c.next_sequence++;
 }
 
 void MaterialCurves::Links(Curve &c) {
@@ -157,15 +157,19 @@ void MaterialCurves::Links(Curve &c) {
 
 void MaterialCurves::Initialize() {
   int nc = pin_->GetOrAddInteger("material_curves", "ncurves", 1);
-  if (nc < 0 || nc > 100000) Fail("ncurves must lie in [0,100000]");
+  if (nc < 0 || nc > static_cast<int>(kMaxCurveID)) Fail("ncurves must lie in [0,255]");
   std::uint64_t total = 0;
-  std::unordered_set<std::uint64_t> ids;
+  std::unordered_set<NodeID> ids;
   for (int k=1; k<=nc; ++k) {
     const std::string block = "curve" + std::to_string(k);
     Curve c;
-    c.id = Integer(pin_->GetOrAddString(block, "id", std::to_string(k)));
-    if (c.id == 0 || c.id > UINT32_MAX || !ids.insert(c.id).second) {
-      Fail("curve IDs must be unique in [1,2^32-1]");
+    const auto requested_id = Integer(pin_->GetOrAddString(block, "id", std::to_string(k)));
+    if (requested_id == 0 || requested_id > kMaxCurveID) {
+      Fail("curve IDs must be unique in [1,255]");
+    }
+    c.id = static_cast<NodeID>(requested_id);
+    if (c.id == 0 || c.id > kMaxCurveID || !ids.insert(c.id).second) {
+      Fail("curve IDs must be unique in [1,255]");
     }
     auto type = pin_->GetOrAddString(block, "type", "line");
     c.closed = pin_->GetOrAddBoolean(block, "closed", type == "circle");
@@ -404,7 +408,7 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
   int ns = nodes.size(), nr = incoming;
   std::vector<Real> send(3*ns), recv(3*nr), velocity(3*nr), returned(3*ns);
   std::vector<int> sendg(ns), recvg(nr), order(ns);
-  std::vector<std::uint64_t> sendid(ns), recvid(nr), backid(ns);
+  std::vector<NodeID> sendid(ns), recvid(nr), backid(ns);
   for (int r=0; r<ranks; ++r) {
     for (int j=0; j<sc[r]; ++j) {
       int p = buckets[r][j], q = sd[r]+j;
@@ -423,8 +427,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
                 recv.data(), rc3.data(), rd3.data(), MPI_DOUBLE, MPI_COMM_WORLD);
   MPI_Alltoallv(sendg.data(), sc.data(), sd.data(), MPI_INT,
                 recvg.data(), rc.data(), rd.data(), MPI_INT, MPI_COMM_WORLD);
-  MPI_Alltoallv(sendid.data(), sc.data(), sd.data(), MPI_UINT64_T,
-                recvid.data(), rc.data(), rd.data(), MPI_UINT64_T, MPI_COMM_WORLD);
+  MPI_Alltoallv(sendid.data(), sc.data(), sd.data(), MPI_UINT32_T,
+                recvid.data(), rc.data(), rd.data(), MPI_UINT32_T, MPI_COMM_WORLD);
 #else
   recv=send; recvg=sendg; recvid=sendid;
 #endif
@@ -480,8 +484,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
     MPI_Alltoallv(sampled.data(),rc3.data(),rd3.data(),MPI_ATHENA_REAL,
                   returned_values.data(),sc3.data(),sd3.data(),MPI_ATHENA_REAL,
                   MPI_COMM_WORLD);
-    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_UINT64_T,
-                  backid.data(),sc.data(),sd.data(),MPI_UINT64_T,MPI_COMM_WORLD);
+    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_UINT32_T,
+                  backid.data(),sc.data(),sd.data(),MPI_UINT32_T,MPI_COMM_WORLD);
 #else
     returned_values=std::move(sampled); backid=recvid;
 #endif
@@ -527,8 +531,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
     }
     MPI_Alltoallv(host.data(),rc3.data(),rd3.data(),MPI_BYTE,
                   returned_samples.data(),sc3.data(),sd3.data(),MPI_BYTE,MPI_COMM_WORLD);
-    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_UINT64_T,
-                  backid.data(),sc.data(),sd.data(),MPI_UINT64_T,MPI_COMM_WORLD);
+    MPI_Alltoallv(recvid.data(),rc.data(),rd.data(),MPI_UINT32_T,
+                  backid.data(),sc.data(),sd.data(),MPI_UINT32_T,MPI_COMM_WORLD);
 #else
     for (int p=0; p<nr; ++p) returned_samples[p]=host(p);
     backid=recvid;
@@ -558,8 +562,8 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
 #if MPI_PARALLEL_ENABLED
   MPI_Alltoallv(velocity.data(), rc3.data(), rd3.data(), MPI_DOUBLE,
                 returned.data(), sc3.data(), sd3.data(), MPI_DOUBLE, MPI_COMM_WORLD);
-  MPI_Alltoallv(recvid.data(), rc.data(), rd.data(), MPI_UINT64_T,
-                backid.data(), sc.data(), sd.data(), MPI_UINT64_T, MPI_COMM_WORLD);
+  MPI_Alltoallv(recvid.data(), rc.data(), rd.data(), MPI_UINT32_T,
+                backid.data(), sc.data(), sd.data(), MPI_UINT32_T, MPI_COMM_WORLD);
 #else
   returned=velocity; backid=recvid;
 #endif
@@ -631,13 +635,13 @@ void MaterialCurves::Advance(int stage) {
 
 void MaterialCurves::Audit() const {
   std::uint64_t count=0;
-  std::unordered_set<std::uint64_t> curve_ids;
+  std::unordered_set<NodeID> curve_ids;
   for (const auto &c : curves) {
-    if (c.id==0 || c.id>UINT32_MAX || !curve_ids.insert(c.id).second ||
+    if (c.id==0 || c.id>kMaxCurveID || !curve_ids.insert(c.id).second ||
         c.id%global_variable::nranks!=static_cast<unsigned>(global_variable::my_rank) ||
         c.nodes.size()<(c.closed ? 3u : 2u) || !(c.period>0) ||
         !std::isfinite(c.period) || c.next_sequence==0 ||
-        c.next_sequence>static_cast<std::uint64_t>(UINT32_MAX)+1) {
+        c.next_sequence>static_cast<NodeID>(kMaxSequence)+1) {
       Fail("invalid curve identity, owner, period, count, or allocator");
     }
     if ((c.reason==0)!=(c.unresolved_since==-1) || c.reason<0 || c.reason>4 ||
@@ -653,11 +657,11 @@ void MaterialCurves::Audit() const {
         Fail("winding exceeds reliable lifted geometry range");
       }
     }
-    std::unordered_map<std::uint64_t, const Node *> by_id;
+    std::unordered_map<NodeID, const Node *> by_id;
     for (std::size_t i=0; i<c.nodes.size(); ++i) {
       const auto &n=c.nodes[i];
-      if ((n.id>>32)!=c.id || (n.id&UINT32_MAX)==0 ||
-          (n.id&UINT32_MAX)>=c.next_sequence || !by_id.emplace(n.id, &n).second ||
+      if ((n.id>>kSequenceBits)!=c.id || (n.id&kMaxSequence)==0 ||
+          (n.id&kMaxSequence)>=c.next_sequence || !by_id.emplace(n.id, &n).second ||
           !std::isfinite(n.a) || n.a<0 || n.a>c.period ||
           (c.closed && n.a>=c.period) || (i && n.a<=c.nodes[i-1].a) ||
           !std::isfinite(n.birth) || n.birth<0 || n.birth>mesh->time ||
@@ -765,7 +769,7 @@ void MaterialCurves::Adapt(Real birth_time, bool initial, Real affected_time) {
         }
         Real a=c.nodes[i].a+0.5*da;
         if (!(a>c.nodes[i].a && a<(j ? c.nodes[j].a : c.period)) ||
-            c.next_sequence>UINT32_MAX) {
+            c.next_sequence>kMaxSequence) {
           if (!c.reason) {c.reason=2; c.unresolved_since=birth_time;}
           continue;
         }
@@ -810,7 +814,7 @@ void MaterialCurves::Adapt(Real birth_time, bool initial, Real affected_time) {
       std::size_t begin=cursor;
       while (cursor<splits.size() && splits[cursor].curve==ci) ++cursor;
       if (begin==cursor) continue;
-      if (cursor-begin > static_cast<std::uint64_t>(UINT32_MAX)+1-c.next_sequence) {
+      if (cursor-begin > static_cast<NodeID>(kMaxSequence)+1-c.next_sequence) {
         if (!c.reason) {c.reason=2; c.unresolved_since=birth_time;}
         continue;
       }

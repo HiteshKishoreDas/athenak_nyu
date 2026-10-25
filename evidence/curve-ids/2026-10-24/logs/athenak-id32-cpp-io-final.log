@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/scripts/material_curves_io/test_cpp.py", line 135, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/scripts/material_curves_io/test_cpp.py", line 62, in main
+    raise AssertionError(result.stdout + result.stderr)
+AssertionError: Undefined symbols for architecture arm64:
+  "material_curves::MaterialCurves::Sample(std::__1::vector<material_curves::Node*, std::__1::allocator<material_curves::Node*>>&, std::__1::vector<material_curves::ShockObservation, std::__1::allocator<material_curves::ShockObservation>>*, std::__1::vector<particles::TracerField, std::__1::allocator<particles::TracerField>> const&, std::__1::vector<double, std::__1::allocator<double>>*)", referenced from:
+      material_curves::MaterialCurves::ThermoHistory(std::__1::vector<particles::TracerField, std::__1::allocator<particles::TracerField>> const&) in material_curves_io-d2f63d.o
+  "material_curves::MaterialCurves::Locate(std::__1::array<double, 3ul> const&, std::__1::array<double, 3ul>&) const", referenced from:
+      material_curves::MaterialCurves::ThermoHistory(std::__1::vector<particles::TracerField, std::__1::allocator<particles::TracerField>> const&) in material_curves_io-d2f63d.o
+ld: symbol(s) not found for architecture arm64
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)
+

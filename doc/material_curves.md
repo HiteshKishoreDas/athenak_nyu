@@ -118,7 +118,7 @@ both endpoint samples remain coarse. It can oversample curves far from that patc
 Fixed sampling ignores spacing/bending thresholds; quality reason zero then means
 structural/degeneracy checks succeeded, rather than certifying geometric accuracy.
 
-Each `<curveN>` accepts a unique integer `id` in `[1,2^32-1]`, `type`, `closed`, and
+Each `<curveN>` accepts a unique integer `id` in $[1,255]$, `type`, `closed`, and
 integer `winding1/2/3` (default zero). Open strings cannot have winding. In 2D, x3
 is constant and transverse winding is zero. Seed coordinates are continuous lifts.
 
@@ -139,8 +139,10 @@ not demonstrate recovery of a previously unspecified smooth curve.
 
 ## Identity, time integration and refinement
 
-A node ID is `uint64_t`, with high32bits curve ID and low32bits monotonically
-allocated sequence. Neither IDs nor winding pass through `Real`. Immutable `a`
+A node ID is `uint32_t`: its high 8 bits hold the curve ID and low 24 bits hold
+a monotonically allocated creation sequence. Zero is reserved for missing links.
+Curve IDs range from 1 to 255; sequences range from 1 to $2^{24}-1$ per curve.
+The allocator may hold $2^{24}$ as its exhausted sentinel; no IDs wrap or get reused. Neither IDs nor winding pass through `Real`. Immutable `a`
 is an initial arc-length material label. Reciprocal `prev`/`next` IDs and sorted
 material labels define connectivity, independently of storage/rank ownership.
 No nearest-neighbor spatial reconnection, deletion, smoothing or
@@ -191,7 +193,7 @@ Snapshots are `BASENAME.curves.initial.txt`, `BASENAME.curves.CYCLE8.txt`, and
 atomically replaced through a temporary file; native fluid files retain their
 legacy write behavior, and incomplete/mixed pairs fail validation. Checksummed
 ASCII has explicit
-U64/I64/I32 integer fields and declared Real width. Reals use `max_digits10`.
+U32 IDs/links, U64 counters, I64 winding/images and I32 flags, with declared Real width. Reals use `max_digits10`.
 The sidecar fingerprints the complete fluid file plus time/cycle/domain/config;
 copying an unrelated fluid restart with a matching timestamp does not make a pair.
 Checksums detect accidental corruption, not malicious modification.
@@ -207,7 +209,9 @@ C++ preflight streams one curve at a time before changing live state. Unknown
 versions, corruption/truncation, mixed pairs, malformed integer widths, duplicate
 IDs, invalid links, bad ancestry/birth/labels/geometry/config or AMR clocks fail
 clearly. Checkpoint schema versions from development are not a stable compatibility
-promise; do not mix earlier schema1 artifacts with the final schema2 reader.
+promise; current restarts require schema 3 (curve8/sequence24). Python analysis still reads
+historical schema 2 without changing its original IDs. Old checkpoints are rejected
+rather than silently remapped.
 
 Length sums each lifted edge once, including winding closure. Edge stretch is
 current chord length divided by its immutable initial material interval `da`.

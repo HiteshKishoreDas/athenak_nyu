@@ -17,11 +17,15 @@
 
 namespace material_curves {
 using Vec = std::array<Real, 3>;
+using NodeID = std::uint32_t;
+constexpr unsigned kSequenceBits = 24;
+constexpr NodeID kMaxCurveID = 255;
+constexpr NodeID kMaxSequence = (NodeID{1} << kSequenceBits)-1;
 
 // IDs never pass through Real. The (curve, sequence) namespace is bounded explicitly.
 struct Node {
-  std::uint64_t id = 0, prev = 0, next = 0;
-  std::uint64_t parent_left = 0, parent_right = 0;
+  NodeID id = 0, prev = 0, next = 0;
+  NodeID parent_left = 0, parent_right = 0;
   Real a = 0, birth = 0;
   Vec x{}, old{};  // continuous lift; old is RK scratch, checkpoints are step-complete
   std::int32_t anchor = 1;
@@ -30,7 +34,7 @@ struct Node {
 };
 
 struct Curve {
-  std::uint64_t id = 0, next_sequence = 1;
+  NodeID id = 0, next_sequence = 1;
   bool closed = false;
   std::array<std::int64_t, 3> winding{};
   Real period = 0;  // initial arc length; labels are never renumbered
@@ -99,7 +103,7 @@ class MaterialCurves {
   shocks::DetectorConfig shock_config;
   int shock_capacity = 4096;
   std::string shock_directory, shock_lineage, shock_contract;
-  std::unordered_map<std::uint64_t, ShockNode> shock_states;
+  std::unordered_map<NodeID, ShockNode> shock_states;
   std::uint64_t shock_generation = UINT64_MAX;
   Real shock_time = -1;
   std::uint64_t shock_history_digest = UINT64_C(14695981039346656037);
@@ -107,7 +111,7 @@ class MaterialCurves {
  private:
   ParameterInput *pin_;
   struct CircleSeed {Vec center, e1, e2; Real radius;};
-  std::unordered_map<std::uint64_t, CircleSeed> circle_seeds_;
+  std::unordered_map<NodeID, CircleSeed> circle_seeds_;
   std::unordered_map<LogicalLocation, int, LogicalLocationHash> leaves_;
   int finest_level_ = 0;
   Real mesh_spacing_ = 0;
@@ -118,7 +122,7 @@ class MaterialCurves {
   int Locate(const Vec &lift, Vec &wrapped) const;
   Vec Edge(const Curve &curve, std::size_t i) const;
   void Links(Curve &curve);
-  std::uint64_t NewID(Curve &curve);
+  NodeID NewID(Curve &curve);
 };
 }  // namespace material_curves
 #endif  // MATERIAL_CURVES_MATERIAL_CURVES_HPP_

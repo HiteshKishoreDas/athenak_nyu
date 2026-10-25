@@ -55,7 +55,10 @@ Particle output stays `.thp` v2, with unchanged record layout. Curve output is:
 
 `curve_thermo_history/<basename>.<id>.cycle<C>.rank<R>.csv`
 
-Each curve chunk declares version, cycle, time, row count, rank and rank count.
+Each curve chunk declares version 2, cycle, time, row count, rank and rank count.
+Version 2 uses unsigned 32-bit node IDs (high 8 bits curve ID, low 24 bits sequence).
+The reader also accepts historical version 1 with its original 64-bit IDs; mixed
+ID encodings in one stream are rejected.
 Columns are `node_id,curve_id,birth,a,x1,x2,x3,gid,level`, followed by canonical
 field names. Integers retain full decimal width; never load node IDs through a
 float. `a` is the immutable material label, positions are continuous periodic
@@ -125,7 +128,7 @@ viewer and four explained scientific figures from actual native records. Add
 actual failed and corrected restart clocks. NumPy
 and Matplotlib use the existing environment; no dependency was added.
 
-The gates cover curve-only large uint64 IDs, aliases/shared clocks, unchanged
+The gates cover curve-only unsigned 32-bit IDs above the signed range, aliases/shared clocks, unchanged
 particle bytes and geometry, MC coexistence without shocks, live refinement and
 coarsening, fresh node births, exact restart, simultaneous shock sampling, cycle
 and time cadence, unavailable fields, corrupt chunks, an independent spatial cell

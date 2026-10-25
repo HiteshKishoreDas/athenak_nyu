@@ -76,3 +76,19 @@ See ledger.md for commands/results/failures and README.md for supported behavior
 - [ ] Larger-run physical acceptance: final rmsMach0.808576 from adiabatic heating;
   evolving flow, no plateau or stationary Mach5 claim. Source-work/calibration/
   ensembles/hardware/human gates remain open.
+
+## 2026-10-24 compact curve identity follow-up
+
+- [x] User-selected unsigned 32-bit curve IDs: high 8 bits curve, low 24 sequence;
+  zero sentinel and deterministic exhaustion, checked config/checkpoint narrowing.
+- [x] Current links and insertion ancestry use 32-bit IDs; existing-node identities
+  survive insertion, AMR and same-code restarts. Shared encounter rules unchanged.
+- [x] Historical geometry/thermo/event analysis retains original 64-bit identities;
+  old checkpoints reject explicitly rather than silently reassigning identities.
+- [x] Independent persistence/simplicity review; applied contract-version fix and
+  added repaired-checksum shock-state alias regression.
+- [x] 93 local check groups, additional reader/C++ IO/state checks and fresh plots.
+- [ ] MPI runtime: build passes; PMIx/PRRTE ABI mismatch prevents local launch.
+  RUSTY/Frontier/GPU, production budgets and scientific review remain pending.
+
+Current evidence: `evidence/curve-ids/2026-10-24/ledger.md`.

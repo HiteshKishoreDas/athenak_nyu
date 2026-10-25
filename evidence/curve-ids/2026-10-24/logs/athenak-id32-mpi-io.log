@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/scripts/material_curves_io/test_cpp.py", line 135, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/scripts/material_curves_io/test_cpp.py", line 69, in main
+    launch("save", 2 if mpi else 1)
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/scripts/material_curves_io/test_cpp.py", line 67, in launch
+    return run(prefix + [str(executable), mode, str(fluid)], failure)
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/scripts/material_curves_io/test_cpp.py", line 29, in run
+    raise AssertionError(f"unexpected exit {result.returncode}: {command}\n"
+                         + result.stdout + result.stderr)
+AssertionError: unexpected exit 213: ['mpiexec', '-n', '2', '/var/folders/ds/c46lsj612gv087d5trxmn98m0000gn/T/material-io-check-1mzoz2yr/roundtrip', 'save', '/var/folders/ds/c46lsj612gv087d5trxmn98m0000gn/T/material-io-check-1mzoz2yr/fluid.rst']
+************************************************
+We have detected that the runtime version
+of the PMIx library we were given is binary
+incompatible with the version we were built against:
+
+    Runtime: 0x60100
+    Build:   0x50009
+
+Please update your LD_LIBRARY_PATH to point
+us to the same PMIx version used to build PRRTE.
+************************************************
+

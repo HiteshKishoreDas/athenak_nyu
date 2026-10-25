@@ -69,6 +69,30 @@ class ReaderTests(unittest.TestCase):
             path.write_bytes(data)
             return reader.read(path, **kwargs)
 
+    def test_compact_v3_and_width_rejection(self):
+        rows=fixture().splitlines()
+        old=(1<<32)-1
+        for index,line in enumerate(rows):
+            f=line.split()
+            if f[0]=='MATERIAL_CURVES':rows[index]='MATERIAL_CURVES 3 ASCII 64 U32 I64 I32'
+            elif f[0]=='curve_columns':rows[index]=line.replace('id:u64','id:u32').replace('next_sequence:u64','next_sequence:u32')
+            elif f[0]=='node_columns':rows[index]=line.replace(':u64',':u32')
+            elif f[0]=='curve':f[1]='255';rows[index]=' '.join(f)
+            elif f[0]=='node':
+                for column in range(1,6):
+                    value=int(f[column])
+                    f[column]=str((255<<24)|(value&old)) if value else '0'
+                rows[index]=' '.join(f)
+        body='\n'.join(rows)+'\n'
+        data=self.parse(complete(body));curve=data['curves'][0]
+        self.assertEqual(data['version'],3)
+        self.assertEqual(curve['nodes'][0]['id'],(255<<24)|1)
+        self.assertEqual(reader.node_curve_id((1<<32)-1,24),255)
+        for bad in (0,1,1<<24,1<<32,((256<<24)|1)):
+            with self.assertRaises(ValueError):reader.node_curve_id(bad,24)
+        broken=body.replace(str((255<<24)|1),str(1<<32))
+        with self.assertRaises(ValueError):self.parse(complete(broken))
+
     def test_open_birth_large_ids_and_geometry(self):
         data = self.parse(complete(fixture()))
         curve = data["curves"][0]

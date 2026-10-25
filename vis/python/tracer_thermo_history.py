@@ -1,4 +1,4 @@
-"""Native thermo readers for particles (.thp v2) and material curves (CSV v1).
+"""Native thermo readers for particles (.thp v2) and material curves (CSV v1/v2).
 
 Both return {(cycle, exact_id): observation}, {cycle: time}; quantities live in
 observation['fields']. Curve positions are continuous lifts, particle positions
@@ -11,7 +11,7 @@ from pathlib import Path
 import re
 import struct
 
-from material_curves import _integer, _real, _require
+from material_curves import _integer, _real, _require, node_curve_id
 
 
 class ThermoRows(dict):
@@ -75,6 +75,7 @@ def read_curves(directory, stem=None):
     identities = {}
     schema = None
     streams = set()
+    encoding = None
     paths = sorted(Path(directory).glob('*.csv'))
     for path in paths:
         match = re.fullmatch(r'(.+)\.cycle([0-9]+)\.rank([0-9]+)\.csv', path.name)
@@ -85,8 +86,11 @@ def read_curves(directory, stem=None):
         _require(len(streams) == 1, 'multiple curve thermo streams; select stem')
         lines = path.read_text().splitlines()
         head = lines[0].split() if lines else []
-        _require(len(head) == 8 and head[:3] == ['#','ATHK_CURVE_THERMO','1'],
+        _require(len(head) == 8 and head[:2] == ['#','ATHK_CURVE_THERMO'] and head[2] in ('1','2'),
                  'unknown/truncated curve thermo header')
+        sequence_bits = 24 if head[2]=='2' else 32
+        _require(encoding is None or encoding == sequence_bits,'curve thermo ID encoding changed')
+        encoding = sequence_bits
         cycle, count, rank, nranks = (_integer(head[n], 32) for n in (3,5,6,7))
         time = _real(head[4])
         _require(time >= 0 and cycle == int(match[2]) and rank == int(match[3])
@@ -110,7 +114,7 @@ def read_curves(directory, stem=None):
             _require(len(values) == len(columns), 'curve thermo row width mismatch')
             node, curve = _integer(values[0]), _integer(values[1],32)
             birth, a = _real(values[2]), _real(values[3])
-            _require(curve > 0 and node >> 32 == curve and node & ((1<<32)-1)
+            _require(curve > 0 and node_curve_id(node,sequence_bits) == curve
                      and 0 <= birth <= time and a >= 0, 'invalid node identity/birth/label')
             _require(curve % nranks == rank, 'curve thermo home rank mismatch')
             identity = curve, birth, a

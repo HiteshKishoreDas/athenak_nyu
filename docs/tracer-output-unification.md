@@ -12,14 +12,17 @@ the withdrawn experiment, not the current interface.
 | --- | --- | --- |
 | Particle thermo | `.thp` v2, unchanged binary records | `tracer_thermo_history.read_particles` |
 | Curve thermo | `.csv` cycle/rank chunks | `tracer_thermo_history.read_curves` |
-| Curve geometry/connectivity | ASCII v2 `.txt` snapshots | `material_curves.read` |
+| Curve geometry/connectivity | ASCII v3 `.txt` snapshots | `material_curves.read` |
 | Particle encounters and optional traces | `.csv` journals | `shock_history` |
 | Curve encounters and optional traces/birth traces | `.csv` journals | `curve_shock_history` |
 
-Curve geometry is ASCII v2; it is not VTK. Particle `.pvtk` output is a separate
+Curve geometry is ASCII v3; it is not VTK. Particle `.pvtk` output is a separate
 existing visualization path. No particle thermo IDs, fields or byte layouts change.
-Curve nodes retain exact uint64 IDs; these cannot be placed into the particle
-THP v2 int32 tag field without changing that existing format.
+Curve nodes use unsigned 32-bit IDs (curve8/sequence24). The full namespace includes
+values above the signed THP v2 tag range; future THP integration must preserve those
+bits explicitly. Existing particle THP bytes are unchanged by this ID change.
+Current geometry checkpoints require v3; analysis also reads old v2 geometry and
+v1 curve thermo without reinterpreting historical IDs.
 
 ## Same configuration pattern
 

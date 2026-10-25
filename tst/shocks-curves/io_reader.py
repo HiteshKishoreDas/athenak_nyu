@@ -118,7 +118,23 @@ def main():
         write_chunk(root, 3, [row()], suspended=True)
         rejected(lambda: read_suspended(root))
         assert len(read_history(root)) == 1
-    print('Curve IO schema/uint64/AMR metadata/censoring/adversarial reader checks PASS')
+    with tempfile.TemporaryDirectory() as directory:
+        root=Path(directory)
+        # User parameter text must never select the ID encoding.
+        legacy='curve-node-history-v1 HASH parameter 15: curve-id=8/24'
+        (root/'manifest.rank0').write_text('AKCURVE-SHOCK-EVENTS 1\ntest\n'+legacy+'\n')
+        for generation in range(4):
+            path=write_chunk(root,generation,[row()] if generation==3 else [])
+            path.write_text(path.read_text().replace('exact-config',legacy))
+        assert read_history(root)[0]['curve_id']==NODE>>32
+        current='curve-node-history-v2 HASH'
+        (root/'manifest.rank0').write_text('AKCURVE-SHOCK-EVENTS 1\ntest\n'+current+'\n')
+        for path in root.glob('cycle*.csv'):path.write_text(path.read_text().replace(legacy,current))
+        rejected(lambda:read_history(root))  # old wide ID cannot alias into current namespace
+        compact=row();compact[0]=str((1<<32)-1)
+        path=write_chunk(root,3,[compact]);path.write_text(path.read_text().replace('exact-config',current))
+        assert read_history(root)[0]['curve_id']==255
+    print('Curve IO current uint32/historical uint64, metadata, censoring and adversarial checks PASS')
 
 
 if __name__ == '__main__':

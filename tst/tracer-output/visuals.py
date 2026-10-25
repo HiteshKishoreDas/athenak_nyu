@@ -13,6 +13,7 @@ import numpy as np
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'vis/python'))
 from tracer_history import read_run
+import material_curves
 
 
 def series(rows,node,field):
@@ -24,6 +25,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--run',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--id-boundaries',type=Path,help='retained id_check.py output')
     args=parser.parse_args();run=args.run.resolve();out=args.output.resolve()
     out.mkdir(parents=True,exist_ok=False)
     report=json.loads((run/'report.json').read_text())
@@ -80,6 +82,30 @@ def main():
     for ax in axes:ax.grid(alpha=.2);ax.legend()
     fig.suptitle('Live AMR, inserted nodes and existing CSV journal restart')
     save(fig,'restart-equality','Both pressure differences and encounter-time differences are exactly zero for every saved record. These are comparisons of stored evidence, not estimates of exact physical crossing times. The run refines/coarsens and inserts 17 inside-born and 22 outside-born nodes; incomplete entries remain incomplete. The checkpoint is taken at the first inside birth. Full records, identities and terminal views are compared by TO21, beyond the quantities plotted here.')
+    if args.id_boundaries:
+        boundary=json.loads((args.id_boundaries/'report.json').read_text())
+        if any(c['status']!='pass' for c in boundary['checks']):
+            raise ValueError('ID boundary checks contain failures')
+        state=material_curves.read(boundary['last_id_state'])
+        curve=state['curves'][0];nodes=curve['nodes']
+        fig,axes=plt.subplots(2,1,figsize=(12,8),height_ratios=[1.2,1])
+        axes[0].plot([n['a'] for n in nodes],[n['x'][0] for n in nodes],'o-')
+        for n in nodes:
+            sequence=n['id']&((1<<24)-1)
+            axes[0].annotate(f"sequence {sequence}\nID {n['id']}",
+                (n['a'],n['x'][0]),xytext=(0,12),textcoords='offset points',ha='center',fontsize=9)
+        axes[0].margins(x=.15,y=.35)
+        axes[0].set(xlabel=r'immutable material label $a$ [code units]',
+            ylabel=r'lifted $x_1$ [code units]',title='Native insertion: links follow material order, IDs retain creation order')
+        bits=np.array([[(n['id']>>(31-bit))&1 for bit in range(32)] for n in nodes])
+        axes[1].imshow(bits,cmap='Blues',vmin=0,vmax=1,aspect='auto',interpolation='nearest')
+        axes[1].axvline(7.5,color='orange',lw=3)
+        axes[1].set_yticks(range(len(nodes)),[str(n['id']) for n in nodes])
+        axes[1].set_xticks(range(32),range(31,-1,-1),fontsize=8)
+        axes[1].set(xlabel='bit position (blue = 1, white = 0)',ylabel='exact unsigned node ID',
+            title='High 8 bits: curve 255 | Low 24 bits: creation sequence')
+        fig.suptitle('32-bit curve IDs: maximum node ID and consistent neighbour links')
+        save(fig,'compact-id-boundary','A synthetic counter-boundary test on the accepted uniform-flow fixture: the allocation counter is deliberately advanced to its last available sequence. Native insertion creates node 4294967295 between earlier nodes, with reciprocal prev/next links verified by the production reader. The upper line connects actual saved nodes in material order; it is not a reconstructed trajectory. The lower panel shows the exact 32 stored ID bits. Separate tests verify exhausted counters and over-capacity split batches never wrap or reuse IDs. This does not simulate millions of nodes or qualify their performance.')
     (out/'figures.json').write_text(json.dumps(figures,indent=2)+'\n')
     (out/'index.html').write_text('<!doctype html><meta charset="utf-8"><title>Existing output checks</title><style>body{max-width:1200px;margin:32px auto;font:17px system-ui;padding:0 16px}img{width:100%}figure{margin:32px 0}figcaption{line-height:1.5}</style><h1>Existing formats, fresh checks</h1><p>Local Serial/double only. No format conversion. Scientific approval remains pending.</p>'+''.join('<figure><img src="'+x['file']+'"><figcaption>'+html.escape(x['caption'])+'</figcaption></figure>' for x in figures))
 
