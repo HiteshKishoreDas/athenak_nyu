@@ -136,3 +136,16 @@ sampled shock properties follow the configured thermo cadence; no sequence/ID
 is converted to Real or inferred from sparse output. MPI runtime, GPU/RUSTY/
 Frontier performance budgets and human scientific sign-off remain pending.
 No push requested or performed.
+
+## Sealed evidence
+
+Implementation source commit: `89bee32c2e2b65004c056ad5b3d0cd8ab60b5b02`.
+The native-thp-bin-outputs-20261025 gallery contains 18 explained figures,
+source/Kokkos archives, three binaries/configurations, reports and retained
+malformed reader fixtures. All 43,628 raw-file hashes and 190 native-run
+executable digests were verified. The 119 local check groups and 21 reader
+cases are recorded separately. Manifest SHA256:
+`a2af29a5a9b9028369cc92f131dde8d644c808fef67b130a0f13f1fe1ddcfe32`.
+The manifest digest was rechecked after packaging; artifact.json records the
+absolute gallery path. This is an engineering evidence seal, with the deployment
+and scientific gates above still pending.

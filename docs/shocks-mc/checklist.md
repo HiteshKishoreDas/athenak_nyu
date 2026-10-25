@@ -126,7 +126,7 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
 - [x] Sealed signed-ID source/runtime/plots artifact: 14 figures, 35396 raw files
   verified, 175 native executable digests; artifact.json records the manifest.
 - [ ] MPI runtime/GPU/cluster budgets and human scientific approval remain pending.
-- [ ] Curve THP writer and mesh shock BIN variables remain separate next work.
+- [x] Curve THP writer and mesh shock BIN variables completed in the follow-up below.
 
 ### 2026-10-25 — native THP/BIN output integration
 
@@ -138,5 +138,5 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
 - [x] 119 local Serial/double groups plus21 THP reader cases and additional standalone checks.
 - [x] Independent timing/persistence/ponytail review findings applied and source-bound suites rerun.
 - [x] Accepted short32³ forced box: exact sampled property parity and passivity.
-- [ ] Seal18-figure exact-code/runtime/raw-hash bundle and commit artifact manifest.
+- [x] Sealed 18-figure exact-code/runtime/raw-hash bundle; artifact.json records the manifest.
 - [ ] MPI runtime, GPU/cluster production budgets and scientific sign-off remain pending.

@@ -1,0 +1,11 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/native-thp-bin-outputs-20261025",
+  "source_commit": "89bee32c2e2b65004c056ad5b3d0cd8ab60b5b02",
+  "checks_passed": 119,
+  "reader_cases": 21,
+  "figures": 18,
+  "raw_files_verified": 43628,
+  "native_run_digests_verified": 190,
+  "manifest_sha256": "a2af29a5a9b9028369cc92f131dde8d644c808fef67b130a0f13f1fe1ddcfe32",
+  "scope": "local Serial/double runtime; MPI compile only; no push; scientific approval pending"
+}
