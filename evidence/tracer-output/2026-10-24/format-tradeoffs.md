@@ -39,3 +39,37 @@ output time, file counts and memory on the intended RUSTY/Frontier workloads;
 address output cadence/batching if measurements justify it. Consider a standard
 container only with explicit agreement and measured evidence. No benchmark,
 new simulation, speedup, MPI/GPU qualification or scientific approval is claimed.
+
+## Follow-up: reuse THP and AthenaK mesh binary
+
+The user proposed curve thermo in THP, mesh shock fields in AthenaK `.bin`, and
+particle shock properties in THP. Source inspection supports this direction as
+an extension of the existing output families, rather than another independent
+codec. This is feasibility discussion; no implementation or tests changed here.
+
+- Mesh shock diagnostics can be added as named output variables backed by the
+  synchronized detector signals and written by the existing mesh binary writer.
+  The current output-variable registry does not yet expose these shock fields.
+- Existing particle THP has a named scalar-field list and can gain optional
+  sampled shock diagnostics. The current tracer field parser has no shock-field
+  selectors; implementing them must use synchronized encounter/detector state,
+  not confuse fluid Mach with pressure/temperature-jump shock Mach.
+- Curve thermo can use the THP family with separate curve files/population
+  metadata and a versioned extension for exact uint64 node IDs, birth/material
+  labels and refinement metadata. Current THP v2 uses four int32 fields
+  (cycle, tag, seed_id, gid), so it cannot directly represent existing curve IDs.
+  Do not put IDs in floating-point fields or silently reinterpret the v2 tags.
+  Preserve old particle v2 writing/reading when no extension is requested.
+- Sampled shock properties are not the full encounter history. Episodes can
+  start/end between thermo output times. Preserve every-step durable event
+  records, exact sequence/lineage identities, timing brackets, flags and censored
+  outcomes even if THP is later extended to carry event records as well.
+- Curve geometry/connectivity is a separate product; THP thermo adoption does
+  not by itself encode ordered links, winding or geometry diagnostics.
+
+Inspected `src/outputs/prtcl_thermo_history.cpp`, `src/outputs/outputs.hpp`,
+`src/outputs/basetype_output.cpp`, `src/outputs/derived_variables.cpp`,
+`src/particles/tracer_fields.{hpp,cpp}`, `src/shocks/{detector,encounter}.hpp`,
+`src/material_curves/material_curves_io.cpp`, `src/driver/driver.cpp` and
+`vis/python/tracer_thermo_history.py` at `a560920b`. No benchmark or new scientific
+approval is implied. These are proposed mappings, not already available options.
