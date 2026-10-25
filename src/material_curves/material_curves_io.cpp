@@ -23,8 +23,10 @@
 #include "globals.hpp"
 
 namespace material_curves {
-std::string MaterialCurves::ThermoHistory(
-    const std::vector<particles::TracerField> &fields) {
+void MaterialCurves::ThermoHistory(
+    const std::vector<particles::TracerField> &fields,
+    std::vector<int> &integers, std::vector<Real> &reals) {
+  static_assert(sizeof(int)==sizeof(NodeID), "THP requires 32-bit integer slots");
   std::vector<Node *> nodes;
   for (auto &c : curves) for (auto &n : c.nodes) nodes.push_back(&n);
   std::sort(nodes.begin(),nodes.end(),[](const Node *a,const Node *b) {
@@ -32,28 +34,26 @@ std::string MaterialCurves::ThermoHistory(
   });
   std::vector<Real> values;
   Sample(nodes,nullptr,fields,&values);
-  std::ostringstream out;
-  out.imbue(std::locale::classic());
-  out << std::setprecision(std::numeric_limits<Real>::max_digits10);
-  out << "# ATHK_CURVE_THERMO 4 " << mesh->ncycle << ' ' << mesh->time
-      << ' ' << nodes.size() << ' ' << global_variable::my_rank << ' '
-      << global_variable::nranks << ' ' << curve_id_bits << '\n';
-  out << "node_id,curve_id,birth,a,x1,x2,x3,gid,level";
-  for (const auto &field : fields) out << ',' << field.name;
-  out << '\n';
+  integers.resize(4*nodes.size());
+  const std::size_t width=7+fields.size();  // time, x[3], birth, a, level, fields
+  reals.resize(width*nodes.size());
   for (std::size_t p=0; p<nodes.size(); ++p) {
     const auto &node=*nodes[p];
     Vec wrapped;
     int gid=Locate(node.x,wrapped);
-    out << node.id << ',' << CurveID(node.id,curve_id_bits)
-        << ',' << node.birth << ',' << node.a;
-    for (Real x : node.x) out << ',' << x;
-    out << ',' << gid << ',' << mesh->lloc_eachmb[gid].level;
-    for (std::size_t n=0; n<fields.size(); ++n) out << ',' << values[fields.size()*p+n];
-    out << '\n';
+    integers[4*p]=mesh->ncycle;
+    integers[4*p+1]=node.id;
+    integers[4*p+2]=CurveID(node.id,curve_id_bits);
+    integers[4*p+3]=gid;
+    reals[width*p]=mesh->time;
+    for (int d=0; d<3; ++d) reals[width*p+1+d]=node.x[d];
+    reals[width*p+4]=node.birth;
+    reals[width*p+5]=node.a;
+    reals[width*p+6]=mesh->lloc_eachmb[gid].level;
+    for (std::size_t n=0; n<fields.size(); ++n) {
+      reals[width*p+7+n]=values[fields.size()*p+n];
+    }
   }
-  out << "# END " << nodes.size() << '\n';
-  return out.str();
 }
 
 namespace {

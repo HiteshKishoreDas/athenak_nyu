@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -48,15 +49,7 @@ struct FileHeader {
   int names_size;
 };
 
-struct BlockHeader {
-  char magic[16];
-  int version;
-  int nrecords;
-  int int_per_record;
-  int real_per_record;
-  int cycle;
-  Real time;
-};
+
 
 std::string JoinFieldNames(const std::vector<std::string> &names) {
   std::string joined;
@@ -73,22 +66,45 @@ void FatalHistoryOutput(const std::string &msg) {
   std::exit(EXIT_FAILURE);
 }
 
+std::string ThermoFileHeader(const std::vector<std::string> &field_names) {
+  const auto names=JoinFieldNames(field_names);
+  FileHeader header{};
+  std::strncpy(header.magic,"ATHK_PRTCL_THERMO_HISTORY",sizeof(header.magic)-1);
+  header.version=2; header.real_size=sizeof(Real);
+  header.nfields=field_names.size(); header.names_size=names.size();
+  return std::string(reinterpret_cast<const char *>(&header),sizeof(header))+names;
+}
+
+std::string ThermoBlockHeader(int records, int nfields, int cycle, Real time) {
+  std::string data(16,'\0');
+  std::memcpy(data.data(),"ATHKTHPBLK",10);
+  const int header[5]={2,records,4,4+nfields,cycle};
+  data.append(reinterpret_cast<const char *>(header),sizeof(header));
+  data.append(reinterpret_cast<const char *>(&time),sizeof(time));
+  return data;
+}
+
+std::string ThermoBlock(const std::vector<int> &integers, const std::vector<Real> &reals,
+                        int cycle, Real time, int nfields) {
+  const std::size_t records=integers.size()/4, width=4+nfields;
+  if (integers.size()%4 || records>INT_MAX || reals.size()!=records*width) {
+    FatalHistoryOutput("invalid THP record extent");
+  }
+  auto data=ThermoBlockHeader(static_cast<int>(records),nfields,cycle,time);
+  if (!integers.empty()) {
+    data.append(reinterpret_cast<const char *>(integers.data()),integers.size()*sizeof(int));
+    data.append(reinterpret_cast<const char *>(reals.data()),reals.size()*sizeof(Real));
+  }
+  return data;
+}
+
 void EnsureFileHeader(FILE *file, const std::vector<std::string> &field_names) {
   const std::string names_blob = JoinFieldNames(field_names);
   std::fseek(file, 0, SEEK_END);
   std::int64_t file_size = std::ftell(file);
   if (file_size == 0) {
-    FileHeader header;
-    std::memset(&header, 0, sizeof(header));
-    std::strncpy(header.magic, "ATHK_PRTCL_THERMO_HISTORY", sizeof(header.magic)-1);
-    header.version = 2;
-    header.real_size = sizeof(Real);
-    header.nfields = static_cast<int>(field_names.size());
-    header.names_size = static_cast<int>(names_blob.size());
-    if (std::fwrite(&header, sizeof(header), 1, file) != 1 ||
-        (!names_blob.empty() &&
-         std::fwrite(names_blob.data(), sizeof(char), names_blob.size(), file) !=
-         names_blob.size())) {
+    const auto data=ThermoFileHeader(field_names);
+    if (std::fwrite(data.data(),1,data.size(),file)!=data.size()) {
       FatalHistoryOutput("failed to write particle thermo file header");
     }
     return;
@@ -124,16 +140,6 @@ void EnsureFileHeader(FILE *file, const std::vector<std::string> &field_names) {
   std::fseek(file, 0, SEEK_END);
 }
 
-void WriteBlockHeader(FILE *file, const BlockHeader &header) {
-  int ints[5] = {header.version, header.nrecords, header.int_per_record,
-                 header.real_per_record, header.cycle};
-  if (std::fwrite(header.magic, sizeof(char), sizeof(header.magic), file) !=
-      sizeof(header.magic) ||
-      std::fwrite(ints, sizeof(int), 5, file) != 5 ||
-      std::fwrite(&header.time, sizeof(Real), 1, file) != 1) {
-    FatalHistoryOutput("failed to write particle thermo history block header");
-  }
-}
 
 void AdvanceTracerClock(OutputParameters &op, Mesh *pm, ParameterInput *pin) {
   const bool new_cycle=pm->ncycle !=
@@ -209,7 +215,8 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
 
 void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
   if (sample_curves) {
-    curve_thermo_data=pm->pmb_pack->pcurves->ThermoHistory(tracer_fields);
+    pm->pmb_pack->pcurves->ThermoHistory(tracer_fields,curve_thermo_integers,
+                                        curve_thermo_reals);
   }
   if (!sample_particles) return;
   particles::Particles *pp = pm->pmb_pack->ppart;
@@ -285,8 +292,14 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
 void ParticleThermoHistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
   if (sample_curves) {
     const auto path="curve_thermo_history/"+out_params.file_basename+"."+
-        out_params.file_id+".cycle"+std::to_string(pm->ncycle)+shocks::RankName()+".csv";
-    shocks::CommitFile(path,curve_thermo_data,true);
+        out_params.file_id+".cycle"+std::to_string(pm->ncycle)+shocks::RankName()+
+        "of"+std::to_string(global_variable::nranks)+".bits"+
+        std::to_string(pm->pmb_pack->pcurves->curve_id_bits)+".thp";
+    std::vector<std::string> names={"birth","a","level"};
+    names.insert(names.end(),tracer_field_names.begin(),tracer_field_names.end());
+    const auto data=ThermoFileHeader(names)+ThermoBlock(curve_thermo_integers,
+        curve_thermo_reals,pm->ncycle,pm->time,names.size());
+    shocks::CommitFile(path,data,true);
   }
   if (sample_particles) WriteParticleData(pm);
 
@@ -358,22 +371,10 @@ void ParticleThermoHistoryOutput::WriteParticleData(Mesh *pm) {
     }
     EnsureFileHeader(file, tracer_field_names);
 
-    BlockHeader header;
-    std::memset(&header, 0, sizeof(header));
-    std::strncpy(header.magic, "ATHKTHPBLK", sizeof(header.magic)-1);
-    header.version = 2;
-    header.nrecords = npout_total;
-    header.int_per_record = int_per_record;
-    header.real_per_record = real_per_record;
-    header.cycle = pm->ncycle;
-    header.time = pm->time;
-    WriteBlockHeader(file, header);
-    bool write_failed =
-        (!all_i.empty() && std::fwrite(all_i.data(), sizeof(int), all_i.size(), file) !=
-         all_i.size()) ||
-        (!all_r.empty() && std::fwrite(all_r.data(), sizeof(Real), all_r.size(), file) !=
-         all_r.size());
-    if (write_failed) {
+    const auto header=ThermoBlockHeader(npout_total,tracer_fields.size(),pm->ncycle,pm->time);
+    if (std::fwrite(header.data(),1,header.size(),file)!=header.size() ||
+        (!all_i.empty() && std::fwrite(all_i.data(),sizeof(int),all_i.size(),file)!=all_i.size()) ||
+        (!all_r.empty() && std::fwrite(all_r.data(),sizeof(Real),all_r.size(),file)!=all_r.size())) {
       FatalHistoryOutput("failed to write particle thermo history block");
     }
     std::fclose(file);

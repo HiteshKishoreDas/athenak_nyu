@@ -51,23 +51,27 @@ RK2, double-precision support restrictions.
 
 ## Files, identities and analysis
 
-Particle output stays `.thp` v2, with unchanged record layout. Curve output is:
+Particle output stays `.thp` v2, with unchanged record layout. Curve output now
+uses the same THP v2 byte layout:
 
-`curve_thermo_history/<basename>.<id>.cycle<C>.rank<R>.csv`
+`curve_thermo_history/<basename>.<id>.cycle<C>.rank<R>of<N>.bits<B>.thp`
 
-Each current curve chunk declares version 4, cycle, time, row count, rank and rank
-count, followed by `curve_id_bits`. IDs and links use signed 32-bit storage; zero curve bits
-use all 32 bits for a single curve's sequence. The reader retains historical v1
-(64-bit IDs), v2 (fixed unsigned 8/24 IDs), and v3 (variable unsigned32 IDs), and rejects mixed encodings in a stream.
-Negative node IDs are valid; the reader decodes the declared bit pattern. Zero
-is reserved. Existing particle THP v2 interpretation is unchanged.
-Columns are `node_id,curve_id,birth,a,x1,x2,x3,gid,level`, followed by canonical
-field names. Integers retain full decimal width; never load node IDs through a
-float. `a` is the immutable material label, positions are continuous periodic
-lifts, and gid/level describe the sampled current leaf. Particle positions are
-wrapped. Join curve geometry and thermo using `(cycle,node_id)`; join shock
-observations using their generation/node ID and the same run lineage. Particle
-tags and curve node IDs are separate namespaces, even when numbers coincide.
+The four signed integer slots contain cycle, node ID, curve ID and leaf GID.
+The standard real columns contain time and lifted x1/x2/x3. The first named
+sampled fields are birth, immutable material label a and integer-valued refinement
+level; requested thermo fields follow. IDs never pass through a real column.
+Filename metadata declares the clock, rank set and curve-bit split even for empty
+chunks. Each file holds one normal THP v2 block. Existing immutable cycle/rank
+chunking is retained; binary transport alone does not reduce file count.
+
+The supplied read_curves/read_run interfaces load these directly and retain
+historical CSV v1/v2/v3/v4 reading. Negative current node IDs are valid; zero is
+reserved. The reader normalizes both transports to identical typed observations,
+checks rank completeness, schema, namespace, births and immutable node metadata,
+and rejects conflicting records. Geometry and complete encounter journals remain
+separate products with their own clocks. Particle positions are wrapped; curve
+positions are continuous periodic lifts. Join by population and exact identity,
+never by ID alone.
 
 Both populations have the same analysis layout (`time`, `x`, `gid`, `fields`):
 

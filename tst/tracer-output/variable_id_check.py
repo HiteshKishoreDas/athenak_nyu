@@ -146,7 +146,7 @@ def main():
         else:raise ValueError('empty journal layout not checked')
         folder=work/'mixed_thermo_stream';folder.mkdir()
         for directory,cycle in [('bits_0',0),('bits_8',1)]:
-            source=next((work/directory/'curve_thermo_history').glob(f'*.cycle{cycle}.rank0.csv'))
+            source=next((work/directory/'curve_thermo_history').glob(f'*.cycle{cycle}.rank0of1.bits*.thp'))
             shutil.copy2(source,folder/source.name)
         try:read_curves(folder)
         except ValueError as exc:require('ID encoding changed' in str(exc),'wrong within-stream mismatch rejection')
@@ -185,9 +185,10 @@ def main():
         run('bad_checkpoint_layout',fixture='amr_shock',restart=checkpoint,
             overrides=('time/nlim=-1',),reject='invalid curve_id_bits metadata')
         folder=work/'invalid_thermo_layout';folder.mkdir()
-        source=next((work/'bits_0/curve_thermo_history').glob('*.csv'))
-        lines=source.read_text().splitlines();head=lines[0].split();head[-1]='31'
-        lines[0]=' '.join(head);(folder/source.name).write_text('\n'.join(lines)+'\n')
+        source=next((work/'bits_0/curve_thermo_history').glob('*.thp'))
+        target=folder/source.name.replace('.bits0.thp','.bits31.thp')
+        require(target.name!=source.name,'metadata fixture ineffective')
+        target.write_bytes(source.read_bytes())
         try:read_curves(folder)
         except ValueError as exc:require('curve_id_bits metadata' in str(exc),'wrong thermo metadata rejection')
         else:raise ValueError('invalid thermo layout accepted')

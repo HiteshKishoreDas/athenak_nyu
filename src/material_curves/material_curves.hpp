@@ -97,7 +97,8 @@ class MaterialCurves {
   void Adapt(Real birth_time, bool initial, Real affected_time = -1);
   void Audit() const;
   void Snapshot(const std::string &path) const;
-  std::string ThermoHistory(const std::vector<particles::TracerField> &fields);
+  void ThermoHistory(const std::vector<particles::TracerField> &fields,
+                     std::vector<int> &integers, std::vector<Real> &reals);
   void Save(const std::string &fluid_path) const;
   void Load(const std::string &fluid_path);
   [[noreturn]] static void Fail(const std::string &message);

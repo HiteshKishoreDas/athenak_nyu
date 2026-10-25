@@ -222,14 +222,14 @@ def main():
     check('CT09_input_guards',guards)
 
     def reader_guards():
-        source=next((work/'curve_only/curve_thermo_history').glob('*.csv'))
+        source=next((work/'curve_only/curve_thermo_history').glob('*.thp'))
         directory=work/'reader_corruption';directory.mkdir(); path=directory/source.name
-        text=source.read_text()
-        variants=[text.rsplit('\n',2)[0]+'\n',text.replace('ATHK_CURVE_THERMO 4','ATHK_CURVE_THERMO 9'),
-                  text.replace('node_id,curve_id','node_id,node_id')]
+        text=source.read_bytes()
+        variants=[text[:-1],text[:32]+(9).to_bytes(4,sys.byteorder,signed=True)+text[36:],
+                  text.replace(b'birth\na\nlevel',b'birth\na\nbirth',1)]
         for changed in variants:
             require(changed != text,'ineffective reader corruption fixture')
-            path.write_text(changed)
+            path.write_bytes(changed)
             try: read_curves(directory)
             except ValueError: pass
             else: raise ValueError('reader accepted corrupt chunk')
@@ -270,13 +270,13 @@ def main():
                 directory=str(directory),log_sha256=sha(directory/(name+'.log')),
                 **provenance(args.prescribed_executable)))
             save(); return status
-        before={p.name:sha(p) for p in (directory/'curve_thermo_history').glob('*.csv')}
+        before={p.name:sha(p) for p in (directory/'curve_thermo_history').glob('*.thp')}
         require(replay('identical_replay')==0,'identical curve replay rejected')
-        require(before=={p.name:sha(p) for p in (directory/'curve_thermo_history').glob('*.csv')},
+        require(before=={p.name:sha(p) for p in (directory/'curve_thermo_history').glob('*.thp')},
                 'identical replay modified/duplicated chunks')
-        path=next((directory/'curve_thermo_history').glob('*.cycle0.rank0.csv'))
+        path=next((directory/'curve_thermo_history').glob('*.cycle0.rank0of1.bits*.thp'))
         path.with_suffix('.original').write_bytes(path.read_bytes())
-        path.write_text(path.read_text()+'# deliberate conflicting output\n')
+        path.write_bytes(path.read_bytes()+b'deliberate conflicting output')
         damaged=sha(path)
         require(replay('conflicting_replay')!=0 and 'existing file differs' in
                 (directory/'conflicting_replay.log').read_text(),'conflicting output not rejected')

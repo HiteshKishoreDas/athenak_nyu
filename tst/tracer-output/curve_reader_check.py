@@ -100,7 +100,7 @@ def main():
 
     def thermo_only():
         directory=out/'thermo-only/curve_thermo_history';directory.mkdir(parents=True)
-        for path in sorted((runs/'planar/curve_thermo_history').glob('*.csv'))[:3]:
+        for path in sorted((runs/'planar/curve_thermo_history').glob('*.thp'))[:3]:
             shutil.copy2(path,directory/path.name)
         selected=select_curve(read_run(directory.parent,include_particles=False))
         assert not selected['frames'] and len(selected['history'])==3
