@@ -95,3 +95,19 @@ curve semantics in the writer/reader; it is not the existing particle-tag schema
 The previous statement that curves "require" 64-bit IDs should be read as:
 current packed IDs must be preserved exactly, not that every curve design needs
 64-bit IDs. No code changes or new tests made for this explanation.
+
+## Where connectivity lives
+
+Each `Node` stores exact neighbour IDs in `prev` and `next`; the owning `Curve`
+also stores its node vector in immutable-material-label order. `parent_left` and
+`parent_right` record insertion ancestry, not necessarily current neighbours.
+`Links()` rebuilds neighbour links after insertions; `Audit()` checks reciprocal
+links against curve order. Open ends use zero; closed curves wrap last to first.
+
+Current ASCII geometry snapshots serialize these fields in each `node` record.
+The paired fluid checkpoint sidecar (`<fluid checkpoint>.curves`, normally
+`*.rst.curves`) serializes them too. Current curve thermo CSV has node identity,
+birth, material label, positions, leaf metadata and fields, but not neighbour
+links. Adopting THP for thermo alone would not replace geometry/connectivity
+output. Verified in `material_curves.hpp:24`, `material_curves.cpp:150`, and
+`material_curves_io.cpp:129,217,649`. No source changes or tests needed.
