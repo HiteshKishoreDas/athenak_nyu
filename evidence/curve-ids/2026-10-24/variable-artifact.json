@@ -1,0 +1,10 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/variable-curve-id-bits-20261024",
+  "source_commit": "d0130f73cdc707ab4052d7f8d912230f99651237",
+  "checks_passed": 107,
+  "figures": 12,
+  "raw_files_verified": 32984,
+  "native_run_digests_verified": 170,
+  "manifest_sha256": "c767737880bc3d59549461ce3233ae5dd085cb30ceea53b1d373c1fa604b155a",
+  "scope": "local Serial/double runtime; MPI compile only; no push; scientific approval pending"
+}
