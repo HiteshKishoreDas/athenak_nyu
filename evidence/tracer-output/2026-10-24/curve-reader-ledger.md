@@ -61,10 +61,22 @@ Seven actual-data figures are retained in the final check directory and copied
 to the reviewable gallery at
 `/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/curve-reader-20261024`.
 Descriptions sit beside each plot. Source/report hashes and gallery verification
-will be recorded in `curve-reader-artifact.json` after sealing.
+are recorded in `curve-reader-artifact.json`; the gallery is sealed.
 
 These are reader/plotting checks on existing local datasets. They do not rerun
 the previous 82 native groups, qualify MPI/GPU/cluster execution or supply human
 scientific approval. Full traces remain available through the supplied trace
 reader; this script plots saved event evidence rather than reconstructing raw
 membership between event observations.
+
+## Final handoff
+
+Implementation commit: `52cee8d1d46ffe445a95dfee364ec2fc0d3a20bb`. Gallery
+manifest SHA256: `5b3a4b7048f217f1f2832069b8fc85b9ffef39bb50e24e3bb74829e23937f970`.
+Verified 3,257 original native input files against the previously sealed native
+qualification bundle, all gallery source/figure/report hashes, and the retained
+check-fixture archive contents. Seven actual-data figures are present. No native
+simulation was launched and no sealed prior artifact was overwritten.
+
+The new script, reader option, checks and usage examples are committed locally
+on `codex/shock-lagrangian`; no push was performed.
