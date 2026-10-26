@@ -24,6 +24,14 @@ Lorene
 *test*/**/*.out
 
 turb_drive*
+test_*
+# test_cgm
+# test_gotham
+# test_model
+# test_cloud
+# test_opt
+# test_scale
+# test_old
 # turb_drive*/rst
 # turb_drive*/pvtk
 # turb_drive*/prtcl_thermo_history
@@ -34,3 +42,4 @@ turb_drive*
 
 
 .entropy
+.venv
