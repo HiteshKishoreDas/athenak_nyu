@@ -669,8 +669,7 @@ std::string MaterialCurves::BinarySnapshot(
   for (const auto &field : fields) shock_fields |= particles::IsShockField(field.kind);
   std::vector<ShockObservation> observations;
   if (shock_fields) {
-    if (!shock_enabled || shock_generation!=static_cast<std::uint64_t>(mesh->ncycle) ||
-        shock_time!=mesh->time) Fail("stale curve output generation");
+    if (!shock_sampling) Fail("curve shock output requires an enabled detector");
     Sample(nodes,&observations);
   }
   Audit();

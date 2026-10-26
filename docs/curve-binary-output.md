@@ -1,11 +1,13 @@
 # Unified curve output: `.crv`
 
+Current shock cadence/history controls: [sampled versus explicit complete encounters](shock-output-modes.md).
+
 User-directed consolidation, 2026-10-25. One binary snapshot contains curve
 geometry, explicit connectivity, provenance, geometry diagnostics, mesh location
 and selected fluid/shock samples at one completed-step clock. No curve THP or
 separately scheduled geometry file is needed. Ordinary particle THP v2 remains
-unchanged. Complete encounters remain in their lossless every-step CSV journals;
-they are deliberately not embedded in CRV. Checkpoint sidecars remain authoritative
+unchanged. Complete encounters are opt-in event-only binary CRV/THP streams; they are
+deliberately not embedded in sampled snapshots. Checkpoint sidecars remain authoritative
 for restart and retain their existing representation.
 
 ## Input

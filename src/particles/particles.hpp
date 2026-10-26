@@ -79,6 +79,8 @@ struct ParticlesTaskIDs {
   TaskID seed;
 };
 
+#include "shocks/history.hpp"
+
 namespace particles {
 
 //----------------------------------------------------------------------------------------
@@ -103,7 +105,10 @@ class Particles {
   std::int64_t random_seed = 0;
   std::int64_t next_tracer_tag = 0;
 
-  bool shock_enabled = false;
+  bool shock_enabled = false, shock_sampling = false;
+  shocks::HistoryStore shock_history;
+  uint64_t shock_signal_generation=UINT64_MAX, shock_detector_calls=0;
+  Real shock_signal_time=-1;
   shocks::DetectorConfig shock_config;
   DvceArray4D<shocks::Signal> shock_signal;
   DvceArray1D<shocks::EncounterState> shock_state;
@@ -115,7 +120,6 @@ class Particles {
   uint64_t shock_sampled = 0, shock_invalid = 0, shock_complete = 0, shock_partial = 0;
   int shock_highwater = 0;
   Real shock_seconds = 0;
-  uint64_t shock_history_digest = UINT64_C(14695981039346656037);
   void ConfigureShockTracking(ParameterInput *pin);
   void PreflightShockRestart(const std::string &fname);
   bool shock_trace = false;

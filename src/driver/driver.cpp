@@ -134,25 +134,26 @@ void PrintTracerSetup(Mesh *mesh, ParameterInput *pin, Outputs *outputs, bool re
     if (curves->chord_error>0) out << curves->chord_error; else out << "auto(spacing)";
     out << ", unresolved_curves=" << total[4];
     if (!curves->adaptive) out << " (adaptation thresholds inactive)";
-    out << "\n  geometry snapshots=" << (curves->binary_output ? "unified .crv output cadence" :
+    out << "\n  geometry snapshots=" << (curves->binary_output ? "automatic ASCII disabled; see output blocks" :
                                          restart ? "final" : "initial/final");
     if (!curves->binary_output && curves->output_dcycle>0) out << ", every " << curves->output_dcycle << " cycles";
     out << '\n';
   } else {
     out << "Curves: disabled\n";
   }
-  out << "Histories: particle_shocks=" << (fluid_particles && particles->shock_enabled)
-      << ", curve_shocks=" << (curves && curves->shock_enabled)
-      << ", particle_shock_trace=" << (fluid_particles && particles->shock_trace)
-      << ", curve_shock_trace=" << (curves && curves->shock_trace) << '\n';
+  out << "Histories: complete_particle_encounters=" << (fluid_particles && particles->shock_enabled)
+      << ", complete_curve_encounters=" << (curves && curves->shock_enabled)
+      << ", particle_shock_trace=" << (fluid_particles && particles->shock_enabled && particles->shock_trace)
+      << ", curve_shock_trace=" << (curves && curves->shock_enabled && curves->shock_trace) << '\n';
   bool thermo=false;
   for (const auto &output : outputs->pout_list) {
     const auto &p=output->out_params;
     if (p.file_type!="prtcl_thermo_history" && p.file_type!="trk" && p.file_type!="curves" && p.file_type!="crv") continue;
-    out << "  " << p.block_name << ": " << p.file_type;
-    if (p.file_type=="crv") thermo=true;
+    const auto mode=pin->GetOrAddString(p.block_name,"mode","snapshot");
+    out << "  " << p.block_name << ": " << p.file_type << ", mode=" << mode;
+    if (p.file_type=="crv" && mode=="snapshot") thermo=true;
     if (p.file_type=="prtcl_thermo_history") {
-      thermo=true;
+      if (mode=="snapshot") thermo=true;
       out << ", source=" << pin->GetString(p.block_name,"source");
     }
     if (p.dcycle>0) out << ", every " << p.dcycle << " cycles";
@@ -478,13 +479,15 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
     pmesh->pmb_pack->ppart->SeedInitialTracers();
   }
 
+  if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_sampling) {
+    pmesh->pmb_pack->ppart->ValidateShockPhysics();
+  }
   if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
     auto pp = pmesh->pmb_pack->ppart;
     pp->ValidateShockPhysics();
     pp->PrepareShockStore(res_flag);
     // Checkpoints persist encounters, not the derived mesh cache. A same-generation
     // observation is deliberately a no-op, so restore its diagnostics separately.
-    if (res_flag) pp->RefreshShockSignals();
     pp->ObserveShocks(pmesh->time, pmesh->ncycle);
   }
 
@@ -711,12 +714,17 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
 //!  and printing diagnostic messages
 
 void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
-  if (pmesh->pmb_pack->pcurves && pmesh->pmb_pack->pcurves->shock_enabled) {
-    pmesh->pmb_pack->pcurves->WriteShockSuspended();
-  }
-  if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
-    pmesh->pmb_pack->ppart->WriteShockSuspended();
-  }
+  auto suspended=[&]() {
+    if (pmesh->pmb_pack->pcurves && pmesh->pmb_pack->pcurves->shock_enabled) {
+      pmesh->pmb_pack->pcurves->shock_history.Verify(true);
+      pmesh->pmb_pack->pcurves->WriteShockSuspended();
+    }
+    if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_enabled) {
+      pmesh->pmb_pack->ppart->shock_history.Verify(true);
+      pmesh->pmb_pack->ppart->WriteShockSuspended();
+    }
+  };
+  bool suspended_written=false;
   // cycle through output Types and load data / write files
   //  This design allows for asynchronous outputs to implemented in the future.
   Kokkos::fence();
@@ -724,6 +732,11 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
   double write_time = 0.0;
 
   for (auto &out : pout->pout_list) {
+    // Restart outputs are last: bind terminal views to the final flushed prefix
+    // before persisting that prefix in the paired checkpoint.
+    if (out->out_params.file_type=="rst" && !suspended_written) {
+      suspended();suspended_written=true;
+    }
     Kokkos::Timer load_timer;
     out->LoadOutputData(pmesh);
     Kokkos::fence();
@@ -734,6 +747,15 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
     write_time += write_timer.seconds();
   }
 
+  if (!suspended_written) suspended();
+  if (pmesh->pmb_pack->ppart && pmesh->pmb_pack->ppart->shock_sampling) {
+    std::cout << "Shock particle detector cache calls this process="
+              << pmesh->pmb_pack->ppart->shock_detector_calls << '\n';
+  }
+  if (pmesh->pmb_pack->pcurves && pmesh->pmb_pack->pcurves->shock_sampling) {
+    std::cout << "Shock curve stencil batches this process="
+              << pmesh->pmb_pack->pcurves->shock_stencil_batches << '\n';
+  }
   double out_time = load_time + write_time;
   double max_load_time = GlobalMaxOutputTime(load_time);
   double max_write_time = GlobalMaxOutputTime(write_time);

@@ -1,0 +1,39 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/shock_binary_reader_check.py", line 89, in reject
+    action()
+    ~~~~~~^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/shock_binary_reader_check.py", line 182, in <lambda>
+    reject(name, carrier, lambda:module.read_history(case, generations[-1]),
+                                 ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/vis/python/shock_history.py", line 144, in read_history
+    return shock_binary.read_history(directory, 0, through_cycle)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/vis/python/shock_binary.py", line 265, in read_history
+    packets = [p for p in _packets(directory, carrier) if p['kind'] == 0]
+                          ~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/vis/python/shock_binary.py", line 235, in _packets
+    _require(ancestor is not None and packet['previous_file_digest'] == ancestor[0] and
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             packet['prefix_digest'] == ancestor[1] and packet['time'] >= ancestor[2],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+             'Terminal view has missing/modified committed ancestor')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/vis/python/shock_binary.py", line 23, in _require
+    raise HistoryError(message)
+shock_history.HistoryError: Terminal view has missing/modified committed ancestor
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/shock_binary_reader_check.py", line 249, in <module>
+    main()
+    ~~~~^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/shock_binary_reader_check.py", line 182, in main
+    reject(name, carrier, lambda:module.read_history(case, generations[-1]),
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           'not covered by committed batches')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/shock_binary_reader_check.py", line 92, in reject
+    assert diagnostic in str(error), (name, str(error))
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('query_coverage', 'Terminal view has missing/modified committed ancestor')

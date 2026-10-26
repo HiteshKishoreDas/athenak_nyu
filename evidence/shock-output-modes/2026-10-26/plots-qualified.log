@@ -1,0 +1,7 @@
+
+Fontconfig error: No writable cache directories
+	/opt/homebrew/var/cache/fontconfig
+	/Users/hitesh/.cache/fontconfig
+	/Users/hitesh/.fontconfig
+Matplotlib is building the font cache; this may take a moment.
+{"figures": 9, "output": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-plots-20261026"}

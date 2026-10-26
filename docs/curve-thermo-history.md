@@ -1,5 +1,7 @@
 # Shared material-curve and particle thermodynamic histories
 
+Current shock cadence/history controls: [sampled versus explicit complete encounters](shock-output-modes.md).
+
 Current curve output is unified `.crv`; see [input, contents and reader usage](curve-binary-output.md).
 Historical THP/CSV and ASCII reader support remains. The details below record the earlier split output.
 

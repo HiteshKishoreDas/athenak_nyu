@@ -9,6 +9,7 @@ import json
 import curve_shock_history
 import material_curves
 import shock_history
+import shock_binary
 from tracer_thermo_history import read_curves, read_particles
 
 
@@ -20,7 +21,11 @@ def read_run(directory, thermo_stem=None, shock_directory='shock_events', includ
     result = dict(particles={},curve_nodes={},particle_times={},curve_times={},
                   geometry=[],particle_events=[],curve_events=[],
                   particle_suspended=[],curve_suspended=[],available=[],curve_id_layout=None)
-    paths = sorted((root/'prtcl_thermo_history').glob('*.thp')) if include_particles else []
+    candidates = sorted((root/'prtcl_thermo_history').glob('*.thp')) if include_particles else []
+    paths=[]
+    for path in candidates:
+        with path.open('rb') as probe:
+            if probe.read(16)!=shock_binary.MAGIC:paths.append(path)
     if thermo_stem is not None:
         paths = [p for p in paths if p.stem == thermo_stem]
     if len(paths)>1:
@@ -40,9 +45,10 @@ def read_run(directory, thermo_stem=None, shock_directory='shock_events', includ
         manifests = list(where.glob('manifest.rank*'))
         chunks = [p for pattern in ('cycle*.csv','trace*.csv','birthtrace*.csv','suspended*.csv')
                   for p in where.glob(pattern)]
-        if chunks and not manifests:
+        binary=shock_binary.binary_files(where,0 if carrier=='particle' else 1)
+        if chunks and not manifests and not binary:
             raise ValueError('orphan '+carrier+' shock chunks: missing manifests')
-        if manifests:
+        if manifests or binary:
             if carrier=='curve':
                 layout=module.id_layout(next(iter(module.manifests(where).values()))[1])
                 if result['curve_id_layout'] is not None and result['curve_id_layout']!=layout:

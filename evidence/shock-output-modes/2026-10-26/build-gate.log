@@ -1,0 +1,11 @@
+[  1%] Built target kokkossimd
+[ 10%] Built target kokkoscore
+[ 10%] Built target AlwaysCheckGit
+[ 11%] Built target kokkoscontainers
+[ 12%] Built target impl_git_version
+[ 14%] Built target shock_detector_test
+[ 14%] Built target shock_encounter_test
+[ 14%] Building CXX object CMakeFiles/shock_history_test.dir/tst/shocks/history_test.cpp.o
+[ 98%] Built target athena
+[ 99%] Linking CXX executable shock_history_test
+[100%] Built target shock_history_test

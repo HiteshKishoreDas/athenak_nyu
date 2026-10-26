@@ -50,6 +50,9 @@ def _spacing(fields):
 
 
 def manifests(directory):
+    import shock_binary
+    if shock_binary.binary_files(directory, 1):
+        return shock_binary.manifests(directory, 1)
     result = {}
     for path in sorted(Path(directory).glob('manifest.rank*')):
         match = re.fullmatch(r'manifest\.rank(\d+)', path.name)
@@ -129,6 +132,9 @@ def _read_chunk(path, lineage, contract, generation, suspended=False):
 
 def read_history(directory, through_cycle=None):
     """Return canonical events; require every per-rank generation including empty ones."""
+    import shock_binary
+    if shock_binary.binary_files(directory, 1):
+        return shock_binary.read_history(directory, 1, through_cycle)
     metadata = manifests(directory)
     paths = _files(directory, 'cycle')
     if any(rank not in metadata for rank, _ in paths):
@@ -156,6 +162,9 @@ def read_history(directory, through_cycle=None):
 
 def read_suspended(directory, generation=None):
     """Read a terminal censored view without adding it to committed events."""
+    import shock_binary
+    if shock_binary.binary_files(directory, 1):
+        return shock_binary.read_suspended(directory, 1, generation)
     metadata = manifests(directory)
     paths = _files(directory, 'suspended')
     if any(rank not in metadata for rank, _ in paths):

@@ -15,6 +15,8 @@
 #include "shocks/detector.hpp"
 #include "shocks/encounter.hpp"
 
+#include "shocks/history.hpp"
+
 namespace material_curves {
 using Vec = std::array<Real, 3>;
 using NodeID = std::int32_t;
@@ -115,14 +117,15 @@ class MaterialCurves {
   bool binary_output = false;  // unified snapshots replace automatic ASCII diagnostics
   std::string basename;
 
-  bool shock_enabled = false, shock_trace = false;
+  bool shock_enabled = false, shock_trace = false, shock_sampling = false;
+  shocks::HistoryStore shock_history;
+  std::uint64_t shock_stencil_batches=0;
   shocks::DetectorConfig shock_config;
   int shock_capacity = 4096;
   std::string shock_directory, shock_lineage, shock_contract;
   std::unordered_map<NodeID, ShockNode> shock_states;
   std::uint64_t shock_generation = UINT64_MAX;
   Real shock_time = -1;
-  std::uint64_t shock_history_digest = UINT64_C(14695981039346656037);
 
  private:
   ParameterInput *pin_;

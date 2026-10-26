@@ -1,0 +1,20 @@
+{'id': 'SM01_TRC_sampling_only_at_snapshot_clocks', 'status': 'pass', 'completed_steps': 107, 'saved_clocks': 23, 'particle_cache_calls': 23, 'curve_stencil_batches': 23}
+{'id': 'SM02_CFG_unused_detector_zero_work', 'status': 'pass', 'particle_calls': 0, 'curve_calls': 0}
+{'id': 'SM03_EVT_binary_complete_history_exact_CSV_parity', 'status': 'pass', 'particle_events': 15, 'curve_events': 16, 'particle_cache_calls': 108, 'curve_stencil_batches': 131, 'batch_counts': {'0': 11, '1': 8}}
+{'id': 'SM04_CFG_independent_population_activation', 'status': 'pass', 'independent_carriers': True}
+{'id': 'SM05_IO_event_only_outputs_without_snapshots', 'status': 'pass', 'particle_events': 15, 'curve_events': 16, 'snapshots': 0}
+{'id': 'SM06_IO_existing_THP_bytes_and_mesh_sampling_parity', 'status': 'pass', 'particle_bytes_exact': True, 'mesh_samples_exact': True}
+{'id': 'SM07_RST_active_and_terminal_zero_step_replay', 'status': 'pass', 'active_cycle': 37, 'zero_step_file_replay_exact': True, 'continuation_exact': True}
+{'id': 'SM08_RST_unflushed_completed_records_survive_checkpoint', 'status': 'pass', 'checkpoint_cycle': 80, 'pending_counts': [0, 15], 'original_emission_clocks_preserved': True}
+{'id': 'SM09_AMR_births_migration_and_negative_ID_parity', 'status': 'pass', 'sample_clocks': 34, 'negative_IDs': True, 'fresh_births': True, 'completed_events_exact': True}
+{'id': 'SM10_forced_box_engineering_coexistence', 'status': 'pass', 'curve_samples': 256, 'particle_events': 6904, 'curve_events': 28, 'short_accepted_fixture': True}
+{'id': 'SM11_CFG_opt_in_and_restart_guards', 'status': 'pass', 'disabled_blocks_no_work': True, 'MC_history_rejected': True, 'duplicate_rejected': True, 'disabled_detector_rejected': True, 'removed_history_restart_rejected': True}
+{'id': 'SM12_MC_sampled_properties_without_encounter_claim', 'status': 'pass', 'samples': 2944, 'point_samples_only': True, 'no_continuous_history_claim': True}
+{'id': 'SM13_IO_bounded_queue_and_capacity_recovery', 'status': 'pass', 'bounded_overflow_fails': True, 'pending_before_failure': 4, 'recovered_events': 15}
+{'id': 'SM14_EVT_complete_passages_between_saved_snapshots', 'status': 'pass', 'snapshot_clocks': 2, 'sampled_curve_inside_flags': 0, 'complete_curve_passages': 16}
+{'id': 'SM15_IO_full_width_curve_ID_layout', 'status': 'pass', 'full_32bit_namespace': True, 'events': 16}
+{'id': 'SM16_RST_semantic_validation_of_pending_payload', 'status': 'pass', 'repaired_checksums_do_not_hide_bad_pending_evidence': True}
+{'id': 'SM17_NUM_independent_accelerating_thermo_and_dt_oracle', 'status': 'pass', 'saved_times': [0.0, 0.05, 0.1, 0.15000000000000002, 0.20000000000000007, 0.2500000000000001, 0.30000000000000016, 0.3500000000000002, 0.4], 'max_thermo_error': 3.552713678800501e-15, 'unchanged_CT_budget': 2e-12}
+{'id': 'SM18_IO_native_initial_final_only_flush_cadence', 'status': 'pass', 'complete_history': True, 'completed_batch_clocks': [0, 107]}
+{'id': 'SM19_RST_reject_forked_tail_and_resume_clean_ordinary_prefix', 'status': 'pass', 'orphan_tail_rejected_without_mutation': True, 'ordinary_checkpoint_clean_prefix_exact': True}
+{'id': 'SM20_IO_native_pending_store_and_destroyed_identity_protocol', 'status': 'pass', 'native_unit_modes': ['roundtrip', 'overflow', 'duplicate', 'corrupt'], 'destroyed_ID_pending_roundtrip': True, 'native_live_outflow_qualification': False, 'negative_one_and_large_sequence_exact': True}

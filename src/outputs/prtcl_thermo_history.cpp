@@ -135,11 +135,11 @@ std::vector<particles::TracerField> CurveFields(ParameterInput *pin, Mesh *pm,
     FatalHistoryOutput("curve thermo requires ideal-gas hydro");
   }
   auto fields=particles::ParseTracerFieldList(
-      pin->GetOrAddString(op.block_name,"variables",curves->shock_enabled ?
+      pin->GetOrAddString(op.block_name,"variables",curves->shock_sampling ?
                          "default,shock" : "default"),false,
       pm->pmb_pack->phydro->nscalars,op.block_name+"/variables");
   for (const auto &field : fields) {
-    if (particles::IsShockField(field.kind) && !curves->shock_enabled) {
+    if (particles::IsShockField(field.kind) && !curves->shock_sampling) {
       FatalHistoryOutput("shock fields require enabled curve shock tracking");
     }
   }
@@ -223,8 +223,8 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
                                                   op.block_name + "/variables");
   tracer_field_names = particles::TracerFieldNames(tracer_fields);
   for (const auto &field : tracer_fields) sample_shocks |= particles::IsShockField(field.kind);
-  if (sample_shocks && ((sample_particles && !pm->pmb_pack->ppart->shock_enabled) ||
-                       (sample_curves && !pm->pmb_pack->pcurves->shock_enabled))) {
+  if (sample_shocks && ((sample_particles && !pm->pmb_pack->ppart->shock_sampling) ||
+                       (sample_curves && !pm->pmb_pack->pcurves->shock_sampling))) {
     FatalHistoryOutput("shock fields require enabled shock tracking for each selected source");
   }
 }
@@ -283,8 +283,7 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
 
   HostArray4D<shocks::Signal> signals;
   if (sample_shocks) {
-    if (pp->shock_generation!=static_cast<std::uint64_t>(pm->ncycle) ||
-        pp->shock_time!=pm->time) FatalHistoryOutput("stale particle shock output generation");
+    pp->RefreshShockSignals();
     signals=Kokkos::create_mirror_view_and_copy(HostMemSpace(),pp->shock_signal);
   }
   for (int p=0; p<npout_thisrank; ++p) {
@@ -420,5 +419,20 @@ void MaterialCurveOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
          << std::setw(8) << std::setfill('0') << out_params.file_number << ".txt";
     pm->pmb_pack->pcurves->Snapshot(path.str());
   }
+  AdvanceTracerClock(out_params,pm,pin);
+}
+
+EncounterHistoryOutput::EncounterHistoryOutput(ParameterInput *pin, Mesh *pm,
+                                               OutputParameters op) : BaseTypeOutput(pin,pm,op) {
+  curves=op.file_type=="crv";
+  if (curves && pm->pmb_pack->pcurves) pm->pmb_pack->pcurves->binary_output=true;
+  if ((curves && (!pm->pmb_pack->pcurves || !pm->pmb_pack->pcurves->shock_enabled)) ||
+      (!curves && (!pm->pmb_pack->ppart || !pm->pmb_pack->ppart->shock_enabled))) {
+    FatalHistoryOutput("encounter output requires its carrier and an enabled qualified detector");
+  }
+}
+void EncounterHistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
+  auto &history=curves ? pm->pmb_pack->pcurves->shock_history : pm->pmb_pack->ppart->shock_history;
+  history.Flush(pm->ncycle,pm->time);
   AdvanceTracerClock(out_params,pm,pin);
 }

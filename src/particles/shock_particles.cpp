@@ -44,12 +44,12 @@ using shocks::PutEvent;
 [[noreturn]] void ShockError(const std::string &message) {shocks::Fail(message);}
 
 struct CheckpointHeader {
-  char magic[8] = {'A','K','S','H','O','C','K','2'};
-  uint32_t version = 2, endian = 0x12345678, real_bytes = sizeof(Real);
+  char magic[8] = {'A','K','S','H','O','C','K','3'};
+  uint32_t version = 3, endian = 0x12345678, real_bytes = sizeof(Real);
   uint32_t state_bytes = sizeof(shocks::EncounterState), int_bytes = sizeof(int);
   int rank = 0, ranks = 0, gids = 0, nmb = 0, nrdata = 0, nidata = 0;
   uint64_t generation = 0, count = 0, contract_bytes = 0;
-  uint64_t fluid_digest = 0, history_digest = 0;
+  uint64_t fluid_digest = 0, history_digest = 0, pending_bytes=0;
   uint64_t sampled = 0, invalid = 0, complete = 0, partial = 0;
   int highwater = 0;
   Real time = 0;
@@ -66,14 +66,18 @@ void AppendBytes(std::string &data, const T *p, size_t count) {
 namespace particles {
 void Particles::ConfigureShockTracking(ParameterInput *pin) {
   if (pin->DoesBlockExist("shock_tracking")) {
-    shock_enabled = pin->GetOrAddBoolean("shock_tracking", "enabled", false);
-    if (!shock_enabled &&
-        pin->GetOrAddBoolean("shock_tracking", "history_present", false)) {
-      ShockError("Shock history cannot be disabled on restart");
-    }
+    shock_sampling = pin->GetOrAddBoolean("shock_tracking", "enabled", false);
+
   }
-  if (shock_enabled) {
-    if (pusher != ParticlesPusher::lagrangian_tracer || !IsLagrangianTracer()) {
+  const auto history_block=shocks::HistoryOutput(pin,false);
+  shock_enabled=!history_block.empty();
+  if ((shock_enabled && !shock_sampling) ||
+      (!shock_enabled && pin->DoesBlockExist("shock_tracking") &&
+       pin->GetOrAddBoolean("shock_tracking","history_present",false))) {
+    ShockError("complete shock history requires its explicit encounter output block and enabled detector");
+  }
+  if (shock_sampling) {
+    if (shock_enabled && (pusher != ParticlesPusher::lagrangian_tracer || !IsLagrangianTracer())) {
       ShockError("Shock tracking requires particle_type=lagrangian_tracer and "
                  "pusher=lagrangian_tracer; MC histories are unsupported");
     }
@@ -83,7 +87,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
       ShockError("Shock Lagrangian qualification requires RK2 and cooling disabled");
     }
     for (auto block=pin->block.begin(); block != pin->block.end(); ++block) {
-      if (block->block_name.rfind("output",0) == 0 &&
+      if (shock_enabled && block->block_name.rfind("output",0) == 0 &&
           pin->DoesParameterExist(block->block_name,"file_type") &&
           pin->GetString(block->block_name,"file_type") == "rst" &&
           pin->GetOrAddBoolean(block->block_name,"single_file_per_node",false)) {
@@ -92,7 +96,7 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
     }
     std::set<int> schedule_ids;
     for (const auto &seed : seed_schedules_) {
-      if (!schedule_ids.insert(seed.id).second) {
+      if (shock_enabled && !schedule_ids.insert(seed.id).second) {
         ShockError("Shock restart requires unique tracer seed schedule IDs");
       }
     }
@@ -105,7 +109,8 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
     c.density_floor = pin->GetOrAddReal("shock_tracking", "density_floor", 0);
     c.temperature_floor = pin->GetOrAddReal("shock_tracking", "temperature_floor", 0);
     shock_capacity = pin->GetOrAddInteger("shock_tracking", "event_capacity", 4096);
-    shock_lineage = pin->GetString("shock_tracking", "lineage");
+    shock_lineage = (shock_enabled || pin->DoesParameterExist("shock_tracking","lineage")) ?
+        pin->GetString("shock_tracking","lineage") : "sampled";
     shock_directory = pin->GetOrAddString("shock_tracking", "directory", "shock_events");
     shock_trace = pin->GetOrAddBoolean("shock_tracking", "trace", false);
     bool ok = c.width >= 1 && c.width <= pmy_pack->pmesh->mb_indcs.ng &&
@@ -238,15 +243,15 @@ void Particles::ConfigureShockTracking(ParameterInput *pin) {
     if (shock_contract.size()+shock_lineage.size()+1 > 16384) {
       ShockError("Shock restart contract exceeds supported metadata size");
     }
-    Kokkos::realloc(shock_state, nprtcl_thispack);
-    Kokkos::realloc(shock_events, shock_capacity);
-    const auto &bi2 = pmy_pack->pmesh->mb_indcs;
-    Kokkos::realloc(shock_signal, pmy_pack->nmb_thispack,
-                    bi2.nx3 > 1 ? bi2.nx3 + 2*bi2.ng : 1,
-                    bi2.nx2 + 2*bi2.ng, bi2.nx1 + 2*bi2.ng);
-    pin->SetBoolean("shock_tracking", "history_present", true);
+    if (shock_enabled) {
+      shock_history.Configure(pin,history_block,false,0,shock_capacity,shock_directory,
+                              shock_lineage,shock_contract);
+      Kokkos::realloc(shock_state,nprtcl_thispack);
+      Kokkos::realloc(shock_events,shock_capacity);
+      pin->SetBoolean("shock_tracking","history_present",true);
+    }
   }
-  if (shock_enabled) ValidateShockPhysics();
+  if (shock_sampling) ValidateShockPhysics();
 }
 
 void Particles::ValidateShockPhysics() {
@@ -262,7 +267,7 @@ void Particles::ValidateShockPhysics() {
   ok = ok && !pm->one_d &&
        pm->nmb_packs_thisrank == 1 && !pmy_pack->pmhd && !pmy_pack->pionn &&
        !pmy_pack->prad && !pmy_pack->pz4c && !pmy_pack->pdyngr && !pmy_pack->padm &&
-       !pmy_pack->pframe_tracker && IsLagrangianTracer() &&
+       !pmy_pack->pframe_tracker && (shock_enabled ? IsLagrangianTracer() : IsFluidTracer()) &&
        !coord->is_special_relativistic &&
        !coord->is_general_relativistic && !coord->is_dynamical_relativistic;
   if (pmy_pack->pturb) {
@@ -282,7 +287,7 @@ void Particles::ValidateShockPhysics() {
   auto &b = pm->mb_indcs;
   ok = ok && b.ng >= 1 && b.nx1 >= 4 && b.nx2 >= 4 &&
        (!pm->three_d || b.nx3 >= 4);
-  if (shock_enabled) ok = ok && shocks::ConfigValid(shock_config);
+  if (shock_sampling) ok = ok && shocks::ConfigValid(shock_config);
   if (!ok) ShockError("requires 2D/3D Newtonian ideal Cartesian hydro, "
                       "periodic/outflow boundaries, no other sources/transport, one pack; "
                       "native forcing parameters must be finite");
@@ -301,32 +306,10 @@ void Particles::ResizeShockState(int nold) {
 }
 
 void Particles::PrepareShockStore(bool restarting) {
-  try {
-    std::filesystem::create_directories(shock_directory);
-  } catch (const std::exception &e) {
-    ShockError(std::string("cannot create event directory: ") + e.what());
-  }
-  std::string manifest = "AKSHOCK-EVENTS 1\n" + shock_lineage + "\n" +
-                         shock_contract + "\n";
-  CommitFile(shock_directory + "/manifest" + RankName(), manifest, restarting);
-  // FNV-1a chained checksum covers accidental corruption, not hostile collisions.
-  // Every generation has an immutable chunk, including empty generations.
-  // Missing committed history cannot silently become a fresh output stream.
-  if (restarting && shock_generation != UINT64_MAX) {
-    uint64_t digest = UINT64_C(14695981039346656037);
-    for (uint64_t g=0; g<=shock_generation; ++g) {
-      const std::string path = shock_directory + "/cycle" + std::to_string(g) +
-                               RankName() + ".csv";
-      if (!std::filesystem::exists(path)) {
-        ShockError("restart requires complete event chunks through "
-                   "checkpoint generation");
-      }
-      std::ifstream in(path, std::ios::binary);
-      std::string data((std::istreambuf_iterator<char>(in)), {});
-      if (!in || in.bad()) ShockError("cannot validate event chunk: " + path);
-      digest = Digest(digest,data.data(),data.size());
-    }
-    if (digest != shock_history_digest) ShockError("committed event history corrupted");
+  shock_history.Prepare(restarting);
+  if (shock_trace) {
+    const auto manifest="AKSHOCK-EVENTS 1\n"+shock_lineage+"\n"+shock_contract+"\n";
+    CommitFile(shock_directory+"/manifest"+RankName(),manifest,restarting);
   }
   if (global_variable::my_rank == 0) {
     std::cout << "Experimental shock history: " << shock_contract << "\nlineage="
@@ -338,8 +321,10 @@ void Particles::PrepareShockStore(bool restarting) {
 
 // Rebuild derived diagnostics without advancing encounters, counters or journals.
 void Particles::RefreshShockSignals() {
-  if (!shock_enabled) return;
+  if (!shock_sampling) return;
   auto pm = pmy_pack->pmesh;
+  if (shock_signal_generation==static_cast<uint64_t>(pm->ncycle) && shock_signal_time==pm->time) return;
+  ++shock_detector_calls;
   auto b = pm->mb_indcs;
   auto size = pmy_pack->pmb->mb_size.d_view;
   auto w = pmy_pack->phydro->w0;
@@ -378,6 +363,8 @@ void Particles::RefreshShockSignals() {
     }
     signal(m,k,j,i) = s;
   });
+  shock_signal_generation=pm->ncycle;
+  shock_signal_time=pm->time;
 }
 
 void Particles::ObserveShocks(Real time, uint64_t generation) {
@@ -497,21 +484,10 @@ void Particles::ObserveShocks(Real time, uint64_t generation) {
 
 void Particles::DrainShockEvents(const std::vector<shocks::Event> &events,
                                 uint64_t generation) {
-  auto ordered = events;
-  std::sort(ordered.begin(), ordered.end(), [](const auto &a, const auto &b) {
-    return a.particle_id < b.particle_id ||
-           (a.particle_id == b.particle_id && a.sequence < b.sequence);
-  });
-  std::ostringstream out;
-  out << std::setprecision(std::numeric_limits<Real>::max_digits10)
-      << "# AKSHOCK-EVENTS 1 " << shock_lineage << ' ' << generation << ' '
-      << ordered.size() << '\n' << "# " << shock_contract << '\n';
-  for (const auto &e : ordered) PutEvent(out,e);
-  out << "# END " << ordered.size() << '\n';
-  const auto data = out.str();
-  CommitFile(shock_directory + "/cycle" + std::to_string(generation) + RankName() +
-               ".csv", data, true);
-  shock_history_digest = Digest(shock_history_digest,data.data(),data.size());
+  for (const auto &e : events) {
+    shocks::HistoryRecord record;record.event=e;record.emission=generation;
+    shock_history.Push(record);
+  }
 }
 
 void Particles::EmitShockExits(const std::vector<int> &indices) {
@@ -568,7 +544,9 @@ void Particles::WriteShockRestart(const std::string &fname) {
   h.generation = shock_generation;
   h.time = shock_time;
   h.count = nprtcl_thispack;
-  h.history_digest = shock_history_digest;
+  h.history_digest = shock_history.digest;
+  const auto pending=shock_history.Save(shock_generation,shock_time);
+  h.pending_bytes=pending.size();
   h.sampled = shock_sampled;
   h.invalid = shock_invalid;
   h.complete = shock_complete;
@@ -584,6 +562,7 @@ void Particles::WriteShockRestart(const std::string &fname) {
   AppendBytes(data, &h, 1);
   data += contract;
   if (nprtcl_thispack > 0) AppendBytes(data,s.data(),nprtcl_thispack);
+  data+=pending;
   uint64_t checksum = Digest(UINT64_C(14695981039346656037),data.data(),data.size());
   AppendBytes(data,&checksum,1);
   CommitFile(fname + ".shock" + RankName(), data, false);
@@ -594,7 +573,7 @@ void Particles::ReadShockRestart(const std::string &fname) {
   std::ifstream in(path, std::ios::binary);
   CheckpointHeader h;
   in.read(reinterpret_cast<char*>(&h), sizeof(h));
-  if (!in || std::memcmp(h.magic,"AKSHOCK2",8) || h.version != 2 ||
+  if (!in || std::memcmp(h.magic,"AKSHOCK3",8) || h.version != 3 ||
       h.endian != 0x12345678 || h.real_bytes != sizeof(Real) ||
       h.state_bytes != sizeof(shocks::EncounterState) || h.int_bytes != sizeof(int) ||
       h.rank != global_variable::my_rank || h.ranks != global_variable::nranks ||
@@ -608,7 +587,8 @@ void Particles::ReadShockRestart(const std::string &fname) {
   uint64_t record_bytes = sizeof(shocks::EncounterState);
   const auto bytes = std::filesystem::file_size(path);
   if (bytes < sizeof(h) + h.contract_bytes + sizeof(uint64_t) ||
-      bytes - sizeof(h) - h.contract_bytes - sizeof(uint64_t) != h.count*record_bytes) {
+      h.pending_bytes>22000+static_cast<uint64_t>(shock_capacity)*1100 ||
+      bytes - sizeof(h) - h.contract_bytes - sizeof(uint64_t) != h.count*record_bytes+h.pending_bytes) {
     ShockError("truncated or malformed shock sidecar: " + path);
   }
   in.seekg(bytes-sizeof(uint64_t));
@@ -651,13 +631,17 @@ void Particles::ReadShockRestart(const std::string &fname) {
       ShockError("invalid particle state in sidecar");
     }
   }
+  std::string pending(h.pending_bytes,'\0');
+  in.read(pending.data(),pending.size());
+  if (!in) ShockError("truncated pending encounter checkpoint");
+  shock_history.Restore(pending,h.generation,h.time);
+  if (shock_history.digest!=h.history_digest) ShockError("pending encounter prefix mismatch");
   Kokkos::deep_copy(shock_state, s);
   shock_sampled = h.sampled;
   shock_invalid = h.invalid;
   shock_complete = h.complete;
   shock_partial = h.partial;
   shock_highwater = h.highwater;
-  shock_history_digest = h.history_digest;
   shock_generation = h.generation;
   shock_time = h.time;
 }
@@ -683,14 +667,11 @@ void Particles::WriteShockSuspended() {
   std::sort(records.begin(),records.end(),[](const auto &a,const auto &b) {
     return a.particle_id < b.particle_id;
   });
-  std::ostringstream out;
-  out << std::setprecision(std::numeric_limits<Real>::max_digits10)
-      << "# AKSHOCK-SUSPENDED 1 " << shock_lineage << ' ' << shock_generation << ' '
-      << records.size() << '\n' << "# " << shock_contract << '\n';
-  for (const auto &e : records) PutEvent(out,e);
-  out << "# END " << records.size() << '\n';
-  CommitFile(shock_directory + "/suspended" + std::to_string(shock_generation) +
-               RankName() + ".csv", out.str(), true);
+  std::vector<shocks::HistoryRecord> views;
+  for (const auto &e : records) {
+    shocks::HistoryRecord r;r.event=e;r.emission=shock_generation;views.push_back(r);
+  }
+  shock_history.Suspended(views,shock_generation,shock_time);
   std::cout << "Shock rank=" << global_variable::my_rank << " sampled=" << shock_sampled
             << " invalid=" << shock_invalid << " complete=" << shock_complete
             << " partial=" << shock_partial << " suspended=" << records.size()

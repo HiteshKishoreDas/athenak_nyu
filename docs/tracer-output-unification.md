@@ -1,5 +1,7 @@
 # Existing particle, curve and shock outputs
 
+Current shock cadence/history controls: [sampled versus explicit complete encounters](shock-output-modes.md).
+
 The 2026-10-23 format experiment remains withdrawn. On 2026-10-25 the user
 explicitly requested one `.crv` output combining curve geometry, thermo and
 sampled shock properties. See [current CRV input, schema and readers](curve-binary-output.md).

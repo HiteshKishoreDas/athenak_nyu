@@ -18,12 +18,18 @@
 namespace material_curves {
 void MaterialCurves::ConfigureShocks(ParameterInput *pin) {
   if (!pin->DoesBlockExist("shock_tracking")) return;
-  shock_enabled=pin->GetOrAddBoolean("shock_tracking","enabled",false);
-  if (!shock_enabled) {
+  shock_sampling=pin->GetOrAddBoolean("shock_tracking","enabled",false);
+  const auto history_block=shocks::HistoryOutput(pin,true);
+  shock_enabled=!history_block.empty();
+  if (shock_enabled && !shock_sampling) Fail("complete curve history requires enabled detector");
+  if (!shock_sampling) {
     if (pin->GetOrAddBoolean("shock_tracking","curve_history_present",false)) {
       Fail("curve shock history cannot be disabled on restart");
     }
     return;
+  }
+  if (!shock_enabled && pin->GetOrAddBoolean("shock_tracking","curve_history_present",false)) {
+    Fail("complete curve history requires its explicit encounter output block on restart");
   }
   auto hydro=mesh->pmb_pack->phydro;
   if (std::string(DevExeSpace::name())!="Serial" || sizeof(Real)!=8 ||
@@ -47,7 +53,8 @@ void MaterialCurves::ConfigureShocks(ParameterInput *pin) {
   c.temperature_floor=pin->GetOrAddReal("shock_tracking","temperature_floor",0);
   shock_capacity=pin->GetOrAddInteger("shock_tracking","event_capacity",4096);
   shock_trace=pin->GetOrAddBoolean("shock_tracking","trace",false);
-  shock_lineage=pin->GetString("shock_tracking","lineage");
+  shock_lineage=(shock_enabled || pin->DoesParameterExist("shock_tracking","lineage")) ?
+      pin->GetString("shock_tracking","lineage") : "sampled";
   shock_directory=
       pin->GetOrAddString("shock_tracking","directory","shock_events")+"/curves";
   bool valid=!shock_lineage.empty() && shock_lineage.size()<=128 && shock_capacity>0 &&
@@ -99,7 +106,11 @@ void MaterialCurves::ConfigureShocks(ParameterInput *pin) {
   if (shock_contract.size()+shock_lineage.size()+1>16384) {
     Fail("curve shock contract exceeds bounded metadata");
   }
-  pin->SetBoolean("shock_tracking","curve_history_present",true);
+  if (shock_enabled) {
+    shock_history.Configure(pin,history_block,true,curve_id_bits,shock_capacity,shock_directory,
+                            shock_lineage,shock_contract);
+    pin->SetBoolean("shock_tracking","curve_history_present",true);
+  }
 }
 
 void MaterialCurves::ObserveShocks(bool births_only) {

@@ -70,7 +70,7 @@ def parse_event(row, lineage, generation, signed_id=False):
         raise HistoryError('Completed event carries censoring flags')
     for n, name in enumerate(('pre', 'first', 'last', 'post', 'representative')):
         o = parse_observation(row[4 + 24*n:4 + 24*(n+1)])
-        if o['valid'] and o['generation'] > generation:
+        if o['time'] != -1 and o['generation'] > generation:
             raise HistoryError('Observation after emission generation')
         event[name] = o
     if not event['first']['valid'] or not event['first']['inside']:
@@ -111,6 +111,9 @@ def read_chunk(path, lineage, contract, generation, suspended=False):
 
 
 def manifests(directory):
+    import shock_binary
+    if shock_binary.binary_files(directory, 0):
+        return shock_binary.manifests(directory, 0)
     root = Path(directory)
     paths = sorted(root.glob('manifest.rank*'))
     result = {}
@@ -136,6 +139,9 @@ def manifests(directory):
 
 def read_history(directory, through_cycle=None):
     """Return canonical committed events; require contiguous per-rank chunks."""
+    import shock_binary
+    if shock_binary.binary_files(directory, 0):
+        return shock_binary.read_history(directory, 0, through_cycle)
     root = Path(directory)
     metadata = manifests(root)
     chunks = {}
@@ -172,6 +178,9 @@ def read_history(directory, through_cycle=None):
 
 def read_suspended(directory, generation=None):
     """Read a selected/latest terminal view, separately from committed history."""
+    import shock_binary
+    if shock_binary.binary_files(directory, 0):
+        return shock_binary.read_suspended(directory, 0, generation)
     root = Path(directory)
     metadata = manifests(root)
     paths = {}

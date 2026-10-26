@@ -1,5 +1,7 @@
 # Event and restart contract
 
+Historical CSV schema. Current optional binary event outputs: [mode and schema documentation](../shock-output-modes.md).
+
 All quantities use Athena code units. Event identities are the tuple
 (lineage, unsigned64 particle_id, unsigned64 sequence). Existing native tags are
 signed32 and are checked before casting/incrementing; event output never converts

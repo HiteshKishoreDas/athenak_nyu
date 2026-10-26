@@ -564,6 +564,15 @@ class ParticleVTKOutput : public BaseTypeOutput {
 //! \class ParticleThermoHistoryOutput
 //  \brief shared thermodynamic diagnostics for fluid particles and material curves
 
+class EncounterHistoryOutput : public BaseTypeOutput {
+ public:
+  EncounterHistoryOutput(ParameterInput *pin, Mesh *pm, OutputParameters op);
+  void LoadOutputData(Mesh *) override {}
+  void WriteOutputFile(Mesh *pm, ParameterInput *pin) override;
+ private:
+  bool curves;
+};
+
 class MaterialCurveOutput : public BaseTypeOutput {
  public:
   MaterialCurveOutput(ParameterInput *pin, Mesh *pm, OutputParameters op);

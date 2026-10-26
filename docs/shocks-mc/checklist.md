@@ -154,3 +154,14 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
 - [x] Sealed source/runtime/raw-hash gallery and artifact manifest: nine figures,
   28,317 raw-file hashes, 89 native-run digests; artifact.json records the manifest.
 - [ ] Runtime MPI/GPU/cluster budgets and human scientific approval remain pending.
+
+### 2026-10-26 — sampled shocks versus opt-in binary complete histories
+
+- [x] Snapshot-only evaluation at saved clocks; zero unused work; independent cache generation.
+- [x] Separate mode=encounters blocks; event-only binary CRV/THP replaces completed CSV.
+- [x] Independent carriers; bounded pending queues inside paired checkpoints; original emission clocks.
+- [x] Exact prefix, orphan-tail, terminal/zero-step replay and typed identity guards.
+- [x] 21native +47event-reader +28snapshot-reader groups pass; independent review.
+- [x] Nine actual explained plots and source-bound commands/failures/reproduction.
+- [ ] Seal exact-source/runtime/raw/reference gallery and artifact metadata.
+- [ ] Runtime MPI/GPU/cluster budgets, live-outflow qualification and human scientific approval remain pending.

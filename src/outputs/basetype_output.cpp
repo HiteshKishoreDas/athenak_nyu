@@ -171,7 +171,7 @@ BaseTypeOutput::BaseTypeOutput(ParameterInput *pin, Mesh *pm, OutputParameters o
     auto pp=pm->pmb_pack->ppart;
     auto curves=pm->pmb_pack->pcurves;
     if (out_params.file_type!="bin" || out_params.include_gzs ||
-        !((pp && pp->shock_enabled) || (curves && curves->shock_enabled))) {
+        !((pp && pp->shock_sampling) || (curves && curves->shock_sampling))) {
       std::cout << "### FATAL ERROR: variable=shock requires file_type=bin, active zones "
                    "and enabled shock tracking" << std::endl;
       std::exit(EXIT_FAILURE);

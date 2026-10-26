@@ -1,0 +1,32 @@
+[
+  {
+    "retained": "0-invalid_validity.packet",
+    "original": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-reader-sealed-20261026/0-invalid_validity.packet",
+    "sha256": "c93d7e819f715a5254faad54b902fd5f4486343e5aa0e24a4e3dd66ac69a646f"
+  },
+  {
+    "retained": "0-checksum_corruption.packet",
+    "original": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-reader-sealed-20261026/0-checksum_corruption.packet",
+    "sha256": "625caba762ee1d642dce3335e90f50d5b5415f68fb4acd703fe952d93182da6c"
+  },
+  {
+    "retained": "0-truncated_record.packet",
+    "original": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-reader-sealed-20261026/0-truncated_record.packet",
+    "sha256": "19d2b3e9c871391a89dd53d1f5c836b5e7639537ffa94028a7eeb3cf19da9089"
+  },
+  {
+    "retained": "1-invalid_status.packet",
+    "original": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-reader-sealed-20261026/1-invalid_status.packet",
+    "sha256": "4ccd69d853917b35a8ac93bd56299360a56b4fae6e6dd066a8cbf1508f2f259a"
+  },
+  {
+    "retained": "1-unknown_flags.packet",
+    "original": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-reader-sealed-20261026/1-unknown_flags.packet",
+    "sha256": "474cd16dc323667701755f3a8f651409c70ae53d1112360d7fc0e6ed4e3b8d67"
+  },
+  {
+    "retained": "1-nonfinite_inside_time.packet",
+    "original": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-reader-sealed-20261026/1-nonfinite_inside_time.packet",
+    "sha256": "58ace6b42ccb0b719b1c591792d025d95384d502273f775c19bee57f8750ee99"
+  }
+]

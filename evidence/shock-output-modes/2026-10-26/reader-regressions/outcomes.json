@@ -1,0 +1,304 @@
+[
+  {
+    "id": "native_public_api",
+    "carrier": 0,
+    "status": "pass",
+    "events": 15,
+    "censored": 6
+  },
+  {
+    "id": "exact_csv_parity",
+    "carrier": 0,
+    "status": "pass",
+    "records": 15
+  },
+  {
+    "id": "exact_censored_csv_parity",
+    "carrier": 0,
+    "status": "pass",
+    "records": 6
+  },
+  {
+    "id": "recognized_snapshot_ignored",
+    "carrier": 0,
+    "status": "pass",
+    "snapshot": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-sealed-20261026/sampled/prtcl_thermo_history/curve_shock.samples.thp"
+  },
+  {
+    "id": "unknown_magic_not_ignored",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Unknown/truncated binary encounter header"
+  },
+  {
+    "id": "terminal_ancestor_corruption",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Terminal view has missing/modified committed ancestor"
+  },
+  {
+    "id": "missing_middle",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Missing/modified binary encounter chain predecessor"
+  },
+  {
+    "id": "modified_prefix",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Missing/modified binary encounter chain predecessor"
+  },
+  {
+    "id": "modified_predecessor",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Missing/modified binary encounter chain predecessor"
+  },
+  {
+    "id": "duplicate_filename",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Duplicate binary encounter rank alias"
+  },
+  {
+    "id": "missing_rank",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Missing binary encounter rank packet"
+  },
+  {
+    "id": "query_coverage",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Requested generation is not covered by committed batches",
+    "covered_queries": [
+      0,
+      50,
+      53,
+      90,
+      100,
+      107
+    ]
+  },
+  {
+    "id": "unknown_flags",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Unknown schema-1 validity flag"
+  },
+  {
+    "id": "invalid_status",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Integer outside schema range: 2"
+  },
+  {
+    "id": "invalid_validity",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Integer outside schema range: 2"
+  },
+  {
+    "id": "nonfinite_inside_time",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Nonfinite required observation field"
+  },
+  {
+    "id": "unknown_real_width",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Unsupported binary encounter schema/carrier/split"
+  },
+  {
+    "id": "truncated_header",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Unknown/truncated binary encounter header"
+  },
+  {
+    "id": "truncated_record",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Binary encounter record count/trailing bytes mismatch"
+  },
+  {
+    "id": "checksum_corruption",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Binary encounter checksum mismatch"
+  },
+  {
+    "id": "domain_exit_kind0",
+    "carrier": 0,
+    "status": "pass",
+    "fixture": "synthetic",
+    "emission": 107
+  },
+  {
+    "id": "future_domain_exit_generation_kind0",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Observation after emission generation"
+  },
+  {
+    "id": "terminal_only_kind0",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Committed event carries terminal-only censoring flag"
+  },
+  {
+    "id": "domain_exit_kind2",
+    "carrier": 0,
+    "status": "pass",
+    "fixture": "synthetic",
+    "emission": 107
+  },
+  {
+    "id": "future_domain_exit_generation_kind2",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Observation after emission generation"
+  },
+  {
+    "id": "terminal_only_kind2",
+    "carrier": 0,
+    "status": "pass",
+    "rejected": "Committed event carries terminal-only censoring flag"
+  },
+  {
+    "id": "left_censored_sentinel_preserved",
+    "carrier": 0,
+    "status": "pass",
+    "fixture": "synthetic"
+  },
+  {
+    "id": "native_public_api",
+    "carrier": 1,
+    "status": "pass",
+    "events": 16,
+    "censored": 0
+  },
+  {
+    "id": "exact_csv_parity",
+    "carrier": 1,
+    "status": "pass",
+    "records": 16
+  },
+  {
+    "id": "exact_censored_csv_parity",
+    "carrier": 1,
+    "status": "pass",
+    "records": 0
+  },
+  {
+    "id": "recognized_snapshot_ignored",
+    "carrier": 1,
+    "status": "pass",
+    "snapshot": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/shock-modes-sealed-20261026/sampled/curves/curve_shock.samples.cycle0.rank0of1.crv"
+  },
+  {
+    "id": "unknown_magic_not_ignored",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Unknown/truncated binary encounter header"
+  },
+  {
+    "id": "terminal_ancestor_corruption",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Terminal view has missing/modified committed ancestor"
+  },
+  {
+    "id": "missing_middle",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Missing/modified binary encounter chain predecessor"
+  },
+  {
+    "id": "modified_prefix",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Missing/modified binary encounter chain predecessor"
+  },
+  {
+    "id": "modified_predecessor",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Missing/modified binary encounter chain predecessor"
+  },
+  {
+    "id": "duplicate_filename",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Duplicate binary encounter rank alias"
+  },
+  {
+    "id": "missing_rank",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Missing binary encounter rank packet"
+  },
+  {
+    "id": "query_coverage",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Requested generation is not covered by committed batches",
+    "covered_queries": [
+      0,
+      50,
+      53,
+      90,
+      100,
+      107
+    ]
+  },
+  {
+    "id": "unknown_flags",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Unknown schema-1 validity flag"
+  },
+  {
+    "id": "invalid_status",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Integer outside schema range: 2"
+  },
+  {
+    "id": "invalid_validity",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Integer outside schema range: 2"
+  },
+  {
+    "id": "nonfinite_inside_time",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Nonfinite required observation field"
+  },
+  {
+    "id": "unknown_real_width",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Unsupported binary encounter schema/carrier/split"
+  },
+  {
+    "id": "truncated_header",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Unknown/truncated binary encounter header"
+  },
+  {
+    "id": "truncated_record",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Binary encounter record count/trailing bytes mismatch"
+  },
+  {
+    "id": "checksum_corruption",
+    "carrier": 1,
+    "status": "pass",
+    "rejected": "Binary encounter checksum mismatch"
+  }
+]

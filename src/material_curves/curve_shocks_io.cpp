@@ -24,13 +24,13 @@ constexpr uint64_t kOffset = UINT64_C(14695981039346656037);
 constexpr uint64_t kContractCap = 16384;
 
 struct Header {
-  char magic[8] = {'A','K','C','S','H','C','K','1'};
-  uint32_t version = 1, endian = 0x12345678, real_bytes = sizeof(Real);
+  char magic[8] = {'A','K','C','S','H','C','K','2'};
+  uint32_t version = 2, endian = 0x12345678, real_bytes = sizeof(Real);
   uint32_t state_bytes = sizeof(ShockNode), int_bytes = sizeof(int);
   int rank = 0, ranks = 0;
   uint64_t generation = 0, count = 0, contract_bytes = 0;
   uint64_t fluid_bytes = 0, curve_bytes = 0;
-  uint64_t fluid_digest = 0, curve_digest = 0, history_digest = 0;
+  uint64_t fluid_digest = 0, curve_digest = 0, history_digest = 0, pending_bytes=0;
   Real time = 0;
 };
 static_assert(std::is_trivially_copyable<ShockNode>::value,
@@ -48,36 +48,6 @@ std::string Sidecar(const std::string &fluid) {
 std::string Manifest(const MaterialCurves &m) {
   return "AKCURVE-SHOCK-EVENTS 1\n" + m.shock_lineage + "\n" +
          m.shock_contract + "\n";
-}
-void CheckManifest(const MaterialCurves &m) {
-  const auto expected = Manifest(m);
-  const auto path = m.shock_directory + "/manifest" + shocks::RankName();
-  if (Size(path) != expected.size()) shocks::Fail("curve shock manifest mismatch");
-  std::ifstream in(path,std::ios::binary);
-  std::string data(expected.size(),'\0');
-  in.read(data.data(),data.size());
-  if (!in || data != expected) shocks::Fail("curve shock manifest mismatch");
-}
-uint64_t PrefixDigest(const MaterialCurves &m, uint64_t generation) {
-  CheckManifest(m);
-  uint64_t digest = kOffset;
-  for (uint64_t g=0; g<=generation; ++g) {
-    const auto path = m.shock_directory + "/cycle" + std::to_string(g) +
-                      shocks::RankName() + ".csv";
-    if (m.shock_capacity <= 0 || static_cast<uint64_t>(m.shock_capacity) >
-        (UINT64_MAX-kContractCap)/8192 ||
-        Size(path) > kContractCap+static_cast<uint64_t>(m.shock_capacity)*8192) {
-      shocks::Fail("oversized curve shock history chunk");
-    }
-    std::ifstream in(path,std::ios::binary);
-    if (!in) shocks::Fail("missing curve shock history chunk: " + path);
-    char buffer[65536];
-    while (in.read(buffer,sizeof(buffer)) || in.gcount()) {
-      digest = shocks::Digest(digest,buffer,in.gcount());
-    }
-    if (!in.eof()) shocks::Fail("cannot validate curve shock history: " + path);
-  }
-  return digest;
 }
 std::unordered_map<NodeID, const Node *> Geometry(const MaterialCurves &m) {
   std::unordered_map<NodeID, const Node *> nodes;
@@ -159,59 +129,22 @@ void CheckState(const ShockNode &node, const Node &geometry,
     }
   }
 }
-std::string Records(const MaterialCurves &m, std::vector<ShockEvent> events,
-                    const char *kind) {
-  if (m.shock_capacity <= 0 || events.size() >
-      static_cast<size_t>(m.shock_capacity)) shocks::Fail("curve shock event overflow");
-  std::sort(events.begin(),events.end(),[](const auto &a,const auto &b) {
-    return std::pair(a.encounter.particle_id,a.encounter.sequence) <
-           std::pair(b.encounter.particle_id,b.encounter.sequence);
-  });
-  std::ostringstream out;
-  out << std::setprecision(std::numeric_limits<Real>::max_digits10)
-      << "# AKCURVE-SHOCK-" << kind << " 1 " << m.shock_lineage << ' '
-      << m.shock_generation << ' ' << events.size() << '\n'
-      << "# " << m.shock_contract << '\n';
-  uint64_t previous_id = 0, previous_sequence = 0;
-  for (const auto &e : events) {
-    if (e.encounter.particle_id == 0 || (e.encounter.particle_id == previous_id &&
-        e.encounter.sequence == previous_sequence)) shocks::Fail("duplicate curve event");
-    previous_id = e.encounter.particle_id;
-    previous_sequence = e.encounter.sequence;
-    shocks::PutEvent(out,e.encounter,false,
-                     SignedID(static_cast<std::uint32_t>(e.encounter.particle_id)));
-    out << ',' << e.birth << ',' << e.first_level;
-    for (Real dx : e.first_spacing) out << ',' << dx;
-    out << ',' << e.last_level;
-    for (Real dx : e.last_spacing) out << ',' << dx;
-    out << '\n';
-  }
-  out << "# END " << events.size() << '\n';
-  return out.str();
-}
 }  // namespace
 
 void MaterialCurves::PrepareShockStore(bool restart) {
   if (!shock_enabled) return;
-  if (restart) {
-    if (shock_generation == UINT64_MAX ||
-        PrefixDigest(*this,shock_generation) != shock_history_digest) {
-      shocks::Fail("curve shock committed prefix missing or corrupted");
-    }
-  } else {
-    std::error_code error;
-    std::filesystem::create_directories(shock_directory,error);
-    if (error) shocks::Fail("cannot create curve shock directory: " + error.message());
-    shocks::CommitFile(shock_directory+"/manifest"+shocks::RankName(),
-                       Manifest(*this),false);
-  }
+  shock_history.Prepare(restart);
+  if (shock_trace) shocks::CommitFile(shock_directory+"/manifest"+shocks::RankName(),
+                                    Manifest(*this),restart);
 }
 void MaterialCurves::WriteShockChunk(const std::vector<ShockEvent> &events) {
   if (!shock_enabled) return;
-  const auto data = Records(*this,events,"EVENTS");
-  shocks::CommitFile(shock_directory+"/cycle"+std::to_string(shock_generation)+
-                     shocks::RankName()+".csv",data,true);
-  shock_history_digest = shocks::Digest(shock_history_digest,data.data(),data.size());
+  for (const auto &e : events) {
+    shocks::HistoryRecord r;r.emission=shock_generation;r.event=e.encounter;
+    r.birth=e.birth;r.first_level=e.first_level;r.last_level=e.last_level;
+    for (int d=0;d<3;++d) {r.first_spacing[d]=e.first_spacing[d];r.last_spacing[d]=e.last_spacing[d];}
+    shock_history.Push(r);
+  }
 }
 void MaterialCurves::WriteShockTrace(const std::vector<Node *> &nodes,
                                     const std::vector<ShockObservation> &samples,
@@ -288,7 +221,9 @@ void MaterialCurves::SaveShockRestart(const std::string &fluid_path) const {
   }
   h.fluid_digest = shocks::FileDigest(fluid_path);
   h.curve_digest = shocks::FileDigest(fluid_path+".curves");
-  h.history_digest = shock_history_digest;
+  h.history_digest = shock_history.digest;
+  const auto pending=shock_history.Save(shock_generation,shock_time);
+  h.pending_bytes=pending.size();
   const auto contract = shock_lineage+"\n"+shock_contract;
   h.contract_bytes = contract.size();
   std::vector<NodeID> order;
@@ -301,6 +236,7 @@ void MaterialCurves::SaveShockRestart(const std::string &fluid_path) const {
     CheckState(state,*geometry.at(id),shock_generation,shock_time,mesh->three_d);
     data.append(reinterpret_cast<const char *>(&state),sizeof(state));
   }
+  data+=pending;
   const auto checksum = shocks::Digest(kOffset,data.data(),data.size());
   data.append(reinterpret_cast<const char *>(&checksum),sizeof(checksum));
   shocks::CommitFile(Sidecar(fluid_path),data,false);
@@ -312,7 +248,7 @@ void MaterialCurves::LoadShockRestart(const std::string &fluid_path) {
   Header h;
   in.read(reinterpret_cast<char *>(&h),sizeof(h));
   const auto geometry = Geometry(*this);
-  if (!in || std::memcmp(h.magic,"AKCSHCK1",8) || h.version != 1 ||
+  if (!in || std::memcmp(h.magic,"AKCSHCK2",8) || h.version != 2 ||
       h.endian != 0x12345678 || h.real_bytes != sizeof(Real) ||
       h.state_bytes != sizeof(ShockNode) || h.int_bytes != sizeof(int) ||
       h.rank != global_variable::my_rank || h.ranks != global_variable::nranks ||
@@ -323,7 +259,8 @@ void MaterialCurves::LoadShockRestart(const std::string &fluid_path) {
   }
   const uint64_t fixed = sizeof(h)+h.contract_bytes+sizeof(uint64_t);
   if (h.count > (UINT64_MAX-fixed)/sizeof(ShockNode) ||
-      Size(path) != fixed+h.count*sizeof(ShockNode)) {
+      h.pending_bytes>22000+static_cast<uint64_t>(shock_capacity)*1100 ||
+      Size(path) != fixed+h.count*sizeof(ShockNode)+h.pending_bytes) {
     shocks::Fail("truncated or malformed curve shock sidecar");
   }
   in.seekg(Size(path)-sizeof(uint64_t));
@@ -343,9 +280,6 @@ void MaterialCurves::LoadShockRestart(const std::string &fluid_path) {
       shocks::FileDigest(fluid_path+".curves") != h.curve_digest) {
     shocks::Fail("fluid/geometry/curve shock checkpoint identity mismatch");
   }
-  if (PrefixDigest(*this,h.generation) != h.history_digest) {
-    shocks::Fail("curve shock committed prefix missing or corrupted");
-  }
   std::unordered_map<NodeID, ShockNode> restored;
   for (uint64_t n=0; n<h.count; ++n) {
     ShockNode state;
@@ -362,13 +296,17 @@ void MaterialCurves::LoadShockRestart(const std::string &fluid_path) {
       shocks::Fail("duplicate node history");
     }
   }
+  std::string pending(h.pending_bytes,'\0');
+  in.read(pending.data(),pending.size());
+  if (!in) shocks::Fail("truncated pending curve encounters");
+  shock_history.Restore(pending,h.generation,h.time);
+  if (shock_history.digest!=h.history_digest) shocks::Fail("pending curve prefix mismatch");
 #if MPI_PARALLEL_ENABLED
   MPI_Barrier(MPI_COMM_WORLD);  // No rank applies state until every rank validates.
 #endif
   shock_states.swap(restored);
   shock_generation = h.generation;
   shock_time = h.time;
-  shock_history_digest = h.history_digest;
 }
 void MaterialCurves::WriteShockSuspended() const {
   if (!shock_enabled) return;
@@ -390,9 +328,13 @@ void MaterialCurves::WriteShockSuspended() const {
     }
     events.push_back(event);
   }
-  shocks::CommitFile(shock_directory+"/suspended"+std::to_string(shock_generation)+
-                     shocks::RankName()+".csv",
-                     Records(*this,std::move(events),"SUSPENDED"),
-                     true);
+  std::vector<shocks::HistoryRecord> views;
+  for (const auto &e : events) {
+    shocks::HistoryRecord r;r.event=e.encounter;r.emission=shock_generation;
+    r.birth=e.birth;r.first_level=e.first_level;r.last_level=e.last_level;
+    for (int d=0;d<3;++d) {r.first_spacing[d]=e.first_spacing[d];r.last_spacing[d]=e.last_spacing[d];}
+    views.push_back(r);
+  }
+  shock_history.Suspended(views,shock_generation,shock_time);
 }
 }  // namespace material_curves

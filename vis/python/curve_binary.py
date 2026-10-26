@@ -108,6 +108,8 @@ def read_set(directory,stem=None,max_nodes=1000000):
     """Complete rank sets per stream/clock; no synthetic samples or times."""
     groups={};streams=set()
     for path in sorted(Path(directory).glob('*.crv')):
+        with path.open('rb') as probe:
+            if probe.read(16)==b'ATHK_EVENTS'+b'\0'*5:continue
         match=re.fullmatch(r'(.+)\.cycle([0-9]+)\.rank([0-9]+)of([0-9]+)\.crv',path.name)
         _require(match is not None,'malformed CRV filename')
         if stem is not None and match[1]!=stem:continue

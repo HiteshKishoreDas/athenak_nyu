@@ -51,6 +51,7 @@
 #include "parameter_input.hpp"
 #include "mesh/mesh.hpp"
 #include "outputs.hpp"
+#include "shocks/store.hpp"
 
 //----------------------------------------------------------------------------------------
 // Outputs constructor
@@ -130,6 +131,11 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
         opar.variable = opar.file_type;
         opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
       }
+
+      const auto mode=pin->GetOrAddString(opar.block_name,"mode","snapshot");
+      if (mode!="snapshot" && mode!="encounters") shocks::Fail("unknown output mode");
+      if (mode=="encounters" && opar.file_type!="crv" &&
+          opar.file_type!="prtcl_thermo_history") shocks::Fail("encounters require CRV or THP output");
 
       // read ghost cell option
       opar.include_gzs = pin->GetOrAddBoolean(opar.block_name, "ghost_zones", false);
@@ -248,6 +254,9 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("trk") == 0) {
         pnode = new TrackedParticleOutput(pin,pm,opar);
+        pout_list.insert(pout_list.begin(),pnode);
+      } else if (mode=="encounters") {
+        pnode = new EncounterHistoryOutput(pin,pm,opar);
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("prtcl_thermo_history") == 0) {
         pnode = new ParticleThermoHistoryOutput(pin,pm,opar);

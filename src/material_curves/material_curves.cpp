@@ -508,6 +508,7 @@ std::vector<Vec> MaterialCurves::Sample(std::vector<Node *> &nodes,
     return {};
   }
   if (observations) {
+    if (nr>0) ++shock_stencil_batches;
     if (ns>INT_MAX/static_cast<int>(sizeof(ShockObservation)) ||
         nr>INT_MAX/static_cast<int>(sizeof(ShockObservation))) {
       Fail("shock observation batch exceeds MPI byte-count limit");

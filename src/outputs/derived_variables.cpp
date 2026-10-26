@@ -96,14 +96,8 @@ void BaseTypeOutput::ComputeDerivedVariable(std::string name, Mesh *pm) {
   if (name=="shock") {
     auto pp=pm->pmb_pack->ppart;
     auto curves=pm->pmb_pack->pcurves;
-    const bool cached=pp && pp->shock_enabled;
-    if ((cached && (pp->shock_generation!=static_cast<std::uint64_t>(pm->ncycle) ||
-                    pp->shock_time!=pm->time)) ||
-        (!cached && (curves->shock_generation!=static_cast<std::uint64_t>(pm->ncycle) ||
-                     curves->shock_time!=pm->time))) {
-      std::cout << "### FATAL ERROR: stale mesh shock output generation" << std::endl;
-      std::exit(EXIT_FAILURE);
-    }
+    const bool cached=pp && pp->shock_sampling;
+    if (cached) pp->RefreshShockSignals();
     auto config=cached ? pp->shock_config : curves->shock_config;
     auto signals=cached ? pp->shock_signal : DvceArray4D<shocks::Signal>();
     auto w=pm->pmb_pack->phydro->w0;

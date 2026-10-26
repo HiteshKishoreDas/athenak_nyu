@@ -1,5 +1,7 @@
 # Native shock histories for existing Monte Carlo tracers
 
+Current shock cadence/history controls: [sampled versus explicit complete encounters](../shock-output-modes.md).
+
 Branch `codex/shock-multiphase`, based on `multiphase_turb` at
 `526a187f938e38634e89a88192ebe9731c4d36bb`. Engineering implementation;
 **human scientific sign-off and R1 release acceptance remain pending**.

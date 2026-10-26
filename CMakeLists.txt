@@ -234,6 +234,14 @@ if(Athena_SHOCK_TESTS)
       ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
   target_link_libraries(shock_encounter_test PRIVATE Kokkos::kokkos)
   target_compile_options(shock_encounter_test PRIVATE -UNDEBUG)
+  add_executable(shock_history_test tst/shocks/history_test.cpp src/globals.cpp)
+  target_include_directories(shock_history_test PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
+  target_link_libraries(shock_history_test PRIVATE Kokkos::kokkos)
+  target_compile_options(shock_history_test PRIVATE -UNDEBUG)
+  if(Athena_ENABLE_MPI)
+    target_link_libraries(shock_history_test PRIVATE MPI::MPI_CXX)
+  endif()
 endif()
 
 set(shock_source_files src/mesh/mesh_refinement.cpp src/athena.hpp
@@ -252,7 +260,7 @@ set(shock_source_files src/mesh/mesh_refinement.cpp src/athena.hpp
 list(APPEND shock_source_files src/material_curves/material_curves.cpp
     src/material_curves/material_curves.hpp src/material_curves/material_curves_io.cpp
     src/material_curves/curve_shocks.cpp src/material_curves/curve_shocks_io.cpp
-    src/shocks/observation.hpp src/shocks/store.hpp
+    src/shocks/observation.hpp src/shocks/store.hpp src/shocks/history.hpp
     src/pgen/material_curve_test.cpp)
 set(shock_source_hashes "problem:${PROBLEM};")
 foreach(shock_file IN LISTS shock_source_files)
