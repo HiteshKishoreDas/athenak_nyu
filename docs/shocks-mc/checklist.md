@@ -151,5 +151,6 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
 - [x] Actual cycle37 active witness, exact zero-step topology and field continuation.
 - [x] Nine explained plots; exact source/config/commands and retained failures in
   `evidence/curve-binary/2026-10-25/`.
-- [ ] Seal source/runtime/raw-hash gallery and artifact manifest.
+- [x] Sealed source/runtime/raw-hash gallery and artifact manifest: nine figures,
+  28,317 raw-file hashes, 89 native-run digests; artifact.json records the manifest.
 - [ ] Runtime MPI/GPU/cluster budgets and human scientific approval remain pending.

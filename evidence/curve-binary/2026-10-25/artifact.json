@@ -1,0 +1,11 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/unified-crv-20261025",
+  "source_commit": "9816a84bf782b3c143e9e71d3e751bbddcc53ae0",
+  "native_check_groups": 50,
+  "reader_groups": 28,
+  "figures": 9,
+  "raw_files_verified": 28317,
+  "native_run_digests_verified": 89,
+  "manifest_sha256": "37e9a48beac28d7db438a9c3576856b98579b3825a377bcadaae8f9436a009b6",
+  "scope": "local Serial/double; MPI compile only; no push; scientific approval pending"
+}

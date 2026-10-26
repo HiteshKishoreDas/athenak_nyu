@@ -1,6 +1,6 @@
 # Curve THP topology and binary geometry — 2026-10-25
 
-## Accepted scope
+## Initial scope (superseded by unified CRV below)
 
 User requests all missing curve geometry in curve THP, excluding current length,
 stretch, curvature and mesh-block/AMR level. Separate binary .crv geometry includes
@@ -8,7 +8,7 @@ those diagnostics. Interpret "strentth" as stretch, matching the prior question.
 Preserve ordinary particle THP v2, old geometry/CSV readers, shock encounters and
 restart state. No dynamics, detector thresholds or physical tolerances change.
 
-## Interface gate
+## Initial interface (superseded before completion)
 
 - Curve THP v3: same named thermo fields and THP v2 sample block, fourth integer
   reserved zero, metadata birth/a; no leaf GID or level. Prefix embeds bounded,
@@ -25,11 +25,11 @@ restart state. No dynamics, detector thresholds or physical tolerances change.
 ## Gates
 
 - [x] Inspect clean branch/source, callers, format readers and scheduler.
-- [ ] Native implementation and reader strict validation.
-- [ ] Native parity, insertion, periodic geometry, AMR, signed limits, empty ranks,
+- [x] Unified native implementation and reader strict validation.
+- [x] Native parity, insertion, periodic geometry, AMR, signed limits, empty ranks,
   restart/replay and ordinary particle compatibility; retain failed cases.
-- [ ] Actual plots near explanations and independent persistence/timing review.
-- [ ] Exact source/config/commands/outcomes and coherent commits.
+- [x] Actual plots near explanations and independent persistence/timing review.
+- [x] Exact source/config/commands/outcomes and coherent commits.
 
 Deployment MPI runtime/GPU/cluster budgets and human scientific approval stay pending.
 
@@ -96,3 +96,12 @@ Complete encounter journals/checkpoint state remain independent by explicit user
 choice. No event cursor, event buffering or encounter/restart-schema change added.
 No push requested/performed. RUSTY/Frontier/GPU production budgets and scientific
 review remain pending. Evidence seal and coherent commit follow.
+
+## Evidence seal
+
+Source commit: `9816a84bf782b3c143e9e71d3e751bbddcc53ae0`. Nine explained figures, exact source and
+Kokkos archives, three executables/configurations and reports are sealed in
+`/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/unified-crv-20261025`.
+Verified28,317 raw-file hashes and89 native-run executable digests. Manifest SHA256:
+`37e9a48beac28d7db438a9c3576856b98579b3825a377bcadaae8f9436a009b6`. The packaged manifest hash was rechecked after sealing.
+Deployment and human scientific gates above remain pending.
