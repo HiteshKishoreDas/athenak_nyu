@@ -96,6 +96,86 @@ can occur between saved samples. Native MC fluid tracers may sample instantaneou
 properties; complete histories still require true lagrangian_tracer particles.
 All existing detector/backend/physics qualification limits remain.
 
+## Meaning of each user-facing option
+
+These descriptions were checked against the current native parsers and detector
+at code commit d0359aab. Values below are implementation defaults, not scientific
+approval of a detector configuration. Fields and thresholds use simulation code units.
+Particle/curve initialization stays in its existing blocks.
+
+### Output blocks
+
+| Option | Meaning |
+| --- | --- |
+| `file_type=curve` | Binary curve geometry, connectivity, diagnostics and selected samples in `.crv`; `mode=encounters` selects event-only CRV instead. |
+| `file_type=prtcl_thermo_history` | Ordinary particle thermo snapshots in `.thp`; `mode=encounters` selects event-only THP instead. |
+| `id` | Filename identifier, defaulting to the file type. Give each stream a distinct explicit id. |
+| `mode=snapshot` | Default: sample only at saved clocks. Requested shock fields cause detection at those clocks. Does not retain passages between clocks. |
+| `mode=encounters` | Enable complete tracking every completed step (and curve-node birth). Write event records only at this block's cadence. Requires explicit shock or Mach fields in this same block; their selection does not trim the fixed encounter evidence schema. |
+| `variables` | Comma/space-separated tracer fields, case-insensitive, aliases supported and duplicates removed. It is not named `fields`. |
+| `dcycle` | Native cycle cadence. Positive: every N cycles plus native initial/final behavior. Zero: disable block. Negative: initial/final-only writing, while an encounter block still tracks every completed step. |
+| `dt` | Alternative output interval in code time, at the first completed step reaching each threshold. Positive required to activate this alternative. If dcycle exists it takes precedence, so remove dcycle to use dt. |
+
+Normal particle snapshots without variables use particles/track_variables, default
+`default`. Curve snapshots without variables use `default,shock` when the detector
+is enabled, otherwise `default`. Explicit field lists make both intentions clear.
+`source=` is removed; active old settings reject with migration guidance.
+
+### Selected fields
+
+| Name/group | Meaning |
+| --- | --- |
+| `default` | Density, pressure, temperature proxy, entropy proxy, internal energy density and three velocity components. |
+| `rho` / `density` | Fluid mass density. |
+| `p` / `pressure` | Ideal-gas pressure, \(P=(\gamma-1)e_{\rm int}\). |
+| `t` / `temperature` | Temperature proxy \(P/\rho\), not a direct Kelvin conversion. |
+| `s` / `entropy` | Entropy proxy \(\ln(P/\rho^\gamma)\), not physical entropy units. |
+| `eint` / `internal_energy` | Internal energy per unit volume, not per unit mass. |
+| `v1,v2,v3` | Coordinate velocity components. |
+| `vmag` | Velocity magnitude. |
+| `cs` / `sound_speed` | Sound speed \(\sqrt{\gamma P/\rho}\). |
+| `mach` / `mach_number` | Local flow speed divided by sound speed; different from a shock-jump Mach estimate. Alone in a snapshot, this does not invoke the shock detector. |
+| `scalarN` | Existing passive scalar indexed by N; rejects indices outside configured nscalars. |
+| `shock` | Expands into all six shock fields below. |
+| `shock_valid` | Detector support/state valid for this sampled point. Zero means unknown/invalid, not proof that no shock exists. |
+| `shock_region` | Membership in the unreduced numerical shock region; interpret with shock_valid. |
+| `shock_mach_pressure` | Shock Mach estimated from the selected pressure jump. |
+| `shock_mach_temperature` | Shock Mach estimated from the selected temperature jump. |
+| `shock_mach_pressure_valid`, `shock_mach_temperature_valid` | Separate validity flags for the corresponding estimates. A valid detector sample can still have an unavailable strength estimate. |
+
+These are sampled containing-cell diagnostics. Curve advection retains its existing
+interpolated velocity; these selections do not modify transport. Always-present
+curve geometry is not controlled by this thermo field list.
+
+### Shared shock_tracking configuration
+
+| Option (default) | Meaning |
+| --- | --- |
+| `enabled=false` | Make the detector available when true. Does not by itself enable complete histories or force evaluation every timestep. Selected shock fields/encounter outputs require it. |
+| `lineage` (required for complete tracking) | User-chosen run identity retained across restart. Use a different identity for an independent run. Safe letters/digits/underscore/hyphen, maximum 128 characters. Sample-only mode can omit it. |
+| `event_capacity=4096` | Bounds per-rank, per-population event buffers, including completed records awaiting flush and terminal views. Not the lifetime encounter count. Overflow fails explicitly; replay the prior paired checkpoint with a larger capacity. |
+| `trace=false` | Optional qualification/debug observation CSV and metadata during complete tracking. Does not enable tracking itself. Keep false for normal binary output. |
+| `directory=shock_events` | Root for encounter batches and optional trace data; curves use its curves subdirectory. Ordinary CRV/particle THP snapshot directories are unchanged. |
+| `width=1` | Upstream/downstream comparison offset in cells on either side along the dominant temperature-gradient axis. Not a smoothing radius or physical shock width. Must be between 1 and available ghost width. |
+| `min_mach=1.1` | Minimum pressure-OR-temperature jump Mach needed for shock-region membership after the other shock criteria pass. Does not threshold local flow Mach. |
+| `mach_max=1000` | Upper admissible Mach for the temperature-jump inversion. A larger implied temperature-jump Mach invalidates that estimate. This is not a universal cap: the pressure-jump estimate is not capped by this parameter. |
+| `grad_floor=1e-30` | Candidate requires temperature-proxy gradient magnitude above this threshold. Rejects flat/very weak-gradient candidates. |
+| `div_limit=0` | Candidate requires velocity divergence below this threshold. Zero selects compression; a negative value demands stronger compression. Positive values are unsupported by this feature. |
+| `density_floor=0` | Minimum sampled upstream density for shock membership. Zero disables this additional cutoff. Does not change hydro density. |
+| `temperature_floor=0` | Minimum sampled upstream \(P/\rho\) for shock membership. Zero disables this additional cutoff. Does not change hydro temperature. |
+
+The floors filter detection; they do not repair invalid/nonpositive fluid states
+or modify the fluid equations. Gamma comes from the fluid EOS, not a separate
+shock_tracking gamma input. Preserve qualified thresholds when comparing runs.
+
+### Optional mesh shock BIN
+
+`file_type=bin` uses AthenaK's existing mesh binary writer. `variable=shock`
+(singular) requests the mesh shock field group. `data_precision=real` writes the
+build's Real precision (64-bit for the currently tested build); the native default
+`float32` writes 32-bit values. The same id and cadence conventions apply. This is
+independent of particle/curve outputs and requests detection at its saved clocks.
+
 ## Files and readers
 
 Sample file paths and binary layout stay unchanged from the unified CRV work.
