@@ -117,6 +117,21 @@ schema. Reusing it for those products would require another explicit schema and
 reader/persistence change. Text and per-step file counts remain a production-I/O
 limitation, not a claim that CSV is the most efficient representation.
 
+### Curve THP completeness
+
+Current curve THP records carry cycle, node ID, curve ID and owning mesh-block ID
+as signed integer slots; time, position, birth time, material coordinate `a`, AMR
+level and selected thermo/shock fields follow. They do not carry prev/next links,
+insertion parents or complete curve-level geometry metadata. A standalone curve
+THP file therefore is not a complete explicit connectivity snapshot. Geometry
+and THP schedules are independent; matching saved clocks must be requested when
+joining explicit topology to thermo. Sorting packed IDs cannot recover insertion
+order. Self-contained curve output should preserve exact integer topology at the
+same clock as node samples. THP v2 has four fixed integer slots, already occupied;
+adding arbitrary link IDs as Real fields would violate identity fidelity in
+single precision. A future topology extension must preserve typed IDs and old
+particle readers explicitly rather than silently reinterpret standard fields.
+
 ## One supplied analysis entry point
 
 ```python
