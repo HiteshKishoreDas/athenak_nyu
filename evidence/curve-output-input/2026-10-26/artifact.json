@@ -1,0 +1,10 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/curve-output-input-20261026",
+  "source_commit": "2caf18a09fe1bd0f7fdcea601b41db308b6ddb8f",
+  "checks_passed": 97,
+  "figures": 10,
+  "files_verified": 3618,
+  "native_run_binaries_verified": 48,
+  "manifest_sha256": "c5794f8b630669fc07ad98ee8d7f170ea1e68b0eca0423a230cf9854ee90a0bb",
+  "scope": "local Serial/double only; no new MPI/GPU/runtime/performance qualification; human scientific approval pending"
+}

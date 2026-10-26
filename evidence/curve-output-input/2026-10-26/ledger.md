@@ -74,3 +74,13 @@ No test tolerance or expectation was relaxed.
 Local Serial/double only. Historical MPI compilation remains prior evidence;
 this input cleanup has no new MPI/GPU/RUSTY/Frontier runtime qualification.
 Scientific sign-off pending. No push. Original branches/evidence preserved.
+
+
+## Committed source and sealed gallery
+
+Code commit: `2caf18a09fe1bd0f7fdcea601b41db308b6ddb8f`. Gallery: `/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/curve-output-input-20261026/index.html`.
+Verified 3618 packaged file hashes and 48 native-run executable digests.
+Manifest SHA256: `c5794f8b630669fc07ad98ee8d7f170ea1e68b0eca0423a230cf9854ee90a0bb`.
+Includes exact source archive, two actual local executable/configurations, all raw
+native runs, reader mutations (including failed fixture setup), compact reference
+data and historical THP fixtures. Previous galleries remain unchanged. No push.
