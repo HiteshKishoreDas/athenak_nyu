@@ -861,7 +861,7 @@ void MaterialCurves::Adapt(Real birth_time, bool initial, Real affected_time) {
 void MaterialCurves::CompleteStep() {
   Adapt(mesh->time, false, mesh->time-mesh->dt);
   if (shock_enabled) ObserveShocks();
-  if (output_dcycle>0 && mesh->ncycle%output_dcycle==0) {
+  if (!binary_output && output_dcycle>0 && mesh->ncycle%output_dcycle==0) {
     std::ostringstream path;
     path << basename << ".curves." << std::setw(8) << std::setfill('0')
          << mesh->ncycle << ".txt";

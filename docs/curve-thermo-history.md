@@ -1,5 +1,8 @@
 # Shared material-curve and particle thermodynamic histories
 
+Current curve output is unified `.crv`; see [input, contents and reader usage](curve-binary-output.md).
+Historical THP/CSV and ASCII reader support remains. The details below record the earlier split output.
+
 Material-curve nodes and ordinary fluid tracers now use one thermo output class,
 one field parser/evaluator, and the same native output clock. No change to curve
 advection, node insertion, particle transport, detector thresholds, or fluid equations.

@@ -1,0 +1,16 @@
+{'id': 'CRV01_planar_exact_previous_geometry_thermo_shocks_particle_bytes', 'status': 'pass', 'frames': 108, 'node_samples': 1728, 'reference_parity': True}
+{'id': 'CRV02_live_AMR_negative_ID_insertion_exact_parity', 'status': 'pass', 'frames': 162, 'node_samples': 9644, 'reference_parity': True}
+{'id': 'CRV03_explicit_native_output_without_mesh_variable', 'status': 'pass', 'explicit_and_source_both_equal': True}
+{'id': 'CRV04_independent_accelerating_thermo_oracle', 'status': 'pass', 'samples': 1056, 'max_error': 5.329070518200751e-15, 'budget': 2e-12}
+{'id': 'CRV05_independent_geometry_and_actual_AMR_births', 'status': 'pass', 'max_error': 9.947598300641403e-14, 'post_birth_samples': 4622, 'levels': [1, 2], 'budget': 2e-12}
+{'id': 'CRV06_accepted_periodic_translation_lifts_and_links', 'status': 'pass', 'frames': 178, 'images_preserved': True, 'links_audited': True}
+{'id': 'CRV13_accepted_closed_circle_length_curvature_oracle', 'status': 'pass', 'frames': 33, 'length_error': 0.0, 'curvature_error': 8.659739592076221e-15, 'accepted_length_budget': 2e-11, 'accepted_curvature_budget': 2e-10}
+{'id': 'CRV07_sparse_cadence_and_final_exact_replay', 'status': 'pass', 'saved_cycles': [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 107]}
+{'id': 'CRV08_active_and_zero_step_restart_exact', 'status': 'pass', 'active_restart_cycle': 37, 'continuation_exact': True, 'zero_step_exact': True}
+{'id': 'CRV09_empty_populations_explicit_schema', 'status': 'pass', 'empty_clocks': 3}
+{'id': 'CRV10_zero_curve_bits', 'status': 'pass', 'full_32bit_layout': True, 'samples': 80}
+{'id': 'CRV11_configuration_guards', 'status': 'pass', 'disabled_tracking_rejected': True, 'missing_curves_rejected': True}
+{'id': 'CRV12_short_accepted_forced_box_exact_parity', 'status': 'pass', 'frames': 16, 'node_samples': 256, 'reference_parity': True}
+{'id': 'CRV14_time_cadence_restart_and_no_duplicate_identity', 'status': 'pass', 'saved_times': [0.0, 0.05, 0.09999999999999999, 0.15, 0.20000000000000004, 0.25000000000000006, 0.3000000000000001, 0.35000000000000014, 0.4], 'on_and_off_cadence_restart_exact': True}
+{'id': 'CRV15_immutable_replay_no_silent_overwrite', 'status': 'pass', 'identical_replay_exact': True, 'conflicting_output_rejected': True}
+{'id': 'CRV16_explicit_ASCII_and_unified_reader_coexistence', 'status': 'pass', 'explicit_ASCII_preserved': True, 'matching_geometry_validated': True}

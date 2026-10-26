@@ -140,3 +140,16 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
 - [x] Accepted short32³ forced box: exact sampled property parity and passivity.
 - [x] Sealed 18-figure exact-code/runtime/raw-hash bundle; artifact.json records the manifest.
 - [ ] MPI runtime, GPU/cluster production budgets and scientific sign-off remain pending.
+
+### 2026-10-25 — unified curve CRV (supersedes curve THP writing)
+
+- [x] One `.crv` holds typed geometry/connectivity/provenance, diagnostics, current
+  mesh location and selected thermo/sampled shock fields at the same saved clock.
+- [x] Particle THP v2 byte compatibility; historical readers and explicit ASCII retained.
+- [x] No complete encounter embedding, cursor or event-buffer change; journals retained.
+- [x] 50 local native groups and28 reader groups, independent timing/persistence review.
+- [x] Actual cycle37 active witness, exact zero-step topology and field continuation.
+- [x] Nine explained plots; exact source/config/commands and retained failures in
+  `evidence/curve-binary/2026-10-25/`.
+- [ ] Seal source/runtime/raw-hash gallery and artifact manifest.
+- [ ] Runtime MPI/GPU/cluster budgets and human scientific approval remain pending.

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/curve_binary_plots.py", line 118, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/curve_binary_plots.py", line 107, in main
+    node=next(n for (g,n),o in zero['curve_nodes'].items() if o['fields']['shock_region']==1)
+StopIteration

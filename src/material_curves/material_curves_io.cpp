@@ -7,6 +7,7 @@
 #include <charconv>
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <limits>
@@ -21,50 +22,9 @@
 #include <vector>
 
 #include "globals.hpp"
+#include "shocks/store.hpp"
 
 namespace material_curves {
-void MaterialCurves::ThermoHistory(
-    const std::vector<particles::TracerField> &fields,
-    std::vector<int> &integers, std::vector<Real> &reals) {
-  static_assert(sizeof(int)==sizeof(NodeID), "THP requires 32-bit integer slots");
-  std::vector<Node *> nodes;
-  for (auto &c : curves) for (auto &n : c.nodes) nodes.push_back(&n);
-  std::sort(nodes.begin(),nodes.end(),[](const Node *a,const Node *b) {
-    return a->id<b->id;
-  });
-  std::vector<Real> values;
-  Sample(nodes,nullptr,fields,&values);
-  bool shock_fields=false;
-  for (const auto &field : fields) shock_fields |= particles::IsShockField(field.kind);
-  std::vector<ShockObservation> observations;
-  if (shock_fields) {
-    if (!shock_enabled || shock_generation!=static_cast<std::uint64_t>(mesh->ncycle) ||
-        shock_time!=mesh->time) Fail("stale curve shock output generation");
-    Sample(nodes,&observations);
-  }
-  integers.resize(4*nodes.size());
-  const std::size_t width=7+fields.size();  // time, x[3], birth, a, level, fields
-  reals.resize(width*nodes.size());
-  for (std::size_t p=0; p<nodes.size(); ++p) {
-    const auto &node=*nodes[p];
-    Vec wrapped;
-    int gid=Locate(node.x,wrapped);
-    integers[4*p]=mesh->ncycle;
-    integers[4*p+1]=node.id;
-    integers[4*p+2]=CurveID(node.id,curve_id_bits);
-    integers[4*p+3]=gid;
-    reals[width*p]=mesh->time;
-    for (int d=0; d<3; ++d) reals[width*p+1+d]=node.x[d];
-    reals[width*p+4]=node.birth;
-    reals[width*p+5]=node.a;
-    reals[width*p+6]=mesh->lloc_eachmb[gid].level;
-    for (std::size_t n=0; n<fields.size(); ++n) {
-      reals[width*p+7+n]=particles::IsShockField(fields[n].kind) ?
-          particles::EvaluateShockField(fields[n].kind,observations[p].observation) :
-          values[fields.size()*p+n];
-    }
-  }
-}
 
 namespace {
 constexpr std::uint64_t kOffset = 14695981039346656037ULL;
@@ -122,32 +82,21 @@ Vec Difference(const Curve &curve, std::size_t i, const std::array<Real, 6> &d) 
   return result;
 }
 Real Norm(const Vec &x) { return std::hypot(x[0], x[1], x[2]); }
-std::string Encode(const Curve &curve, const std::array<Real, 6> &domain) {
-  auto out = Stream();
-  std::vector<Vec> edges(curve.nodes.size());
+struct GeometryDiagnostics {
   Real length = 0;
-  for (std::size_t i = 0; i < edges.size(); ++i) {
-    edges[i] = Difference(curve, i, domain);
-    length += Norm(edges[i]);
+  std::vector<Real> edge_length, stretch, curvature;
+  std::vector<int> mask;
+};
+GeometryDiagnostics Diagnostics(const Curve &curve, const std::array<Real,6> &domain) {
+  GeometryDiagnostics result;
+  std::vector<Vec> edges(curve.nodes.size());
+  for (std::size_t i=0; i<edges.size(); ++i) {
+    edges[i]=Difference(curve,i,domain);
+    result.length+=Norm(edges[i]);
   }
-  out << "curve " << curve.id << ' ' << curve.closed;
-  for (auto winding : curve.winding) out << ' ' << winding;
-  out << ' ' << curve.period << ' ' << curve.unresolved_since << ' ' << curve.reason
-      << ' ' << curve.next_sequence << ' ' << curve.inserted << ' ' << curve.migrations
-      << ' ' << curve.samples << ' ' << curve.nodes.size() << ' ' << length << '\n';
-  for (std::size_t i = 0; i < curve.nodes.size(); ++i) {
-    const auto &node = curve.nodes[i];
-    out << "node " << node.id << ' ' << node.prev << ' ' << node.next << ' '
-        << node.parent_left << ' ' << node.parent_right << ' ' << node.a << ' '
-        << node.birth << ' ' << node.anchor << ' ' << node.placement;
-    for (auto x : node.x) out << ' ' << x;
-    for (int axis = 0; axis < 3; ++axis) {
-      long double image = std::floor((static_cast<long double>(node.x[axis])
-          - domain[2*axis]) / (domain[2*axis+1] - domain[2*axis]));
-      Require(std::isfinite(image) && image >= INT64_MIN && image <= INT64_MAX,
-              "periodic image diagnostic overflow");
-      out << ' ' << static_cast<std::int64_t>(image);
-    }
+  const Real length=result.length;
+  for (std::size_t i=0; i<edges.size(); ++i) {
+    const auto &node=curve.nodes[i];
     Real edge_length = Norm(edges[i]), stretch = 0;
     if (curve.closed || i + 1 < curve.nodes.size()) {
       Real da = (i+1 == curve.nodes.size() ? curve.period : curve.nodes[i+1].a)
@@ -176,8 +125,36 @@ std::string Encode(const Curve &curve, const std::array<Real, 6> &domain) {
     if (mask != 0) curvature = std::numeric_limits<Real>::quiet_NaN();
     Require(std::isfinite(length) && std::isfinite(edge_length)
             && std::isfinite(stretch), "nonfinite geometry diagnostics");
-    out << ' ' << edge_length << ' ' << stretch << ' ' << curvature << ' ' << mask
-        << '\n';
+    result.edge_length.push_back(edge_length);
+    result.stretch.push_back(stretch);
+    result.curvature.push_back(curvature);
+    result.mask.push_back(mask);
+  }
+  return result;
+}
+std::string Encode(const Curve &curve, const std::array<Real, 6> &domain) {
+  auto out = Stream();
+  const auto diagnostic=Diagnostics(curve,domain);
+  out << "curve " << curve.id << ' ' << curve.closed;
+  for (auto winding : curve.winding) out << ' ' << winding;
+  out << ' ' << curve.period << ' ' << curve.unresolved_since << ' ' << curve.reason
+      << ' ' << curve.next_sequence << ' ' << curve.inserted << ' ' << curve.migrations
+      << ' ' << curve.samples << ' ' << curve.nodes.size() << ' ' << diagnostic.length << '\n';
+  for (std::size_t i = 0; i < curve.nodes.size(); ++i) {
+    const auto &node = curve.nodes[i];
+    out << "node " << node.id << ' ' << node.prev << ' ' << node.next << ' '
+        << node.parent_left << ' ' << node.parent_right << ' ' << node.a << ' '
+        << node.birth << ' ' << node.anchor << ' ' << node.placement;
+    for (auto x : node.x) out << ' ' << x;
+    for (int axis = 0; axis < 3; ++axis) {
+      long double image = std::floor((static_cast<long double>(node.x[axis])
+          - domain[2*axis]) / (domain[2*axis+1] - domain[2*axis]));
+      Require(std::isfinite(image) && image >= INT64_MIN && image <= INT64_MAX,
+              "periodic image diagnostic overflow");
+      out << ' ' << static_cast<std::int64_t>(image);
+    }
+    out << ' ' << diagnostic.edge_length[i] << ' ' << diagnostic.stretch[i]
+        << ' ' << diagnostic.curvature[i] << ' ' << diagnostic.mask[i] << '\n';
   }
   return out.str();
 }
@@ -680,6 +657,98 @@ void WriteFile(const MaterialCurves &m, const std::string &path,
 #endif
 }
 }  // namespace
+
+// Packed scalars, never C++ structs: no ABI padding; native byte order declared.
+std::string MaterialCurves::BinarySnapshot(
+    const std::vector<particles::TracerField> &fields) {
+  std::vector<Node *> nodes;
+  for (auto &curve : curves) for (auto &node : curve.nodes) nodes.push_back(&node);
+  std::vector<Real> values;
+  Sample(nodes,nullptr,fields,&values);
+  bool shock_fields=false;
+  for (const auto &field : fields) shock_fields |= particles::IsShockField(field.kind);
+  std::vector<ShockObservation> observations;
+  if (shock_fields) {
+    if (!shock_enabled || shock_generation!=static_cast<std::uint64_t>(mesh->ncycle) ||
+        shock_time!=mesh->time) Fail("stale curve output generation");
+    Sample(nodes,&observations);
+  }
+  Audit();
+  Require(!fields.empty() && fields.size()<=1024,"invalid curve field count");
+  std::string data(16,'\0');
+  std::memcpy(data.data(),"ATHKCRV",7);
+  auto put=[&](const auto &value) {
+    data.append(reinterpret_cast<const char *>(&value),sizeof(value));
+  };
+  auto i32=[&](std::int32_t value) {put(value);};
+  auto u64=[&](std::uint64_t value) {put(value);};
+  put(std::uint32_t{1}); put(std::uint32_t{0x01020304});
+  put(std::uint32_t{sizeof(Real)}); put(static_cast<std::uint32_t>(fields.size()));
+  i32(mesh->ncycle); i32(global_variable::my_rank); i32(global_variable::nranks);
+  put(static_cast<std::uint32_t>(curve_id_bits));
+  put(mesh->time);
+  const auto domain=Domain(mesh);
+  for (auto value : domain) put(value);
+  i32(mesh->mesh_indcs.nx1); i32(mesh->mesh_indcs.nx2); i32(mesh->mesh_indcs.nx3);
+  for (auto value : mesh->mesh_bcs) i32(static_cast<int>(value));
+  u64(max_nodes); u64(curves.size());
+  std::uint64_t count=0;
+  for (const auto &curve : curves) count+=curve.nodes.size();
+  Require(count<=max_nodes && curves.size()<=kCurveCap,"binary geometry count cap");
+  u64(count);
+  for (Real value : {max_spacing,spacing_cells,max_angle,chord_error}) put(value);
+  i32(adaptive); i32(output_dcycle);
+  Require(basename.size()<=4096,"oversized geometry basename");
+  put(static_cast<std::uint32_t>(basename.size())); data+=basename;
+  std::string names;
+  for (const auto &field : fields) {
+    if (!names.empty()) names+='\n';
+    names+=field.name;
+  }
+  Require(names.size()<=65536,"oversized curve field names");
+  put(static_cast<std::uint32_t>(names.size())); data+=names;
+  std::size_t sample=0;
+  for (const auto &curve : curves) {
+    i32(curve.id); i32(curve.closed); i32(curve.reason);
+    for (auto value : curve.winding) put(value);
+    put(curve.period); put(curve.unresolved_since);
+    u64(curve.next_sequence); u64(curve.inserted); u64(curve.migrations);
+    u64(curve.samples); u64(curve.nodes.size());
+    const auto diagnostic=Diagnostics(curve,domain); put(diagnostic.length);
+    for (std::size_t i=0; i<curve.nodes.size(); ++i) {
+      const auto &node=curve.nodes[i];
+      for (auto value : {node.id,node.prev,node.next,node.parent_left,node.parent_right,
+                         node.anchor,node.placement}) i32(value);
+      put(node.a); put(node.birth);
+      for (auto value : node.x) put(value);
+      for (int axis=0; axis<3; ++axis) {
+        const long double image=std::floor((static_cast<long double>(node.x[axis])-
+            domain[2*axis])/(domain[2*axis+1]-domain[2*axis]));
+        Require(std::isfinite(image) && image>=INT64_MIN && image<-static_cast<long double>(INT64_MIN),
+                "periodic image diagnostic overflow");
+        put(static_cast<std::int64_t>(image));
+      }
+      {
+        put(diagnostic.edge_length[i]); put(diagnostic.stretch[i]);
+        put(diagnostic.curvature[i]); i32(diagnostic.mask[i]);
+        Vec wrapped;
+        const int gid=Locate(node.x,wrapped);
+        i32(gid); i32(mesh->lloc_eachmb[gid].level);
+      }
+      for (std::size_t n=0; n<fields.size(); ++n) {
+        const Real value=particles::IsShockField(fields[n].kind) ?
+            particles::EvaluateShockField(fields[n].kind,observations[sample].observation) :
+            values[fields.size()*sample+n];
+        put(value);
+      }
+      ++sample;
+    }
+  }
+  std::uint64_t hash=kOffset;
+  Hash(hash,data.data(),data.size()); u64(hash);
+  return data;
+}
+
 
 void MaterialCurves::Snapshot(const std::string &path) const {
   try {

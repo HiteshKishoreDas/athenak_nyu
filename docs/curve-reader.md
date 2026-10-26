@@ -1,5 +1,8 @@
 # Read and plot material curves
 
+Current curve output is unified `.crv`; see [input, contents and reader usage](curve-binary-output.md).
+Historical THP/CSV and ASCII reader support remains. The details below record the earlier split output.
+
 `vis/python/plot_curves.py` uses the supplied existing readers to draw:
 
 1. Initial, middle and final stored curve geometry, with 3D axes for 3D runs.

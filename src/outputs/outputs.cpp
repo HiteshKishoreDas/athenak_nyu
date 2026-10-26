@@ -115,7 +115,8 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
           opar.file_type.compare("log") != 0 &&
           opar.file_type.compare("trk") != 0 &&
           opar.file_type.compare("prtcl_thermo_history") != 0 &&
-          opar.file_type.compare("curves") != 0) {
+          opar.file_type.compare("curves") != 0 &&
+          opar.file_type.compare("crv") != 0) {
         if (opar.file_type.compare("pdf") == 0 &&
             !pin->DoesParameterExist(opar.block_name, "variable") &&
             pin->DoesParameterExist(opar.block_name, "variable_1")) {
@@ -125,7 +126,7 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
         }
         opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
       } else if (opar.file_type.compare("prtcl_thermo_history") == 0 ||
-                 opar.file_type.compare("curves") == 0) {
+                 (opar.file_type=="curves" || opar.file_type=="crv")) {
         opar.variable = opar.file_type;
         opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
       }
@@ -251,7 +252,7 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
       } else if (opar.file_type.compare("prtcl_thermo_history") == 0) {
         pnode = new ParticleThermoHistoryOutput(pin,pm,opar);
         pout_list.insert(pout_list.begin(),pnode);
-      } else if (opar.file_type.compare("curves") == 0) {
+      } else if ((opar.file_type=="curves" || opar.file_type=="crv")) {
         pnode = new MaterialCurveOutput(pin,pm,opar);
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("cbin") == 0) {

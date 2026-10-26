@@ -1,18 +1,18 @@
 # Existing particle, curve and shock outputs
 
-The output-format experiment was withdrawn on 2026-10-24 at the user's request.
-No new diagnostic format or format selector is supported. Keep existing input
-files and readers. The shared analysis entry point is the integration layer.
-Historical evidence below and under `evidence/tracer-output/2026-10-23/` describes
-the withdrawn experiment, not the current interface.
+The 2026-10-23 format experiment remains withdrawn. On 2026-10-25 the user
+explicitly requested one `.crv` output combining curve geometry, thermo and
+sampled shock properties. See [current CRV input, schema and readers](curve-binary-output.md).
+Particle THP and complete encounter journals retain their existing formats.
+Historical records below describe earlier interfaces, not the current curve writer.
 
 ## Existing files stay existing files
 
 | Product | Existing format | Reader |
 | --- | --- | --- |
 | Particle thermo | `.thp` v2, unchanged binary records | `tracer_thermo_history.read_particles` |
-| Curve thermo | `.thp` v2 cycle/rank chunks (historical CSV readable) | `tracer_thermo_history.read_curves` |
-| Curve geometry/connectivity | ASCII v5 `.txt` snapshots | `material_curves.read` |
+| Curve geometry + thermo + sampled shocks | `.crv` v1 cycle/rank snapshots | `material_curves.read`, `tracer_thermo_history.read_curves` |
+| Explicit historical geometry output / checkpoints | ASCII v5 | `material_curves.read` |
 | Particle encounters and optional traces | `.csv` journals | `shock_history` |
 | Curve encounters and optional traces/birth traces | `.csv` journals | `curve_shock_history` |
 
@@ -21,13 +21,13 @@ allowed 0–30) to choose the split of the signed 32-bit node identity. Zero mea
 one logical curve, with all 32 bits used for node sequence. Current files declare
 the layout; the supplied reader and curve CLI use it automatically. Existing
 particle THP bytes are unchanged. Negative curve node IDs retain all 32 packed bits; zero alone is missing.
-Curve thermo now uses the same THP v2 layout; metadata is declared in native
-cycle/rank/bit-split filenames. Complete event journals remain separate CSV. Historical geometry/thermo/event analysis retains
+Curve output now combines typed connectivity/diagnostics and selected samples in
+`.crv`; historical curve THP/CSV remains readable. Complete event journals remain separate CSV. Historical geometry/thermo/event analysis retains
 its original IDs, and fixed-8-bit geometry v3 remains readable for compatible
 geometry restarts. Tracked restarts retain exact-source guards. Changing the
 split on restart is rejected.
 
-## Same configuration pattern
+## Historical split-output configuration (CRV supersedes curve sampling below)
 
 Existing particle output blocks continue to work without edits. To sample curve
 thermo in the same output block, add `source=both` (or `source=curves` for a curve-only
@@ -117,7 +117,7 @@ schema. Reusing it for those products would require another explicit schema and
 reader/persistence change. Text and per-step file counts remain a production-I/O
 limitation, not a claim that CSV is the most efficient representation.
 
-### Curve THP completeness
+### Historical curve THP completeness gap (resolved by CRV)
 
 Current curve THP records carry cycle, node ID, curve ID and owning mesh-block ID
 as signed integer slots; time, position, birth time, material coordinate `a`, AMR

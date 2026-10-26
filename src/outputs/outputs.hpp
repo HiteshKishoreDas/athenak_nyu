@@ -567,8 +567,11 @@ class ParticleVTKOutput : public BaseTypeOutput {
 class MaterialCurveOutput : public BaseTypeOutput {
  public:
   MaterialCurveOutput(ParameterInput *pin, Mesh *pm, OutputParameters op);
-  void LoadOutputData(Mesh *) override {}
+  void LoadOutputData(Mesh *pm) override;
   void WriteOutputFile(Mesh *pm, ParameterInput *pin) override;
+ private:
+  std::vector<particles::TracerField> fields;
+  std::string data;
 };
 
 class ParticleThermoHistoryOutput : public BaseTypeOutput {
@@ -582,8 +585,7 @@ class ParticleThermoHistoryOutput : public BaseTypeOutput {
   int npout_total;
   Real tracer_gamma;
   bool sample_particles = true, sample_curves = false, sample_shocks = false;
-  std::vector<int> curve_thermo_integers;
-  std::vector<Real> curve_thermo_reals;
+  std::string curve_data;
   std::vector<particles::TracerField> tracer_fields;
   std::vector<std::string> tracer_field_names;
   HostArray2D<Real> outpart_rdata;

@@ -238,6 +238,13 @@ def geometry(curve, domain):
 
 def read(path, max_nodes=1000000, fluid_path=None, max_mesh_leaves=1000000):
     """Read and audit a bounded file; optionally verify shared-fluid identity."""
+    with open(path,"rb") as probe:
+        binary=probe.read(16)==b'ATHKCRV'+b'\0'*9
+    if binary:
+        _require(fluid_path is None,'CRV snapshots are not restart checkpoints')
+        from curve_binary import read as read_binary
+        return read_binary(path,max_nodes)
+
     _require(isinstance(max_mesh_leaves, int) and max_mesh_leaves >= 0,
              "invalid mesh reader cap")
     _require(isinstance(max_nodes, int) and max_nodes >= 0, "invalid reader cap")

@@ -1,0 +1,135 @@
+[
+  {
+    "id": "truncated_header",
+    "status": "pass",
+    "rejected": "material curves: unknown/truncated CRV header"
+  },
+  {
+    "id": "truncated_records",
+    "status": "pass",
+    "rejected": "material curves: CRV checksum mismatch"
+  },
+  {
+    "id": "checksum_corruption",
+    "status": "pass",
+    "rejected": "material curves: CRV checksum mismatch"
+  },
+  {
+    "id": "unknown_version",
+    "status": "pass",
+    "rejected": "material curves: unsupported CRV schema/fields/Real width"
+  },
+  {
+    "id": "unknown_real_size",
+    "status": "pass",
+    "rejected": "material curves: unsupported CRV schema/fields/Real width"
+  },
+  {
+    "id": "unknown_endian",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV endian marker"
+  },
+  {
+    "id": "negative_cycle",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV clock/rank/count/split"
+  },
+  {
+    "id": "invalid_rank",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV clock/rank/count/split"
+  },
+  {
+    "id": "invalid_split",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV clock/rank/count/split"
+  },
+  {
+    "id": "nonfinite_time",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV clock/rank/count/split"
+  },
+  {
+    "id": "invalid_domain",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV domain/dimensions"
+  },
+  {
+    "id": "oversized_count",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV clock/rank/count/split"
+  },
+  {
+    "id": "invalid_link",
+    "status": "pass",
+    "rejected": "material curves: invalid links"
+  },
+  {
+    "id": "invalid_ancestry",
+    "status": "pass",
+    "rejected": "material curves: invalid anchor provenance"
+  },
+  {
+    "id": "future_birth",
+    "status": "pass",
+    "rejected": "material curves: invalid birth/anchor"
+  },
+  {
+    "id": "negative_gid",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV node diagnostics/location"
+  },
+  {
+    "id": "negative_level",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV node diagnostics/location"
+  },
+  {
+    "id": "invalid_curvature_mask",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV node diagnostics/location"
+  },
+  {
+    "id": "duplicate_node",
+    "status": "pass",
+    "rejected": "material curves: duplicate node ID"
+  },
+  {
+    "id": "nonboolean_shock_validity",
+    "status": "pass",
+    "rejected": "invalid sampled shock validity flag"
+  },
+  {
+    "id": "infinite_thermo",
+    "status": "pass",
+    "rejected": "nonfinite thermo field: density"
+  },
+  {
+    "id": "trailing_bytes",
+    "status": "pass",
+    "rejected": "material curves: CRV total count/trailing data mismatch"
+  },
+  {
+    "id": "cross_clock_domain_changed",
+    "status": "pass",
+    "rejected": "material curves: CRV fixed stream metadata changed"
+  },
+  {
+    "id": "missing_rank_chunk",
+    "status": "pass",
+    "rejected": "material curves: invalid CRV curve metadata/count"
+  },
+  {
+    "id": "historical_stream_not_shadowed",
+    "status": "pass",
+    "records": 1728
+  },
+  {
+    "id": "particle_reader_rejects_crv",
+    "status": "pass"
+  },
+  {
+    "id": "existing_geometry_reader_dispatch",
+    "status": "pass"
+  }
+]

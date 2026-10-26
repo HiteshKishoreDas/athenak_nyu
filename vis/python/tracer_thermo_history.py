@@ -186,6 +186,11 @@ def read_curves(directory, stem=None):
     rank set and bit split even for empty populations. No ID goes through Real.
     """
     directory=Path(directory)
+    if any(stem is None or p.name.startswith(stem+'.cycle') for p in directory.glob('*.crv')):
+        from curve_binary import read_set,samples
+        frames=read_set(directory,stem)
+        _require(frames,'no selected CRV stream')
+        return samples(frames)
     csv_paths=list(directory.glob('*.csv'))
     if any(stem is None or p.name.startswith(stem+'.cycle') for p in csv_paths):
         rows,times=_read_curves_csv(directory,stem)

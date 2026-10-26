@@ -134,8 +134,9 @@ void PrintTracerSetup(Mesh *mesh, ParameterInput *pin, Outputs *outputs, bool re
     if (curves->chord_error>0) out << curves->chord_error; else out << "auto(spacing)";
     out << ", unresolved_curves=" << total[4];
     if (!curves->adaptive) out << " (adaptation thresholds inactive)";
-    out << "\n  geometry snapshots=" << (restart ? "final" : "initial/final");
-    if (curves->output_dcycle>0) out << ", every " << curves->output_dcycle << " cycles";
+    out << "\n  geometry snapshots=" << (curves->binary_output ? "unified .crv output cadence" :
+                                         restart ? "final" : "initial/final");
+    if (!curves->binary_output && curves->output_dcycle>0) out << ", every " << curves->output_dcycle << " cycles";
     out << '\n';
   } else {
     out << "Curves: disabled\n";
@@ -147,8 +148,9 @@ void PrintTracerSetup(Mesh *mesh, ParameterInput *pin, Outputs *outputs, bool re
   bool thermo=false;
   for (const auto &output : outputs->pout_list) {
     const auto &p=output->out_params;
-    if (p.file_type!="prtcl_thermo_history" && p.file_type!="trk" && p.file_type!="curves") continue;
+    if (p.file_type!="prtcl_thermo_history" && p.file_type!="trk" && p.file_type!="curves" && p.file_type!="crv") continue;
     out << "  " << p.block_name << ": " << p.file_type;
+    if (p.file_type=="crv") thermo=true;
     if (p.file_type=="prtcl_thermo_history") {
       thermo=true;
       out << ", source=" << pin->GetString(p.block_name,"source");
@@ -468,7 +470,7 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
   if (pmesh->pmb_pack->pcurves && !res_flag) {
     auto curves = pmesh->pmb_pack->pcurves;
     curves->Initialize();
-    curves->Snapshot(curves->basename + ".curves.initial.txt");
+    if (!curves->binary_output) curves->Snapshot(curves->basename + ".curves.initial.txt");
   }
 
   if (!res_flag && pmesh->pmb_pack->ppart != nullptr &&
@@ -698,7 +700,7 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
   }    // end of (time_evolution != tstatic) clause
   if (pmesh->pmb_pack->pcurves) {
     auto curves = pmesh->pmb_pack->pcurves;
-    curves->Snapshot(curves->basename + ".curves.final.txt");
+    if (!curves->binary_output) curves->Snapshot(curves->basename + ".curves.final.txt");
   }
   return;
 }

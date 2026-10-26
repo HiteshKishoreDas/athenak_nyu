@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/curve_binary_check.py", line 18, in <module>
+    from bin_convert import read_binary
+ModuleNotFoundError: No module named 'bin_convert'

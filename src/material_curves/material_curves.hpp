@@ -97,8 +97,7 @@ class MaterialCurves {
   void Adapt(Real birth_time, bool initial, Real affected_time = -1);
   void Audit() const;
   void Snapshot(const std::string &path) const;
-  void ThermoHistory(const std::vector<particles::TracerField> &fields,
-                     std::vector<int> &integers, std::vector<Real> &reals);
+  std::string BinarySnapshot(const std::vector<particles::TracerField> &fields);
   void Save(const std::string &fluid_path) const;
   void Load(const std::string &fluid_path);
   [[noreturn]] static void Fail(const std::string &message);
@@ -113,6 +112,7 @@ class MaterialCurves {
   Real spacing_cells = 1;
   bool adaptive = true;
   int output_dcycle = 0;
+  bool binary_output = false;  // unified snapshots replace automatic ASCII diagnostics
   std::string basename;
 
   bool shock_enabled = false, shock_trace = false;

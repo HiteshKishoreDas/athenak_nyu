@@ -4,6 +4,7 @@ read_run() returns independent sampled streams; it never resamples them onto a
 shared clock. Particle and curve-node namespaces remain separate. Existing files use the supplied semantic readers without conversion.
 """
 from pathlib import Path
+import json
 
 import curve_shock_history
 import material_curves
@@ -50,6 +51,18 @@ def read_run(directory, thermo_stem=None, shock_directory='shock_events', includ
             result[carrier+'_events'] = module.read_history(where)
             result[carrier+'_suspended'] = module.read_suspended(where)
             result['available'].append(carrier+'_events')
+    from curve_binary import read_set, samples
+    frames=read_set(root/'curves',thermo_stem)
+    if frames:
+        if result['curve_nodes']:
+            raise ValueError('both historical curve thermo and CRV streams present; select a clean stream')
+        result['curve_nodes'],result['curve_times']=samples(frames)
+        layout=result['curve_nodes'].id_layout
+        if result['curve_id_layout'] is not None and result['curve_id_layout']!=layout:
+            raise ValueError('curve ID layout differs across streams')
+        result['curve_id_layout']=layout
+        result['geometry'].extend(frames)
+        result['available'].append('curve_nodes')
     for folder in (root,root/'curves'):
         pattern = '*.curves.*.txt' if folder == root else '*.txt'
         for path in sorted(folder.glob(pattern)):
@@ -57,7 +70,19 @@ def read_run(directory, thermo_stem=None, shock_directory='shock_events', includ
             if result['curve_id_layout'] is not None and result['curve_id_layout']!=state['id_layout']:
                 raise ValueError('curve ID layout differs across streams')
             result['curve_id_layout']=state['id_layout']
-            result['geometry'].append(dict(path=str(path),**state))
+            matching=[s for s in frames if (s['cycle'],s['time'])==(state['cycle'],state['time'])]
+            if matching:
+                # Explicit ASCII and unified binary may be requested together.
+                # Check all shared geometry before preferring the richer snapshot.
+                curves=[]
+                for curve in matching[0]['curves']:
+                    nodes=[{k:v for k,v in n.items() if k not in ('fields','gid','level')}
+                           for n in curve['nodes']]
+                    curves.append(dict(curve,nodes=nodes))
+                if json.dumps(curves,sort_keys=True)!=json.dumps(state['curves'],sort_keys=True):
+                    raise ValueError('ASCII/CRV same-clock geometry differs')
+            else:
+                result['geometry'].append(dict(path=str(path),**state))
     result['geometry'].sort(key=lambda s:(s['cycle'],s['path']))
     if result['geometry']:
         result['available'].append('geometry')

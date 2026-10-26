@@ -84,20 +84,6 @@ std::string ThermoBlockHeader(int records, int nfields, int cycle, Real time) {
   return data;
 }
 
-std::string ThermoBlock(const std::vector<int> &integers, const std::vector<Real> &reals,
-                        int cycle, Real time, int nfields) {
-  const std::size_t records=integers.size()/4, width=4+nfields;
-  if (integers.size()%4 || records>INT_MAX || reals.size()!=records*width) {
-    FatalHistoryOutput("invalid THP record extent");
-  }
-  auto data=ThermoBlockHeader(static_cast<int>(records),nfields,cycle,time);
-  if (!integers.empty()) {
-    data.append(reinterpret_cast<const char *>(integers.data()),integers.size()*sizeof(int));
-    data.append(reinterpret_cast<const char *>(reals.data()),reals.size()*sizeof(Real));
-  }
-  return data;
-}
-
 void EnsureFileHeader(FILE *file, const std::vector<std::string> &field_names) {
   const std::string names_blob = JoinFieldNames(field_names);
   std::fseek(file, 0, SEEK_END);
@@ -140,6 +126,32 @@ void EnsureFileHeader(FILE *file, const std::vector<std::string> &field_names) {
   std::fseek(file, 0, SEEK_END);
 }
 
+
+std::vector<particles::TracerField> CurveFields(ParameterInput *pin, Mesh *pm,
+                                               const OutputParameters &op) {
+  auto curves=pm->pmb_pack->pcurves;
+  if (!curves) FatalHistoryOutput("curve output requires material_curves/enabled=true");
+  if (!pm->pmb_pack->phydro->peos->eos_data.is_ideal) {
+    FatalHistoryOutput("curve thermo requires ideal-gas hydro");
+  }
+  auto fields=particles::ParseTracerFieldList(
+      pin->GetOrAddString(op.block_name,"variables",curves->shock_enabled ?
+                         "default,shock" : "default"),false,
+      pm->pmb_pack->phydro->nscalars,op.block_name+"/variables");
+  for (const auto &field : fields) {
+    if (particles::IsShockField(field.kind) && !curves->shock_enabled) {
+      FatalHistoryOutput("shock fields require enabled curve shock tracking");
+    }
+  }
+  curves->binary_output=true;
+  return fields;
+}
+
+std::string CurvePath(const OutputParameters &op, Mesh *pm) {
+  return "curves/"+op.file_basename+"."+op.file_id+".cycle"+
+      std::to_string(pm->ncycle)+shocks::RankName()+"of"+
+      std::to_string(global_variable::nranks)+".crv";
+}
 
 void AdvanceTracerClock(OutputParameters &op, Mesh *pm, ParameterInput *pin) {
   const bool new_cycle=pm->ncycle !=
@@ -188,13 +200,15 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
     FatalHistoryOutput("curve thermo source requires ideal-gas hydro");
   }
   for (const auto &entry : {std::make_pair(sample_particles,"prtcl_thermo_history"),
-                            std::make_pair(sample_curves,"curve_thermo_history")}) {
+                            std::make_pair(sample_curves,"curves")}) {
     if (entry.first) {
       std::error_code error;
       std::filesystem::create_directories(entry.second,error);
       if (error) FatalHistoryOutput("cannot create thermo directory: "+error.message());
     }
   }
+
+  if (sample_curves) pm->pmb_pack->pcurves->binary_output=true;
 
   bool has_mhd = (pm->pmb_pack->pmhd != nullptr);
   tracer_gamma = has_mhd ? pin->GetOrAddReal("mhd", "gamma", 5.0/3.0) :
@@ -220,8 +234,7 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
 
 void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
   if (sample_curves) {
-    pm->pmb_pack->pcurves->ThermoHistory(tracer_fields,curve_thermo_integers,
-                                        curve_thermo_reals);
+    curve_data=pm->pmb_pack->pcurves->BinarySnapshot(tracer_fields);
   }
   if (!sample_particles) return;
   particles::Particles *pp = pm->pmb_pack->ppart;
@@ -303,17 +316,7 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
 // WriteOutputFile
 
 void ParticleThermoHistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
-  if (sample_curves) {
-    const auto path="curve_thermo_history/"+out_params.file_basename+"."+
-        out_params.file_id+".cycle"+std::to_string(pm->ncycle)+shocks::RankName()+
-        "of"+std::to_string(global_variable::nranks)+".bits"+
-        std::to_string(pm->pmb_pack->pcurves->curve_id_bits)+".thp";
-    std::vector<std::string> names={"birth","a","level"};
-    names.insert(names.end(),tracer_field_names.begin(),tracer_field_names.end());
-    const auto data=ThermoFileHeader(names)+ThermoBlock(curve_thermo_integers,
-        curve_thermo_reals,pm->ncycle,pm->time,names.size());
-    shocks::CommitFile(path,data,true);
-  }
+  if (sample_curves) shocks::CommitFile(CurvePath(out_params,pm),curve_data,true);
   if (sample_particles) WriteParticleData(pm);
 
   AdvanceTracerClock(out_params,pm,pin);
@@ -399,15 +402,23 @@ void ParticleThermoHistoryOutput::WriteParticleData(Mesh *pm) {
 // Geometry uses the native output scheduler, basename/id and output numbering.
 MaterialCurveOutput::MaterialCurveOutput(ParameterInput *pin, Mesh *pm,
                                          OutputParameters op) : BaseTypeOutput(pin,pm,op) {
-  if (!pm->pmb_pack->pcurves) FatalHistoryOutput("file_type=curves requires material curves");
+  if (!pm->pmb_pack->pcurves) FatalHistoryOutput("curve output requires material curves");
+  if (op.file_type=="crv") fields=CurveFields(pin,pm,op);
   std::error_code error;
   std::filesystem::create_directories("curves",error);
   if (error) FatalHistoryOutput("cannot create curves directory: "+error.message());
 }
+void MaterialCurveOutput::LoadOutputData(Mesh *pm) {
+  if (out_params.file_type=="crv") data=pm->pmb_pack->pcurves->BinarySnapshot(fields);
+}
 void MaterialCurveOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
-  std::ostringstream path;
-  path << "curves/" << out_params.file_basename << '.' << out_params.file_id << '.'
-       << std::setw(8) << std::setfill('0') << out_params.file_number << ".txt";
-  pm->pmb_pack->pcurves->Snapshot(path.str());
+  if (out_params.file_type=="crv") {
+    shocks::CommitFile(CurvePath(out_params,pm),data,true);
+  } else {
+    std::ostringstream path;
+    path << "curves/" << out_params.file_basename << '.' << out_params.file_id << '.'
+         << std::setw(8) << std::setfill('0') << out_params.file_number << ".txt";
+    pm->pmb_pack->pcurves->Snapshot(path.str());
+  }
   AdvanceTracerClock(out_params,pm,pin);
 }

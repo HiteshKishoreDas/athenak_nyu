@@ -1,0 +1,12 @@
+{'id': 'CRV01_planar_exact_previous_geometry_thermo_shocks_particle_bytes', 'status': 'pass', 'frames': 108, 'node_samples': 1728, 'reference_parity': True}
+{'id': 'CRV02_live_AMR_negative_ID_insertion_exact_parity', 'status': 'pass', 'frames': 162, 'node_samples': 9644, 'reference_parity': True}
+{'id': 'CRV03_explicit_native_output_without_mesh_variable', 'status': 'pass', 'explicit_and_source_both_equal': True}
+{'id': 'CRV04_independent_accelerating_thermo_oracle', 'status': 'pass', 'samples': 1056, 'max_error': 5.329070518200751e-15, 'budget': 2e-12}
+{'id': 'CRV05_independent_geometry_and_actual_AMR_births', 'status': 'pass', 'max_error': 9.947598300641403e-14, 'post_birth_samples': 4622, 'levels': [1, 2], 'budget': 2e-12}
+{'id': 'CRV06_periodic_closed_curve_images_and_links', 'status': 'pass', 'frames': 33, 'images_preserved': True, 'closed_links_audited': True}
+{'id': 'CRV07_sparse_cadence_and_final_exact_replay', 'status': 'pass', 'saved_cycles': [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 107]}
+{'id': 'CRV08_active_and_zero_step_restart_exact', 'status': 'pass', 'active_restart_cycle': 13, 'continuation_exact': True, 'zero_step_exact': True}
+{'id': 'CRV09_empty_populations_explicit_schema', 'status': 'pass', 'empty_clocks': 3}
+{'id': 'CRV10_zero_curve_bits', 'status': 'pass', 'full_32bit_layout': True, 'samples': 80}
+{'id': 'CRV11_configuration_guards', 'status': 'pass', 'disabled_tracking_rejected': True, 'missing_curves_rejected': True}
+{'id': 'CRV12_short_accepted_forced_box_exact_parity', 'status': 'pass', 'frames': 16, 'node_samples': 256, 'reference_parity': True}
