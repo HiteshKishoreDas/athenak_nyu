@@ -1,0 +1,10 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/output-source-removed-20261026",
+  "source_commit": "d0359aab90b12d69556457c4313708175b5c6141",
+  "checks_passed": 98,
+  "figures": 11,
+  "files_verified": 3616,
+  "native_run_binaries_verified": 60,
+  "manifest_sha256": "063c83b2ae4fc22d6a8512414e8db80230fbf5b5c94ae2d74c4567dc39863664",
+  "scope": "local Serial/double only; no new MPI/GPU/performance qualification; human scientific approval pending"
+}

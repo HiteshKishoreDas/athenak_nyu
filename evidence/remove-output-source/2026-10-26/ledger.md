@@ -55,3 +55,14 @@ hashes, actual binary/cache hashes and report hashes. Native report records exac
 inputs, commands, expected errors and compiled source fingerprints. Every reported
 native executable digest verified against the final actual binary. Eleven plots
 regenerated from these runs, with adjacent explanations. No push or branch deletion.
+
+
+## Sealed evidence
+
+Exact code commit `d0359aab90b12d69556457c4313708175b5c6141`. Gallery: `/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/output-source-removed-20261026/index.html`.
+Eleven explained plots, exact source archive, actual local executable/configuration
+pairs, raw native runs and reader/reference fixtures. Verified 3616 packaged
+file hashes and 60 native-run binary digests. Manifest SHA256:
+`063c83b2ae4fc22d6a8512414e8db80230fbf5b5c94ae2d74c4567dc39863664`. Primary feature_dump remains clean;
+codex/shock-multiphase remains at2450e1c21b0a97c0f1635da75a20701c7e0852a4.
+No push; hardware/performance/scientific gates remain pending.
