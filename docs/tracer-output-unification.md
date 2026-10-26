@@ -61,6 +61,62 @@ output cadences. Checkpoint layouts and encounter rules are unchanged.
 Source fingerprints still guard tracked restarts; do not assume a historical
 checkpoint from different code is compatible merely because layouts match.
 
+### Geometry and event timing: input-file example
+
+Keep the existing curve definitions and particle setup. The following blocks
+control diagnostics, not curve seeding or detector qualification:
+
+```ini
+<material_curves>
+output_dcycle = 0
+
+<output3>
+file_type = curves
+id = shape
+dcycle = 10
+
+<shock_tracking>
+enabled = true
+lineage = my_run_001
+directory = shock_events
+trace = false
+```
+
+Use an unused output block number when adding this to an existing input.
+Keep the qualified detector settings for the actual problem; none are selected
+by this example. The lineage identifies the tracking run and must remain
+consistent on restart.
+
+The scheduled geometry block writes positions, signed node IDs, prev/next links,
+ancestry and curve metadata every ten completed cycles. Normal AthenaK output
+scheduling also writes initial/final output; fresh curve runs separately always
+write `<basename>.curves.initial.txt`, and normal completion always writes
+`<basename>.curves.final.txt`. A restart does not repeat the automatic initial
+snapshot. `output_dcycle=0` disables only the additional curve-owned periodic
+snapshots. Setting it positive enables that older cycle-based path as well, so
+using both periodic controls produces both sets of snapshots. Alternatively use
+the standard output block's `dt` time cadence instead of `dcycle`.
+
+Shock encounters do not use an output block or a user-selectable output cadence.
+With tracking enabled, each completed step commits a per-rank event chunk under
+`shock_events/curves/`, including an empty chunk when no encounter finishes.
+Initial observations and new-node birth observations initialize independent
+histories. Finished events are emitted when the encounter state machine finalizes
+them. Normal shutdown writes separate suspended/right-censored records for
+unfinished encounters. Full traces are optional: `trace=true` additionally writes
+per-step node observations and insertion/birth traces. Thermo THP cadence is
+independent and cannot replace this complete encounter journal.
+
+ASCII geometry retains the existing material-curve representation and reader.
+CSV encounters retain the implemented immutable journal/replay contract and its
+integer identities, timing brackets and flags. Neither requires text for physical
+reasons: binary representations are possible. This increment converted thermo
+to the existing THP format and exposed mesh fields through BIN; it did not convert
+connectivity or complete events. THP v2 has no existing connectivity/event record
+schema. Reusing it for those products would require another explicit schema and
+reader/persistence change. Text and per-step file counts remain a production-I/O
+limitation, not a claim that CSV is the most efficient representation.
+
 ## One supplied analysis entry point
 
 ```python
