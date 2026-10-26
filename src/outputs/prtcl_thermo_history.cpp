@@ -4,7 +4,7 @@
 // Licensed under the 3-clause BSD License, see LICENSE file for details
 //========================================================================================
 //! \file prtcl_thermo_history.cpp
-//! \brief shared thermodynamic history output for fluid particles and material curves
+//! \brief particle thermo, curve snapshots and explicit encounter output
 
 #include <sys/stat.h>
 
@@ -182,33 +182,13 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
     npout_thisrank(0),
     npout_total(0),
     tracer_gamma(5.0/3.0) {
-  const auto source=pin->GetOrAddString(op.block_name,"source","particles");
-  if (source!="particles" && source!="curves" && source!="both") {
-    FatalHistoryOutput("source must be particles, curves, or both");
-  }
-  sample_particles=(source!="curves");
-  sample_curves=(source!="particles");
-  if (sample_particles && (pm->pmb_pack->ppart == nullptr ||
-                          !pm->pmb_pack->ppart->IsFluidTracer())) {
-    FatalHistoryOutput("particle thermo source requires particle_type=lagrangian_mc "
+  if (pm->pmb_pack->ppart == nullptr || !pm->pmb_pack->ppart->IsFluidTracer()) {
+    FatalHistoryOutput("particle thermo requires particle_type=lagrangian_mc "
                        "or lagrangian_tracer");
   }
-  if (sample_curves && !pm->pmb_pack->pcurves) {
-    FatalHistoryOutput("curve thermo source requires material_curves/enabled=true");
-  }
-  if (sample_curves && !pm->pmb_pack->phydro->peos->eos_data.is_ideal) {
-    FatalHistoryOutput("curve thermo source requires ideal-gas hydro");
-  }
-  for (const auto &entry : {std::make_pair(sample_particles,"prtcl_thermo_history"),
-                            std::make_pair(sample_curves,"curves")}) {
-    if (entry.first) {
-      std::error_code error;
-      std::filesystem::create_directories(entry.second,error);
-      if (error) FatalHistoryOutput("cannot create thermo directory: "+error.message());
-    }
-  }
-
-  if (sample_curves) pm->pmb_pack->pcurves->binary_output=true;
+  std::error_code error;
+  std::filesystem::create_directories("prtcl_thermo_history",error);
+  if (error) FatalHistoryOutput("cannot create thermo directory: "+error.message());
 
   bool has_mhd = (pm->pmb_pack->pmhd != nullptr);
   tracer_gamma = has_mhd ? pin->GetOrAddReal("mhd", "gamma", 5.0/3.0) :
@@ -217,15 +197,13 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
                           pm->pmb_pack->phydro->nscalars;
   std::string field_list = pin->DoesParameterExist(op.block_name, "variables") ?
                            pin->GetString(op.block_name, "variables") :
-                           pin->GetOrAddString(sample_particles ? "particles" :
-                             "material_curves", "track_variables", "default");
+                           pin->GetOrAddString("particles", "track_variables", "default");
   tracer_fields = particles::ParseTracerFieldList(field_list, has_mhd, nscalars,
                                                   op.block_name + "/variables");
   tracer_field_names = particles::TracerFieldNames(tracer_fields);
   for (const auto &field : tracer_fields) sample_shocks |= particles::IsShockField(field.kind);
-  if (sample_shocks && ((sample_particles && !pm->pmb_pack->ppart->shock_sampling) ||
-                       (sample_curves && !pm->pmb_pack->pcurves->shock_sampling))) {
-    FatalHistoryOutput("shock fields require enabled shock tracking for each selected source");
+  if (sample_shocks && !pm->pmb_pack->ppart->shock_sampling) {
+    FatalHistoryOutput("shock fields require enabled particle shock tracking");
   }
 }
 
@@ -233,10 +211,6 @@ ParticleThermoHistoryOutput::ParticleThermoHistoryOutput(ParameterInput *pin, Me
 // LoadOutputData
 
 void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
-  if (sample_curves) {
-    curve_data=pm->pmb_pack->pcurves->BinarySnapshot(tracer_fields);
-  }
-  if (!sample_particles) return;
   particles::Particles *pp = pm->pmb_pack->ppart;
   npout_thisrank = pm->nprtcl_thisrank;
   npout_total = pm->nprtcl_total;
@@ -315,8 +289,7 @@ void ParticleThermoHistoryOutput::LoadOutputData(Mesh *pm) {
 // WriteOutputFile
 
 void ParticleThermoHistoryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
-  if (sample_curves) shocks::CommitFile(CurvePath(out_params,pm),curve_data,true);
-  if (sample_particles) WriteParticleData(pm);
+  WriteParticleData(pm);
 
   AdvanceTracerClock(out_params,pm,pin);
 }

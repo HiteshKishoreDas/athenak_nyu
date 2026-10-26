@@ -1,0 +1,40 @@
+{
+  "base_commit": "998c52ef",
+  "scope": "local Serial/double only; no new MPI/GPU/performance qualification; human scientific approval pending",
+  "reports": {
+    "native": {
+      "path": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/remove-source-20261026/report.json",
+      "sha256": "9b6c19d4e6882a02ad0a74926e36250f3278cafe964429e3bf02f77f3b73ff9a",
+      "checks": 23
+    },
+    "event_reader": {
+      "path": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/remove-source-reader-20261026/report.json",
+      "sha256": "04965925af9a2e4fcc21819e5cd259cdad36fc5e0d2122f02af5bd169a6e250a",
+      "checks": 47
+    },
+    "snapshot_reader": {
+      "path": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/remove-source-snapshot-reader-20261026/report.json",
+      "sha256": "eee43425cf57e7996e5c534f8b1436c41b6442c85fc93d4cb738da0eb2c44601",
+      "checks": 28
+    }
+  },
+  "sources": {
+    "src/driver/driver.cpp": "7f34a59b9c33a91f9a38184afd3de1940626fd4a45578d9c921b95a814041a01",
+    "src/outputs/outputs.cpp": "c0267af92a98579a19012ca83836980c420a1637314daab9047f7275fd3c1988",
+    "src/outputs/outputs.hpp": "5f2e15c76d7a009350d578a6beab846cd2cde5bdc320e62ed974a8a8becee80b",
+    "src/outputs/prtcl_thermo_history.cpp": "78872387ce179d6bac261dd180ae93cb7fdc23e608f16fa9852eca6a1d976eb7",
+    "src/shocks/history.hpp": "3909252867941a1f57adee931b88661065708a49e8bf43171768fe68182187d0",
+    "tst/tracer-output/shock_output_modes_check.py": "72910144d597a3807a699d11df410469717e4663ce75a06442c4cb1d0f75dad4",
+    "tst/tracer-output/shock_output_modes_plots.py": "ee40dcb197b52cd67194da988ae0c9a22d70b548b13c02bab39c02c6d122634c"
+  },
+  "binaries": {
+    "build-lagrangian/src/athena": "dec02c3c9354402a7d42825f814aab78da67684d076b02f0112c46de869360ef",
+    "build-lagrangian-prescribed/src/athena": "e6a82169494e0820a6e8a72b3bd8c3b9b98ad907b350848b108e6eb1d7d13000",
+    "build-lagrangian/CMakeCache.txt": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e",
+    "build-lagrangian-prescribed/CMakeCache.txt": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+  },
+  "checks_passed": 98,
+  "verified_run_binaries": 60,
+  "plots": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/remove-source-plots-20261026",
+  "figures": 11
+}

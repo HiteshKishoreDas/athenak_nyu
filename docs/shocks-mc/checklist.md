@@ -176,3 +176,11 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
 - [x] Keep existing THP `source=particles` default; remove redundant source from examples.
 - [x] Rebuild and execute native mode/reader regression checks; show actual plots.
 - [x] Record commands, source/configuration fingerprints and outcomes; commit coherent increment.
+
+
+## Remove redundant output source selector — 2026-10-26
+
+- [x] Delete shared THP routing, curve buffer/member flags and startup selector.
+- [x] Reject old active source selectors with migration guidance; keep files readable.
+- [x] Split native fixtures into separate particle/curve blocks; add SM23 rejection checks.
+- [x] Verify builds, exact output/restart regressions and explained plots; seal evidence and commit.

@@ -5,7 +5,9 @@ Current shock cadence/history controls: [sampled versus explicit complete encoun
 The 2026-10-23 format experiment remains withdrawn. On 2026-10-25 the user
 explicitly requested one `.crv` output combining curve geometry, thermo and
 sampled shock properties. See [current CRV input, schema and readers](curve-binary-output.md).
-Particle THP and complete encounter journals retain their existing formats.
+Particle THP stays unchanged. Complete encounters use explicit event-only binary
+THP/CRV blocks. The shared `source=` selector is removed: use separate particle THP
+and `file_type=curve` outputs. Active old selectors fail with migration guidance.
 Historical records below describe earlier interfaces, not the current curve writer.
 
 ## Existing files stay existing files
@@ -285,7 +287,7 @@ records through it, test exact IDs/flags/clock and replay semantics, and plot
 the same particle and curve signals from the common representation against
 the native reference.
 
-## Native binary shock properties
+## Historical binary shock properties (source selector removed)
 
 With existing shock tracking enabled, add `shock` to the normal thermo variables
 for particles, curves, or both. Keep the existing particle/curve setup and lineage.

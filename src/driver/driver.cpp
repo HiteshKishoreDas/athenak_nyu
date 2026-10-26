@@ -155,7 +155,6 @@ void PrintTracerSetup(Mesh *mesh, ParameterInput *pin, Outputs *outputs, bool re
     if ((p.file_type=="curve" || p.file_type=="crv") && mode=="snapshot") thermo=true;
     if (p.file_type=="prtcl_thermo_history") {
       if (mode=="snapshot") thermo=true;
-      out << ", source=" << pin->GetString(p.block_name,"source");
     }
     if (p.dcycle>0) out << ", every " << p.dcycle << " cycles";
     else if (p.dt>0) out << ", dt=" << p.dt;

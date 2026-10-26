@@ -3,14 +3,17 @@
 Current shock cadence/history controls: [sampled versus explicit complete encounters](shock-output-modes.md).
 
 Current curve output is unified `.crv`; see [input, contents and reader usage](curve-binary-output.md).
-Historical THP/CSV and ASCII reader support remains. The details below record the earlier split output.
+Historical THP/CSV and ASCII reader support remains. `source=` and its shared
+routing have been removed: use separate particle THP and `file_type=curve` blocks.
+Active old selectors reject with migration guidance. The details below are a
+historical record of the earlier split output, not current input instructions.
 
 Material-curve nodes and ordinary fluid tracers now use one thermo output class,
 one field parser/evaluator, and the same native output clock. No change to curve
 advection, node insertion, particle transport, detector thresholds, or fluid equations.
 This is an optional diagnostic. It works without shock tracking or standalone particles.
 
-## Configure
+## Historical configuration (source selector removed)
 
 Edit the existing thermo output block (or choose an unused block and unique id):
 

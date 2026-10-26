@@ -56,10 +56,14 @@ dcycle = 50
 
 Delete/disable blocks4/6 for sampled-only work. Add either independently: a curve
 history block does not enable particle histories or vice versa. Exactly one active
-encounter block per carrier is supported; duplicates reject. Encounter THP blocks
-use the existing `source=particles` default; omit it. The source selector was added during curve/particle thermo sharing; it is not
-a pre-feature multiphase_turb option. The THP snapshot writer also accepts `source=curves|both` for existing workflows. `file_type=curve` already selects
-curves and needs no `source` setting.
+encounter block per carrier is supported; duplicates reject.
+`file_type=prtcl_thermo_history` selects regular particles and `file_type=curve`
+selects curve nodes. The former shared `source=` selector has been removed.
+Remove `source=particles` from particle blocks. Replace `source=curves` by a
+`file_type=curve` block; replace `source=both` by two separate blocks with the
+same desired fields/cadence. Each block controls its own output clock.
+All active tracer blocks with any `source=` value reject with migration guidance;
+it is never silently ignored. Historical files remain readable.
 
 Every active `mode=encounters` block must explicitly set `variables` containing
 `shock` or `mach`. The existing parser also accepts individual `shock_*` fields,

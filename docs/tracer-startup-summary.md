@@ -4,7 +4,9 @@ Existing inputs now print a summary automatically, once after startup seeding an
 adaptation, or after checkpoint populations are restored. Only rank zero writes
 the summary. Counts are global (integer reduction in MPI builds).
 
-Example from the accepted adaptive laptop fixture:
+Historical example from the accepted adaptive laptop fixture. Current output
+uses separate particle THP and `file_type=curve` blocks, includes each block mode,
+and no longer displays a `source=` selector:
 
 ```text
 Tracer setup summary: fresh, time=0 (global counts)
@@ -16,7 +18,8 @@ Curves: requested=1, actual=1, nodes_requested=8, nodes_actual=15
   adaptation=true, max_nodes=1000000, spacing_cells=1, max_spacing=auto(mesh), max_angle=0.2 rad, chord_error=auto(spacing), unresolved_curves=0
   geometry snapshots=initial/final, every 1 cycles
 Histories: particle_shocks=false, curve_shocks=false, particle_shock_trace=false, curve_shock_trace=false
-  output3: prtcl_thermo_history, source=both, every 1 cycles, id=prtcl_thermo_history
+  output3: prtcl_thermo_history, mode=snapshot, every 1 cycles, id=thermo
+  output4: curve, mode=snapshot, every 1 cycles, id=curves
 End tracer setup summary
 ```
 

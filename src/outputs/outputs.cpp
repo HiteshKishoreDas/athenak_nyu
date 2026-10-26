@@ -129,6 +129,10 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
         opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
       } else if (opar.file_type.compare("prtcl_thermo_history") == 0 ||
                  (opar.file_type=="curves" || opar.file_type=="curve" || opar.file_type=="crv")) {
+        if (pin->DoesParameterExist(opar.block_name,"source")) {
+          shocks::Fail(opar.block_name+"/source has been removed; omit source for particle THP; "
+                       "use a separate file_type=curve block for curve output");
+        }
         opar.variable = opar.file_type;
         opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
       }

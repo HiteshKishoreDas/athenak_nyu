@@ -37,10 +37,11 @@ completed timestep reaching each threshold; no interpolated clock is invented.
 Fresh initial and normal final snapshots follow the native output scheduler.
 Same-cycle final output replays the identical immutable file.
 
-Existing `file_type=prtcl_thermo_history, source=curves|both` remains accepted: the
-curve portion now writes exactly the same CRV representation using that block's
-fields/cadence/id. `source=both` also writes ordinary particle THP. Do not configure
-a second CRV block with the same id. With any unified curve output active, the
+`file_type=prtcl_thermo_history` now selects particles only. The former `source=`
+selector and curve routing have been removed; active old blocks reject with
+migration guidance. Use a separate `file_type=curve` block for curve samples.
+For both populations, use two blocks with the desired fields/cadence. Historical
+THP files remain readable. With any unified curve output active, the
 old automatic initial/final and `material_curves/output_dcycle` ASCII snapshots
 are suppressed. Explicit `file_type=curves` still requests historical ASCII
 snapshots. Runs without unified curve output retain their previous ASCII behavior.

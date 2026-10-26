@@ -19,7 +19,7 @@ def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--runs',type=Path,required=True)
  p.add_argument('--reference-runs',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
  a=p.parse_args();out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
- report=json.loads((a.runs/'report.json').read_text());assert len(report['checks'])==22 and all(c['status']=='pass' for c in report['checks'])
+ report=json.loads((a.runs/'report.json').read_text());assert len(report['checks'])==23 and all(c['status']=='pass' for c in report['checks'])
  data={name:read_run(a.runs/name) for name in ('sampled','complete','coarse','amr_complete','forced','oracle_dt')}
  figures=[]
  def save(fig,name,title,caption):
@@ -102,6 +102,14 @@ def main():
  ax.set(xlim=(0,1.65),xticks=[0,1],xlabel='Native behavior matches expected outcome [0/1]',title='curve input name and explicit encounter fields')
  save(fig,'input-field-gate','Explicit history opt-in uses the existing field parser',
       'Actual native executions: missing variables, density-only and unknown shockless fields reject. Existing snapshot shock fields do not satisfy a separate encounter block. Explicit mach/mach_number aliases and shock succeed, preserving exact complete histories. curve produces binary .crv snapshots without particle or every-step detection; crv remains compatible. Red bars indicate successfully rejected invalid inputs, not failed tests.')
+ gate=next(c for c in report['checks'] if c['id']=='SM23_CFG_removed_source_rejects_without_silent_data_loss')
+ fig,ax=plt.subplots(figsize=(10,5.5),layout='constrained')
+ rows=gate['trials'];labels=[r['output']+': source='+r['old_source'] for r in rows]
+ bars=ax.barh(labels,[int(r['rejected']) for r in rows],color='tab:blue')
+ ax.bar_label(bars,labels=['rejected with migration message']*len(rows),padding=4)
+ ax.set(xlim=(0,1.8),xticks=[0,1],xlabel='Removed option correctly rejected [0/1]',title='source selector removed from snapshots and encounters')
+ save(fig,'removed-source','Removed source cannot silently discard curve output',
+      'Twelve actual native executions reject old source=particles/curves/both across particle THP and curve CRV, in both snapshot and encounter modes. The diagnostic requests separate output blocks. All ordinary particle THP bytes, curve samples and completed encounter evidence remain exact against accepted references after splitting the historical shared block. No new binary format or physics changes.')
  (out/'figures.json').write_text(json.dumps(figures,indent=2)+'\n');print(json.dumps(dict(figures=len(figures),output=str(out))))
 
 

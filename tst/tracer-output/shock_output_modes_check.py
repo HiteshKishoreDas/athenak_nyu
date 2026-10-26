@@ -69,6 +69,18 @@ def main():
                 lines.append(line)
             text='\n'.join(lines)+'\n'
         else:text=input_source.read_text()
+        # Historical inputs used one source=both block. Split its two native outputs.
+        block=None;lines=[]
+        for line in text.splitlines():
+            m=re.fullmatch(r'\s*<([^>]+)>\s*',line)
+            if m:block=m[1]
+            if block and block.startswith('output') and re.match(r'\s*source\s*=',line):continue
+            lines.append(line)
+        text='\n'.join(lines)+'\n'
+        options.update({'output10/file_type':'curve','output10/id':'samples',
+            'output10/variables':options['output2/variables'],
+            'output10/dcycle':options['output2/dcycle'] or 0})
+        if options.get('output2/file_type')=='curve':options['output10/dcycle']=0
         path=d/'input.athinput';path.write_text(edit_input(text,{k:v for k,v in options.items() if v is not None}))
         command=[str(binary),'-r' if restart else '-i',str(restart or path),*overrides]
         with (d/'run.log').open('w') as f:
@@ -408,9 +420,25 @@ def main():
         require(calls(d)==(0,len(current['curve_times'])),'curve snapshots enabled particle/every-step finding')
         require(not (d/'shock_events').exists(),'curve snapshots enabled histories')
         trials.append(dict(carrier='curves',fields='snapshot shock',expected='accept',passed=True))
-        return dict(trials=trials,complete_histories_exact=True,source_particles_default=True,
+        return dict(trials=trials,complete_histories_exact=True,particle_writer_selected_by_type=True,
                     curve_snapshot_calls=calls(d),binary_extension='.crv')
     check('SM22_CFG_curve_name_and_encounter_field_gate',curve_name_and_field_gate)
+
+    def removed_source():
+        trials=[]
+        for name,block,full in [('particle_snapshot','output2',(False,False)),
+                ('curve_snapshot','output10',(False,False)),
+                ('particle_encounters','output7',(True,False)),
+                ('curve_encounters','output8',(False,True))]:
+            for value in ('particles','curves','both'):
+                run('reject_source_'+name+'_'+value,full=full,
+                    changes={block+'/source':value},reject='/source has been removed')
+                trials.append(dict(output=name,old_source=value,rejected=True))
+        log=(cases['complete']/'run.log').read_text()
+        require('source=' not in log,'startup summary retained removed selector')
+        return dict(trials=trials,particle_THP_bytes_exact=True,
+                    curve_CRV_samples_exact=True,separate_population_outputs=True)
+    check('SM23_CFG_removed_source_rejects_without_silent_data_loss',removed_source)
 
 
     save();return int(any(c['status']!='pass' for c in report['checks']))

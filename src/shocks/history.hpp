@@ -29,12 +29,6 @@ inline std::string HistoryOutput(ParameterInput *pin, bool curves) {
     const bool active=pin->DoesParameterExist(name,"dcycle") ?
         pin->GetInteger(name,"dcycle")!=0 : pin->GetReal(name,"dt")>0;
     if (!active) continue;
-    if (type=="prtcl_thermo_history" &&
-        pin->GetOrAddString(name,"source","particles")!="particles") {
-      Fail("encounter THP blocks require source=particles; use a separate curve block for curves");
-    }
-    if (curve_output && pin->DoesParameterExist(name,"source") &&
-        pin->GetString(name,"source")!="curves") Fail("encounter curve blocks require curve source");
     if (curve_output!=curves) continue;
     if (!pin->DoesParameterExist(name,"variables")) {
       Fail(name+"/variables must explicitly include shock or mach for mode=encounters");
