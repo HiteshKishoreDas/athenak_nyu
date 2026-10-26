@@ -56,9 +56,9 @@ def main():
         options={'output1/dcycle':0,'output2/dcycle':5,'output2/variables':BASE+',shock',
           'output3/dcycle':0,'output4/dcycle':0,'output5/dcycle':0,'output6/dcycle':0,
           'shock_tracking/trace':'false','output7/file_type':'prtcl_thermo_history',
-          'output7/mode':'encounters','output7/source':'particles','output7/id':'particle_events',
-          'output7/dcycle':11 if full[0] else 0,'output8/file_type':'crv',
-          'output8/mode':'encounters','output8/id':'curve_events','output8/dcycle':17 if full[1] else 0}
+          'output7/mode':'encounters','output7/variables':'shock','output7/id':'particle_events',
+          'output7/dcycle':11 if full[0] else 0,'output8/file_type':'curve',
+          'output8/mode':'encounters','output8/variables':'shock','output8/id':'curve_events','output8/dcycle':17 if full[1] else 0}
         options.update(changes or {})
         if options.get('output2/dcycle') is None:
             text=input_source.read_text();block=None;lines=[]
@@ -236,7 +236,7 @@ def main():
         run('reject_mc_complete',full=(True,False),changes={'particles/particle_type':'lagrangian_mc',
             'particles/pusher':'lagrangian_mc'},reject='Shock tracking requires')
         run('reject_duplicate',full=(True,False),changes={'output9/file_type':'prtcl_thermo_history',
-            'output9/mode':'encounters','output9/dcycle':5},reject='only one active encounter')
+            'output9/mode':'encounters','output9/variables':'shock','output9/dcycle':5},reject='only one active encounter')
         run('reject_disabled_detector',full=(True,False),changes={'shock_tracking/enabled':'false'},reject='enabled detector')
         run('reject_wrong_mode',changes={'output2/mode':'complete_typo'},reject='unknown output mode')
         checkpoint=checkpoints(cases['active'])[37]
@@ -308,7 +308,7 @@ def main():
         return dict(repaired_checksums_do_not_hide_bad_pending_evidence=True)
     check('SM16_RST_semantic_validation_of_pending_payload',pending_corrupt)
     def oracle_dt():
-        options={'output2/file_type':'crv','output2/id':'sampled_curve','output2/dcycle':None,
+        options={'output2/file_type':'curve','output2/id':'sampled_curve','output2/dcycle':None,
             'output2/dt':.05,'output2/variables':'default,vmag,cs,mach,shock',
             'problem/flow':'acceleration','problem/a1':.3,'problem/a2':.2}
         d=run('oracle_dt','amr_shock',changes=options,source=ROOT/'inputs/tests/shocks-curves/smooth.athinput')
@@ -382,6 +382,35 @@ def main():
         return dict(shared_curve_directory=True,shared_particle_directory=True,
                     recognized_magic_dispatch=True,unknown_magic_still_strict=True)
     check('SM21_IO_custom_roots_with_shared_snapshot_event_extensions',shared_directories)
+
+    def curve_name_and_field_gate():
+        trials=[]
+        for carrier,block,full in [('particles','output7',(True,False)),
+                                    ('curves','output8',(False,True))]:
+            for suffix,fields,error in [('missing',None,'must explicitly include shock or mach'),
+                    ('density','rho,p','must include shock or mach'),
+                    ('substring','shockless','unknown field')]:
+                run('reject_fields_'+carrier+'_'+suffix,full=full,
+                    changes={block+'/variables':fields},reject=error)
+                trials.append(dict(carrier=carrier,fields=fields,expected='reject',passed=True))
+        # Mach aliases/case use the native parser. Event-only schema stays unchanged.
+        d=run('mach_encounters',full=(True,True),changes={
+            'output7/variables':'default, MaCh_Number','output8/variables':'MaCh'})
+        histories(read_run(d),read_run(cases['complete']))
+        trials.append(dict(carrier='both',fields='mach / mach_number',expected='accept',passed=True))
+        d=run('crv_alias',full=(True,True),changes={'output8/file_type':'crv'})
+        histories(read_run(d),read_run(cases['complete']))
+        trials.append(dict(carrier='curves',fields='shock (crv alias)',expected='accept',passed=True))
+        d=run('curve_snapshot',changes={'output2/file_type':'curve'})
+        current=read_run(d)
+        exact_samples(current,read_run(cases['sampled']))
+        require(current['curve_nodes'] and not current['particles'],'curve file_type wrote wrong population')
+        require(calls(d)==(0,len(current['curve_times'])),'curve snapshots enabled particle/every-step finding')
+        require(not (d/'shock_events').exists(),'curve snapshots enabled histories')
+        trials.append(dict(carrier='curves',fields='snapshot shock',expected='accept',passed=True))
+        return dict(trials=trials,complete_histories_exact=True,source_particles_default=True,
+                    curve_snapshot_calls=calls(d),binary_extension='.crv')
+    check('SM22_CFG_curve_name_and_encounter_field_gate',curve_name_and_field_gate)
 
 
     save();return int(any(c['status']!='pass' for c in report['checks']))

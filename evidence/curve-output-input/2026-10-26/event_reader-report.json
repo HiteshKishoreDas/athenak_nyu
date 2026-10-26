@@ -1,0 +1,343 @@
+{
+  "status": "pass",
+  "failure": null,
+  "command": "python3 tst/tracer-output/shock_binary_reader_check.py --runs build-lagrangian/evidence/curve-input-20261026 --reference build-lagrangian/evidence/crv-sealed-20261025/planar --output build-lagrangian/evidence/curve-input-reader-20261026",
+  "run": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete",
+  "reference": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/crv-sealed-20261025/planar/shock_events",
+  "checks": [
+    {
+      "id": "native_public_api",
+      "carrier": 0,
+      "status": "pass",
+      "events": 15,
+      "censored": 6
+    },
+    {
+      "id": "exact_csv_parity",
+      "carrier": 0,
+      "status": "pass",
+      "records": 15
+    },
+    {
+      "id": "exact_censored_csv_parity",
+      "carrier": 0,
+      "status": "pass",
+      "records": 6
+    },
+    {
+      "id": "recognized_snapshot_ignored",
+      "carrier": 0,
+      "status": "pass",
+      "snapshot": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/sampled/prtcl_thermo_history/curve_shock.samples.thp"
+    },
+    {
+      "id": "unknown_magic_not_ignored",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Unknown/truncated binary encounter header"
+    },
+    {
+      "id": "terminal_ancestor_corruption",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Terminal view has missing/modified committed ancestor"
+    },
+    {
+      "id": "missing_middle",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Missing/modified binary encounter chain predecessor"
+    },
+    {
+      "id": "modified_prefix",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Missing/modified binary encounter chain predecessor"
+    },
+    {
+      "id": "modified_predecessor",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Missing/modified binary encounter chain predecessor"
+    },
+    {
+      "id": "duplicate_filename",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Duplicate binary encounter rank alias"
+    },
+    {
+      "id": "missing_rank",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Missing binary encounter rank packet"
+    },
+    {
+      "id": "query_coverage",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Requested generation is not covered by committed batches",
+      "covered_queries": [
+        0,
+        50,
+        53,
+        90,
+        100,
+        107
+      ]
+    },
+    {
+      "id": "unknown_flags",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Unknown schema-1 validity flag"
+    },
+    {
+      "id": "invalid_status",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Integer outside schema range: 2"
+    },
+    {
+      "id": "invalid_validity",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Integer outside schema range: 2"
+    },
+    {
+      "id": "nonfinite_inside_time",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Nonfinite required observation field"
+    },
+    {
+      "id": "unknown_real_width",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Unsupported binary encounter schema/carrier/split"
+    },
+    {
+      "id": "truncated_header",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Unknown/truncated binary encounter header"
+    },
+    {
+      "id": "truncated_record",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Binary encounter record count/trailing bytes mismatch"
+    },
+    {
+      "id": "checksum_corruption",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Binary encounter checksum mismatch"
+    },
+    {
+      "id": "domain_exit_kind0",
+      "carrier": 0,
+      "status": "pass",
+      "fixture": "synthetic",
+      "emission": 107
+    },
+    {
+      "id": "future_domain_exit_generation_kind0",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Observation after emission generation"
+    },
+    {
+      "id": "terminal_only_kind0",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Committed event carries terminal-only censoring flag"
+    },
+    {
+      "id": "domain_exit_kind2",
+      "carrier": 0,
+      "status": "pass",
+      "fixture": "synthetic",
+      "emission": 107
+    },
+    {
+      "id": "future_domain_exit_generation_kind2",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Observation after emission generation"
+    },
+    {
+      "id": "terminal_only_kind2",
+      "carrier": 0,
+      "status": "pass",
+      "rejected": "Committed event carries terminal-only censoring flag"
+    },
+    {
+      "id": "left_censored_sentinel_preserved",
+      "carrier": 0,
+      "status": "pass",
+      "fixture": "synthetic"
+    },
+    {
+      "id": "native_public_api",
+      "carrier": 1,
+      "status": "pass",
+      "events": 16,
+      "censored": 0
+    },
+    {
+      "id": "exact_csv_parity",
+      "carrier": 1,
+      "status": "pass",
+      "records": 16
+    },
+    {
+      "id": "exact_censored_csv_parity",
+      "carrier": 1,
+      "status": "pass",
+      "records": 0
+    },
+    {
+      "id": "recognized_snapshot_ignored",
+      "carrier": 1,
+      "status": "pass",
+      "snapshot": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/sampled/curves/curve_shock.samples.cycle0.rank0of1.crv"
+    },
+    {
+      "id": "unknown_magic_not_ignored",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Unknown/truncated binary encounter header"
+    },
+    {
+      "id": "terminal_ancestor_corruption",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Terminal view has missing/modified committed ancestor"
+    },
+    {
+      "id": "missing_middle",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Missing/modified binary encounter chain predecessor"
+    },
+    {
+      "id": "modified_prefix",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Missing/modified binary encounter chain predecessor"
+    },
+    {
+      "id": "modified_predecessor",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Missing/modified binary encounter chain predecessor"
+    },
+    {
+      "id": "duplicate_filename",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Duplicate binary encounter rank alias"
+    },
+    {
+      "id": "missing_rank",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Missing binary encounter rank packet"
+    },
+    {
+      "id": "query_coverage",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Requested generation is not covered by committed batches",
+      "covered_queries": [
+        0,
+        50,
+        53,
+        90,
+        100,
+        107
+      ]
+    },
+    {
+      "id": "unknown_flags",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Unknown schema-1 validity flag"
+    },
+    {
+      "id": "invalid_status",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Integer outside schema range: 2"
+    },
+    {
+      "id": "invalid_validity",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Integer outside schema range: 2"
+    },
+    {
+      "id": "nonfinite_inside_time",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Nonfinite required observation field"
+    },
+    {
+      "id": "unknown_real_width",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Unsupported binary encounter schema/carrier/split"
+    },
+    {
+      "id": "truncated_header",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Unknown/truncated binary encounter header"
+    },
+    {
+      "id": "truncated_record",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Binary encounter record count/trailing bytes mismatch"
+    },
+    {
+      "id": "checksum_corruption",
+      "carrier": 1,
+      "status": "pass",
+      "rejected": "Binary encounter checksum mismatch"
+    }
+  ],
+  "source_sha256": {
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/tst/tracer-output/shock_binary_reader_check.py": "9e5cc15d96cd886000a8ee2213ece98ddc4645731e26ea98547279fcabb9172e",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/vis/python/shock_binary.py": "a3444dd51e601822e8ad118b090a4887adc89c459d5580ed701a037433a26fb8",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/vis/python/shock_history.py": "94b9effec846f954e5303cfe0e832a369a999d275b2db0892d583127f5c52e0b",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/vis/python/curve_shock_history.py": "92f2931bfa1991fccab0e8f143c9dd1833aca27229f0293c7b3d41dce3f065db"
+  },
+  "fixture_sha256": {
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle0.rank0of1.thp": "94722976d391b94391b19d44881309829119cddc5d281d8182e2bc70168707cb",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle107.rank0of1.thp": "f254d63a4e7b85b70eee26a343cfe1ec4fa1acf09148fa74b7c094f2ea52be41",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle11.rank0of1.thp": "9d2ed2181c247bc509c9b427996b4fcb7a0249b4cd5cbf381d40b6a0f397e1a7",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle22.rank0of1.thp": "e75d9650f90d96bf6243fac5e9eccb16752567db7a84ad627fc073534194c972",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle33.rank0of1.thp": "ddb3c7cfde07edcbdcfc0b539180bee8c416a3f837e9d36b7b36422f1c88cf08",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle44.rank0of1.thp": "7481230ecbb2a94f5612a69a5d7d37e6147133b07f142163a7b658484c9ec7a5",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle55.rank0of1.thp": "b6619f5e5e85ef65e686353599bc651935c99b4f22ff3775c450fa65b87caeaa",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle66.rank0of1.thp": "d1e4d13bb984afcc1843e12810262fa45c08ddce5c0302b64c1c42fa1300c11a",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle77.rank0of1.thp": "7a55be6d3e4b7d8ea8ef7194725832ab62cec297d451aa6d08abc83cdd8d7251",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle88.rank0of1.thp": "3f2ff1670889e082825969bc202843fa6bb6a162ffbf5713276c7270f65ec299",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.cycle99.rank0of1.thp": "10150b57d3a682a2b27065886fa206aeb4cd508fbf67b3e10ec6a40b0ec56e08",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curve_shock.particle_events.suspended107.rank0of1.thp": "62c4984a9ac4758b05bcc16580b842b4fdb3d596ef4871f43e9cd4c3ab8a791f",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/sampled/prtcl_thermo_history/curve_shock.samples.thp": "7a44d3b5815069ebd5f7183bb0481f1167a1b9ec8e0b7fd24c84522af29f824f",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.cycle0.rank0of1.crv": "0fe5d542de42d2f70f9aef18324808a6d8da03531d65aaf430d5d5e4cc2b63bd",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.cycle102.rank0of1.crv": "d9ad9967ce10c7246d43fb516f10d251f33b095f043a1a89cc0131c3d0247e17",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.cycle107.rank0of1.crv": "4985976f45792bf3904b8e035c6f74013c223b65ccf383ce9ba0da6320f2c7c5",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.cycle17.rank0of1.crv": "5a9e684777b3bd44dcd41a03754d711d07aad7d335e50101d7bb664ce24ca551",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.cycle34.rank0of1.crv": "59be6527019cecc92ecaa8f1afce00cc3566e7786bcbac2e96460a2dcaaa2d3f",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.cycle51.rank0of1.crv": "5b3cce6d2655bccb548a342b31faab5b897a3f1dfb27498666bf050207288881",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.cycle68.rank0of1.crv": "2436c01af36dea3444992ea41385a9971048c13ba96b21674e0dc8ad8823f569",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.cycle85.rank0of1.crv": "cc0545c3664c2ac039b10f24bf60ea3a0a654dc49252b940419f3754f552f8ae",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/shock_events/curves/curve_shock.curve_events.suspended107.rank0of1.crv": "0e68f50490659d53cdab3e41e692a6b89b0a7b8b4aa5dc497302168653680f4e",
+    "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/sampled/curves/curve_shock.samples.cycle0.rank0of1.crv": "acdc0f2b3883f2d8fdf14ae63aa14c669ffbb76325bd4647aa7da5432e1f6cff"
+  },
+  "limitation": "Reader/serialization checks; no live outflow, MPI or GPU qualification"
+}

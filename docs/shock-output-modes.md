@@ -10,7 +10,8 @@ It does not duplicate snapshots. Completed-event CSV journals are replaced.
 
 Keep existing qualified hydro, particles/curves and detector thresholds.
 `shock_tracking/enabled=true` makes detection available; it no longer enables
-complete histories on its own. Use distinct output ids and unused numbers.
+complete histories on its own. Use distinct output ids and unused numbers. `file_type=curve` writes binary `.crv`;
+`crv` remains a compatibility alias. The older `curves` text output is unchanged.
 
 ```ini
 <shock_tracking>
@@ -24,22 +25,22 @@ trace = false
 
 # Ordinary curve snapshots: geometry + thermo + sampled shocks.
 <output3>
-file_type = crv
+file_type = curve
 id = curve_samples
 variables = default,vmag,cs,mach,shock
 dcycle = 10
 
 # Optional complete curve histories. No geometry/thermo snapshots in this stream.
 <output4>
-file_type = crv
+file_type = curve
 mode = encounters
+variables = shock
 id = curve_encounters
 dcycle = 50
 
 # Ordinary particle thermo snapshots remain native THP v2.
 <output5>
 file_type = prtcl_thermo_history
-source = particles
 id = particle_samples
 variables = default,mach,shock
 dcycle = 10
@@ -47,8 +48,8 @@ dcycle = 10
 # Optional complete particle histories. No duplicated thermo snapshots.
 <output6>
 file_type = prtcl_thermo_history
-source = particles
 mode = encounters
+variables = shock
 id = particle_encounters
 dcycle = 50
 ```
@@ -56,7 +57,19 @@ dcycle = 50
 Delete/disable blocks4/6 for sampled-only work. Add either independently: a curve
 history block does not enable particle histories or vice versa. Exactly one active
 encounter block per carrier is supported; duplicates reject. Encounter THP blocks
-require source=particles; use a separate CRV encounter block for curves.
+use the existing `source=particles` default; omit it. The source selector was added during curve/particle thermo sharing; it is not
+a pre-feature multiphase_turb option. The THP snapshot writer also accepts `source=curves|both` for existing workflows. `file_type=curve` already selects
+curves and needs no `source` setting.
+
+Every active `mode=encounters` block must explicitly set `variables` containing
+`shock` or `mach`. The existing parser also accepts individual `shock_*` fields,
+`mach_number`, case-insensitive names and comma/space separators. A missing list,
+`default` alone or density/pressure alone fails before tracking starts. Shock fields
+in another snapshot block do not satisfy this requirement. Disabled encounter
+blocks require no fields and enable no tracking. These names are opt-in selectors:
+event-only packets still contain the complete fixed encounter evidence schema.
+Ordinary sampled `mach` remains local flow speed divided by sound speed; it does
+not imply shock detection unless complete encounters are explicitly enabled.
 
 Use `dt` instead of `dcycle` for native time thresholds. Presence of `dcycle` takes
 precedence. Zero disables that block; negative `dcycle` retains native initial/final

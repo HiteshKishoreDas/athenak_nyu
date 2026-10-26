@@ -166,3 +166,13 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
 - [x] Sealed exact-source/runtime/raw/reference gallery: nine figures, 3,322 raw hashes,
   39 native-run digests; artifact.json records the manifest.
 - [ ] Runtime MPI/GPU/cluster budgets, live-outflow qualification and human scientific approval remain pending.
+
+
+## Curve output input cleanup — 2026-10-26
+
+- [x] Trace native output dispatch, early encounter activation, startup summaries and field parser.
+- [x] Add `file_type=curve` for existing binary CRV, preserve `crv` alias and text `curves`.
+- [x] Require an explicit shock/Mach field list in each active encounter block.
+- [x] Keep existing THP `source=particles` default; remove redundant source from examples.
+- [x] Rebuild and execute native mode/reader regression checks; show actual plots.
+- [x] Record commands, source/configuration fingerprints and outcomes; commit coherent increment.

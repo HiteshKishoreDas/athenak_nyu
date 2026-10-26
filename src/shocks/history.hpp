@@ -10,6 +10,7 @@
 #include <tuple>
 #include <vector>
 #include "parameter_input.hpp"
+#include "particles/tracer_fields.hpp"
 #include "shocks/store.hpp"
 
 namespace shocks {
@@ -22,18 +23,32 @@ inline std::string HistoryOutput(ParameterInput *pin, bool curves) {
     const auto &name=block.block_name;
     if (name.rfind("output",0)!=0 || !pin->DoesParameterExist(name,"file_type")) continue;
     const auto type=pin->GetString(name,"file_type");
-    if (type!="crv" && type!="prtcl_thermo_history") continue;
+    const bool curve_output=type=="curve" || type=="crv";
+    if (!curve_output && type!="prtcl_thermo_history") continue;
     if (pin->GetOrAddString(name,"mode","snapshot")!="encounters") continue;
     const bool active=pin->DoesParameterExist(name,"dcycle") ?
         pin->GetInteger(name,"dcycle")!=0 : pin->GetReal(name,"dt")>0;
     if (!active) continue;
     if (type=="prtcl_thermo_history" &&
         pin->GetOrAddString(name,"source","particles")!="particles") {
-      Fail("encounter THP blocks require source=particles; use a separate CRV block for curves");
+      Fail("encounter THP blocks require source=particles; use a separate curve block for curves");
     }
-    if (type=="crv" && pin->DoesParameterExist(name,"source") &&
-        pin->GetString(name,"source")!="curves") Fail("encounter CRV blocks require curve source");
-    if ((type=="crv")!=curves) continue;
+    if (curve_output && pin->DoesParameterExist(name,"source") &&
+        pin->GetString(name,"source")!="curves") Fail("encounter curve blocks require curve source");
+    if (curve_output!=curves) continue;
+    if (!pin->DoesParameterExist(name,"variables")) {
+      Fail(name+"/variables must explicitly include shock or mach for mode=encounters");
+    }
+    const bool mhd=pin->DoesBlockExist("mhd");
+    const auto physics=mhd ? "mhd" : "hydro";
+    const int scalars=pin->DoesParameterExist(physics,"nscalars") ?
+        pin->GetInteger(physics,"nscalars") : 0;
+    const auto fields=particles::ParseTracerFieldList(pin->GetString(name,"variables"),
+        mhd,scalars,name+"/variables");
+    const bool requested=std::any_of(fields.begin(),fields.end(),[](const auto &field) {
+      return particles::IsShockField(field.kind) || field.kind==particles::TracerFieldKind::mach;
+    });
+    if (!requested) Fail(name+"/variables must include shock or mach for mode=encounters");
     if (!found.empty()) Fail("only one active encounter output block per carrier is supported");
     found=name;
   }

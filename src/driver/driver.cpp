@@ -148,10 +148,11 @@ void PrintTracerSetup(Mesh *mesh, ParameterInput *pin, Outputs *outputs, bool re
   bool thermo=false;
   for (const auto &output : outputs->pout_list) {
     const auto &p=output->out_params;
-    if (p.file_type!="prtcl_thermo_history" && p.file_type!="trk" && p.file_type!="curves" && p.file_type!="crv") continue;
+    if (p.file_type!="prtcl_thermo_history" && p.file_type!="trk" &&
+        p.file_type!="curves" && p.file_type!="curve" && p.file_type!="crv") continue;
     const auto mode=pin->GetOrAddString(p.block_name,"mode","snapshot");
     out << "  " << p.block_name << ": " << p.file_type << ", mode=" << mode;
-    if (p.file_type=="crv" && mode=="snapshot") thermo=true;
+    if ((p.file_type=="curve" || p.file_type=="crv") && mode=="snapshot") thermo=true;
     if (p.file_type=="prtcl_thermo_history") {
       if (mode=="snapshot") thermo=true;
       out << ", source=" << pin->GetString(p.block_name,"source");

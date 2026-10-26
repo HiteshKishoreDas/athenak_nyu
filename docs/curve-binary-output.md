@@ -17,13 +17,14 @@ Use an unused output number and a unique output id:
 
 ```ini
 <output3>
-file_type = crv
+file_type = curve
 id = curves
 variables = default,vmag,cs,mach,shock
 dcycle = 10
 ```
 
-`variables` uses the existing tracer field parser and aliases. `default` expands
+`file_type=curve` is the binary output name; `crv` remains a compatibility alias.
+The extension stays `.crv`. `variables` uses the existing tracer field parser and aliases. `default` expands
 to density, pressure, temperature, entropy, internal energy and three velocity
 components. Derived speed, sound speed, Mach and passive scalars can be selected
 with the same names as particle thermo. Without `variables`, CRV defaults to

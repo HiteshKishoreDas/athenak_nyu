@@ -402,16 +402,16 @@ void ParticleThermoHistoryOutput::WriteParticleData(Mesh *pm) {
 MaterialCurveOutput::MaterialCurveOutput(ParameterInput *pin, Mesh *pm,
                                          OutputParameters op) : BaseTypeOutput(pin,pm,op) {
   if (!pm->pmb_pack->pcurves) FatalHistoryOutput("curve output requires material curves");
-  if (op.file_type=="crv") fields=CurveFields(pin,pm,op);
+  if (op.file_type=="curve" || op.file_type=="crv") fields=CurveFields(pin,pm,op);
   std::error_code error;
   std::filesystem::create_directories("curves",error);
   if (error) FatalHistoryOutput("cannot create curves directory: "+error.message());
 }
 void MaterialCurveOutput::LoadOutputData(Mesh *pm) {
-  if (out_params.file_type=="crv") data=pm->pmb_pack->pcurves->BinarySnapshot(fields);
+  if (out_params.file_type=="curve" || out_params.file_type=="crv") data=pm->pmb_pack->pcurves->BinarySnapshot(fields);
 }
 void MaterialCurveOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
-  if (out_params.file_type=="crv") {
+  if (out_params.file_type=="curve" || out_params.file_type=="crv") {
     shocks::CommitFile(CurvePath(out_params,pm),data,true);
   } else {
     std::ostringstream path;
@@ -424,7 +424,7 @@ void MaterialCurveOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
 
 EncounterHistoryOutput::EncounterHistoryOutput(ParameterInput *pin, Mesh *pm,
                                                OutputParameters op) : BaseTypeOutput(pin,pm,op) {
-  curves=op.file_type=="crv";
+  curves=op.file_type=="curve" || op.file_type=="crv";
   if (curves && pm->pmb_pack->pcurves) pm->pmb_pack->pcurves->binary_output=true;
   if ((curves && (!pm->pmb_pack->pcurves || !pm->pmb_pack->pcurves->shock_enabled)) ||
       (!curves && (!pm->pmb_pack->ppart || !pm->pmb_pack->ppart->shock_enabled))) {

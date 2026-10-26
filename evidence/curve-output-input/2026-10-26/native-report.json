@@ -1,0 +1,1011 @@
+{
+  "checks": [
+    {
+      "id": "SM01_TRC_sampling_only_at_snapshot_clocks",
+      "status": "pass",
+      "completed_steps": 107,
+      "saved_clocks": 23,
+      "particle_cache_calls": 23,
+      "curve_stencil_batches": 23
+    },
+    {
+      "id": "SM02_CFG_unused_detector_zero_work",
+      "status": "pass",
+      "particle_calls": 0,
+      "curve_calls": 0
+    },
+    {
+      "id": "SM03_EVT_binary_complete_history_exact_CSV_parity",
+      "status": "pass",
+      "particle_events": 15,
+      "curve_events": 16,
+      "particle_cache_calls": 108,
+      "curve_stencil_batches": 131,
+      "batch_counts": {
+        "0": 11,
+        "1": 8
+      }
+    },
+    {
+      "id": "SM04_CFG_independent_population_activation",
+      "status": "pass",
+      "independent_carriers": true
+    },
+    {
+      "id": "SM05_IO_event_only_outputs_without_snapshots",
+      "status": "pass",
+      "particle_events": 15,
+      "curve_events": 16,
+      "snapshots": 0
+    },
+    {
+      "id": "SM06_IO_existing_THP_bytes_and_mesh_sampling_parity",
+      "status": "pass",
+      "particle_bytes_exact": true,
+      "mesh_samples_exact": true
+    },
+    {
+      "id": "SM07_RST_active_and_terminal_zero_step_replay",
+      "status": "pass",
+      "active_cycle": 37,
+      "zero_step_file_replay_exact": true,
+      "continuation_exact": true
+    },
+    {
+      "id": "SM08_RST_unflushed_completed_records_survive_checkpoint",
+      "status": "pass",
+      "checkpoint_cycle": 80,
+      "pending_counts": [
+        0,
+        15
+      ],
+      "original_emission_clocks_preserved": true
+    },
+    {
+      "id": "SM09_AMR_births_migration_and_negative_ID_parity",
+      "status": "pass",
+      "sample_clocks": 34,
+      "negative_IDs": true,
+      "fresh_births": true,
+      "completed_events_exact": true
+    },
+    {
+      "id": "SM10_forced_box_engineering_coexistence",
+      "status": "pass",
+      "curve_samples": 256,
+      "particle_events": 6904,
+      "curve_events": 28,
+      "short_accepted_fixture": true
+    },
+    {
+      "id": "SM11_CFG_opt_in_and_restart_guards",
+      "status": "pass",
+      "disabled_blocks_no_work": true,
+      "MC_history_rejected": true,
+      "duplicate_rejected": true,
+      "disabled_detector_rejected": true,
+      "removed_history_restart_rejected": true
+    },
+    {
+      "id": "SM12_MC_sampled_properties_without_encounter_claim",
+      "status": "pass",
+      "samples": 2944,
+      "point_samples_only": true,
+      "no_continuous_history_claim": true
+    },
+    {
+      "id": "SM13_IO_bounded_queue_and_capacity_recovery",
+      "status": "pass",
+      "bounded_overflow_fails": true,
+      "pending_before_failure": 4,
+      "recovered_events": 15
+    },
+    {
+      "id": "SM14_EVT_complete_passages_between_saved_snapshots",
+      "status": "pass",
+      "snapshot_clocks": 2,
+      "sampled_curve_inside_flags": 0,
+      "complete_curve_passages": 16
+    },
+    {
+      "id": "SM15_IO_full_width_curve_ID_layout",
+      "status": "pass",
+      "full_32bit_namespace": true,
+      "events": 16
+    },
+    {
+      "id": "SM16_RST_semantic_validation_of_pending_payload",
+      "status": "pass",
+      "repaired_checksums_do_not_hide_bad_pending_evidence": true
+    },
+    {
+      "id": "SM17_NUM_independent_accelerating_thermo_and_dt_oracle",
+      "status": "pass",
+      "saved_times": [
+        0.0,
+        0.05,
+        0.1,
+        0.15000000000000002,
+        0.20000000000000007,
+        0.2500000000000001,
+        0.30000000000000016,
+        0.3500000000000002,
+        0.4
+      ],
+      "max_thermo_error": 3.552713678800501e-15,
+      "unchanged_CT_budget": 2e-12
+    },
+    {
+      "id": "SM18_IO_native_initial_final_only_flush_cadence",
+      "status": "pass",
+      "complete_history": true,
+      "completed_batch_clocks": [
+        0,
+        107
+      ]
+    },
+    {
+      "id": "SM19_RST_reject_forked_tail_and_resume_clean_ordinary_prefix",
+      "status": "pass",
+      "orphan_tail_rejected_without_mutation": true,
+      "ordinary_checkpoint_clean_prefix_exact": true
+    },
+    {
+      "id": "SM20_IO_native_pending_store_and_destroyed_identity_protocol",
+      "status": "pass",
+      "native_unit_modes": [
+        "roundtrip",
+        "overflow",
+        "duplicate",
+        "corrupt"
+      ],
+      "destroyed_ID_pending_roundtrip": true,
+      "native_live_outflow_qualification": false,
+      "negative_one_and_large_sequence_exact": true
+    },
+    {
+      "id": "SM21_IO_custom_roots_with_shared_snapshot_event_extensions",
+      "status": "pass",
+      "shared_curve_directory": true,
+      "shared_particle_directory": true,
+      "recognized_magic_dispatch": true,
+      "unknown_magic_still_strict": true
+    },
+    {
+      "id": "SM22_CFG_curve_name_and_encounter_field_gate",
+      "status": "pass",
+      "trials": [
+        {
+          "carrier": "particles",
+          "fields": null,
+          "expected": "reject",
+          "passed": true
+        },
+        {
+          "carrier": "particles",
+          "fields": "rho,p",
+          "expected": "reject",
+          "passed": true
+        },
+        {
+          "carrier": "particles",
+          "fields": "shockless",
+          "expected": "reject",
+          "passed": true
+        },
+        {
+          "carrier": "curves",
+          "fields": null,
+          "expected": "reject",
+          "passed": true
+        },
+        {
+          "carrier": "curves",
+          "fields": "rho,p",
+          "expected": "reject",
+          "passed": true
+        },
+        {
+          "carrier": "curves",
+          "fields": "shockless",
+          "expected": "reject",
+          "passed": true
+        },
+        {
+          "carrier": "both",
+          "fields": "mach / mach_number",
+          "expected": "accept",
+          "passed": true
+        },
+        {
+          "carrier": "curves",
+          "fields": "shock (crv alias)",
+          "expected": "accept",
+          "passed": true
+        },
+        {
+          "carrier": "curves",
+          "fields": "snapshot shock",
+          "expected": "accept",
+          "passed": true
+        }
+      ],
+      "complete_histories_exact": true,
+      "source_particles_default": true,
+      "curve_snapshot_calls": [
+        0,
+        23
+      ],
+      "binary_extension": ".crv"
+    }
+  ],
+  "runs": [
+    {
+      "name": "sampled",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/sampled/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "d29955660b5a7e2933d82c5ab5c969ad617dac72e28bd9e2223c1e1650d0ff37",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "no_shock_fields",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/no_shock_fields/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "caed1ca2fcab81927b38cdc2e169e094fd59d4ef92fd8dc5453a0bd1932a8da6",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "complete",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/complete/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "cf81137792dd02eed6e6c3b6dc7e33045730f2bff23344564612722aeeb4ab48",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "curve_only_history",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/curve_only_history/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "0feb00c6f124d6625746c610d5553c831f479098f6c38958bd504378d9e77765",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "particle_only_history",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/particle_only_history/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "9398716970ed3a60adf03f1ec1f3e754883d59be1c9ea8fc8557e922bb2abbd3",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "events_only",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/events_only/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "98bab19c3e2db885601ec5ec80b6c0a7540d011c6a7dc07b44b9ac29663ce864",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "every_step_sampled",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/every_step_sampled/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "602864c68d36278b2970cb157825088b8fbe666a4fd9e89ae1d92aece2424fc9",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "active_seed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/active_seed/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "299136103775c944e69b3077584176b6f0172589c1e99dbfb45d86b6c2f606b9",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "active_resume",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/active_seed/rst/curve_shock.00002.rst",
+        "time/nlim=-1",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/active-journal"
+      ],
+      "exit": 0,
+      "input_used": false,
+      "input_sha256": "cf81137792dd02eed6e6c3b6dc7e33045730f2bff23344564612722aeeb4ab48",
+      "restart_sha256": "852d560f7682258decdf2245542c2282f24162324f4d7b6a26f5ae6caf990898",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "active_zero",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/active_seed/rst/curve_shock.00002.rst",
+        "time/nlim=37",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/active-zero-journal"
+      ],
+      "exit": 0,
+      "input_used": false,
+      "input_sha256": "cf81137792dd02eed6e6c3b6dc7e33045730f2bff23344564612722aeeb4ab48",
+      "restart_sha256": "852d560f7682258decdf2245542c2282f24162324f4d7b6a26f5ae6caf990898",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "pending_seed",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/pending_seed/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "346cbde7121d4c8bf17fdd40391e3d75e0a2d32f93c2eae7afa796d664af88b2",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "pending_resume",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/pending_seed/rst/curve_shock.00001.rst",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/pending-journal"
+      ],
+      "exit": 0,
+      "input_used": false,
+      "input_sha256": "d29955660b5a7e2933d82c5ab5c969ad617dac72e28bd9e2223c1e1650d0ff37",
+      "restart_sha256": "c9241f78ddf62fbb3ef1a48898b579c2f48aeb9994881d8b4fe25c8fa009f8df",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "amr_sampled",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/amr_sampled/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "68dbab386e17f17675f71cbbfefb89b6f5facbda8620f3cdcb094228b6aff48c",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "380bdfdaf4829f0d44c5ca5c11b8cffb5f3fc317ac4041962b856f1a6f236632",
+      "compiled_source_fingerprint": "f9f29bdf55c78e7f6c687a826c3a7af7f297da604fd5bc76587b512f29480c0f",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "amr_complete",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/amr_complete/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "da830c8c895bc5c6ebc225141f47f4e97eb7b72977385c23b203045a4aacb077",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "380bdfdaf4829f0d44c5ca5c11b8cffb5f3fc317ac4041962b856f1a6f236632",
+      "compiled_source_fingerprint": "f9f29bdf55c78e7f6c687a826c3a7af7f297da604fd5bc76587b512f29480c0f",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "forced",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/forced/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "6886f4f03cd86b985cc846551e4afdd97638ab566bd9ab733afdab69050fe316",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "disabled_history_blocks",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/disabled_history_blocks/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "d29955660b5a7e2933d82c5ab5c969ad617dac72e28bd9e2223c1e1650d0ff37",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_mc_complete",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_mc_complete/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "0a526e2ffc3f75ac4d58b1cf1c39e8db22421125f43a4a7c9eb0afe096ebea1b",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_duplicate",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_duplicate/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "12d5247b296a8e75af909843fa2bd5554b59e3ebb9b8347f7ef8cf5a86cf286e",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_disabled_detector",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_disabled_detector/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "856932c269ca178508cc3f793ded9b95155ee0cec8e64035b88562c0a81c5078",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_wrong_mode",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_wrong_mode/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "76416a1ba790af63b5cb58028203dd4ea6ee038e1e113d37e92c3a7ab186e9d4",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_disabled_restart",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/active_seed/rst/curve_shock.00002.rst",
+        "output7/dcycle=0",
+        "output8/dcycle=0"
+      ],
+      "exit": 1,
+      "input_used": false,
+      "input_sha256": "d29955660b5a7e2933d82c5ab5c969ad617dac72e28bd9e2223c1e1650d0ff37",
+      "restart_sha256": "852d560f7682258decdf2245542c2282f24162324f4d7b6a26f5ae6caf990898",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "sampled_without_lineage",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/sampled_without_lineage/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "5d737618c1829f0bed8be1af528c9fba39d6392118cb98db86d6d12600db93de",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_curve_history_without_lineage",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_curve_history_without_lineage/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "aafcd8f837f466ad849e77f0cba649e06104cc045322aa9d2a2e8d2f80c438e9",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "mc_sample",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/mc_sample/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "91d103f4d13c929b47c0e21143b24159469fbf2ed8294c76e9abdc38e7cbc7d6",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "overflow",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/overflow/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "06dcd0b929fb581017d621fc6e5186b5de5ffeaed63cc5f02fe25bd9ca83cce4",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "overflow_resume",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/overflow/rst/curve_shock.00001.rst",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/overflow-journal",
+        "shock_tracking/event_capacity=4096"
+      ],
+      "exit": 0,
+      "input_used": false,
+      "input_sha256": "d29955660b5a7e2933d82c5ab5c969ad617dac72e28bd9e2223c1e1650d0ff37",
+      "restart_sha256": "c3b3feb37d57608d69be1dc87c4107733cc355e0024e94254f979ae078e0aca1",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "coarse",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/coarse/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "8c15589a3f5cbe4e6abfec07217c491111cf39409df098c13b148e757e58680b",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "bits_zero",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/bits_zero/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "0c43dd11c8cb1bb084ad2ae1e61cce9e18ed1491ae6a2415342d59a9a05b62f9",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_pending_semantics",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/corrupt-checkpoint/curve_shock.00001.rst",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/corrupt-journal"
+      ],
+      "exit": 1,
+      "input_used": false,
+      "input_sha256": "d29955660b5a7e2933d82c5ab5c969ad617dac72e28bd9e2223c1e1650d0ff37",
+      "restart_sha256": "c9241f78ddf62fbb3ef1a48898b579c2f48aeb9994881d8b4fe25c8fa009f8df",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "oracle_dt",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/oracle_dt/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "27e06de68ed0f0ac15fc39edf2371e091a3f50f1f38e7d466599bcaf300e8321",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian-prescribed/src/athena",
+      "executable_sha256": "380bdfdaf4829f0d44c5ca5c11b8cffb5f3fc317ac4041962b856f1a6f236632",
+      "compiled_source_fingerprint": "f9f29bdf55c78e7f6c687a826c3a7af7f297da604fd5bc76587b512f29480c0f",
+      "build_cache_sha256": "3cc163c3786ff4d2c2a279a808eb3ed6e9d9953d2e93f4db8943bb0b8e844f69"
+    },
+    {
+      "name": "final_only",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/final_only/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "8f65f2b18e72d90c605e866be82f1bb60a677dd20fab95d12394615a2483c6a7",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_nonprefix_tail",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/active_seed/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/tail-journal"
+      ],
+      "exit": 1,
+      "input_used": false,
+      "input_sha256": "d29955660b5a7e2933d82c5ab5c969ad617dac72e28bd9e2223c1e1650d0ff37",
+      "restart_sha256": "2fdd07ffbd46db123f11aa6e5ec0d4171a440cb8c1b642dc4c0d96f64058bbd1",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "ordinary_resume",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-r",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/active_seed/rst/curve_shock.00001.rst",
+        "time/nlim=-1",
+        "shock_tracking/directory=/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/ordinary-journal"
+      ],
+      "exit": 0,
+      "input_used": false,
+      "input_sha256": "d29955660b5a7e2933d82c5ab5c969ad617dac72e28bd9e2223c1e1650d0ff37",
+      "restart_sha256": "2fdd07ffbd46db123f11aa6e5ec0d4171a440cb8c1b642dc4c0d96f64058bbd1",
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "native_unit_",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_history_test",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/unit_pass"
+      ],
+      "exit": 0,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_history_test",
+      "executable_sha256": "4938ed63e98e9515eb0bccc370df7a2ef4611f380c112b334810b55b9159e605"
+    },
+    {
+      "name": "native_unit_overflow",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_history_test",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/unit_overflow",
+        "overflow"
+      ],
+      "exit": 1,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_history_test",
+      "executable_sha256": "4938ed63e98e9515eb0bccc370df7a2ef4611f380c112b334810b55b9159e605"
+    },
+    {
+      "name": "native_unit_duplicate",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_history_test",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/unit_duplicate",
+        "duplicate"
+      ],
+      "exit": 1,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_history_test",
+      "executable_sha256": "4938ed63e98e9515eb0bccc370df7a2ef4611f380c112b334810b55b9159e605"
+    },
+    {
+      "name": "native_unit_corrupt",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_history_test",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/unit_corrupt",
+        "corrupt"
+      ],
+      "exit": 1,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/shock_history_test",
+      "executable_sha256": "4938ed63e98e9515eb0bccc370df7a2ef4611f380c112b334810b55b9159e605"
+    },
+    {
+      "name": "shared_root",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/shared_root/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "ca64198a675a7751285b7036b37cbd93b4e929c05e3b7a9bf0af92b6f032cdec",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "shared_thp_directory",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/shared_thp_directory/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "ce2289ba37719692b832ab3615219dc96366836bf9583714e87e4070f8de761f",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_fields_particles_missing",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_fields_particles_missing/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "e9342b00bc6febc23cf3e68e1c0d20f2918be2082a2a28dda35fd37df98b8733",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_fields_particles_density",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_fields_particles_density/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "54581ff429ed36bbed2ca1c60738b2f423b038a1293f47140ad7198d9a826252",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_fields_particles_substring",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_fields_particles_substring/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "45209c93a4f00366564eeb9aae624ef266fd0e4b75c7f69056de5ee602d23c0c",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_fields_curves_missing",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_fields_curves_missing/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "31295990e8c86380b17306459ae8cd04dbcb09a566bbcafe079fa8056e15e453",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_fields_curves_density",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_fields_curves_density/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "4323df46b8ed36234f57dca08526ffb7f9f1a1662f5933f99c9f51634e56c006",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "reject_fields_curves_substring",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/reject_fields_curves_substring/input.athinput"
+      ],
+      "exit": 1,
+      "input_used": true,
+      "input_sha256": "91d9ce043d9fa8ec1df40375b2167122f17aa5b461331d4ec02aa7945cf7346b",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "mach_encounters",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/mach_encounters/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "8e06c21c30a13a985c4c7e552f6307e506482793d3058c4f56fd6602c3fc196e",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "crv_alias",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/crv_alias/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "733cf87a99cd0545118b381ca1db64d099fcabef1836c598cb87c71a4c000885",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    },
+    {
+      "name": "curve_snapshot",
+      "command": [
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+        "-i",
+        "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/evidence/curve-input-20261026/curve_snapshot/input.athinput"
+      ],
+      "exit": 0,
+      "input_used": true,
+      "input_sha256": "677d38813e6e8e7589be65795be4a2f7166422b4c8e0c3911845c78893f024a8",
+      "restart_sha256": null,
+      "executable": "/Users/hitesh/hitesh/git/athenak_nyu/.worktrees/shock-lagrangian/build-lagrangian/src/athena",
+      "executable_sha256": "0a78cf69c3903644d6fb6ebb7b2a4f68babc92cabc0fc34ead31a445606d5714",
+      "compiled_source_fingerprint": "72e9f4423c18a6d391e6c40775b70eafc61c6894cd0ff3a51b0898fd6d2251a6",
+      "build_cache_sha256": "1e3c50bdc31b8b3e87101beaec92e7ea5e66a2694b5b8d6af2313f99b318c93e"
+    }
+  ],
+  "runner_sha256": "d6b53ddf72d9de5ae9feccce5e42a905cb8b0b18922913c64476b0952e021498",
+  "scope": "local Serial/double",
+  "scientific_approval": "pending",
+  "limits": [
+    "MPI runtime/GPU/production budgets unqualified"
+  ]
+}

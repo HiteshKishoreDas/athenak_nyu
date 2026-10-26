@@ -117,7 +117,8 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
           opar.file_type.compare("trk") != 0 &&
           opar.file_type.compare("prtcl_thermo_history") != 0 &&
           opar.file_type.compare("curves") != 0 &&
-          opar.file_type.compare("crv") != 0) {
+          opar.file_type.compare("crv") != 0 &&
+          opar.file_type.compare("curve") != 0) {
         if (opar.file_type.compare("pdf") == 0 &&
             !pin->DoesParameterExist(opar.block_name, "variable") &&
             pin->DoesParameterExist(opar.block_name, "variable_1")) {
@@ -127,15 +128,17 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
         }
         opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
       } else if (opar.file_type.compare("prtcl_thermo_history") == 0 ||
-                 (opar.file_type=="curves" || opar.file_type=="crv")) {
+                 (opar.file_type=="curves" || opar.file_type=="curve" || opar.file_type=="crv")) {
         opar.variable = opar.file_type;
         opar.file_id = pin->GetOrAddString(opar.block_name,"id",opar.variable);
       }
 
       const auto mode=pin->GetOrAddString(opar.block_name,"mode","snapshot");
       if (mode!="snapshot" && mode!="encounters") shocks::Fail("unknown output mode");
-      if (mode=="encounters" && opar.file_type!="crv" &&
-          opar.file_type!="prtcl_thermo_history") shocks::Fail("encounters require CRV or THP output");
+      if (mode=="encounters" && opar.file_type!="curve" && opar.file_type!="crv" &&
+          opar.file_type!="prtcl_thermo_history") {
+        shocks::Fail("encounters require curve or prtcl_thermo_history output");
+      }
 
       // read ghost cell option
       opar.include_gzs = pin->GetOrAddBoolean(opar.block_name, "ghost_zones", false);
@@ -261,7 +264,7 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
       } else if (opar.file_type.compare("prtcl_thermo_history") == 0) {
         pnode = new ParticleThermoHistoryOutput(pin,pm,opar);
         pout_list.insert(pout_list.begin(),pnode);
-      } else if ((opar.file_type=="curves" || opar.file_type=="crv")) {
+      } else if ((opar.file_type=="curves" || opar.file_type=="curve" || opar.file_type=="crv")) {
         pnode = new MaterialCurveOutput(pin,pm,opar);
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("cbin") == 0) {

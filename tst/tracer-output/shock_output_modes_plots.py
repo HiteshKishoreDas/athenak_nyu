@@ -19,7 +19,7 @@ def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--runs',type=Path,required=True)
  p.add_argument('--reference-runs',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
  a=p.parse_args();out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
- report=json.loads((a.runs/'report.json').read_text());assert len(report['checks'])==21 and all(c['status']=='pass' for c in report['checks'])
+ report=json.loads((a.runs/'report.json').read_text());assert len(report['checks'])==22 and all(c['status']=='pass' for c in report['checks'])
  data={name:read_run(a.runs/name) for name in ('sampled','complete','coarse','amr_complete','forced','oracle_dt')}
  figures=[]
  def save(fig,name,title,caption):
@@ -93,6 +93,15 @@ def main():
  for ax in axes:ax.set_xlabel(r'$t$ (code units)');ax.grid(alpha=.2)
  save(fig,'independent-thermo','Independent thermo oracle at requested output times',
       'Accepted accelerating-flow fixture, dt 0.05 output. Nine saved clocks produce nine curve detector batches. Maximum error over all selected thermo fields is below the unchanged 2e-12 CT budget; no fitted tolerance.')
+ gate=next(c for c in report['checks'] if c['id']=='SM22_CFG_curve_name_and_encounter_field_gate')
+ fig,ax=plt.subplots(figsize=(11,5),layout='constrained')
+ labels=[row['carrier']+': '+str(row['fields']) for row in gate['trials']]
+ bars=ax.barh(labels,[int(row['passed']) for row in gate['trials']],
+              color=['tab:red' if row['expected']=='reject' else 'tab:green' for row in gate['trials']])
+ ax.bar_label(bars,labels=[row['expected']+' as expected' for row in gate['trials']],padding=4)
+ ax.set(xlim=(0,1.65),xticks=[0,1],xlabel='Native behavior matches expected outcome [0/1]',title='curve input name and explicit encounter fields')
+ save(fig,'input-field-gate','Explicit history opt-in uses the existing field parser',
+      'Actual native executions: missing variables, density-only and unknown shockless fields reject. Existing snapshot shock fields do not satisfy a separate encounter block. Explicit mach/mach_number aliases and shock succeed, preserving exact complete histories. curve produces binary .crv snapshots without particle or every-step detection; crv remains compatible. Red bars indicate successfully rejected invalid inputs, not failed tests.')
  (out/'figures.json').write_text(json.dumps(figures,indent=2)+'\n');print(json.dumps(dict(figures=len(figures),output=str(out))))
 
 
