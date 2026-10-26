@@ -1,0 +1,10 @@
+{
+  "path": "/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/shock-output-modes-20261026",
+  "source_commit": "76328f5e27ba5913e347077d888329b44a638150",
+  "checks_passed": 96,
+  "figures": 9,
+  "raw_files_verified": 3322,
+  "native_run_digests_verified": 39,
+  "manifest_sha256": "99b448a15cdc20dea3475562b6381c71ec8c228fd456f6bbd35cce58347c8514",
+  "scope": "local Serial/double; MPI compile only; no push; scientific approval pending"
+}

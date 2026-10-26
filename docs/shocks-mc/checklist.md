@@ -163,5 +163,6 @@ Current evidence: `evidence/curve-ids/2026-10-24/variable-ledger.md`.
 - [x] Exact prefix, orphan-tail, terminal/zero-step replay and typed identity guards.
 - [x] 21native +47event-reader +28snapshot-reader groups pass; independent review.
 - [x] Nine actual explained plots and source-bound commands/failures/reproduction.
-- [ ] Seal exact-source/runtime/raw/reference gallery and artifact metadata.
+- [x] Sealed exact-source/runtime/raw/reference gallery: nine figures, 3,322 raw hashes,
+  39 native-run digests; artifact.json records the manifest.
 - [ ] Runtime MPI/GPU/cluster budgets, live-outflow qualification and human scientific approval remain pending.

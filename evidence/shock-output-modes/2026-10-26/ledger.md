@@ -109,3 +109,15 @@ ancestors. Source, runtime, raw hashes and compact reference inputs/data are bei
 sealed. No push. Hardware/production/scientific gates remain pending.
 
 Final timing validation also rejects invalid-fluid endpoints from a generation after emission, while preserving unknown-entry sentinel(-1,0). All47 event-reader cases and final21 native groups pass on the exact final source.
+
+## Sealed evidence
+
+Source commit `76328f5e27ba5913e347077d888329b44a638150`. Gallery: `/Users/hitesh/.codex/visualizations/2026/10/08/01a11cbd-ecd8-7103-86ce-b245d30c9407/shock-output-modes-20261026`.
+Nine explained figures, source/Kokkos archives, actual configured executables and
+cache/header files, compact byte-identical reference inputs/data and reports are
+sealed. Verified3,322 raw-file hashes and39 native-run executable digests. Manifest
+SHA256: `99b448a15cdc20dea3475562b6381c71ec8c228fd456f6bbd35cce58347c8514`. Rechecked after packaging.
+The first packaging attempt assumed MPI had the optional history-test target; its
+recorded cache has SHOCK_TESTS off. Recovery copied only actual configured targets;
+MPI qualification remains compilation of athena only, never runtime or unit runs.
+Deployment/live-outflow/scientific gates remain pending. No push.
